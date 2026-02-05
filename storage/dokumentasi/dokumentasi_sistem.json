@@ -9,7 +9,7 @@
         "pola_interaksi": "SPA / Real-time Events",
         "kebijakan_modal": "0% Modal (Mutlak)"
     },
-    "waktu_pembaruan_terakhir": "05/02/2026 18:36:12",
+    "waktu_pembaruan_terakhir": "05/02/2026 18:54:44",
     "statistik_data": {
         "pengguna": 11,
         "produk": 2,
@@ -167,6 +167,21 @@
             "metode": "GET|HEAD"
         },
         {
+            "uri": "admin/toko/dashboard",
+            "nama": "admin.toko.dashboard",
+            "metode": "GET|HEAD"
+        },
+        {
+            "uri": "admin/toko/konten",
+            "nama": "admin.toko.konten",
+            "metode": "GET|HEAD"
+        },
+        {
+            "uri": "admin/toko/berita",
+            "nama": "admin.toko.berita",
+            "metode": "GET|HEAD"
+        },
+        {
             "uri": "admin/produk/dashboard",
             "nama": "admin.produk.dashboard",
             "metode": "GET|HEAD"
@@ -187,16 +202,6 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/produk",
-            "nama": "admin.produk",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/stok",
-            "nama": "admin.stok",
-            "metode": "GET|HEAD"
-        },
-        {
             "uri": "admin/pesanan/dashboard",
             "nama": "admin.pesanan.dashboard",
             "metode": "GET|HEAD"
@@ -207,18 +212,38 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pesanan/verifikasi",
-            "nama": "admin.pesanan.verifikasi",
-            "metode": "GET|HEAD"
-        },
-        {
             "uri": "admin/pesanan/detail/{pesanan}",
             "nama": "admin.pesanan.detail",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pesanan",
-            "nama": "admin.pesanan",
+            "uri": "admin/transaksi/dashboard",
+            "nama": "admin.transaksi.dashboard",
+            "metode": "GET|HEAD"
+        },
+        {
+            "uri": "admin/transaksi/verifikasi",
+            "nama": "admin.pesanan.verifikasi",
+            "metode": "GET|HEAD"
+        },
+        {
+            "uri": "admin/cs/dashboard",
+            "nama": "admin.cs.dashboard",
+            "metode": "GET|HEAD"
+        },
+        {
+            "uri": "admin/cs/ulasan",
+            "nama": "admin.pelanggan.ulasan",
+            "metode": "GET|HEAD"
+        },
+        {
+            "uri": "admin/logistik/dashboard",
+            "nama": "admin.logistik.dashboard",
+            "metode": "GET|HEAD"
+        },
+        {
+            "uri": "admin/logistik/pemasok",
+            "nama": "admin.logistik.pemasok",
             "metode": "GET|HEAD"
         },
         {
@@ -229,11 +254,6 @@
         {
             "uri": "admin/pelanggan/daftar",
             "nama": "admin.pelanggan.daftar",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/pelanggan/ulasan",
-            "nama": "admin.pelanggan.ulasan",
             "metode": "GET|HEAD"
         },
         {
@@ -248,27 +268,7 @@
         },
         {
             "uri": "admin/pengguna/hrd",
-            "nama": "admin.pengguna.hrd",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/pengguna",
-            "nama": "admin.pengguna",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/toko/dashboard",
-            "nama": "admin.toko.dashboard",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/toko/konten",
-            "nama": "admin.toko.konten",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/toko/berita",
-            "nama": "admin.toko.berita",
+            "nama": "admin.hrd.karyawan",
             "metode": "GET|HEAD"
         },
         {
@@ -277,13 +277,13 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/laporan",
-            "nama": "admin.laporan",
+            "uri": "admin/pengaturan/sistem",
+            "nama": "admin.pengaturan.sistem",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pengaturan/sistem",
-            "nama": "admin.pengaturan.sistem",
+            "uri": "admin/pengaturan/sistem/voucher",
+            "nama": "admin.voucher",
             "metode": "GET|HEAD"
         },
         {
@@ -292,7 +292,7 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pengaturan/log",
+            "uri": "admin/pengaturan/keamanan/log",
             "nama": "admin.pengaturan.log",
             "metode": "GET|HEAD"
         },
@@ -304,26 +304,6 @@
         {
             "uri": "admin/merek",
             "nama": "admin.merek",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/voucher",
-            "nama": "admin.voucher",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/logistik/pemasok",
-            "nama": "admin.logistik.pemasok",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/log",
-            "nama": "admin.log",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/cms",
-            "nama": "admin.cms",
             "metode": "GET|HEAD"
         },
         {
