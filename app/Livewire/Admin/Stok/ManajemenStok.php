@@ -26,6 +26,8 @@ class ManajemenStok extends Component
 
     public $jumlahMutasi;
 
+    public $keteranganMutasi = '';
+
     #[Title('Audit Inventaris - Teqara')]
     public function render()
     {

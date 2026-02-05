@@ -12,7 +12,6 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
         [x-cloak] { display: none !important; }
@@ -34,9 +33,9 @@
         .glow-red { box-shadow: 0 10px 30px -5px rgba(239, 68, 68, 0.3); }
     </style>
 </head>
-<body class="text-slate-700 antialiased selection:bg-indigo-500 selection:text-white" x-data="{ sidebarOpen: false }">
+<body class="text-slate-700 antialiased selection:bg-indigo-500 selection:text-white">
 
-    <div class="flex h-screen overflow-hidden">
+    <div class="flex h-screen overflow-hidden" x-data="{ sidebarOpen: false }">
         
         <!-- Sidebar Navigation 11 Pilar Utama -->
         <aside 
@@ -107,7 +106,7 @@
                         </div>
                         <svg :class="aktif === 'toko' ? 'rotate-180 text-purple-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'toko'" x-cloak x-collapse class="pl-12 space-y-1 py-2 border-l-2 border-purple-100 ml-9">
+                    <div x-show="aktif === 'toko'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-purple-100 ml-9">
                         <a href="{{ route('admin.toko.dashboard') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/toko/dashboard') ? 'text-purple-700 bg-purple-50' : 'text-slate-400 hover:text-purple-600' }} rounded-xl transition uppercase tracking-widest">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2"></path></svg>
                             Visual Hub
@@ -134,7 +133,7 @@
                         </div>
                         <svg :class="aktif === 'produk' ? 'rotate-180 text-emerald-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'produk'" x-cloak x-collapse class="pl-12 space-y-1 py-2 border-l-2 border-emerald-100 ml-9">
+                    <div x-show="aktif === 'produk'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-emerald-100 ml-9">
                         <a href="{{ route('admin.produk.dashboard') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/produk/dashboard') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-400 hover:text-emerald-600' }} rounded-xl transition uppercase tracking-widest">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             Dashboard Unit
@@ -163,7 +162,7 @@
                         </div>
                         <svg :class="aktif === 'pesanan' ? 'rotate-180 text-amber-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'pesanan'" x-cloak x-collapse class="pl-12 space-y-1 py-2 border-l-2 border-amber-100 ml-9">
+                    <div x-show="aktif === 'pesanan'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-amber-100 ml-9">
                         <a href="{{ route('admin.pesanan.dashboard') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/pesanan/dashboard') ? 'text-amber-700 bg-amber-50' : 'text-slate-400 hover:text-amber-600' }} rounded-xl transition uppercase tracking-widest">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1"></path></svg>
                             Dashboard Order
@@ -186,7 +185,7 @@
                         </div>
                         <svg :class="aktif === 'transaksi' ? 'rotate-180 text-indigo-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'transaksi'" x-cloak x-collapse class="pl-12 space-y-1 py-2 border-l-2 border-indigo-100 ml-9">
+                    <div x-show="aktif === 'transaksi'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-indigo-100 ml-9">
                         <a href="{{ route('admin.transaksi.dashboard') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/transaksi/dashboard') ? 'text-indigo-700 bg-indigo-50' : 'text-slate-400 hover:text-indigo-600' }} rounded-xl transition uppercase tracking-widest">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2"></path></svg>
                             Dashboard Arus Kas
@@ -211,7 +210,7 @@
                         </div>
                         <svg :class="aktif === 'cs' ? 'rotate-180 text-pink-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'cs'" x-cloak x-collapse class="pl-12 space-y-1 py-2 border-l-2 border-pink-100 ml-9">
+                    <div x-show="aktif === 'cs'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-pink-100 ml-9">
                         <a href="{{ route('admin.cs.dashboard') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/cs/dashboard') ? 'text-pink-700 bg-pink-50' : 'text-slate-400 hover:text-pink-600' }} rounded-xl transition uppercase tracking-widest">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
                             Dashboard CS
@@ -238,7 +237,7 @@
                         </div>
                         <svg :class="aktif === 'logistik' ? 'rotate-180 text-cyan-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'logistik'" x-cloak x-collapse class="pl-12 space-y-1 py-2 border-l-2 border-cyan-100 ml-9">
+                    <div x-show="aktif === 'logistik'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-cyan-100 ml-9">
                         <a href="{{ route('admin.logistik.dashboard') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/logistik/dashboard') ? 'text-cyan-700 bg-cyan-50' : 'text-slate-400 hover:text-cyan-600' }} rounded-xl transition uppercase tracking-widest">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                             Dashboard Armada
@@ -261,7 +260,7 @@
                         </div>
                         <svg :class="aktif === 'pelanggan' ? 'rotate-180 text-rose-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'pelanggan'" x-cloak x-collapse class="pl-12 space-y-1 py-2 border-l-2 border-rose-100 ml-9">
+                    <div x-show="aktif === 'pelanggan'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-rose-100 ml-9">
                         <a href="{{ route('admin.pelanggan.dashboard') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/pelanggan/dashboard') ? 'text-rose-700 bg-rose-50' : 'text-slate-400 hover:text-rose-600' }} rounded-xl transition uppercase tracking-widest">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2"></path></svg>
                             Dashboard CRM
@@ -286,7 +285,7 @@
                         </div>
                         <svg :class="aktif === 'pengguna' ? 'rotate-180 text-rose-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'pengguna'" x-cloak x-collapse class="pl-12 space-y-1 py-2 border-l-2 border-rose-100 ml-9">
+                    <div x-show="aktif === 'pengguna'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-rose-100 ml-9">
                         <a href="{{ route('admin.pengguna.dashboard') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/pengguna/dashboard') ? 'text-rose-700 bg-rose-50' : 'text-slate-400 hover:text-rose-600' }} rounded-xl transition uppercase tracking-widest">DASHBOARD SDM</a>
                         <a href="{{ route('admin.pengguna.daftar') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/pengguna/daftar') ? 'text-rose-700 bg-rose-50' : 'text-slate-400 hover:text-rose-600' }} rounded-xl transition uppercase tracking-widest">ADMINISTRATOR</a>
                         <a href="{{ route('admin.hrd.karyawan') }}" wire:navigate class="flex items-center gap-3 px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/hrd*') ? 'text-rose-700 bg-rose-50' : 'text-slate-400 hover:text-rose-600' }} rounded-xl transition uppercase tracking-widest">STRUKTUR KERJA</a>
@@ -304,7 +303,7 @@
                         </div>
                         <svg :class="aktif === 'laporan' ? 'rotate-180 text-orange-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'laporan'" x-cloak x-collapse class="pl-12 space-y-1 py-2 border-l-2 border-orange-100 ml-9">
+                    <div x-show="aktif === 'laporan'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-orange-100 ml-9">
                         <a href="{{ route('admin.laporan.pusat') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/laporan*') ? 'text-orange-700 bg-orange-50' : 'text-slate-400 hover:text-orange-600' }} rounded-xl transition uppercase tracking-widest">JURNAL PENJUALAN</a>
                     </div>
                 </div>
@@ -320,7 +319,7 @@
                         </div>
                         <svg :class="aktif === 'sistem' ? 'rotate-180 text-cyan-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'sistem'" x-cloak x-collapse class="pl-12 space-y-1 py-2 border-l-2 border-cyan-100 ml-9">
+                    <div x-show="aktif === 'sistem'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-cyan-100 ml-9">
                         <a href="{{ route('admin.pengaturan.sistem') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/pengaturan/sistem') ? 'text-cyan-700 bg-cyan-50' : 'text-slate-400 hover:text-cyan-600' }} rounded-xl transition uppercase tracking-widest">IDENTITAS & API</a>
                         <a href="{{ route('admin.voucher') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/voucher') ? 'text-cyan-700 bg-cyan-50' : 'text-slate-400 hover:text-cyan-600' }} rounded-xl transition uppercase tracking-widest">VOUCHER PROMO</a>
                     </div>
@@ -337,7 +336,7 @@
                         </div>
                         <svg :class="aktif === 'keamanan' ? 'rotate-180 text-red-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'keamanan'" x-cloak x-collapse class="pl-12 space-y-1 py-2 border-l-2 border-red-900 ml-9">
+                    <div x-show="aktif === 'keamanan'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-red-900 ml-9">
                         <a href="{{ route('admin.pengaturan.keamanan') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/pengaturan/keamanan') ? 'text-red-700 bg-red-50' : 'text-slate-400 hover:text-red-600' }} rounded-xl transition uppercase tracking-widest">KEBIJAKAN AKSES</a>
                         <a href="{{ route('admin.pengaturan.log') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/pengaturan/log') ? 'text-red-700 bg-red-50' : 'text-slate-400 hover:text-red-600' }} rounded-xl transition uppercase tracking-widest">JEJAK FORENSIK LOG</a>
                     </div>
@@ -385,7 +384,7 @@
                 </div>
             </header>
 
-            <div class="p-10 max-w-[1600px] mx-auto animate-in fade-in duration-700">
+            <div class="p-10 max-w-[1600px] mx-auto">
                 {{ $slot }}
             </div>
         </main>
