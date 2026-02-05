@@ -9,12 +9,12 @@
         "pola_interaksi": "SPA / Real-time Events",
         "kebijakan_modal": "0% Modal (Mutlak)"
     },
-    "waktu_pembaruan_terakhir": "05/02/2026 18:03:35",
+    "waktu_pembaruan_terakhir": "05/02/2026 18:09:22",
     "statistik_data": {
         "pengguna": 11,
         "produk": 2,
-        "pesanan": 0,
-        "log_aktivitas": 0,
+        "pesanan": 50,
+        "log_aktivitas": 50,
         "voucher": 0,
         "ulasan": 0,
         "gudang": 0,

@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Admin\Pesanan;
 
-use App\Models\LogAktivitas;
 use App\Models\Pesanan;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -27,6 +26,12 @@ class DetailPesanan extends Component
 
     public function simpanPerubahan()
     {
+        $this->validate([
+            'statusPesanan' => 'required',
+            'statusPembayaran' => 'required',
+            'resiPengiriman' => 'nullable|string|max:100',
+        ]);
+
         $pesananLama = $this->pesanan->replicate();
 
         $this->pesanan->update([
@@ -37,34 +42,31 @@ class DetailPesanan extends Component
 
         // Catat Log jika ada perubahan
         if ($pesananLama->status_pesanan !== $this->statusPesanan) {
-            $this->catatLog("Mengubah status pesanan dari {$pesananLama->status_pesanan} menjadi {$this->statusPesanan}");
+            \App\Helpers\LogHelper::catat(
+                'update_status_pesanan',
+                $this->pesanan->nomor_invoice,
+                "Admin memperbarui status pesanan #{$this->pesanan->nomor_invoice} dari ".strtoupper($pesananLama->status_pesanan).' menjadi '.strtoupper($this->statusPesanan)
+            );
         }
 
         if ($pesananLama->status_pembayaran !== $this->statusPembayaran) {
-            $this->catatLog("Mengubah status pembayaran dari {$pesananLama->status_pembayaran} menjadi {$this->statusPembayaran}");
+            \App\Helpers\LogHelper::catat(
+                'update_status_pembayaran',
+                $this->pesanan->nomor_invoice,
+                "Admin memperbarui status pembayaran #{$this->pesanan->nomor_invoice} menjadi ".strtoupper(str_replace('_', ' ', $this->statusPembayaran))
+            );
         }
 
         $this->dispatch('notifikasi', [
             'tipe' => 'sukses',
-            'pesan' => 'Data pesanan berhasil diperbarui.',
+            'pesan' => "Data pesanan #{$this->pesanan->nomor_invoice} berhasil diperbarui.",
         ]);
     }
 
-    private function catatLog($pesan)
-    {
-        LogAktivitas::create([
-            'pengguna_id' => auth()->id(),
-            'aksi' => 'update_pesanan',
-            'target' => $this->pesanan->nomor_invoice,
-            'pesan_naratif' => 'Admin '.auth()->user()->nama." {$pesan} pada invoice {$this->pesanan->nomor_invoice}",
-            'waktu' => now(),
-        ]);
-    }
-
-    #[Title('Detail Pesanan - Admin Teqara')]
+    #[Title('Detail Transaksi - Admin Teqara')]
     public function render()
     {
         return view('livewire.admin.pesanan.detail-pesanan')
-            ->layout('components.layouts.admin', ['title' => 'Proses Pesanan']);
+            ->layout('components.layouts.admin');
     }
 }

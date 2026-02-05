@@ -22,21 +22,32 @@ class DaftarPesanan extends Component
         }
     }
 
-    #[Title('Kelola Pesanan - Admin Teqara')]
+    #[Title('Kelola Pesanan Transaksi - Admin Teqara')]
     public function render()
     {
-        $query = Pesanan::query()->with('pengguna')->latest();
+        $query = Pesanan::query()
+            ->with(['pengguna', 'detailPesanan'])
+            ->latest();
 
         if ($this->filterStatus) {
             $query->where('status_pesanan', $this->filterStatus);
         }
 
         if ($this->cari) {
-            $query->where('nomor_invoice', 'like', '%'.$this->cari.'%');
+            $query->where(function ($q) {
+                $q->where('nomor_invoice', 'like', '%'.$this->cari.'%')
+                    ->orWhereHas('pengguna', fn ($p) => $p->where('nama', 'like', '%'.$this->cari.'%'));
+            });
         }
 
         return view('livewire.admin.pesanan.daftar-pesanan', [
             'pesanan' => $query->paginate(10),
-        ])->layout('components.layouts.admin', ['title' => 'Kelola Pesanan']);
+            'statistik' => [
+                'total' => Pesanan::count(),
+                'menunggu' => Pesanan::where('status_pesanan', 'menunggu')->count(),
+                'proses' => Pesanan::where('status_pesanan', 'diproses')->count(),
+                'selesai' => Pesanan::where('status_pesanan', 'selesai')->count(),
+            ],
+        ])->layout('components.layouts.admin');
     }
 }
