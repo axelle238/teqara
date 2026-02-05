@@ -48,7 +48,7 @@
                 </div>
                 <div>
                     <p class="font-bold text-slate-900 text-sm">{{ $k->judul }}</p>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ $k->bagian }} • {{ $k->updated_at->diffForHumans() }}</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ $k->bagian }} • {{ $k->updated_at?->diffForHumans() ?? 'Baru saja' }}</p>
                 </div>
             </div>
             @empty

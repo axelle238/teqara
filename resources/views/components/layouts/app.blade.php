@@ -30,9 +30,9 @@
                 
                 <!-- Logo -->
                 <a href="/" wire:navigate class="flex items-center gap-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-indigo-500/20 group-hover:rotate-12 transition-transform">T</div>
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-cyan-600 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-indigo-500/20 group-hover:rotate-12 transition-transform">T</div>
                     <div class="hidden sm:block">
-                        <span class="text-2xl font-black tracking-tighter text-slate-900 group-hover:colorful-gradient transition-all">TEQARA</span>
+                        <span class="text-2xl font-black tracking-tighter text-indigo-600 group-hover:colorful-gradient transition-all uppercase">TEQARA</span>
                         <div class="h-1 w-full bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
                     </div>
                 </a>
@@ -108,8 +108,8 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex items-center gap-4 mb-8">
-                        <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-black text-2xl">T</div>
-                        <span class="text-3xl font-black tracking-tighter text-slate-900 uppercase">TEQARA<span class="text-indigo-600">.</span></span>
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-cyan-600 flex items-center justify-center text-white font-black text-2xl">T</div>
+                        <span class="text-3xl font-black tracking-tighter text-indigo-600 uppercase">TEQARA<span class="text-cyan-500">.</span></span>
                     </div>
                     <p class="text-slate-500 text-xl font-medium leading-relaxed max-w-md">
                         Mendefinisikan ulang pengadaan teknologi dengan solusi hulu ke hilir yang transparan dan terpercaya.

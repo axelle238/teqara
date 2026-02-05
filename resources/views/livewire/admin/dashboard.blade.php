@@ -11,7 +11,7 @@
             <p class="text-slate-500 font-medium text-lg">Pantauan kinerja ekosistem TEQARA dalam satu dasbor terpadu.</p>
         </div>
         <div class="flex items-center gap-4 bg-white p-4 rounded-[32px] shadow-sm border border-slate-100">
-            <div class="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
             </div>
             <div>
@@ -115,9 +115,9 @@
         </div>
 
         <!-- Category Dominance -->
-        <div class="lg:col-span-1 bg-slate-900 p-10 rounded-[56px] text-white shadow-2xl shadow-slate-900/40 relative overflow-hidden">
-            <h3 class="text-xl font-black mb-2 tracking-tight relative z-10">Dominasi Kategori</h3>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-10 relative z-10">Distribusi Penjualan Unit</p>
+        <div class="lg:col-span-1 bg-gradient-to-br from-indigo-600 to-indigo-800 p-10 rounded-[56px] text-white shadow-2xl shadow-indigo-500/40 relative overflow-hidden">
+            <h3 class="text-xl font-black mb-2 tracking-tight relative z-10 uppercase">DOMINASI UNIT</h3>
+            <p class="text-[10px] font-bold text-indigo-200 uppercase tracking-widest mb-10 relative z-10">Distribusi Penjualan Global</p>
             
             <div id="chart-kategori" class="w-full h-64 flex items-center justify-center relative z-10"></div>
             
@@ -125,10 +125,10 @@
                 @foreach($grafik['kategori_label'] as $index => $label)
                 <div class="flex justify-between items-center group cursor-default">
                     <div class="flex items-center gap-3">
-                        <span class="w-2.5 h-2.5 rounded-full shadow-lg" style="background-color: {{ ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'][$index] ?? '#ccc' }}"></span>
-                        <span class="text-xs font-bold text-slate-300 group-hover:text-white transition-colors">{{ $label }}</span>
+                        <span class="w-2.5 h-2.5 rounded-full shadow-lg border border-white/20" style="background-color: {{ ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'][$index] ?? '#ccc' }}"></span>
+                        <span class="text-[10px] font-black text-indigo-100 group-hover:text-white transition-colors uppercase tracking-widest">{{ $label }}</span>
                     </div>
-                    <span class="text-[10px] font-black text-slate-500 tracking-widest">Rp {{ number_format($grafik['kategori_data'][$index]/1000000, 1) }}M</span>
+                    <span class="text-[10px] font-black text-indigo-200 tracking-widest">Rp {{ number_format($grafik['kategori_data'][$index]/1000000, 1) }}M</span>
                 </div>
                 @endforeach
             </div>

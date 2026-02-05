@@ -1,97 +1,105 @@
-<div class="min-h-screen flex bg-white">
+<div class="min-h-screen flex bg-white relative overflow-hidden">
     
-    <!-- Kolom Kiri: Form -->
-    <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-white z-10 relative">
+    <!-- Abstract Colorful Ornaments -->
+    <div class="absolute top-0 right-0 w-full h-full pointer-events-none -z-0">
+        <div class="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full animate-pulse"></div>
+        <div class="absolute bottom-[-5%] left-[-10%] w-[30%] h-[30%] bg-cyan-500/10 blur-[100px] rounded-full"></div>
+    </div>
+
+    <!-- Kolom Kiri: Form Masuk (Vibrant Light) -->
+    <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-32 bg-white/80 backdrop-blur-md z-10 relative">
         <div class="mx-auto w-full max-w-sm lg:w-96">
-            <div class="mb-10">
-                <a href="/" wire:navigate class="flex items-center gap-3 mb-8 group w-fit">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-cyan-500/30 group-hover:scale-110 transition-transform">T</div>
-                    <span class="text-2xl font-black tracking-tighter text-slate-900 uppercase">TEQARA</span>
+            <div class="mb-12">
+                <a href="/" wire:navigate class="flex items-center gap-4 mb-10 group w-fit">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-cyan-600 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-indigo-500/20 group-hover:rotate-12 transition-transform">T</div>
+                    <span class="text-2xl font-black tracking-tighter text-indigo-600 uppercase">TEQARA HUB</span>
                 </a>
-                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Selamat Datang Kembali</h2>
-                <p class="mt-2 text-sm text-slate-500 font-medium">
-                    Belum punya akun? 
-                    <a href="/register" wire:navigate class="font-bold text-cyan-600 hover:text-cyan-500 transition">Daftar sekarang</a>
-                </p>
+                <h2 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-2">SELAMAT <span class="text-indigo-600">DATANG</span></h2>
+                <p class="text-sm text-slate-500 font-bold uppercase tracking-widest">Akses Portal Enterprise Anda</p>
             </div>
 
-            <div class="mt-8">
-                <form wire:submit.prevent="masuk" class="space-y-6">
-                    <div>
-                        <label for="email" class="block text-xs font-bold text-slate-900 uppercase tracking-widest mb-2">Alamat Email</label>
-                        <div class="mt-1 relative rounded-2xl shadow-sm">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path></svg>
+            <div class="mt-10">
+                <form wire:submit.prevent="masuk" class="space-y-8">
+                    <div class="space-y-2">
+                        <label for="email" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-1">Otoritas Email</label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-indigo-300 group-focus-within:text-indigo-600 transition-colors">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path></svg>
                             </div>
-                            <input wire:model="email" id="email" type="email" autocomplete="email" required class="block w-full pl-12 pr-4 py-4 border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm font-medium transition-all bg-slate-50 focus:bg-white" placeholder="nama@perusahaan.com">
+                            <input wire:model="email" id="email" type="email" autocomplete="email" required class="block w-full pl-12 pr-4 py-4 bg-indigo-50/50 border-none rounded-2xl text-slate-900 placeholder-slate-300 focus:ring-2 focus:ring-indigo-500 font-bold transition-all" placeholder="nama@perusahaan.com">
                         </div>
-                        @error('email') <p class="mt-2 text-xs font-bold text-red-500">{{ $message }}</p> @enderror
+                        @error('email') <p class="mt-2 text-xs font-black text-rose-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                     </div>
 
-                    <div>
-                        <label for="password" class="block text-xs font-bold text-slate-900 uppercase tracking-widest mb-2">Kata Sandi</label>
-                        <div class="mt-1 relative rounded-2xl shadow-sm">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    <div class="space-y-2">
+                        <label for="password" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] px-1">Kunci Akses</label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-indigo-300 group-focus-within:text-indigo-600 transition-colors">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                             </div>
-                            <input wire:model="password" id="password" type="password" autocomplete="current-password" required class="block w-full pl-12 pr-4 py-4 border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm font-medium transition-all bg-slate-50 focus:bg-white" placeholder="••••••••">
+                            <input wire:model="password" id="password" type="password" autocomplete="current-password" required class="block w-full pl-12 pr-4 py-4 bg-indigo-50/50 border-none rounded-2xl text-slate-900 placeholder-slate-300 focus:ring-2 focus:ring-indigo-500 font-bold transition-all" placeholder="••••••••">
                         </div>
-                        @error('password') <p class="mt-2 text-xs font-bold text-red-500">{{ $message }}</p> @enderror
+                        @error('password') <p class="mt-2 text-xs font-black text-rose-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                     </div>
 
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between px-1">
                         <div class="flex items-center">
-                            <input wire:model="ingatSaya" id="remember-me" type="checkbox" class="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-slate-300 rounded">
-                            <label for="remember-me" class="ml-2 block text-sm font-bold text-slate-600">Ingat perangkat ini</label>
+                            <input wire:model="ingatSaya" id="remember-me" type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-indigo-100 rounded-lg bg-indigo-50 transition-all">
+                            <label for="remember-me" class="ml-3 block text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer">Ingat Sesi</label>
                         </div>
-
-                        <div class="text-sm">
-                            <a href="#" class="font-bold text-cyan-600 hover:text-cyan-500 transition">Lupa sandi?</a>
-                        </div>
+                        <a href="#" class="text-xs font-black text-indigo-600 hover:text-indigo-700 transition uppercase tracking-widest">Lupa Sandi?</a>
                     </div>
 
-                    <div>
-                        <button type="submit" class="w-full flex justify-center py-4 px-4 border border-transparent rounded-2xl shadow-xl shadow-cyan-500/20 text-sm font-black text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transition-all uppercase tracking-widest">
-                            Akses Dashboard
+                    <div class="pt-4">
+                        <button type="submit" class="w-full flex justify-center py-5 px-4 bg-gradient-to-r from-indigo-600 to-cyan-600 text-white rounded-[24px] shadow-2xl shadow-indigo-500/30 text-xs font-black uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all">
+                            AKTIVASI DASHBOARD
                         </button>
                     </div>
                 </form>
+
+                <div class="mt-12 text-center">
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">
+                        Belum Memiliki Otoritas? 
+                        <a href="/register" wire:navigate class="text-indigo-600 hover:underline ml-1">Daftar Akun</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Kolom Kanan: Visual Branding -->
-    <div class="hidden lg:block relative w-0 flex-1 bg-slate-900 overflow-hidden">
-        <!-- Abstract Tech Background -->
-        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80')] bg-cover bg-center opacity-40"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-cyan-900/50"></div>
+    <!-- Kolom Kanan: Visual High-Tech (No Dark Colors) -->
+    <div class="hidden lg:block relative w-0 flex-1 bg-indigo-50 overflow-hidden shrink-0">
+        <!-- Tech Canvas Background -->
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2070')] bg-cover bg-center opacity-20 mix-blend-multiply"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/40 via-cyan-500/20 to-white/10"></div>
         
-        <div class="absolute inset-0 flex flex-col justify-center px-20">
-            <div class="relative z-10">
-                <div class="w-20 h-1 bg-cyan-500 mb-8 rounded-full"></div>
-                <h1 class="text-5xl font-black text-white leading-tight mb-6">
-                    Masa Depan <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Komputasi Enterprise</span>
+        <div class="absolute inset-0 flex flex-col justify-center px-24">
+            <div class="relative z-10 space-y-8">
+                <div class="w-24 h-1.5 bg-white rounded-full shadow-lg"></div>
+                <h1 class="text-6xl font-black text-white leading-[1.1] tracking-tighter drop-shadow-2xl">
+                    MASA DEPAN <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-cyan-100">KENDALI TI</span>
                 </h1>
-                <p class="text-xl text-slate-300 font-medium max-w-lg leading-relaxed">
-                    Kelola infrastruktur IT perusahaan Anda dengan platform pengadaan paling canggih di Indonesia.
+                <p class="text-xl text-indigo-100 font-bold max-w-lg leading-relaxed drop-shadow-md">
+                    Ekosistem pengadaan unit teknologi tercanggih dengan alur kerja yang sangat presisi dan informatif.
                 </p>
                 
-                <div class="mt-12 flex gap-4">
+                <div class="pt-10 flex items-center gap-6">
                     <div class="flex -space-x-4">
-                        <img class="w-12 h-12 rounded-full border-4 border-slate-900" src="https://ui-avatars.com/api/?name=CEO&background=0891b2&color=fff" alt="">
-                        <img class="w-12 h-12 rounded-full border-4 border-slate-900" src="https://ui-avatars.com/api/?name=CTO&background=4f46e5&color=fff" alt="">
-                        <img class="w-12 h-12 rounded-full border-4 border-slate-900" src="https://ui-avatars.com/api/?name=IT&background=10b981&color=fff" alt="">
+                        <div class="w-14 h-14 rounded-full border-4 border-white bg-indigo-100 flex items-center justify-center text-xl shadow-2xl">🚀</div>
+                        <div class="w-14 h-14 rounded-full border-4 border-white bg-cyan-100 flex items-center justify-center text-xl shadow-2xl">🛰️</div>
+                        <div class="w-14 h-14 rounded-full border-4 border-white bg-emerald-100 flex items-center justify-center text-xl shadow-2xl">📡</div>
                     </div>
-                    <div class="flex flex-col justify-center">
-                        <p class="text-white font-bold text-sm">Bergabung bersama</p>
-                        <p class="text-slate-400 text-xs font-bold">10.000+ Profesional IT</p>
+                    <div class="space-y-1">
+                        <p class="text-white font-black text-sm uppercase tracking-widest">Terintegrasi Penuh</p>
+                        <p class="text-indigo-100 text-xs font-bold uppercase tracking-widest opacity-80">10.000+ Infrastruktur Aktif</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Decorative Elements -->
-        <div class="absolute bottom-0 right-0 w-96 h-96 bg-cyan-500/20 rounded-full blur-[120px] -translate-y-1/4 translate-x-1/4"></div>
+        <!-- Decorative Floating Elements -->
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-white/10 rounded-full blur-[80px] animate-pulse"></div>
+        <div class="absolute bottom-10 right-10 w-96 h-96 bg-cyan-400/20 rounded-full blur-[120px]"></div>
     </div>
 </div>

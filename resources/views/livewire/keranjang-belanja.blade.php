@@ -1,106 +1,117 @@
-<div class="bg-slate-50 min-h-screen py-12">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold tracking-tight text-slate-900 mb-8">Keranjang Belanja</h1>
+<div class="bg-white min-h-screen py-20 relative overflow-hidden">
+    
+    <!-- Decorative Glow -->
+    <div class="absolute top-0 left-1/4 w-96 h-96 bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div class="space-y-4">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 shadow-sm">
+                    <span class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">Manajemen Belanja</span>
+                </div>
+                <h1 class="text-5xl font-black text-slate-900 tracking-tighter uppercase leading-none">KERANJANG <span class="text-indigo-600">SAYA</span></h1>
+            </div>
+            @if($this->items->count() > 0)
+                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">{{ $this->items->count() }} UNIT SIAP AKTIVASI</p>
+            @endif
+        </div>
 
         @if($this->items->count() > 0)
-        <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
-            <!-- Daftar Item -->
-            <div class="lg:col-span-8">
-                <ul class="divide-y divide-slate-200 border-t border-b border-slate-200 bg-white rounded-xl overflow-hidden px-4 sm:px-6 shadow-sm">
-                    @foreach($this->items as $item)
-                    <li class="flex py-6 sm:py-10">
-                        <div class="flex-shrink-0">
-                            <img src="{{ $item->produk->gambar_utama }}" alt="{{ $item->produk->nama }}" class="h-24 w-24 rounded-lg object-cover object-center sm:h-32 sm:w-32 border border-slate-100">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-x-16 lg:items-start">
+            <!-- Daftar Item: High-Tech Card List -->
+            <div class="lg:col-span-8 space-y-6">
+                @foreach($this->items as $item)
+                <div class="group relative flex flex-col sm:flex-row gap-8 p-8 bg-white rounded-[40px] border border-indigo-50 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500">
+                    <div class="relative w-full sm:w-48 aspect-square rounded-[32px] overflow-hidden bg-slate-50 border border-slate-100 shrink-0 flex items-center justify-center p-6">
+                        <img src="{{ $item->produk->gambar_utama_url }}" alt="{{ $item->produk->nama }}" class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-700">
+                    </div>
+
+                    <div class="flex-1 flex flex-col justify-between py-2">
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-start gap-4">
+                                <div class="space-y-1">
+                                    <span class="text-[9px] font-black text-indigo-400 uppercase tracking-widest">{{ $item->produk->kategori->nama }}</span>
+                                    <h3 class="text-xl font-black text-slate-900 tracking-tight leading-snug">
+                                        <a href="/produk/{{ $item->produk->slug }}" wire:navigate class="hover:text-indigo-600 transition-colors uppercase">
+                                            {{ $item->produk->nama }}
+                                        </a>
+                                    </h3>
+                                </div>
+                                <button wire:click="hapusItem({{ $item->id }})" class="p-3 bg-rose-50 text-rose-400 hover:bg-rose-600 hover:text-white rounded-2xl transition-all shadow-sm">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
+                            
+                            <p class="text-2xl font-black text-slate-900 tracking-tighter">Rp {{ number_format($item->produk->harga_jual, 0, ',', '.') }}</p>
                         </div>
 
-                        <div class="ml-4 flex flex-1 flex-col justify-between sm:ml-6">
-                            <div class="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
-                                <div>
-                                    <div class="flex justify-between">
-                                        <h3 class="text-sm">
-                                            <a href="/produk/{{ $item->produk->slug }}" wire:navigate class="font-bold text-slate-900 hover:text-cyan-600">
-                                                {{ $item->produk->nama }}
-                                            </a>
-                                        </h3>
-                                    </div>
-                                    <p class="mt-1 text-sm text-slate-500">{{ $item->produk->kategori->nama }}</p>
-                                    <p class="mt-1 text-sm font-bold text-slate-900">{{ 'Rp ' . number_format($item->produk->harga_jual, 0, ',', '.') }}</p>
-                                </div>
-
-                                <div class="mt-4 sm:mt-0 sm:pr-9">
-                                    <div class="flex items-center border border-slate-300 rounded-lg w-fit">
-                                        <button wire:click="kurangJumlah({{ $item->id }})" class="px-2 py-1 text-slate-600 hover:bg-slate-100 transition rounded-l-lg">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
-                                        </button>
-                                        <span class="w-10 text-center text-sm font-bold text-slate-900">{{ $item->jumlah }}</span>
-                                        <button wire:click="tambahJumlah({{ $item->id }})" class="px-2 py-1 text-slate-600 hover:bg-slate-100 transition rounded-r-lg">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                                        </button>
-                                    </div>
-
-                                    <div class="absolute top-0 right-0">
-                                        <button wire:click="hapusItem({{ $item->id }})" class="-m-2 inline-flex p-2 text-slate-400 hover:text-red-500 transition">
-                                            <span class="sr-only">Hapus</span>
-                                            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                                        </button>
-                                    </div>
-                                </div>
+                        <div class="mt-8 flex flex-wrap items-center justify-between gap-6 pt-6 border-t border-indigo-50">
+                            <div class="flex items-center bg-indigo-50/50 p-1.5 rounded-2xl border border-white shadow-inner">
+                                <button wire:click="kurangJumlah({{ $item->id }})" class="w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-sm text-indigo-600 hover:bg-rose-50 hover:text-rose-600 transition-all font-black text-lg">-</button>
+                                <span class="w-12 text-center font-black text-slate-900">{{ $item->jumlah }}</span>
+                                <button wire:click="tambahJumlah({{ $item->id }})" class="w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-sm text-indigo-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all font-black text-lg">+</button>
                             </div>
 
-                            <p class="mt-4 flex space-x-2 text-sm text-slate-700">
-                                <svg class="h-5 w-5 flex-shrink-0 text-emerald-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                                <span>Subtotal: <span class="font-bold text-slate-900">{{ 'Rp ' . number_format($item->produk->harga_jual * $item->jumlah, 0, ',', '.') }}</span></span>
-                            </p>
+                            <div class="flex items-center gap-3">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Subtotal Akumulasi</p>
+                                <p class="text-xl font-black text-indigo-600 tracking-tighter">Rp {{ number_format($item->produk->harga_jual * $item->jumlah, 0, ',', '.') }}</p>
+                            </div>
                         </div>
-                    </li>
-                    @endforeach
-                </ul>
+                    </div>
+                </div>
+                @endforeach
             </div>
 
-            <!-- Ringkasan -->
-            <div class="mt-16 lg:mt-0 lg:col-span-4">
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-                    <h2 class="text-lg font-bold text-slate-900 mb-6">Ringkasan Belanja</h2>
-                    <div class="flow-root">
-                        <dl class="-my-4 divide-y divide-slate-100 text-sm">
-                            <div class="flex items-center justify-between py-4">
-                                <dt class="text-slate-600">Total Harga ({{ $this->items->sum('jumlah') }} item)</dt>
-                                <dd class="font-medium text-slate-900">{{ 'Rp ' . number_format($this->total_harga, 0, ',', '.') }}</dd>
+            <!-- Summary: Floating Glass Sidebar -->
+            <div class="mt-16 lg:mt-0 lg:col-span-4 sticky top-32">
+                <div class="bg-white rounded-[48px] shadow-2xl shadow-indigo-500/10 border-2 border-indigo-50 p-10 space-y-10 relative overflow-hidden">
+                    <!-- Tech Decoration -->
+                    <div class="absolute bottom-0 right-0 w-full h-1/3 bg-gradient-to-t from-indigo-500/5 to-transparent pointer-events-none"></div>
+
+                    <h2 class="text-xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-3 relative z-10">
+                        <span class="w-8 h-1.5 bg-indigo-600 rounded-full"></span>
+                        RINGKASAN AKTIVASI
+                    </h2>
+                    
+                    <div class="relative z-10">
+                        <dl class="space-y-6">
+                            <div class="flex items-center justify-between">
+                                <dt class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Nilai Unit</dt>
+                                <dd class="text-sm font-black text-slate-900 tracking-tight">Rp {{ number_format($this->total_harga, 0, ',', '.') }}</dd>
                             </div>
-                            <div class="flex items-center justify-between py-4">
-                                <dt class="text-slate-600">Biaya Pengiriman</dt>
-                                <dd class="font-medium text-slate-900 text-emerald-600 uppercase text-xs">Gratis</dd>
+                            <div class="flex items-center justify-between">
+                                <dt class="text-xs font-bold text-slate-400 uppercase tracking-widest">Alokasi Distribusi</dt>
+                                <dd class="text-[10px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-lg">Prioritas Utama</dd>
                             </div>
-                            <div class="flex items-center justify-between py-4 pt-6">
-                                <dt class="text-base font-bold text-slate-900">Total Tagihan</dt>
-                                <dd class="text-base font-bold text-cyan-600">{{ 'Rp ' . number_format($this->total_harga, 0, ',', '.') }}</dd>
+                            <div class="pt-6 border-t-2 border-dashed border-indigo-50 flex items-center justify-between">
+                                <dt class="text-sm font-black text-slate-900 uppercase tracking-widest">Total Akhir</dt>
+                                <dd class="text-2xl font-black text-indigo-600 tracking-tighter">Rp {{ number_format($this->total_harga, 0, ',', '.') }}</dd>
                             </div>
                         </dl>
                     </div>
 
-                    <div class="mt-8">
-                        <a href="/checkout" wire:navigate class="w-full flex items-center justify-center rounded-xl bg-cyan-600 px-6 py-3 text-base font-bold text-white shadow-lg shadow-cyan-900/20 hover:bg-cyan-700 transition">
-                            Lanjut ke Checkout
+                    <div class="pt-4 relative z-10">
+                        <a href="/checkout" wire:navigate class="w-full flex items-center justify-center gap-4 py-5 bg-gradient-to-r from-indigo-600 to-cyan-600 text-white rounded-3xl text-sm font-black uppercase tracking-[0.2em] shadow-2xl shadow-indigo-500/30 hover:scale-[1.02] active:scale-95 transition-all group">
+                            EKSEKUSI CHECKOUT
+                            <svg class="w-5 h-5 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                         </a>
-                        <p class="mt-4 text-center text-xs text-slate-500">
-                            Pajak dan biaya lainnya dihitung saat checkout.
+                        <p class="mt-6 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
+                            Konfigurasi pajak & diskon <br> akan diterapkan pada tahap final.
                         </p>
                     </div>
                 </div>
             </div>
         </div>
         @else
-        <div class="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300">
-            <div class="mx-auto h-16 w-16 text-slate-300 mb-4">
-                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-            </div>
-            <h3 class="text-xl font-bold text-slate-900">Keranjang Anda Kosong</h3>
-            <p class="mt-2 text-slate-500">Sepertinya Anda belum menambahkan produk apapun ke keranjang.</p>
-            <div class="mt-8">
-                <a href="/katalog" wire:navigate class="inline-flex items-center rounded-xl bg-cyan-600 px-6 py-3 text-sm font-bold text-white hover:bg-cyan-700 transition">
-                    Mulai Belanja
-                </a>
-            </div>
+        <!-- Empty State: Futuristic Visualization -->
+        <div class="max-w-2xl mx-auto text-center py-32 px-10 bg-white rounded-[64px] border-4 border-dashed border-indigo-50">
+            <div class="text-8xl mb-10 animate-bounce">🛒</div>
+            <h3 class="text-3xl font-black text-slate-900 tracking-tighter uppercase mb-4">Radar Belanja Kosong</h3>
+            <p class="text-slate-400 font-medium text-lg leading-relaxed mb-12">Unit yang Anda cari belum ditambahkan ke dalam antrian belanja sistem.</p>
+            <a href="/katalog" wire:navigate class="inline-flex items-center gap-4 px-10 py-5 bg-indigo-600 text-white rounded-3xl font-black text-sm uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-500/20">
+                AKTIFKAN KATALOG
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </a>
         </div>
         @endif
     </div>
