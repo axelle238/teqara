@@ -5,7 +5,7 @@
     "bahasa_sistem": "100% Bahasa Indonesia",
     "status_arsitektur": "SPA (Single Page Application) via Livewire",
     "kebijakan_ui": "0% Modal (Mutlak)",
-    "waktu_pembaruan_terakhir": "05/02/2026 17:15:20",
+    "waktu_pembaruan_terakhir": "05/02/2026 17:39:31",
     "statistik_data": {
         "pengguna": 11,
         "produk": 2,
@@ -18,8 +18,9 @@
         "Hulu": [
             "Manajemen Produk Kompleks",
             "Varian SKU",
-            "Gudang & Stok",
-            "Kategori & Merek"
+            "Gudang Multi-Lokasi",
+            "Pelacakan Nomor Seri",
+            "Stok & Gudang"
         ],
         "Tengah": [
             "Katalog Spotlight",
@@ -31,7 +32,8 @@
             "Checkout Multiproses",
             "Gateway Pembayaran Simulasi",
             "Timeline Pelacakan",
-            "Audit Log Naratif"
+            "Audit Log Naratif",
+            "Analitik Eksekutif"
         ]
     },
     "daftar_endpoint": [
@@ -171,13 +173,8 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/produk/tambah",
-            "nama": "admin.produk.tambah",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/produk/{id}/edit",
-            "nama": "admin.produk.edit",
+            "uri": "admin/stok",
+            "nama": "admin.stok",
             "metode": "GET|HEAD"
         },
         {

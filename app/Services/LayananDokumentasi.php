@@ -30,9 +30,9 @@ class LayananDokumentasi
             
             'statistik_data' => $this->ambilStatistikDatabase(),
             'modul_aktif' => [
-                'Hulu' => ['Manajemen Produk Kompleks', 'Varian SKU', 'Gudang & Stok', 'Kategori & Merek'],
+                'Hulu' => ['Manajemen Produk Kompleks', 'Varian SKU', 'Gudang Multi-Lokasi', 'Pelacakan Nomor Seri', 'Stok & Gudang'],
                 'Tengah' => ['Katalog Spotlight', 'Detail Produk Rich-Media', 'Keranjang Persisten', 'Voucher Promo'],
-                'Hilir' => ['Checkout Multiproses', 'Gateway Pembayaran Simulasi', 'Timeline Pelacakan', 'Audit Log Naratif'],
+                'Hilir' => ['Checkout Multiproses', 'Gateway Pembayaran Simulasi', 'Timeline Pelacakan', 'Audit Log Naratif', 'Analitik Eksekutif'],
             ],
             'daftar_endpoint' => $this->ambilDaftarRute(),
         ];
