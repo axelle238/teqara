@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Logistik;
 
+use App\Helpers\LogHelper;
 use App\Models\Pemasok;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -11,10 +12,9 @@ class ManajemenPemasok extends Component
 {
     use WithPagination;
 
-    public $cari = '';
+    public $pemasok_id;
 
-    // Form State
-    public $pemasokId;
+    public $kode_pemasok;
 
     public $nama_perusahaan;
 
@@ -28,70 +28,84 @@ class ManajemenPemasok extends Component
 
     public $status = 'aktif';
 
+    public $cari = '';
+
     protected $rules = [
-        'nama_perusahaan' => 'required|min:3',
+        'kode_pemasok' => 'required|unique:pemasok,kode_pemasok',
+        'nama_perusahaan' => 'required',
         'penanggung_jawab' => 'required',
-        'telepon' => 'required|numeric',
-        'email' => 'nullable|email',
-        'alamat' => 'required',
-        'status' => 'required',
+        'telepon' => 'required',
+        'email' => 'required|email',
     ];
 
-    public function tambah()
+    public function tambahBaru()
     {
-        $this->reset(['pemasokId', 'nama_perusahaan', 'penanggung_jawab', 'telepon', 'email', 'alamat', 'status']);
+        $this->reset(['pemasok_id', 'kode_pemasok', 'nama_perusahaan', 'penanggung_jawab', 'telepon', 'email', 'alamat', 'status']);
         $this->dispatch('open-slide-over', id: 'form-pemasok');
+    }
+
+    public function simpan()
+    {
+        if ($this->pemasok_id) {
+            $this->validate([
+                'kode_pemasok' => 'required|unique:pemasok,kode_pemasok,'.$this->pemasok_id,
+                'nama_perusahaan' => 'required',
+                'penanggung_jawab' => 'required',
+                'telepon' => 'required',
+                'email' => 'required|email',
+            ]);
+
+            $pemasok = Pemasok::find($this->pemasok_id);
+            $pemasok->update([
+                'kode_pemasok' => $this->kode_pemasok,
+                'nama_perusahaan' => $this->nama_perusahaan,
+                'penanggung_jawab' => $this->penanggung_jawab,
+                'telepon' => $this->telepon,
+                'email' => $this->email,
+                'alamat' => $this->alamat,
+                'status' => $this->status,
+            ]);
+            $aksi = 'update_pemasok';
+            $pesan = "Data pemasok {$this->nama_perusahaan} diperbarui.";
+        } else {
+            $this->validate();
+            Pemasok::create([
+                'kode_pemasok' => $this->kode_pemasok,
+                'nama_perusahaan' => $this->nama_perusahaan,
+                'penanggung_jawab' => $this->penanggung_jawab,
+                'telepon' => $this->telepon,
+                'email' => $this->email,
+                'alamat' => $this->alamat,
+                'status' => $this->status,
+            ]);
+            $aksi = 'create_pemasok';
+            $pesan = "Pemasok baru {$this->nama_perusahaan} ditambahkan.";
+        }
+
+        LogHelper::catat($aksi, $this->nama_perusahaan, $pesan);
+        $this->dispatch('close-slide-over', id: 'form-pemasok');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
     }
 
     public function edit($id)
     {
         $p = Pemasok::findOrFail($id);
-        $this->pemasokId = $id;
+        $this->pemasok_id = $p->id;
+        $this->kode_pemasok = $p->kode_pemasok;
         $this->nama_perusahaan = $p->nama_perusahaan;
         $this->penanggung_jawab = $p->penanggung_jawab;
         $this->telepon = $p->telepon;
         $this->email = $p->email;
         $this->alamat = $p->alamat;
         $this->status = $p->status;
-
         $this->dispatch('open-slide-over', id: 'form-pemasok');
     }
 
-    public function simpan()
-    {
-        $this->validate();
-
-        $data = [
-            'nama_perusahaan' => $this->nama_perusahaan,
-            'penanggung_jawab' => $this->penanggung_jawab,
-            'telepon' => $this->telepon,
-            'email' => $this->email,
-            'alamat' => $this->alamat,
-            'status' => $this->status,
-        ];
-
-        if ($this->pemasokId) {
-            Pemasok::find($this->pemasokId)->update($data);
-            $msg = 'Data pemasok diperbarui.';
-        } else {
-            $data['kode_pemasok'] = 'SUP-'.mt_rand(1000, 9999);
-            Pemasok::create($data);
-            $msg = 'Pemasok baru ditambahkan.';
-        }
-
-        $this->dispatch('close-slide-over', id: 'form-pemasok');
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $msg]);
-    }
-
-    #[Title('Manajemen Pemasok - Teqara')]
+    #[Title('Manajemen Pemasok - Admin Teqara')]
     public function render()
     {
-        $pemasok = Pemasok::where('nama_perusahaan', 'like', '%'.$this->cari.'%')
-            ->latest()
-            ->paginate(10);
-
         return view('livewire.admin.logistik.manajemen-pemasok', [
-            'pemasok' => $pemasok,
+            'daftar_pemasok' => Pemasok::where('nama_perusahaan', 'like', '%'.$this->cari.'%')->paginate(10),
         ])->layout('components.layouts.admin');
     }
 }
