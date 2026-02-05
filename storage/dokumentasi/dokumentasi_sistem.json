@@ -2,7 +2,7 @@
     "nama_sistem": "TEQARA - Sistem Penjualan Komputer & Gadget",
     "versi_laravel": "12.50.0",
     "bahasa_sistem": "100% Bahasa Indonesia",
-    "terakhir_diperbarui": "05/02/2026 16:21:47",
+    "terakhir_diperbarui": "05/02/2026 16:51:53",
     "modul_aktif": {
         "Hulu": [
             "Manajemen Produk",
@@ -29,7 +29,7 @@
             "status": "Aktif"
         },
         "produk": {
-            "jumlah_baris": 3,
+            "jumlah_baris": 2,
             "status": "Aktif"
         },
         "kategori": {
@@ -37,7 +37,7 @@
             "status": "Aktif"
         },
         "merek": {
-            "jumlah_baris": 3,
+            "jumlah_baris": 2,
             "status": "Aktif"
         },
         "pesanan": {
@@ -157,6 +157,11 @@
         {
             "uri": "admin/merek",
             "nama": "admin.merek",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/voucher",
+            "nama": "admin.voucher",
             "method": "GET|HEAD"
         },
         {

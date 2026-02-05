@@ -5,14 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Produk extends Model
 {
     use HasFactory;
 
     protected $table = 'produk';
-
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'memiliki_varian' => 'boolean',
+    ];
 
     public function kategori(): BelongsTo
     {
@@ -24,9 +28,45 @@ class Produk extends Model
         return $this->belongsTo(Merek::class, 'merek_id');
     }
 
-    // Helper untuk format harga rupiah
+    public function varian(): HasMany
+    {
+        return $this->hasMany(VarianProduk::class, 'produk_id');
+    }
+
+    public function gambar(): HasMany
+    {
+        return $this->hasMany(GambarProduk::class, 'produk_id')->orderBy('urutan');
+    }
+
+    public function spesifikasi(): HasMany
+    {
+        return $this->hasMany(SpesifikasiProduk::class, 'produk_id');
+    }
+
+    public function ulasan(): HasMany
+    {
+        return $this->hasMany(Ulasan::class, 'produk_id');
+    }
+
+    // Helper: Ambil gambar utama (urutan pertama atau default)
+    public function getGambarUtamaUrlAttribute()
+    {
+        $gambar = $this->gambar->where('is_utama', true)->first() ?? $this->gambar->first();
+        return $gambar ? $gambar->url : 'https://via.placeholder.com/400x400?text=No+Image';
+    }
+
+    // Helper: Harga Rupiah (Range jika ada varian)
     public function getHargaRupiahAttribute()
     {
-        return 'Rp '.number_format($this->harga_jual, 0, ',', '.');
+        if ($this->memiliki_varian && $this->varian->count() > 0) {
+            $min = $this->harga_jual + $this->varian->min('harga_tambahan');
+            $max = $this->harga_jual + $this->varian->max('harga_tambahan');
+            
+            if ($min == $max) {
+                return 'Rp ' . number_format($min, 0, ',', '.');
+            }
+            return 'Rp ' . number_format($min, 0, ',', '.') . ' - ' . number_format($max, 0, ',', '.');
+        }
+        return 'Rp ' . number_format($this->harga_jual, 0, ',', '.');
     }
 }

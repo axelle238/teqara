@@ -2,52 +2,50 @@
 
 namespace App\Livewire\Admin\Produk;
 
-use App\Models\Kategori;
-use App\Models\LogAktivitas;
-use App\Models\Merek;
-use App\Models\Produk;
-use Illuminate\Support\Str;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use App\Models\Produk;
+use App\Models\Kategori;
+use App\Models\Merek;
+use App\Models\VarianProduk;
+use App\Models\SpesifikasiProduk;
+use App\Models\GambarProduk;
+use Illuminate\Support\Str;
+use Livewire\Attributes\Title;
 
 class FormProduk extends Component
 {
     use WithFileUploads;
 
     public $produkId;
+    
+    // Tab State
+    public $activeTab = 'info'; // info, media, varian, spesifikasi
 
-    public $nama;
-
-    public $slug;
-
-    public $sku;
-
-    public $kategori_id;
-
-    public $merek_id;
-
-    public $harga_modal = 0;
-
-    public $harga_jual = 0;
-
-    public $stok = 0;
-
-    public $deskripsi_singkat;
-
-    public $deskripsi_lengkap;
-
+    // Info Dasar
+    public $nama, $slug, $sku, $kategori_id, $merek_id;
+    public $harga_modal = 0, $harga_jual = 0, $stok = 0;
+    public $deskripsi_singkat, $deskripsi_lengkap;
     public $status = 'aktif';
+    public $memiliki_varian = false;
 
-    public $gambar_baru;
+    // Media
+    public $gambar_baru = []; // Upload multiple
+    public $gambar_lama = []; // Existing
 
-    public $gambar_lama;
+    // Varian (Array of Arrays)
+    public $daftarVarian = []; 
+
+    // Spesifikasi
+    public $daftarSpesifikasi = [];
 
     public function mount($id = null)
     {
         if ($id) {
-            $produk = Produk::findOrFail($id);
+            $produk = Produk::with(['varian', 'gambar', 'spesifikasi'])->findOrFail($id);
             $this->produkId = $produk->id;
+            
+            // Hydrate Info
             $this->nama = $produk->nama;
             $this->slug = $produk->slug;
             $this->sku = $produk->sku;
@@ -59,40 +57,86 @@ class FormProduk extends Component
             $this->deskripsi_singkat = $produk->deskripsi_singkat;
             $this->deskripsi_lengkap = $produk->deskripsi_lengkap;
             $this->status = $produk->status;
-            $this->gambar_lama = $produk->gambar_utama;
+            $this->memiliki_varian = $produk->memiliki_varian;
+
+            // Hydrate Varian
+            foreach ($produk->varian as $var) {
+                $this->daftarVarian[] = [
+                    'id' => $var->id,
+                    'nama_varian' => $var->nama_varian,
+                    'sku' => $var->sku,
+                    'harga_tambahan' => $var->harga_tambahan,
+                    'stok' => $var->stok,
+                ];
+            }
+
+            // Hydrate Spesifikasi
+            foreach ($produk->spesifikasi as $spek) {
+                $this->daftarSpesifikasi[] = [
+                    'judul' => $spek->judul,
+                    'nilai' => $spek->nilai
+                ];
+            }
+
+            // Hydrate Gambar
+            $this->gambar_lama = $produk->gambar->toArray();
+        } else {
+            // Default Empty Rows
+            $this->tambahBarisSpesifikasi();
         }
     }
 
-    // Otomatis buat slug saat nama diketik
     public function updatedNama($value)
     {
         $this->slug = Str::slug($value);
     }
 
+    // --- Varian Logic ---
+    public function tambahBarisVarian()
+    {
+        $this->daftarVarian[] = [
+            'id' => null,
+            'nama_varian' => '',
+            'sku' => '',
+            'harga_tambahan' => 0,
+            'stok' => 0
+        ];
+    }
+
+    public function hapusBarisVarian($index)
+    {
+        unset($this->daftarVarian[$index]);
+        $this->daftarVarian = array_values($this->daftarVarian);
+    }
+
+    // --- Spesifikasi Logic ---
+    public function tambahBarisSpesifikasi()
+    {
+        $this->daftarSpesifikasi[] = ['judul' => '', 'nilai' => ''];
+    }
+
+    public function hapusBarisSpesifikasi($index)
+    {
+        unset($this->daftarSpesifikasi[$index]);
+        $this->daftarSpesifikasi = array_values($this->daftarSpesifikasi);
+    }
+
+    // --- Media Logic ---
+    public function hapusGambarLama($id)
+    {
+        GambarProduk::destroy($id);
+        $this->gambar_lama = array_filter($this->gambar_lama, fn($g) => $g['id'] != $id);
+    }
+
     public function simpan()
     {
-        $aturan = [
-            'nama' => 'required|min:5',
-            'slug' => 'required|unique:produk,slug,'.$this->produkId,
-            'sku' => 'required|unique:produk,sku,'.$this->produkId,
-            'kategori_id' => 'required|exists:kategori,id',
-            'harga_modal' => 'required|numeric',
+        $this->validate([
+            'nama' => 'required',
+            'sku' => 'required',
             'harga_jual' => 'required|numeric',
-            'stok' => 'required|integer',
-            'status' => 'required|in:aktif,arsip,habis',
-            'gambar_baru' => $this->produkId ? 'nullable|image|max:2048' : 'required|image|max:2048',
-        ];
+        ]);
 
-        $pesan = [
-            'nama.required' => 'Nama produk wajib diisi.',
-            'slug.unique' => 'Slug sudah digunakan, silakan ubah nama.',
-            'sku.required' => 'SKU wajib diisi.',
-            'kategori_id.required' => 'Pilih kategori produk.',
-            'gambar_baru.required' => 'Foto produk wajib diunggah.',
-        ];
-
-        $this->validate($aturan, $pesan);
-
+        // Simpan Produk Utama
         $data = [
             'nama' => $this->nama,
             'slug' => $this->slug,
@@ -105,42 +149,64 @@ class FormProduk extends Component
             'deskripsi_singkat' => $this->deskripsi_singkat,
             'deskripsi_lengkap' => $this->deskripsi_lengkap,
             'status' => $this->status,
+            'memiliki_varian' => $this->memiliki_varian,
         ];
-
-        // Handle Unggah Gambar
-        if ($this->gambar_baru) {
-            // Di produksi, gunakan: $path = $this->gambar_baru->store('produk', 'public');
-            // Untuk demo, kita simpan URL temporary atau path simulasi
-            $data['gambar_utama'] = $this->gambar_baru->temporaryUrl();
-        }
 
         if ($this->produkId) {
             $produk = Produk::find($this->produkId);
             $produk->update($data);
-            $aksi = 'memperbarui';
         } else {
-            Produk::create($data);
-            $aksi = 'menambahkan';
+            $produk = Produk::create($data);
+            $this->produkId = $produk->id;
         }
 
-        // Catat Log
-        LogAktivitas::create([
-            'pengguna_id' => auth()->id(),
-            'aksi' => $this->produkId ? 'update_produk' : 'tambah_produk',
-            'target' => $this->nama,
-            'pesan_naratif' => 'Admin '.auth()->user()->nama." berhasil $aksi produk {$this->nama}",
-            'waktu' => now(),
-        ]);
+        // Simpan Varian
+        if ($this->memiliki_varian) {
+            // Hapus yang tidak ada di list (jika edit) - Simplifikasi: delete all insert all or update logic
+            // Untuk demo ini, kita update yang punya ID, create yang null
+            foreach ($this->daftarVarian as $var) {
+                if (!empty($var['nama_varian'])) {
+                    VarianProduk::updateOrCreate(
+                        ['id' => $var['id'] ?? null],
+                        [
+                            'produk_id' => $produk->id,
+                            'nama_varian' => $var['nama_varian'],
+                            'sku' => $var['sku'],
+                            'harga_tambahan' => $var['harga_tambahan'],
+                            'stok' => $var['stok']
+                        ]
+                    );
+                }
+            }
+        }
 
-        $this->dispatch('notifikasi', [
-            'tipe' => 'sukses',
-            'pesan' => "Produk {$this->nama} berhasil disimpan!",
-        ]);
+        // Simpan Spesifikasi (Delete all insert new for simplicity in repeater)
+        SpesifikasiProduk::where('produk_id', $produk->id)->delete();
+        foreach ($this->daftarSpesifikasi as $spek) {
+            if (!empty($spek['judul'])) {
+                SpesifikasiProduk::create([
+                    'produk_id' => $produk->id,
+                    'judul' => $spek['judul'],
+                    'nilai' => $spek['nilai']
+                ]);
+            }
+        }
+
+        // Simpan Gambar Baru
+        foreach ($this->gambar_baru as $img) {
+            // Simulasi URL (Di production pakai Storage::put)
+            $url = $img->temporaryUrl(); 
+            GambarProduk::create([
+                'produk_id' => $produk->id,
+                'url' => $url,
+                'is_utama' => false
+            ]);
+        }
 
         return redirect()->to('/admin/produk');
     }
 
-    #[Title('Formulir Produk - Teqara')]
+    #[Title('Formulir Produk Lengkap')]
     public function render()
     {
         return view('livewire.admin.produk.form-produk', [

@@ -2,20 +2,25 @@
 
 namespace App\Livewire;
 
-use App\Models\DetailPesanan;
+use Livewire\Component;
 use App\Models\Keranjang;
-use App\Models\LogAktivitas;
 use App\Models\Pesanan;
+use App\Models\DetailPesanan;
 use App\Models\Produk;
+use App\Models\Voucher;
+use App\Models\LogAktivitas;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
-use Livewire\Component;
 
 class Checkout extends Component
 {
     public $alamat_pengiriman = '';
-
     public $catatan = '';
+    
+    // Voucher State
+    public $kodeVoucherInput = '';
+    public $voucherTerpakai = null;
+    public $nilaiPotongan = 0;
 
     public function mount()
     {
@@ -31,11 +36,69 @@ class Checkout extends Component
             ->get();
     }
 
-    public function getTotalHargaProperty()
+    public function getSubtotalProperty()
     {
         return $this->items->sum(function ($item) {
+            // Hitung harga dasar + tambahan varian (logic sederhana: pakai harga jual base dulu)
+            // Idealnya keranjang simpan harga snapshot varian.
             return $item->produk->harga_jual * $item->jumlah;
         });
+    }
+
+    public function getTotalBayarProperty()
+    {
+        return max(0, $this->subtotal - $this->nilaiPotongan);
+    }
+
+    public function terapkanVoucher()
+    {
+        $this->reset(['voucherTerpakai', 'nilaiPotongan']);
+        
+        if (empty($this->kodeVoucherInput)) return;
+
+        $voucher = Voucher::where('kode', $this->kodeVoucherInput)->first();
+
+        // Validasi Voucher
+        if (!$voucher) {
+            $this->addError('kodeVoucherInput', 'Kode voucher tidak ditemukan.');
+            return;
+        }
+
+        if ($voucher->kuota <= 0) {
+            $this->addError('kodeVoucherInput', 'Kuota voucher telah habis.');
+            return;
+        }
+
+        if (now() < $voucher->berlaku_mulai || now() > $voucher->berlaku_sampai) {
+            $this->addError('kodeVoucherInput', 'Voucher tidak berlaku saat ini.');
+            return;
+        }
+
+        if ($this->subtotal < $voucher->min_pembelian) {
+            $this->addError('kodeVoucherInput', 'Min. belanja Rp ' . number_format($voucher->min_pembelian, 0, ',', '.') . ' untuk pakai voucher ini.');
+            return;
+        }
+
+        // Hitung Potongan
+        $potongan = 0;
+        if ($voucher->tipe_diskon == 'nominal') {
+            $potongan = $voucher->nilai_diskon;
+        } else {
+            $potongan = $this->subtotal * ($voucher->nilai_diskon / 100);
+            if ($voucher->maks_potongan && $potongan > $voucher->maks_potongan) {
+                $potongan = $voucher->maks_potongan;
+            }
+        }
+
+        $this->voucherTerpakai = $voucher;
+        $this->nilaiPotongan = $potongan;
+
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Voucher berhasil diterapkan! Hemat Rp ' . number_format($potongan, 0, ',', '.')]);
+    }
+
+    public function hapusVoucher()
+    {
+        $this->reset(['kodeVoucherInput', 'voucherTerpakai', 'nilaiPotongan']);
     }
 
     public function buatPesanan()
@@ -51,13 +114,15 @@ class Checkout extends Component
             DB::beginTransaction();
 
             // 1. Generate Nomor Invoice
-            $nomorInvoice = 'TRX-'.date('Ymd').'-'.strtoupper(bin2hex(random_bytes(3)));
+            $nomorInvoice = 'TRX-' . date('Ymd') . '-' . strtoupper(bin2hex(random_bytes(3)));
 
             // 2. Buat Pesanan
             $pesanan = Pesanan::create([
                 'nomor_invoice' => $nomorInvoice,
                 'pengguna_id' => auth()->id(),
-                'total_harga' => $this->total_harga,
+                'total_harga' => $this->totalBayar, // Total setelah diskon
+                'potongan_diskon' => $this->nilaiPotongan,
+                'kode_voucher' => $this->voucherTerpakai ? $this->voucherTerpakai->kode : null,
                 'status_pembayaran' => 'belum_dibayar',
                 'status_pesanan' => 'menunggu',
                 'alamat_pengiriman' => $this->alamat_pengiriman,
@@ -65,7 +130,6 @@ class Checkout extends Component
 
             // 3. Pindahkan item & Kurangi Stok
             foreach ($this->items as $item) {
-                // Snapshot harga untuk detail pesanan
                 DetailPesanan::create([
                     'pesanan_id' => $pesanan->id,
                     'produk_id' => $item->produk_id,
@@ -74,7 +138,6 @@ class Checkout extends Component
                     'subtotal' => $item->produk->harga_jual * $item->jumlah,
                 ]);
 
-                // Kurangi stok produk
                 $produk = Produk::find($item->produk_id);
                 if ($produk->stok < $item->jumlah) {
                     throw new \Exception("Stok produk {$produk->nama} tidak mencukupi.");
@@ -82,33 +145,33 @@ class Checkout extends Component
                 $produk->decrement('stok', $item->jumlah);
             }
 
-            // 4. Catat Log Aktivitas
+            // 4. Update Kuota Voucher
+            if ($this->voucherTerpakai) {
+                $this->voucherTerpakai->decrement('kuota');
+            }
+
+            // 5. Catat Log
             LogAktivitas::create([
                 'pengguna_id' => auth()->id(),
                 'aksi' => 'buat_pesanan',
                 'target' => $nomorInvoice,
-                'pesan_naratif' => 'Pelanggan '.auth()->user()->nama." berhasil membuat pesanan baru dengan nomor invoice {$nomorInvoice} total Rp ".number_format($this->total_harga, 0, ',', '.'),
+                'pesan_naratif' => "Pelanggan " . auth()->user()->nama . " membuat pesanan {$nomorInvoice}. Total: " . number_format($this->totalBayar, 0, ',', '.'),
+                'waktu' => now()
             ]);
 
-            // 5. Kosongkan Keranjang
+            // 6. Bersihkan Keranjang
             Keranjang::where('pengguna_id', auth()->id())->delete();
 
             DB::commit();
 
             $this->dispatch('update-keranjang');
-            $this->dispatch('notifikasi', [
-                'tipe' => 'sukses',
-                'pesan' => "Pesanan #{$nomorInvoice} berhasil dibuat!",
-            ]);
+            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "Pesanan #{$nomorInvoice} berhasil dibuat!"]);
 
-            return redirect()->to('/pesanan/riwayat');
+            return redirect()->to('/pesanan/bayar/' . $nomorInvoice);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->dispatch('notifikasi', [
-                'tipe' => 'error',
-                'pesan' => 'Gagal membuat pesanan: '.$e->getMessage(),
-            ]);
+            $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Gagal: ' . $e->getMessage()]);
         }
     }
 

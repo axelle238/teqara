@@ -38,11 +38,16 @@
                     <div class="flex flex-col gap-4">
                         @foreach($p->detailPesanan as $detail)
                         <div class="flex items-center gap-4">
-                            <img src="{{ $detail->produk->gambar_utama }}" class="h-12 w-12 rounded-lg object-cover border border-slate-100">
+                            <img src="{{ $detail->produk->gambar_utama_url }}" class="h-12 w-12 rounded-lg object-cover border border-slate-100">
                             <div class="flex-1">
                                 <h4 class="text-sm font-bold text-slate-900">{{ $detail->produk->nama }}</h4>
                                 <p class="text-xs text-slate-500">{{ $detail->jumlah }} item x {{ 'Rp ' . number_format($detail->harga_saat_ini, 0, ',', '.') }}</p>
                             </div>
+                            @if($p->status_pesanan === 'selesai')
+                                <a href="/ulasan/{{ $p->id }}/{{ $detail->produk->id }}" wire:navigate class="px-3 py-1.5 bg-yellow-50 text-yellow-700 rounded-lg text-[10px] font-bold border border-yellow-200 hover:bg-yellow-100 transition">
+                                    ⭐ Beri Ulasan
+                                </a>
+                            @endif
                         </div>
                         @endforeach
                     </div>

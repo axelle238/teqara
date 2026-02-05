@@ -16,6 +16,7 @@ class Dashboard extends Component
         $pesananBaru = Pesanan::whereIn('status_pesanan', ['menunggu', 'diproses'])->count();
         $stokMenipis = Produk::where('stok', '<', 5)->count();
         $pesananTerbaru = Pesanan::latest()->take(5)->get();
+        $logTerbaru = \App\Models\LogAktivitas::with('pengguna')->latest('waktu')->take(5)->get();
 
         // Data Tren Penjualan 7 Hari Terakhir
         $trenPenjualan = [];
@@ -35,6 +36,7 @@ class Dashboard extends Component
             'pesananBaru' => $pesananBaru,
             'stokMenipis' => $stokMenipis,
             'pesananTerbaru' => $pesananTerbaru,
+            'logTerbaru' => $logTerbaru,
             'dataTren' => $trenPenjualan,
             'labelTren' => $labelHari,
         ])->layout('components.layouts.admin');
