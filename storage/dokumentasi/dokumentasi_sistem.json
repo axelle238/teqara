@@ -1,41 +1,48 @@
 {
-    "nama_sistem": "TEQARA Enterprise v2.0",
-    "deskripsi": "Platform Penjualan Komputer & Gadget Terintegrasi",
+    "nama_sistem": "TEQARA Enterprise v3.0",
+    "deskripsi": "Ekosistem Penjualan Komputer & Gadget Enterprise Grade",
     "versi_laravel": "12.50.0",
     "bahasa_sistem": "100% Bahasa Indonesia",
-    "status_arsitektur": "SPA (Single Page Application) via Livewire",
-    "kebijakan_ui": "0% Modal (Mutlak)",
-    "waktu_pembaruan_terakhir": "05/02/2026 17:56:04",
+    "arsitektur": {
+        "backend": "Laravel 12 (Core)",
+        "frontend": "Livewire 4 + Tailwind CSS 4",
+        "pola_interaksi": "SPA / Real-time Events",
+        "kebijakan_modal": "0% Modal (Mutlak)"
+    },
+    "waktu_pembaruan_terakhir": "05/02/2026 18:03:35",
     "statistik_data": {
         "pengguna": 11,
         "produk": 2,
         "pesanan": 0,
         "log_aktivitas": 0,
         "voucher": 0,
-        "ulasan": 0
+        "ulasan": 0,
+        "gudang": 0,
+        "pemasok": 0,
+        "karyawan": 0,
+        "mutasi_stok": 0
     },
-    "modul_aktif": {
-        "Hulu": [
-            "Manajemen Produk Kompleks",
-            "Varian SKU",
-            "Gudang Multi-Lokasi",
-            "Pelacakan Nomor Seri",
-            "Stok & Gudang",
-            "Supply Chain Management"
+    "cakupan_bisnis": {
+        "Hulu (Supply Chain)": [
+            "Manajemen Pemasok (Vendor Management)",
+            "Purchase Order (PO) Stok",
+            "Multi-Gudang & Stok Gudang",
+            "Mutasi & Audit Stok",
+            "Pelacakan Nomor Seri (Serial Number)"
         ],
-        "Tengah": [
-            "Katalog Spotlight",
-            "Detail Produk Rich-Media",
-            "Keranjang Persisten",
-            "Voucher Promo",
-            "Perbandingan Produk"
+        "Tengah (Customer Experience)": [
+            "Katalog High-Tech Spotlight",
+            "Varian Produk Kompleks",
+            "Promo Flash Sale & Voucher",
+            "Keranjang Belanja Persisten",
+            "Checkout Multiproses Real-time"
         ],
-        "Hilir": [
-            "Checkout Multiproses",
-            "Gateway Pembayaran Simulasi",
-            "Timeline Pelacakan",
-            "Audit Log Naratif",
-            "Analitik Eksekutif"
+        "Hilir (Operations & Analytics)": [
+            "Manajemen Pengiriman (Tracking)",
+            "Audit Log Naratif (Activity Stream)",
+            "Dasbor Analitik Eksekutif",
+            "Manajemen HRD & Organisasi",
+            "Gamifikasi (Loyalty Points)"
         ]
     },
     "daftar_endpoint": [

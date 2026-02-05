@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * LayananDokumentasi
@@ -20,26 +20,48 @@ class LayananDokumentasi
     public function perbaruiDokumentasi(): void
     {
         $data = [
-            'nama_sistem' => 'TEQARA Enterprise v2.0',
-            'deskripsi' => 'Platform Penjualan Komputer & Gadget Terintegrasi',
+            'nama_sistem' => 'TEQARA Enterprise v3.0',
+            'deskripsi' => 'Ekosistem Penjualan Komputer & Gadget Enterprise Grade',
             'versi_laravel' => app()->version(),
             'bahasa_sistem' => '100% Bahasa Indonesia',
-            'status_arsitektur' => 'SPA (Single Page Application) via Livewire',
-            'kebijakan_ui' => '0% Modal (Mutlak)',
+            'arsitektur' => [
+                'backend' => 'Laravel 12 (Core)',
+                'frontend' => 'Livewire 4 + Tailwind CSS 4',
+                'pola_interaksi' => 'SPA / Real-time Events',
+                'kebijakan_modal' => '0% Modal (Mutlak)',
+            ],
             'waktu_pembaruan_terakhir' => now()->format('d/m/Y H:i:s'),
-            
+
             'statistik_data' => $this->ambilStatistikDatabase(),
-            'modul_aktif' => [
-                'Hulu' => ['Manajemen Produk Kompleks', 'Varian SKU', 'Gudang Multi-Lokasi', 'Pelacakan Nomor Seri', 'Stok & Gudang', 'Supply Chain Management'],
-                'Tengah' => ['Katalog Spotlight', 'Detail Produk Rich-Media', 'Keranjang Persisten', 'Voucher Promo', 'Perbandingan Produk'],
-                'Hilir' => ['Checkout Multiproses', 'Gateway Pembayaran Simulasi', 'Timeline Pelacakan', 'Audit Log Naratif', 'Analitik Eksekutif'],
+            'cakupan_bisnis' => [
+                'Hulu (Supply Chain)' => [
+                    'Manajemen Pemasok (Vendor Management)',
+                    'Purchase Order (PO) Stok',
+                    'Multi-Gudang & Stok Gudang',
+                    'Mutasi & Audit Stok',
+                    'Pelacakan Nomor Seri (Serial Number)',
+                ],
+                'Tengah (Customer Experience)' => [
+                    'Katalog High-Tech Spotlight',
+                    'Varian Produk Kompleks',
+                    'Promo Flash Sale & Voucher',
+                    'Keranjang Belanja Persisten',
+                    'Checkout Multiproses Real-time',
+                ],
+                'Hilir (Operations & Analytics)' => [
+                    'Manajemen Pengiriman (Tracking)',
+                    'Audit Log Naratif (Activity Stream)',
+                    'Dasbor Analitik Eksekutif',
+                    'Manajemen HRD & Organisasi',
+                    'Gamifikasi (Loyalty Points)',
+                ],
             ],
             'daftar_endpoint' => $this->ambilDaftarRute(),
         ];
 
         $jalurSimpan = storage_path('dokumentasi/dokumentasi_sistem.json');
-        
-        if (!File::exists(dirname($jalurSimpan))) {
+
+        if (! File::exists(dirname($jalurSimpan))) {
             File::makeDirectory(dirname($jalurSimpan), 0755, true);
         }
 
@@ -51,12 +73,19 @@ class LayananDokumentasi
      */
     private function ambilStatistikDatabase(): array
     {
-        $tabelTarget = ['pengguna', 'produk', 'pesanan', 'log_aktivitas', 'voucher', 'ulasan'];
+        $tabelTarget = [
+            'pengguna', 'produk', 'pesanan', 'log_aktivitas', 'voucher',
+            'ulasan', 'gudang', 'pemasok', 'karyawan', 'mutasi_stok',
+        ];
         $hasil = [];
 
         foreach ($tabelTarget as $tabel) {
-            if (Schema::hasTable($tabel)) {
-                $hasil[$tabel] = DB::table($tabel)->count();
+            try {
+                if (Schema::hasTable($tabel)) {
+                    $hasil[$tabel] = DB::table($tabel)->count();
+                }
+            } catch (\Exception $e) {
+                // Abaikan jika error
             }
         }
 
@@ -74,8 +103,8 @@ class LayananDokumentasi
                 'nama' => $rute->getName(),
                 'metode' => implode('|', $rute->methods()),
             ];
-        })->filter(fn($r) => !str_starts_with($r['uri'], '_'))
-          ->values()
-          ->toArray();
+        })->filter(fn ($r) => ! str_starts_with($r['uri'], '_'))
+            ->values()
+            ->toArray();
     }
 }

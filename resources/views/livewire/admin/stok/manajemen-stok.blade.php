@@ -39,7 +39,7 @@
                             <tr class="hover:bg-slate-50/50 transition-colors">
                                 <td class="px-8 py-5">
                                     <p class="font-bold text-slate-900 leading-tight">{{ $s->nama }}</p>
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">{{ $s->sku }} • {{ $s->kategori_nama }}</p>
+                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">{{ $s->sku }} • {{ $s->kategori?->nama }}</p>
                                 </td>
                                 <td class="px-6 py-5">
                                     <div class="flex items-center gap-2">
@@ -75,11 +75,11 @@
                         @foreach($mutasiTerbaru as $m)
                         <div class="relative pl-6 border-l border-white/10 pb-2 last:border-none">
                             <div class="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-emerald-500"></div>
-                            <p class="text-[10px] font-black text-white/40 uppercase tracking-tighter mb-1">{{ \Carbon\Carbon::parse($m->created_at)->diffForHumans() }}</p>
+                            <p class="text-[10px] font-black text-white/40 uppercase tracking-tighter mb-1">{{ $m->created_at->diffForHumans() }}</p>
                             <p class="text-xs leading-relaxed text-white/80">
-                                <span class="font-bold text-white">{{ $m->aktor ?? 'Sistem' }}</span> 
+                                <span class="font-bold text-white">{{ $m->pengguna?->nama ?? 'Sistem' }}</span> 
                                 {{ $m->keterangan }} 
-                                <span class="text-emerald-400 font-black">[{{ $m->produk_nama }}]</span>
+                                <span class="text-emerald-400 font-black">[{{ $m->produk?->nama }}]</span>
                             </p>
                         </div>
                         @endforeach
@@ -96,33 +96,38 @@
         <div class="space-y-8 p-4">
             <div class="p-6 bg-emerald-50 rounded-2xl border border-emerald-100">
                 <p class="text-xs font-black text-emerald-700 uppercase tracking-widest mb-2">Informasi Produk</p>
-                <h4 class="text-xl font-black text-slate-900 leading-tight">Laptop ASUS ROG Zephyrus G14</h4>
-                <p class="text-sm text-emerald-600 font-bold mt-1">Total Stok Global: 24 Unit</p>
+                <h4 class="text-xl font-black text-slate-900 leading-tight">
+                    {{ \App\Models\Produk::find($produkTerpilihId)?->nama ?? 'Pilih Produk' }}
+                </h4>
+                <p class="text-sm text-emerald-600 font-bold mt-1">
+                    Total Stok Global: {{ \App\Models\Produk::find($produkTerpilihId)?->stok ?? 0 }} Unit
+                </p>
             </div>
 
-            <form class="space-y-6">
+            <form wire:submit.prevent="eksekusiMutasi" class="space-y-6">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-black text-slate-400 uppercase mb-2">Dari Gudang</label>
-                        <select class="w-full rounded-xl border-slate-200 text-sm focus:ring-emerald-500">
-                            <option>Gudang Pusat</option>
+                        <select wire:model="dariGudang" class="w-full rounded-xl border-slate-200 text-sm focus:ring-emerald-500">
+                            <option value="">Pilih Gudang</option>
+                            @foreach($daftarGudang as $g) <option value="{{ $g->id }}">{{ $g->nama }}</option> @endforeach
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-black text-slate-400 uppercase mb-2">Ke Gudang</label>
-                        <select class="w-full rounded-xl border-slate-200 text-sm focus:ring-emerald-500">
-                            <option>Toko Utama (Retail)</option>
-                            <option>Service Center</option>
+                        <select wire:model="keGudang" class="w-full rounded-xl border-slate-200 text-sm focus:ring-emerald-500">
+                            <option value="">Pilih Tujuan</option>
+                            @foreach($daftarGudang as $g) <option value="{{ $g->id }}">{{ $g->nama }}</option> @endforeach
                         </select>
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-black text-slate-400 uppercase mb-2">Jumlah Unit</label>
-                    <input type="number" class="w-full rounded-xl border-slate-200 focus:ring-emerald-500 font-black text-lg">
+                    <input wire:model="jumlahMutasi" type="number" class="w-full rounded-xl border-slate-200 focus:ring-emerald-500 font-black text-lg">
                 </div>
                 <div>
                     <label class="block text-xs font-black text-slate-400 uppercase mb-2">Catatan Mutasi</label>
-                    <textarea rows="3" class="w-full rounded-xl border-slate-200 text-sm placeholder:text-slate-300" placeholder="Contoh: Re-stock untuk display depan toko..."></textarea>
+                    <textarea wire:model="keteranganMutasi" rows="3" class="w-full rounded-xl border-slate-200 text-sm placeholder:text-slate-300" placeholder="Contoh: Re-stock untuk display depan toko..."></textarea>
                 </div>
                 <button type="submit" class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-emerald-700 transition shadow-xl shadow-emerald-600/20">
                     Eksekusi Perpindahan

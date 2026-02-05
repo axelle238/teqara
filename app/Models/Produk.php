@@ -49,6 +49,26 @@ class Produk extends Model
         return $this->hasMany(Ulasan::class, 'produk_id');
     }
 
+    public function mutasiStok(): HasMany
+    {
+        return $this->hasMany(MutasiStok::class, 'produk_id');
+    }
+
+    public function stokGudang(): HasMany
+    {
+        return $this->hasMany(StokGudang::class, 'produk_id');
+    }
+
+    public function produkSeri(): HasMany
+    {
+        return $this->hasMany(ProdukSeri::class, 'produk_id');
+    }
+
+    public function produkFlashSale(): HasMany
+    {
+        return $this->hasMany(ProdukFlashSale::class, 'produk_id');
+    }
+
     // Helper: Ambil gambar utama (urutan pertama atau default)
     public function getGambarUtamaUrlAttribute()
     {

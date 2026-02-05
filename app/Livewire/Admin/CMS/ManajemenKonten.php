@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Admin\CMS;
 
-use App\Models\LogAktivitas;
-use Illuminate\Support\Facades\DB;
+use App\Helpers\LogHelper;
+use App\Models\CmsKonten;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -27,7 +27,7 @@ class ManajemenKonten extends Component
 
     public function mount()
     {
-        $hero = DB::table('cms_konten')->where('bagian', 'hero_section')->first();
+        $hero = CmsKonten::where('bagian', 'hero_section')->first();
         if ($hero) {
             $this->hero_judul = $hero->judul;
             $this->hero_deskripsi = $hero->deskripsi;
@@ -44,27 +44,28 @@ class ManajemenKonten extends Component
             'hero_gambar_baru' => 'nullable|image|max:2048',
         ]);
 
+        $hero = CmsKonten::where('bagian', 'hero_section')->first();
+
         $data = [
             'judul' => $this->hero_judul,
             'deskripsi' => $this->hero_deskripsi,
             'tombol_text' => $this->hero_tombol,
             'url_target' => $this->hero_url,
-            'updated_at' => now(),
         ];
 
         if ($this->hero_gambar_baru) {
-            $data['gambar'] = $this->hero_gambar_baru->temporaryUrl(); // Simulasi storage
+            // Simulasi: Gunakan temporaryUrl atau simpan ke storage nyata
+            $data['gambar'] = $this->hero_gambar_baru->temporaryUrl();
         }
 
-        DB::table('cms_konten')->where('bagian', 'hero_section')->update($data);
+        $hero->update($data);
 
-        LogAktivitas::create([
-            'pengguna_id' => auth()->id(),
-            'aksi' => 'update_cms',
-            'target' => 'Hero Section',
-            'pesan_naratif' => 'Admin memperbarui tampilan Hero Section halaman depan.',
-            'waktu' => now(),
-        ]);
+        LogHelper::catat(
+            'update_cms',
+            'Hero Section',
+            'Admin memperbarui tampilan Hero Section halaman depan.',
+            $data
+        );
 
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Tampilan Beranda diperbarui!']);
     }

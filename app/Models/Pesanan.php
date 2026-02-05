@@ -24,4 +24,19 @@ class Pesanan extends Model
     {
         return $this->hasMany(DetailPesanan::class, 'pesanan_id');
     }
+
+    public function transaksiPembayaran(): HasMany
+    {
+        return $this->hasMany(TransaksiPembayaran::class, 'pesanan_id');
+    }
+
+    public function ulasan(): HasMany
+    {
+        return $this->hasMany(Ulasan::class, 'pesanan_id');
+    }
+
+    public function getTotalHargaRupiahAttribute(): string
+    {
+        return 'Rp '.number_format($this->total_harga, 0, ',', '.');
+    }
 }

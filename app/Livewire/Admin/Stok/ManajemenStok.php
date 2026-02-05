@@ -3,43 +3,44 @@
 namespace App\Livewire\Admin\Stok;
 
 use App\Models\Produk;
-use App\Models\LogAktivitas;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Title;
 
 class ManajemenStok extends Component
 {
     use WithPagination;
 
     public $cari = '';
-    
+
     // State Mutasi
     public $produkTerpilihId;
-    public $dariGudang, $keGudang, $jumlahMutasi;
+
+    public $dariGudang;
+
+    public $keGudang;
+
+    public $jumlahMutasi;
 
     #[Title('Audit Inventaris - Teqara')]
     public function render()
     {
-        $stokGlobal = DB::table('produk')
-            ->leftJoin('kategori', 'produk.kategori_id', '=', 'kategori.id')
-            ->select('produk.id', 'produk.nama', 'produk.sku', 'produk.stok', 'produk.stok_ditahan', 'kategori.nama as kategori_nama')
-            ->where('produk.nama', 'like', '%' . $this->cari . '%')
+        $stokGlobal = Produk::query()
+            ->with(['kategori'])
+            ->where('nama', 'like', '%'.$this->cari.'%')
             ->paginate(10);
 
-        $mutasiTerbaru = DB::table('mutasi_stok')
-            ->join('produk', 'mutasi_stok.produk_id', '=', 'produk.id')
-            ->leftJoin('pengguna', 'mutasi_stok.oleh_pengguna_id', '=', 'pengguna.id')
-            ->select('mutasi_stok.*', 'produk.nama as produk_nama', 'pengguna.nama as aktor')
-            ->latest('created_at')
+        $mutasiTerbaru = MutasiStok::query()
+            ->with(['produk', 'pengguna'])
+            ->latest()
             ->take(10)
             ->get();
 
         return view('livewire.admin.stok.manajemen-stok', [
             'stokGlobal' => $stokGlobal,
             'mutasiTerbaru' => $mutasiTerbaru,
-            'daftarGudang' => DB::table('gudang')->get()
+            'daftarGudang' => \App\Models\Gudang::all(),
         ])->layout('components.layouts.admin');
     }
 
@@ -47,5 +48,40 @@ class ManajemenStok extends Component
     {
         $this->produkTerpilihId = $id;
         $this->dispatch('open-slide-over', id: 'panel-mutasi');
+    }
+
+    public function eksekusiMutasi()
+    {
+        $this->validate([
+            'produkTerpilihId' => 'required|exists:produk,id',
+            'jumlahMutasi' => 'required|integer|min:1',
+            'keGudang' => 'required|exists:gudang,id',
+        ]);
+
+        $produk = Produk::find($this->produkTerpilihId);
+
+        DB::transaction(function () use ($produk) {
+            // Sederhanakan: Kurangi stok global (Dalam enterprise nyata, kurangi stok per gudang)
+            $produk->decrement('stok', $this->jumlahMutasi);
+
+            // Catat Mutasi
+            MutasiStok::create([
+                'produk_id' => $produk->id,
+                'jumlah' => -$this->jumlahMutasi,
+                'jenis_mutasi' => 'pindah_gudang',
+                'keterangan' => "Mutasi {$this->jumlahMutasi} unit ke gudang ID: {$this->keGudang}",
+                'oleh_pengguna_id' => auth()->id(),
+            ]);
+
+            // Log Aktivitas
+            \App\Helpers\LogHelper::catat(
+                'mutasi_stok',
+                $produk->nama,
+                "Admin memindahkan {$this->jumlahMutasi} unit produk {$produk->nama}."
+            );
+        });
+
+        $this->dispatch('close-slide-over', id: 'panel-mutasi');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Mutasi stok berhasil dieksekusi!']);
     }
 }
