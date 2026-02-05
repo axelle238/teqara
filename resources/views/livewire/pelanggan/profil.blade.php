@@ -70,35 +70,62 @@
                         </div>
                     </div>
 
-                    <!-- Recent Orders -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
-                            <h3 class="font-bold text-slate-900">Aktivitas Terakhir</h3>
-                            <button wire:click="gantiTab('pesanan')" class="text-xs font-bold text-cyan-600 hover:underline">Lihat Semua</button>
-                        </div>
-                        <div class="divide-y divide-slate-100">
-                            @forelse($pesananTerakhir as $p)
-                            <div class="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50 transition">
-                                <div>
-                                    <div class="flex items-center gap-3 mb-1">
-                                        <span class="text-sm font-black text-slate-900">#{{ $p->nomor_invoice }}</span>
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide {{ $p->status_pesanan === 'selesai' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
-                                            {{ $p->status_pesanan }}
-                                        </span>
-                                    </div>
-                                    <p class="text-xs text-slate-500">{{ $p->created_at->format('d M Y') }} • {{ $p->detailPesanan->count() }} Item</p>
-                                </div>
+                    <!-- Recent Orders Visual -->
+                    <div class="space-y-6">
+                        <h3 class="font-bold text-slate-900">Pesanan Aktif</h3>
+                        @forelse($pesananTerakhir as $p)
+                        <div class="bg-white p-6 rounded-[24px] border border-slate-200 shadow-sm hover:shadow-md transition-all">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                                 <div class="flex items-center gap-4">
-                                    <span class="text-sm font-bold text-slate-900">{{ 'Rp ' . number_format($p->total_harga, 0, ',', '.') }}</span>
-                                    <a href="/pesanan/lacak/{{ $p->nomor_invoice }}" wire:navigate class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-600 hover:text-cyan-600 hover:border-cyan-200 transition">
-                                        Detail
-                                    </a>
+                                    <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center font-black text-slate-500 text-lg">
+                                        #{{ substr($p->nomor_invoice, -3) }}
+                                    </div>
+                                    <div>
+                                        <p class="font-black text-slate-900 text-sm">{{ $p->created_at->format('d F Y') }}</p>
+                                        <p class="text-xs text-slate-500 font-bold">{{ $p->detailPesanan->count() }} Barang • Rp {{ number_format($p->total_harga, 0, ',', '.') }}</p>
+                                    </div>
+                                </div>
+                                <a href="/pesanan/lacak/{{ $p->nomor_invoice }}" wire:navigate class="px-5 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition shadow-lg shadow-slate-900/20">
+                                    Lacak Pengiriman
+                                </a>
+                            </div>
+
+                            <!-- Timeline Mini -->
+                            <div class="relative">
+                                <div class="absolute top-1/2 left-0 w-full h-1 bg-slate-100 rounded-full -translate-y-1/2"></div>
+                                <div class="absolute top-1/2 left-0 h-1 bg-emerald-500 rounded-full -translate-y-1/2 transition-all duration-1000" 
+                                    style="width: {{ 
+                                        $p->status_pesanan == 'menunggu' ? '10%' : 
+                                        ($p->status_pesanan == 'diproses' ? '40%' : 
+                                        ($p->status_pesanan == 'dikirim' ? '75%' : '100%')) 
+                                    }}"></div>
+                                
+                                <div class="relative flex justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    <div class="flex flex-col items-center gap-2">
+                                        <div class="w-3 h-3 rounded-full {{ in_array($p->status_pesanan, ['menunggu', 'diproses', 'dikirim', 'selesai']) ? 'bg-emerald-500 ring-4 ring-emerald-100' : 'bg-slate-300' }}"></div>
+                                        <span>Bayar</span>
+                                    </div>
+                                    <div class="flex flex-col items-center gap-2">
+                                        <div class="w-3 h-3 rounded-full {{ in_array($p->status_pesanan, ['diproses', 'dikirim', 'selesai']) ? 'bg-emerald-500 ring-4 ring-emerald-100' : 'bg-slate-300' }}"></div>
+                                        <span>Proses</span>
+                                    </div>
+                                    <div class="flex flex-col items-center gap-2">
+                                        <div class="w-3 h-3 rounded-full {{ in_array($p->status_pesanan, ['dikirim', 'selesai']) ? 'bg-emerald-500 ring-4 ring-emerald-100' : 'bg-slate-300' }}"></div>
+                                        <span>Kirim</span>
+                                    </div>
+                                    <div class="flex flex-col items-center gap-2">
+                                        <div class="w-3 h-3 rounded-full {{ $p->status_pesanan == 'selesai' ? 'bg-emerald-500 ring-4 ring-emerald-100' : 'bg-slate-300' }}"></div>
+                                        <span>Selesai</span>
+                                    </div>
                                 </div>
                             </div>
-                            @empty
-                            <div class="p-12 text-center text-slate-400 text-sm">Belum ada aktivitas pesanan.</div>
-                            @endforelse
                         </div>
+                        @empty
+                        <div class="p-8 bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-center">
+                            <p class="text-slate-400 text-sm font-medium">Belum ada pesanan aktif.</p>
+                            <a href="/katalog" class="text-cyan-600 font-bold text-xs mt-2 inline-block hover:underline">Mulai Belanja</a>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
 
