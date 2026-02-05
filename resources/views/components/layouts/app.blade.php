@@ -32,7 +32,9 @@
             </nav>
 
             <!-- Aksi Kanan -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 md:gap-4">
+                <livewire:komponen.navbar-keranjang />
+
                 <!-- Search (Placeholder) -->
                 <button class="hidden md:flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-sm text-slate-400 hover:bg-slate-200 transition">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -87,6 +89,8 @@
             </div>
         </div>
     </footer>
+
+    <livewire:komponen.notifikasi />
 
 </body>
 </html>

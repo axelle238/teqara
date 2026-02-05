@@ -51,15 +51,42 @@ class DetailProduk extends Component
 
     public function tambahKeKeranjang()
     {
-        // Placeholder: Logika Keranjang akan diimplementasikan di Tahap 3
-        // Simulasi notifikasi sukses
-        
-        if ($this->produk->stok < 1) {
+        if (!auth()->check()) {
+            $this->dispatch('notifikasi', [
+                'tipe' => 'info',
+                'pesan' => 'Silakan masuk (login) terlebih dahulu untuk mulai belanja.'
+            ]);
             return;
         }
 
-        // TODO: Simpan ke tabel keranjang
+        if ($this->produk->stok < 1) {
+            $this->dispatch('notifikasi', [
+                'tipe' => 'error',
+                'pesan' => 'Maaf, stok produk ini sedang habis.'
+            ]);
+            return;
+        }
+
+        // Simpan ke tabel keranjang
+        $item = \App\Models\Keranjang::where('pengguna_id', auth()->id())
+            ->where('produk_id', $this->produk->id)
+            ->first();
+
+        if ($item) {
+            $item->update([
+                'jumlah' => $item->jumlah + $this->jumlah
+            ]);
+        } else {
+            \App\Models\Keranjang::create([
+                'pengguna_id' => auth()->id(),
+                'produk_id' => $this->produk->id,
+                'jumlah' => $this->jumlah
+            ]);
+        }
         
+        // Beritahu Navbar untuk update counter
+        $this->dispatch('update-keranjang');
+
         $this->dispatch('notifikasi', [
             'tipe' => 'sukses',
             'pesan' => "{$this->produk->nama} berhasil ditambahkan ke keranjang!"
