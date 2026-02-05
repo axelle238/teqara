@@ -1,0 +1,180 @@
+{
+    "nama_sistem": "TEQARA - Sistem Penjualan Komputer & Gadget",
+    "versi_laravel": "12.50.0",
+    "bahasa_sistem": "100% Bahasa Indonesia",
+    "terakhir_diperbarui": "05/02/2026 16:14:34",
+    "modul_aktif": {
+        "Hulu": [
+            "Manajemen Produk",
+            "Kategori",
+            "Merek",
+            "Manajemen Stok"
+        ],
+        "Tengah": [
+            "Katalog Publik",
+            "Detail Produk",
+            "Keranjang Belanja",
+            "Checkout"
+        ],
+        "Hilir": [
+            "Manajemen Pesanan",
+            "Status Transaksi",
+            "Riwayat Pesanan",
+            "Audit Log"
+        ]
+    },
+    "struktur_database": {
+        "pengguna": {
+            "jumlah_baris": 11,
+            "status": "Aktif"
+        },
+        "produk": {
+            "jumlah_baris": 3,
+            "status": "Aktif"
+        },
+        "kategori": {
+            "jumlah_baris": 3,
+            "status": "Aktif"
+        },
+        "merek": {
+            "jumlah_baris": 3,
+            "status": "Aktif"
+        },
+        "pesanan": {
+            "jumlah_baris": 0,
+            "status": "Aktif"
+        },
+        "detail_pesanan": {
+            "jumlah_baris": 0,
+            "status": "Aktif"
+        },
+        "log_aktivitas": {
+            "jumlah_baris": 0,
+            "status": "Aktif"
+        }
+    },
+    "endpoint_sistem": [
+        {
+            "uri": "_boost/browser-logs",
+            "nama": "boost.browser-logs",
+            "method": "POST"
+        },
+        {
+            "uri": "livewire-f552b613/update",
+            "nama": "default.livewire.update",
+            "method": "POST"
+        },
+        {
+            "uri": "livewire-f552b613/upload-file",
+            "nama": "livewire.upload-file",
+            "method": "POST"
+        },
+        {
+            "uri": "livewire-f552b613/preview-file/{filename}",
+            "nama": "livewire.preview-file",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "/",
+            "nama": "beranda",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "katalog",
+            "nama": "katalog",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "produk/{slug}",
+            "nama": "produk.detail",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "login",
+            "nama": "login",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "logout",
+            "nama": "logout",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "keranjang",
+            "nama": "keranjang",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "checkout",
+            "nama": "checkout",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "pesanan/riwayat",
+            "nama": "pesanan.riwayat",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "dashboard",
+            "nama": "dashboard",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/dashboard",
+            "nama": "admin.dashboard",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/pesanan",
+            "nama": "admin.pesanan",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/pesanan/{pesanan}",
+            "nama": "admin.pesanan.detail",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/produk",
+            "nama": "admin.produk",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/produk/tambah",
+            "nama": "admin.produk.tambah",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/produk/{id}/edit",
+            "nama": "admin.produk.edit",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/kategori",
+            "nama": "admin.kategori",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/merek",
+            "nama": "admin.merek",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/log",
+            "nama": "admin.log",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "storage/{path}",
+            "nama": "storage.local",
+            "method": "GET|HEAD"
+        }
+    ],
+    "status_keamanan": {
+        "Middleware": [
+            "auth",
+            "CekPeranAdmin"
+        ],
+        "Akses_Modal": "DILARANG (0% Modal)"
+    }
+}

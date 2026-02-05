@@ -40,4 +40,9 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     Route::get('/produk', \App\Livewire\Admin\Produk\DaftarProduk::class)->name('admin.produk');
     Route::get('/produk/tambah', \App\Livewire\Admin\Produk\FormProduk::class)->name('admin.produk.tambah');
     Route::get('/produk/{id}/edit', \App\Livewire\Admin\Produk\FormProduk::class)->name('admin.produk.edit');
+
+    // Manajemen Master & Audit
+    Route::get('/kategori', \App\Livewire\Admin\Kategori\DaftarKategori::class)->name('admin.kategori');
+    Route::get('/merek', \App\Livewire\Admin\Merek\DaftarMerek::class)->name('admin.merek');
+    Route::get('/log', \App\Livewire\Admin\Log\DaftarLog::class)->name('admin.log');
 });
