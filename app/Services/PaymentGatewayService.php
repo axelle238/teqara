@@ -53,6 +53,12 @@ class PaymentGatewayService
             // Finalisasi Stok
             (new LayananStok)->finalisasiStok($pesanan);
 
+            // Beri Poin Loyalitas (Rp 10.000 = 1 Poin)
+            $poinDapat = floor($pesanan->total_harga / 10000);
+            if ($poinDapat > 0 && $pesanan->pengguna) {
+                (new GamifikasiService)->tambahPoin($pesanan->pengguna, $poinDapat, 'pembelian', $pesanan->nomor_invoice);
+            }
+
             LogAktivitas::create([
                 'pengguna_id' => $pesanan->pengguna_id,
                 'aksi' => 'pembayaran_sukses',

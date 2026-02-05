@@ -42,6 +42,11 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     Route::get('/produk', \App\Livewire\Admin\Produk\ManajemenProduk::class)->name('admin.produk');
     Route::get('/stok', \App\Livewire\Admin\Stok\ManajemenStok::class)->name('admin.stok');
 
+    // Manajemen HRD (Hanya untuk Dept HR)
+    Route::get('/hrd/karyawan', \App\Livewire\Admin\HRD\ManajemenKaryawan::class)
+        ->middleware('dept:HR')
+        ->name('admin.hrd.karyawan');
+
     // Manajemen Logistik
     Route::get('/logistik/pemasok', \App\Livewire\Admin\Logistik\ManajemenPemasok::class)->name('admin.logistik.pemasok');
 

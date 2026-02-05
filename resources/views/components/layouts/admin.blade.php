@@ -118,7 +118,12 @@
 
                 <a href="/admin/pengguna" wire:navigate class="{{ request()->is('admin/pengguna*') ? 'bg-pink-50 text-pink-700 shadow-sm ring-1 ring-pink-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
                     <svg class="{{ request()->is('admin/pengguna*') ? 'text-pink-600' : 'text-slate-400 group-hover:text-slate-500' }} mr-3 h-5 w-5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    Pengguna
+                    Pelanggan
+                </a>
+
+                <a href="/admin/hrd/karyawan" wire:navigate class="{{ request()->is('admin/hrd*') ? 'bg-rose-50 text-rose-700 shadow-sm ring-1 ring-rose-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
+                    <svg class="{{ request()->is('admin/hrd*') ? 'text-rose-600' : 'text-slate-400 group-hover:text-slate-500' }} mr-3 h-5 w-5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    SDM & Karyawan
                 </a>
 
                 <a href="/admin/cms" wire:navigate class="{{ request()->is('admin/cms*') ? 'bg-purple-50 text-purple-700 shadow-sm ring-1 ring-purple-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">

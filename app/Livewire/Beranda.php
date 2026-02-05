@@ -32,6 +32,15 @@ class Beranda extends Component
                 ->get();
         });
 
+        // Flash Sale Aktif
+        $flashSale = \Illuminate\Support\Facades\Cache::remember('flash_sale_aktif', 60, function () {
+            return DB::table('flash_sale')
+                ->where('aktif', true)
+                ->where('waktu_mulai', '<=', now())
+                ->where('waktu_selesai', '>=', now())
+                ->first();
+        });
+
         // Statistik Beranda (Real-time atau Short Cache 5 menit)
         $statistik = \Illuminate\Support\Facades\Cache::remember('beranda_statistik', 5, function () {
             return [
@@ -45,6 +54,7 @@ class Beranda extends Component
             'hero' => $hero,
             'kategori' => $kategori,
             'produkUnggulan' => $produkUnggulan,
+            'flashSale' => $flashSale,
             'statistik' => $statistik,
         ])->layout('components.layouts.app');
     }
