@@ -32,30 +32,78 @@ Route::middleware(['auth'])->group(function () {
 
 // Rute Admin (Memerlukan Login & Peran Admin)
 Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('admin')->group(function () {
+    // Dashboard Utama
     Route::get('/dashboard', \App\Livewire\Admin\Dashboard::class)->name('admin.dashboard');
 
-    // Manajemen Pesanan
-    Route::get('/pesanan', \App\Livewire\Admin\Pesanan\DaftarPesanan::class)->name('admin.pesanan');
-    Route::get('/pesanan/{pesanan}', \App\Livewire\Admin\Pesanan\DetailPesanan::class)->name('admin.pesanan.detail');
+    // 1. Manajemen Produk
+    Route::prefix('produk')->group(function () {
+        Route::get('/dashboard', \App\Livewire\Admin\Produk\DashboardProduk::class)->name('admin.produk.dashboard');
+        Route::get('/katalog', \App\Livewire\Admin\Produk\ManajemenProduk::class)->name('admin.produk.katalog'); // Ganti nama route lama
+        Route::get('/stok', \App\Livewire\Admin\Stok\ManajemenStok::class)->name('admin.produk.stok');
+    });
+    // Redirect route lama untuk kompatibilitas
+    Route::get('/produk', function () {
+        return redirect()->route('admin.produk.katalog');
+    })->name('admin.produk');
+    Route::get('/stok', function () {
+        return redirect()->route('admin.produk.stok');
+    })->name('admin.stok');
 
-    // Manajemen Produk (Enterprise Style - No Modal)
-    Route::get('/produk', \App\Livewire\Admin\Produk\ManajemenProduk::class)->name('admin.produk');
-    Route::get('/stok', \App\Livewire\Admin\Stok\ManajemenStok::class)->name('admin.stok');
+    // 2. Manajemen Pesanan
+    Route::prefix('pesanan')->group(function () {
+        Route::get('/dashboard', \App\Livewire\Admin\Pesanan\DashboardPesanan::class)->name('admin.pesanan.dashboard');
+        Route::get('/daftar', \App\Livewire\Admin\Pesanan\DaftarPesanan::class)->name('admin.pesanan.daftar');
+        Route::get('/detail/{pesanan}', \App\Livewire\Admin\Pesanan\DetailPesanan::class)->name('admin.pesanan.detail');
+    });
+    // Redirect route lama
+    Route::get('/pesanan', function () {
+        return redirect()->route('admin.pesanan.daftar');
+    })->name('admin.pesanan');
 
-    // Manajemen HRD (Hanya untuk Dept HR)
-    Route::get('/hrd/karyawan', \App\Livewire\Admin\HRD\ManajemenKaryawan::class)
-        ->middleware('dept:HR')
-        ->name('admin.hrd.karyawan');
+    // 3. Manajemen Pelanggan
+    Route::prefix('pelanggan')->group(function () {
+        Route::get('/dashboard', \App\Livewire\Admin\Pelanggan\DashboardPelanggan::class)->name('admin.pelanggan.dashboard');
+        Route::get('/daftar', \App\Livewire\Admin\Pengguna\DaftarPengguna::class)->name('admin.pelanggan.daftar'); // Gunakan DaftarPengguna yg sudah ada tapi di-wrapper
+    });
 
-    // Manajemen Logistik
-    Route::get('/logistik/pemasok', \App\Livewire\Admin\Logistik\ManajemenPemasok::class)->name('admin.logistik.pemasok');
+    // 4. Manajemen Pengguna (Admin/Staff)
+    Route::prefix('pengguna')->group(function () {
+        Route::get('/dashboard', \App\Livewire\Admin\Pengguna\DashboardPengguna::class)->name('admin.pengguna.dashboard');
+        Route::get('/daftar', \App\Livewire\Admin\Pengguna\DaftarPengguna::class)->name('admin.pengguna.daftar');
+        Route::get('/hrd', \App\Livewire\Admin\HRD\ManajemenKaryawan::class)->name('admin.pengguna.hrd');
+    });
+    Route::get('/pengguna', function () {
+        return redirect()->route('admin.pengguna.daftar');
+    })->name('admin.pengguna');
 
-    // Manajemen Master & Audit
+    // 5. Manajemen Laporan
+    Route::prefix('laporan')->group(function () {
+        // Dashboard laporan belum dibuat khusus, gunakan DaftarLaporan sebagai pusat sementara
+        Route::get('/pusat', \App\Livewire\Admin\Laporan\DaftarLaporan::class)->name('admin.laporan.pusat');
+    });
+    Route::get('/laporan', function () {
+        return redirect()->route('admin.laporan.pusat');
+    })->name('admin.laporan');
+
+    // 6. Pengaturan Sistem (Baru)
+    Route::prefix('pengaturan')->group(function () {
+        Route::get('/sistem', \App\Livewire\Admin\Pengaturan\DashboardPengaturan::class)->name('admin.pengaturan.sistem');
+        Route::get('/keamanan', \App\Livewire\Admin\Keamanan\DashboardKeamanan::class)->name('admin.pengaturan.keamanan');
+        Route::get('/log', \App\Livewire\Admin\Log\DaftarLog::class)->name('admin.pengaturan.log');
+        Route::get('/cms', \App\Livewire\Admin\CMS\ManajemenKonten::class)->name('admin.pengaturan.cms');
+    });
+
+    // 7. Master Data (Tetap)
     Route::get('/kategori', \App\Livewire\Admin\Kategori\DaftarKategori::class)->name('admin.kategori');
     Route::get('/merek', \App\Livewire\Admin\Merek\DaftarMerek::class)->name('admin.merek');
     Route::get('/voucher', \App\Livewire\Admin\Voucher\DaftarVoucher::class)->name('admin.voucher');
-    Route::get('/log', \App\Livewire\Admin\Log\DaftarLog::class)->name('admin.log');
-    Route::get('/laporan', \App\Livewire\Admin\Laporan\DaftarLaporan::class)->name('admin.laporan');
-    Route::get('/pengguna', \App\Livewire\Admin\Pengguna\DaftarPengguna::class)->name('admin.pengguna');
-    Route::get('/cms', \App\Livewire\Admin\CMS\ManajemenKonten::class)->name('admin.cms');
+
+    // Legacy Route Fallback (untuk mencegah error 404 pada link lama)
+    Route::get('/logistik/pemasok', \App\Livewire\Admin\Logistik\ManajemenPemasok::class)->name('admin.logistik.pemasok');
+    Route::get('/log', function () {
+        return redirect()->route('admin.pengaturan.log');
+    })->name('admin.log');
+    Route::get('/cms', function () {
+        return redirect()->route('admin.pengaturan.cms');
+    })->name('admin.cms');
 });

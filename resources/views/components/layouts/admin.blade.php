@@ -17,7 +17,6 @@
     <style>
         [x-cloak] { display: none !important; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -49,92 +48,128 @@
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-cyan-500/30 mr-3">T</div>
                 <div>
                     <h1 class="font-extrabold text-lg text-slate-900 tracking-tight">TEQARA</h1>
-                    <p class="text-[10px] font-bold text-cyan-600 uppercase tracking-widest">Enterprise</p>
+                    <p class="text-[10px] font-bold text-cyan-600 uppercase tracking-widest">Enterprise v5.0</p>
                 </div>
             </div>
 
             <!-- Navigation -->
-            <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
-                <p class="px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Ikhtisar</p>
+            <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1" x-data="{ activeMenu: '{{ request()->segment(2) }}' }">
                 
-                <a href="/admin/dashboard" wire:navigate class="{{ request()->is('admin/dashboard') ? 'bg-cyan-50 text-cyan-700 shadow-sm ring-1 ring-cyan-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
+                <!-- Dashboard Utama -->
+                <a href="/admin/dashboard" wire:navigate class="{{ request()->is('admin/dashboard') ? 'bg-cyan-50 text-cyan-700 shadow-sm ring-1 ring-cyan-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 mb-6">
                     <svg class="{{ request()->is('admin/dashboard') ? 'text-cyan-600' : 'text-slate-400 group-hover:text-slate-500' }} mr-3 h-5 w-5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                     Dashboard Utama
                 </a>
 
-                <p class="px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mt-8 mb-2">Manajemen Toko</p>
+                <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Modul Operasional</p>
 
-                <a href="/admin/pesanan" wire:navigate class="{{ request()->is('admin/pesanan*') ? 'bg-indigo-50 text-indigo-700 shadow-sm ring-1 ring-indigo-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
-                    <svg class="{{ request()->is('admin/pesanan*') ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-500' }} mr-3 h-5 w-5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                    Pesanan Masuk
-                    <span class="ml-auto bg-indigo-100 text-indigo-600 py-0.5 px-2 rounded-full text-xs font-bold">New</span>
-                </a>
-
-                <a href="/admin/produk" wire:navigate class="{{ request()->is('admin/produk*') ? 'bg-emerald-50 text-emerald-700 shadow-sm ring-1 ring-emerald-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
-                    <svg class="{{ request()->is('admin/produk*') ? 'text-emerald-600' : 'text-slate-400 group-hover:text-slate-500' }} mr-3 h-5 w-5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                    Katalog Produk
-                </a>
-
-                <a href="/admin/stok" wire:navigate class="{{ request()->is('admin/stok*') ? 'bg-emerald-50 text-emerald-700 shadow-sm ring-1 ring-emerald-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
-                    <svg class="{{ request()->is('admin/stok*') ? 'text-emerald-600' : 'text-slate-400 group-hover:text-slate-500' }} mr-3 h-5 w-5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01m-.01 4h.01"></path></svg>
-                    Audit Inventaris
-                </a>
-
-                <div x-data="{ open: false }" class="space-y-1">
-                    <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-slate-600 rounded-xl hover:bg-slate-50 transition-all">
+                <!-- Manajemen Produk -->
+                <div x-data="{ open: activeMenu === 'produk' || activeMenu === 'stok' || activeMenu === 'kategori' || activeMenu === 'merek' }" class="space-y-1">
+                    <button @click="open = !open" :class="open ? 'bg-emerald-50 text-emerald-800' : 'text-slate-600 hover:bg-slate-50'" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all">
                         <div class="flex items-center">
-                            <svg class="mr-3 h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-                            Logistik
+                            <svg :class="open ? 'text-emerald-600' : 'text-slate-400'" class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                            Manajemen Produk
                         </div>
-                        <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 text-slate-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg :class="open ? 'rotate-180 text-emerald-600' : 'text-slate-400'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="open" x-cloak class="pl-12 space-y-1">
-                        <a href="/admin/logistik/pemasok" class="block px-4 py-2 text-sm font-medium text-slate-500 hover:text-cyan-600 rounded-lg transition">Data Pemasok</a>
-                        <a href="#" class="block px-4 py-2 text-sm font-medium text-slate-500 hover:text-cyan-600 rounded-lg transition">Purchase Order</a>
+                    <div x-show="open" x-cloak class="pl-12 space-y-1 relative">
+                        <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-emerald-100"></div>
+                        <a href="/admin/produk/dashboard" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/produk/dashboard') ? 'text-emerald-700 font-bold' : 'text-slate-500 hover:text-emerald-600' }} rounded-lg transition">Dashboard Produk</a>
+                        <a href="/admin/produk/katalog" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/produk/katalog') ? 'text-emerald-700 font-bold' : 'text-slate-500 hover:text-emerald-600' }} rounded-lg transition">Katalog & Unit</a>
+                        <a href="/admin/produk/stok" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/produk/stok') ? 'text-emerald-700 font-bold' : 'text-slate-500 hover:text-emerald-600' }} rounded-lg transition">Audit Stok</a>
+                        <a href="/admin/kategori" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/kategori') ? 'text-emerald-700 font-bold' : 'text-slate-500 hover:text-emerald-600' }} rounded-lg transition">Kategori</a>
+                        <a href="/admin/merek" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/merek') ? 'text-emerald-700 font-bold' : 'text-slate-500 hover:text-emerald-600' }} rounded-lg transition">Merek</a>
                     </div>
                 </div>
 
-                <div x-data="{ open: false }" class="space-y-1">
-                    <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-slate-600 rounded-xl hover:bg-slate-50 transition-all">
+                <!-- Manajemen Pesanan -->
+                <div x-data="{ open: activeMenu === 'pesanan' || activeMenu === 'logistik' }" class="space-y-1">
+                    <button @click="open = !open" :class="open ? 'bg-indigo-50 text-indigo-800' : 'text-slate-600 hover:bg-slate-50'" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all">
                         <div class="flex items-center">
-                            <svg class="mr-3 h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                            Master Data
+                            <svg :class="open ? 'text-indigo-600' : 'text-slate-400'" class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                            Manajemen Pesanan
                         </div>
-                        <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 text-slate-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg :class="open ? 'rotate-180 text-indigo-600' : 'text-slate-400'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="open" x-cloak class="pl-12 space-y-1">
-                        <a href="/admin/kategori" class="block px-4 py-2 text-sm font-medium text-slate-500 hover:text-cyan-600 rounded-lg transition">Kategori</a>
-                        <a href="/admin/merek" class="block px-4 py-2 text-sm font-medium text-slate-500 hover:text-cyan-600 rounded-lg transition">Merek</a>
-                        <a href="/admin/voucher" class="block px-4 py-2 text-sm font-medium text-slate-500 hover:text-cyan-600 rounded-lg transition">Voucher Promo</a>
+                    <div x-show="open" x-cloak class="pl-12 space-y-1 relative">
+                        <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-indigo-100"></div>
+                        <a href="/admin/pesanan/dashboard" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/pesanan/dashboard') ? 'text-indigo-700 font-bold' : 'text-slate-500 hover:text-indigo-600' }} rounded-lg transition">Dashboard Pesanan</a>
+                        <a href="/admin/pesanan/daftar" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/pesanan/daftar') || request()->is('admin/pesanan/detail*') ? 'text-indigo-700 font-bold' : 'text-slate-500 hover:text-indigo-600' }} rounded-lg transition">Daftar Transaksi</a>
+                        <a href="/admin/logistik/pemasok" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/logistik*') ? 'text-indigo-700 font-bold' : 'text-slate-500 hover:text-indigo-600' }} rounded-lg transition">Logistik & Pemasok</a>
                     </div>
                 </div>
 
-                <p class="px-4 text-xs font-bold text-slate-400 uppercase tracking-wider mt-8 mb-2">Laporan & Pengguna</p>
+                <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest mt-8 mb-2">Relasi & Organisasi</p>
 
-                <a href="/admin/laporan" wire:navigate class="{{ request()->is('admin/laporan*') ? 'bg-orange-50 text-orange-700 shadow-sm ring-1 ring-orange-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
-                    <svg class="{{ request()->is('admin/laporan*') ? 'text-orange-600' : 'text-slate-400 group-hover:text-slate-500' }} mr-3 h-5 w-5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Laporan Keuangan
-                </a>
+                <!-- CRM Pelanggan -->
+                <div x-data="{ open: activeMenu === 'pelanggan' || activeMenu === 'voucher' }" class="space-y-1">
+                    <button @click="open = !open" :class="open ? 'bg-pink-50 text-pink-800' : 'text-slate-600 hover:bg-slate-50'" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all">
+                        <div class="flex items-center">
+                            <svg :class="open ? 'text-pink-600' : 'text-slate-400'" class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            CRM Pelanggan
+                        </div>
+                        <svg :class="open ? 'rotate-180 text-pink-600' : 'text-slate-400'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="open" x-cloak class="pl-12 space-y-1 relative">
+                        <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-pink-100"></div>
+                        <a href="/admin/pelanggan/dashboard" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/pelanggan/dashboard') ? 'text-pink-700 font-bold' : 'text-slate-500 hover:text-pink-600' }} rounded-lg transition">Dashboard Pelanggan</a>
+                        <a href="/admin/pelanggan/daftar" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/pelanggan/daftar') ? 'text-pink-700 font-bold' : 'text-slate-500 hover:text-pink-600' }} rounded-lg transition">Basis Data Member</a>
+                        <a href="/admin/voucher" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/voucher') ? 'text-pink-700 font-bold' : 'text-slate-500 hover:text-pink-600' }} rounded-lg transition">Voucher & Promo</a>
+                    </div>
+                </div>
 
-                <a href="/admin/pengguna" wire:navigate class="{{ request()->is('admin/pengguna*') ? 'bg-pink-50 text-pink-700 shadow-sm ring-1 ring-pink-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
-                    <svg class="{{ request()->is('admin/pengguna*') ? 'text-pink-600' : 'text-slate-400 group-hover:text-slate-500' }} mr-3 h-5 w-5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    Pelanggan
-                </a>
+                <!-- HRD & Pengguna -->
+                <div x-data="{ open: activeMenu === 'pengguna' || activeMenu === 'hrd' }" class="space-y-1">
+                    <button @click="open = !open" :class="open ? 'bg-rose-50 text-rose-800' : 'text-slate-600 hover:bg-slate-50'" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all">
+                        <div class="flex items-center">
+                            <svg :class="open ? 'text-rose-600' : 'text-slate-400'" class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            HRD & Pengguna
+                        </div>
+                        <svg :class="open ? 'rotate-180 text-rose-600' : 'text-slate-400'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="open" x-cloak class="pl-12 space-y-1 relative">
+                        <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-rose-100"></div>
+                        <a href="/admin/pengguna/dashboard" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/pengguna/dashboard') ? 'text-rose-700 font-bold' : 'text-slate-500 hover:text-rose-600' }} rounded-lg transition">Dashboard Internal</a>
+                        <a href="/admin/pengguna/daftar" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/pengguna/daftar') ? 'text-rose-700 font-bold' : 'text-slate-500 hover:text-rose-600' }} rounded-lg transition">Tim Administrator</a>
+                        <a href="/admin/hrd/karyawan" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/hrd*') ? 'text-rose-700 font-bold' : 'text-slate-500 hover:text-rose-600' }} rounded-lg transition">Data Karyawan</a>
+                    </div>
+                </div>
 
-                <a href="/admin/hrd/karyawan" wire:navigate class="{{ request()->is('admin/hrd*') ? 'bg-rose-50 text-rose-700 shadow-sm ring-1 ring-rose-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
-                    <svg class="{{ request()->is('admin/hrd*') ? 'text-rose-600' : 'text-slate-400 group-hover:text-slate-500' }} mr-3 h-5 w-5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    SDM & Karyawan
-                </a>
+                <p class="px-4 text-[10px] font-black text-slate-400 uppercase tracking-widest mt-8 mb-2">Pusat Kendali</p>
 
-                <a href="/admin/cms" wire:navigate class="{{ request()->is('admin/cms*') ? 'bg-purple-50 text-purple-700 shadow-sm ring-1 ring-purple-200' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
-                    <svg class="{{ request()->is('admin/cms*') ? 'text-purple-600' : 'text-slate-400 group-hover:text-slate-500' }} mr-3 h-5 w-5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
-                    CMS / Tampilan
-                </a>
+                <!-- Laporan -->
+                <div x-data="{ open: activeMenu === 'laporan' }" class="space-y-1">
+                    <button @click="open = !open" :class="open ? 'bg-orange-50 text-orange-800' : 'text-slate-600 hover:bg-slate-50'" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all">
+                        <div class="flex items-center">
+                            <svg :class="open ? 'text-orange-600' : 'text-slate-400'" class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Pusat Laporan
+                        </div>
+                        <svg :class="open ? 'rotate-180 text-orange-600' : 'text-slate-400'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="open" x-cloak class="pl-12 space-y-1 relative">
+                        <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-orange-100"></div>
+                        <a href="/admin/laporan/pusat" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/laporan*') ? 'text-orange-700 font-bold' : 'text-slate-500 hover:text-orange-600' }} rounded-lg transition">Laporan Penjualan</a>
+                    </div>
+                </div>
 
-                <a href="/admin/log" wire:navigate class="{{ request()->is('admin/log*') ? 'bg-slate-100 text-slate-800' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }} group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200">
-                    <svg class="{{ request()->is('admin/log*') ? 'text-slate-600' : 'text-slate-400 group-hover:text-slate-500' }} mr-3 h-5 w-5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Audit Log
-                </a>
+                <!-- Pengaturan Pusat -->
+                <div x-data="{ open: activeMenu === 'pengaturan' }" class="space-y-1">
+                    <button @click="open = !open" :class="open ? 'bg-slate-100 text-slate-800' : 'text-slate-600 hover:bg-slate-50'" class="w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-all">
+                        <div class="flex items-center">
+                            <svg :class="open ? 'text-slate-800' : 'text-slate-400'" class="mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            Pengaturan Pusat
+                        </div>
+                        <svg :class="open ? 'rotate-180 text-slate-800' : 'text-slate-400'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div x-show="open" x-cloak class="pl-12 space-y-1 relative">
+                        <div class="absolute left-6 top-0 bottom-0 w-0.5 bg-slate-200"></div>
+                        <a href="/admin/pengaturan/sistem" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/pengaturan/sistem') ? 'text-slate-900 font-bold' : 'text-slate-500 hover:text-slate-900' }} rounded-lg transition">Sistem & Identitas</a>
+                        <a href="/admin/pengaturan/keamanan" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/pengaturan/keamanan') ? 'text-slate-900 font-bold' : 'text-slate-500 hover:text-slate-900' }} rounded-lg transition">Keamanan & Audit</a>
+                        <a href="/admin/pengaturan/cms" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/pengaturan/cms') ? 'text-slate-900 font-bold' : 'text-slate-500 hover:text-slate-900' }} rounded-lg transition">CMS / Tampilan</a>
+                        <a href="/admin/pengaturan/log" wire:navigate class="block px-4 py-2 text-sm font-medium {{ request()->is('admin/pengaturan/log') ? 'text-slate-900 font-bold' : 'text-slate-500 hover:text-slate-900' }} rounded-lg transition">Log Aktivitas</a>
+                    </div>
+                </div>
+
             </nav>
 
             <!-- User Profile -->
