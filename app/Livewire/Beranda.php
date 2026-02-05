@@ -50,12 +50,22 @@ class Beranda extends Component
             ];
         });
 
+        // Berita & Informasi Terbaru
+        $beritaTerbaru = \Illuminate\Support\Facades\Cache::remember('beranda_berita', 30, function () {
+            return \App\Models\Berita::with('penulis')
+                ->where('status', 'publikasi')
+                ->latest()
+                ->take(3)
+                ->get();
+        });
+
         return view('livewire.beranda', [
             'hero' => $hero,
             'kategori' => $kategori,
             'produkUnggulan' => $produkUnggulan,
             'flashSale' => $flashSale,
             'statistik' => $statistik,
+            'beritaTerbaru' => $beritaTerbaru,
         ])->layout('components.layouts.app');
     }
 }

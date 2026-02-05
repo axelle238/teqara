@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+/**
+ * Class Berita
+ * Tujuan: Menyimpan konten berita, informasi, dan artikel teknologi untuk pelanggan.
+ * Peran: Modul informasi publik terintegrasi.
+ */
+class Berita extends Model
+{
+    use HasFactory;
+
+    protected $table = 'berita';
+
+    protected $guarded = ['id'];
+
+    public function penulis(): BelongsTo
+    {
+        return $this->belongsTo(Pengguna::class, 'penulis_id');
+    }
+}

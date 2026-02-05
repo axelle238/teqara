@@ -9,7 +9,7 @@
         "pola_interaksi": "SPA / Real-time Events",
         "kebijakan_modal": "0% Modal (Mutlak)"
     },
-    "waktu_pembaruan_terakhir": "05/02/2026 18:31:17",
+    "waktu_pembaruan_terakhir": "05/02/2026 18:36:12",
     "statistik_data": {
         "pengguna": 11,
         "produk": 2,
@@ -264,6 +264,11 @@
         {
             "uri": "admin/toko/konten",
             "nama": "admin.toko.konten",
+            "metode": "GET|HEAD"
+        },
+        {
+            "uri": "admin/toko/berita",
+            "nama": "admin.toko.berita",
             "metode": "GET|HEAD"
         },
         {

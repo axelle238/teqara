@@ -79,7 +79,7 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
         return redirect()->route('admin.pengguna.daftar');
     })->name('admin.pengguna');
 
-    // 6. Manajemen Halaman Toko (Baru - Terpisah dari Pengaturan)
+    // 6. Manajemen Halaman Toko (Pilar Utama - CMS & Visual)
 
     Route::prefix('toko')->group(function () {
 
@@ -87,7 +87,7 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
 
         Route::get('/konten', \App\Livewire\Admin\Toko\ManajemenKonten::class)->name('admin.toko.konten');
 
-        // Fitur masa depan: Menu Navigasi, Halaman Statis
+        Route::get('/berita', \App\Livewire\Admin\Toko\ManajemenBerita::class)->name('admin.toko.berita');
 
     });
 

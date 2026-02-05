@@ -158,4 +158,46 @@
         </div>
     </section>
 
+    <!-- Berita & Informasi Teknologi -->
+    <section class="py-24 bg-white">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                <div>
+                    <h2 class="text-xs font-black text-purple-600 uppercase tracking-[0.3em] mb-4">Wawasan & Update</h2>
+                    <h3 class="text-4xl font-black text-slate-900 tracking-tighter">Berita & Informasi Teknologi</h3>
+                </div>
+                <div class="hidden md:block">
+                    <p class="text-slate-500 font-medium max-w-xs text-sm">Tetap terinformasi dengan tren perangkat keras dan software terkini dari tim analis kami.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                @foreach($beritaTerbaru as $b)
+                <article class="group cursor-pointer">
+                    <div class="relative aspect-[16/10] rounded-[32px] overflow-hidden bg-slate-100 mb-8 border border-slate-100 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-purple-500/10">
+                        <img src="{{ $b->gambar_unggulan ?? 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=2070' }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6">
+                            <span class="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-[10px] font-black text-white uppercase tracking-widest">Wawasan TI</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $b->created_at->translatedFormat('d F Y') }}</span>
+                            <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                            <span class="text-[10px] font-black text-purple-600 uppercase tracking-widest">Oleh {{ $b->penulis->nama }}</span>
+                        </div>
+                        <h4 class="text-xl font-black text-slate-900 leading-tight mb-4 group-hover:text-purple-600 transition-colors line-clamp-2">{{ $b->judul }}</h4>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-3">{{ $b->ringkasan }}</p>
+                        <a href="#" class="inline-flex items-center gap-2 text-xs font-black text-slate-900 uppercase tracking-widest group-hover:gap-4 transition-all">
+                            Baca Selengkapnya
+                            <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </a>
+                    </div>
+                </article>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
 </div>
