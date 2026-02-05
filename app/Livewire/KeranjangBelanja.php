@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\Keranjang;
 use Livewire\Attributes\Title;
 
-class Keranjang extends Component
+class KeranjangBelanja extends Component
 {
     public function getItemsProperty()
     {
@@ -14,6 +14,8 @@ class Keranjang extends Component
             ->with('produk')
             ->get();
     }
+    
+    // ... method lainnya tetap sama ...
 
     public function tambahJumlah($id)
     {
@@ -62,7 +64,7 @@ class Keranjang extends Component
     #[Title('Keranjang Belanja - Teqara')]
     public function render()
     {
-        return view('livewire.keranjang')
+        return view('livewire.keranjang-belanja')
             ->layout('components.layouts.app');
     }
 }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ $title ?? 'Admin Dashboard - Teqara' }}</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-slate-100 font-[Inter] antialiased text-slate-800">
+
+    <div class="min-h-screen flex flex-col md:flex-row">
+        
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-slate-900 text-white flex-shrink-0">
+            <div class="h-16 flex items-center justify-center border-b border-slate-800">
+                <span class="text-xl font-bold tracking-tight text-white">TEQARA <span class="text-cyan-400">ADMIN</span></span>
+            </div>
+
+            <nav class="mt-6 px-4 space-y-2">
+                <a href="/admin/dashboard" wire:navigate class="{{ request()->is('admin/dashboard') ? 'bg-cyan-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition">
+                    <svg class="mr-3 h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                    Dasbor
+                </a>
+
+                <a href="/admin/pesanan" wire:navigate class="{{ request()->is('admin/pesanan*') ? 'bg-cyan-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition">
+                    <svg class="mr-3 h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    Pesanan
+                </a>
+
+                <a href="/admin/produk" wire:navigate class="{{ request()->is('admin/produk*') ? 'bg-cyan-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }} group flex items-center px-2 py-2 text-sm font-medium rounded-md transition">
+                    <svg class="mr-3 h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    Produk
+                </a>
+
+                <!-- Placeholder links -->
+                <a href="#" class="text-slate-400 hover:bg-slate-800 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md transition">
+                    <svg class="mr-3 h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    Pelanggan
+                </a>
+
+                <a href="/logout" class="mt-8 text-red-400 hover:bg-slate-800 hover:text-red-300 group flex items-center px-2 py-2 text-sm font-medium rounded-md transition">
+                    <svg class="mr-3 h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                    Keluar
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <header class="bg-white shadow-sm border-b border-slate-200 py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+                <h1 class="text-lg font-bold leading-6 text-slate-900">{{ $title ?? 'Admin Area' }}</h1>
+                <div class="flex items-center gap-4">
+                    <span class="text-sm text-slate-500">Halo, <span class="font-bold text-slate-900">{{ auth()->user()->nama ?? 'Admin' }}</span></span>
+                    <img class="h-8 w-8 rounded-full bg-slate-300" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->nama ?? 'Admin') }}&background=0891b2&color=fff" alt="">
+                </div>
+            </header>
+
+            <div class="py-6">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
+                    {{ $slot }}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    @livewire('komponen.notifikasi')
+</body>
+</html>
