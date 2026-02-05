@@ -59,11 +59,12 @@ class DetailProduk extends Component
     #[Title('Detail Produk')]
     public function render()
     {
-        $this->dispatch('update-title', title: $this->produk->nama.' - Teqara Store');
+        $deskripsi_seo = strip_tags($this->produk->deskripsi_singkat ?? $this->produk->nama);
 
         return view('livewire.produk.detail-produk')
             ->layout('components.layouts.app', [
-                'title' => $this->produk->nama.' | Teqara',
+                'title' => $this->produk->nama . ' | Teqara Enterprise',
+                'deskripsi' => $deskripsi_seo
             ]);
     }
 

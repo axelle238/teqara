@@ -4,6 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title ?? 'Teqara - Solusi Teknologi Enterprise' }}</title>
+    <meta name="description" content="{{ $deskripsi ?? 'Platform pengadaan perangkat komputasi high-end tercepat dan terpercaya untuk profesional maupun korporasi.' }}">
+    
+    <!-- Open Graph / SEO Sosial -->
+    <meta property="og:title" content="{{ $title ?? 'Teqara Enterprise' }}">
+    <meta property="og:description" content="{{ $deskripsi ?? 'Solusi Teknologi Enterprise Indonesia.' }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
     
     <!-- Fonts: Plus Jakarta Sans (Modern & Enterprise) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
