@@ -40,6 +40,7 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
 
     // Manajemen Produk (Enterprise Style - No Modal)
     Route::get('/produk', \App\Livewire\Admin\Produk\ManajemenProduk::class)->name('admin.produk');
+    Route::get('/stok', \App\Livewire\Admin\Stok\ManajemenStok::class)->name('admin.stok');
 
     // Manajemen Master & Audit
     Route::get('/kategori', \App\Livewire\Admin\Kategori\DaftarKategori::class)->name('admin.kategori');

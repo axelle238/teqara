@@ -7,10 +7,14 @@ use App\Models\Pesanan;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
+/**
+ * LayananStok Enterprise v2.2
+ * Mendukung mutasi antar gudang dan pencatatan nomor seri.
+ */
 class LayananStok
 {
     /**
-     * Menahan stok saat pesanan dibuat (Pending Payment).
+     * Menahan stok saat pesanan dibuat.
      */
     public function tahanStok(Pesanan $pesanan)
     {
@@ -19,10 +23,9 @@ class LayananStok
                 $produk = $detail->produk;
                 
                 if ($produk->stok < $detail->jumlah) {
-                    throw new Exception("Stok tidak cukup untuk produk: {$produk->nama}");
+                    throw new Exception("Stok fisik tidak cukup untuk: {$produk->nama}");
                 }
 
-                // Pindahkan stok ke 'ditahan'
                 $produk->decrement('stok', $detail->jumlah);
                 $produk->increment('stok_ditahan', $detail->jumlah);
             }
@@ -30,7 +33,8 @@ class LayananStok
     }
 
     /**
-     * Memfinalisasi stok saat pembayaran lunas (Stok benar-benar keluar).
+     * Finalisasi stok saat pembayaran lunas.
+     * Mengurangi stok dari Gudang Toko Utama (ID: 1).
      */
     public function finalisasiStok(Pesanan $pesanan)
     {
@@ -38,8 +42,13 @@ class LayananStok
             foreach ($pesanan->detailPesanan as $detail) {
                 $produk = $detail->produk;
                 
-                // Kurangi stok ditahan (karena barang dianggap sold out permanen)
                 $produk->decrement('stok_ditahan', $detail->jumlah);
+
+                // Kurangi Stok dari Gudang (Default: Toko Utama ID 1)
+                DB::table('stok_gudang')
+                    ->where('produk_id', $produk->id)
+                    ->where('gudang_id', 1)
+                    ->decrement('jumlah', $detail->jumlah);
 
                 // Catat Mutasi
                 DB::table('mutasi_stok')->insert([
@@ -47,7 +56,7 @@ class LayananStok
                     'jumlah' => -$detail->jumlah,
                     'jenis_mutasi' => 'penjualan',
                     'referensi_id' => $pesanan->nomor_invoice,
-                    'keterangan' => 'Penjualan via Website',
+                    'keterangan' => 'Penjualan Invoice ' . $pesanan->nomor_invoice,
                     'oleh_pengguna_id' => $pesanan->pengguna_id,
                     'created_at' => now(),
                     'updated_at' => now(),
@@ -57,47 +66,29 @@ class LayananStok
     }
 
     /**
-     * Mengembalikan stok jika pesanan dibatalkan/kadaluarsa.
+     * Memindahkan stok antar gudang.
      */
-    public function kembalikanStok(Pesanan $pesanan)
+    public function pindahStok($produkId, $dariGudangId, $keGudangId, $jumlah, $keterangan = '')
     {
-        DB::transaction(function () use ($pesanan) {
-            foreach ($pesanan->detailPesanan as $detail) {
-                $produk = $detail->produk;
+        DB::transaction(function () use ($produkId, $dariGudangId, $keGudangId, $jumlah, $keterangan) {
+            // Kurangi dari asal
+            DB::table('stok_gudang')
+                ->where('produk_id', $produkId)
+                ->where('gudang_id', $dariGudangId)
+                ->decrement('jumlah', $jumlah);
 
-                // Kembalikan dari ditahan ke stok aktif
-                $produk->decrement('stok_ditahan', $detail->jumlah);
-                $produk->increment('stok', $detail->jumlah);
+            // Tambah ke tujuan
+            DB::table('stok_gudang')->updateOrInsert(
+                ['produk_id' => $produkId, 'gudang_id' => $keGudangId],
+                ['jumlah' => DB::raw("jumlah + $jumlah"), 'updated_at' => now()]
+            );
 
-                // Catat Mutasi (Opsional, sebagai log pembatalan)
-                DB::table('mutasi_stok')->insert([
-                    'produk_id' => $produk->id,
-                    'jumlah' => $detail->jumlah,
-                    'jenis_mutasi' => 'batal_pesanan',
-                    'referensi_id' => $pesanan->nomor_invoice,
-                    'keterangan' => 'Pengembalian stok (Pesanan Batal)',
-                    'oleh_pengguna_id' => auth()->id() ?? null, // Bisa sistem atau admin
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-        });
-    }
-    
-    /**
-     * Menambah stok manual (Restock Gudang).
-     */
-    public function tambahStok(Produk $produk, int $jumlah, string $keterangan = 'Restock Manual')
-    {
-        DB::transaction(function () use ($produk, $jumlah, $keterangan) {
-            $produk->increment('stok', $jumlah);
-
+            // Audit Trail
             DB::table('mutasi_stok')->insert([
-                'produk_id' => $produk->id,
-                'jumlah' => $jumlah,
-                'jenis_mutasi' => 'masuk_barang',
-                'referensi_id' => null,
-                'keterangan' => $keterangan,
+                'produk_id' => $produkId,
+                'jumlah' => 0, // Netto 0 karena hanya pindah internal
+                'jenis_mutasi' => 'pindah_gudang',
+                'keterangan' => "Transfer gudang: $keterangan",
                 'oleh_pengguna_id' => auth()->id(),
                 'created_at' => now(),
                 'updated_at' => now(),
