@@ -129,12 +129,18 @@
         </div>
 
         <!-- Log Aktivitas Stream -->
-        <div class="lg:col-span-1 bg-white rounded-[32px] border border-slate-100 shadow-sm p-8">
-            <h3 class="text-lg font-black text-slate-900 mb-6">Aktivitas Sistem</h3>
+        <div class="lg:col-span-1 bg-white rounded-[32px] border border-slate-100 shadow-sm p-8" wire:poll.10s>
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-black text-slate-900">Aktivitas Sistem</h3>
+                <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+            </div>
             <div class="space-y-6 relative">
                 <div class="absolute left-[11px] top-2 bottom-2 w-0.5 bg-slate-100"></div>
                 @foreach($logTerbaru as $log)
-                <div class="relative pl-8">
+                <div class="relative pl-8 animate-in fade-in slide-in-from-left-4 duration-500">
                     <div class="absolute left-0 top-1.5 w-6 h-6 bg-white border-2 border-indigo-100 rounded-full flex items-center justify-center z-10">
                         <div class="w-2 h-2 bg-indigo-500 rounded-full"></div>
                     </div>

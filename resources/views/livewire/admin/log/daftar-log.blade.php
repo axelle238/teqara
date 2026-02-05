@@ -10,7 +10,17 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
+    <div class="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden" wire:poll.5s>
+        <div class="px-8 py-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
+            <div class="flex items-center gap-3">
+                <span class="flex h-2 w-2 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Live Monitoring</span>
+            </div>
+            <span class="text-[10px] font-bold text-slate-400">Pembaruan Otomatis (5s)</span>
+        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead>
