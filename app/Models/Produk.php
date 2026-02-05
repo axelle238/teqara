@@ -11,6 +11,7 @@ class Produk extends Model
     use HasFactory;
 
     protected $table = 'produk';
+
     protected $guarded = ['id'];
 
     public function kategori(): BelongsTo
@@ -26,6 +27,6 @@ class Produk extends Model
     // Helper untuk format harga rupiah
     public function getHargaRupiahAttribute()
     {
-        return 'Rp ' . number_format($this->harga_jual, 0, ',', '.');
+        return 'Rp '.number_format($this->harga_jual, 0, ',', '.');
     }
 }

@@ -11,8 +11,9 @@ class LogAktivitas extends Model
     use HasFactory;
 
     protected $table = 'log_aktivitas';
+
     public $timestamps = false; // Karena hanya ada kolom 'waktu' manual
-    
+
     protected $guarded = ['id'];
 
     protected $casts = [

@@ -2,16 +2,19 @@
 
 namespace App\Livewire\Admin\Pesanan;
 
-use Livewire\Component;
-use App\Models\Pesanan;
 use App\Models\LogAktivitas;
+use App\Models\Pesanan;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 class DetailPesanan extends Component
 {
     public Pesanan $pesanan;
+
     public $statusPesanan;
+
     public $statusPembayaran;
+
     public $resiPengiriman;
 
     public function mount(Pesanan $pesanan)
@@ -25,7 +28,7 @@ class DetailPesanan extends Component
     public function simpanPerubahan()
     {
         $pesananLama = $this->pesanan->replicate();
-        
+
         $this->pesanan->update([
             'status_pesanan' => $this->statusPesanan,
             'status_pembayaran' => $this->statusPembayaran,
@@ -43,7 +46,7 @@ class DetailPesanan extends Component
 
         $this->dispatch('notifikasi', [
             'tipe' => 'sukses',
-            'pesan' => 'Data pesanan berhasil diperbarui.'
+            'pesan' => 'Data pesanan berhasil diperbarui.',
         ]);
     }
 
@@ -53,8 +56,8 @@ class DetailPesanan extends Component
             'pengguna_id' => auth()->id(),
             'aksi' => 'update_pesanan',
             'target' => $this->pesanan->nomor_invoice,
-            'pesan_naratif' => "Admin " . auth()->user()->nama . " {$pesan} pada invoice {$this->pesanan->nomor_invoice}",
-            'waktu' => now()
+            'pesan_naratif' => 'Admin '.auth()->user()->nama." {$pesan} pada invoice {$this->pesanan->nomor_invoice}",
+            'waktu' => now(),
         ]);
     }
 

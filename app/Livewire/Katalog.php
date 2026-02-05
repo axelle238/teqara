@@ -2,13 +2,13 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use Livewire\Attributes\Url;
-use Livewire\WithPagination;
-use App\Models\Produk;
 use App\Models\Kategori;
 use App\Models\Merek;
+use App\Models\Produk;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class Katalog extends Component
 {
@@ -45,11 +45,11 @@ class Katalog extends Component
 
         // Filter Pencarian
         if ($this->cari) {
-            $query->where('nama', 'like', '%' . $this->cari . '%');
+            $query->where('nama', 'like', '%'.$this->cari.'%');
         }
 
         // Filter Kategori (Menerima array slug)
-        if (!empty($this->filterKategori)) {
+        if (! empty($this->filterKategori)) {
             $query->whereHas('kategori', function (Builder $q) {
                 // Jika input string tunggal (dari link menu), ubah jadi array
                 $filters = is_array($this->filterKategori) ? $this->filterKategori : [$this->filterKategori];
@@ -58,7 +58,7 @@ class Katalog extends Component
         }
 
         // Filter Merek
-        if (!empty($this->filterMerek)) {
+        if (! empty($this->filterMerek)) {
             $query->whereHas('merek', function (Builder $q) {
                 $filters = is_array($this->filterMerek) ? $this->filterMerek : [$this->filterMerek];
                 $q->whereIn('slug', $filters);

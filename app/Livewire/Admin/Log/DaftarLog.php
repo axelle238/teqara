@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Admin\Log;
 
-use Livewire\Component;
 use App\Models\LogAktivitas;
-use Livewire\WithPagination;
 use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class DaftarLog extends Component
 {
@@ -22,16 +22,16 @@ class DaftarLog extends Component
     public function render()
     {
         $logs = LogAktivitas::with('pengguna')
-            ->when($this->cari, function($query) {
-                $query->where('aksi', 'like', '%' . $this->cari . '%')
-                      ->orWhere('target', 'like', '%' . $this->cari . '%')
-                      ->orWhere('pesan_naratif', 'like', '%' . $this->cari . '%');
+            ->when($this->cari, function ($query) {
+                $query->where('aksi', 'like', '%'.$this->cari.'%')
+                    ->orWhere('target', 'like', '%'.$this->cari.'%')
+                    ->orWhere('pesan_naratif', 'like', '%'.$this->cari.'%');
             })
             ->latest('waktu')
             ->paginate(20);
 
         return view('livewire.admin.log.daftar-log', [
-            'logs' => $logs
+            'logs' => $logs,
         ])->layout('components.layouts.admin', ['title' => 'Log Aktivitas Sistem']);
     }
 }

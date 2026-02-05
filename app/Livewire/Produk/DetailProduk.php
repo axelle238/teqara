@@ -2,13 +2,14 @@
 
 namespace App\Livewire\Produk;
 
-use Livewire\Component;
 use App\Models\Produk;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 class DetailProduk extends Component
 {
     public $produk;
+
     public $jumlah = 1;
 
     public function mount($slug)
@@ -16,7 +17,7 @@ class DetailProduk extends Component
         $this->produk = Produk::where('slug', $slug)
             ->with(['kategori', 'merek'])
             ->firstOrFail();
-            
+
         // Validasi stok awal
         if ($this->produk->stok < 1) {
             $this->jumlah = 0;
@@ -27,11 +28,11 @@ class DetailProduk extends Component
     public function render()
     {
         // Set Judul Halaman Dinamis untuk SEO
-        $this->dispatch('update-title', title: $this->produk->nama . ' - Teqara Store');
+        $this->dispatch('update-title', title: $this->produk->nama.' - Teqara Store');
 
         return view('livewire.produk.detail-produk')
             ->layout('components.layouts.app', [
-                'title' => $this->produk->nama . ' | Teqara',
+                'title' => $this->produk->nama.' | Teqara',
             ]);
     }
 
@@ -51,19 +52,21 @@ class DetailProduk extends Component
 
     public function tambahKeKeranjang()
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             $this->dispatch('notifikasi', [
                 'tipe' => 'info',
-                'pesan' => 'Silakan masuk (login) terlebih dahulu untuk mulai belanja.'
+                'pesan' => 'Silakan masuk (login) terlebih dahulu untuk mulai belanja.',
             ]);
+
             return;
         }
 
         if ($this->produk->stok < 1) {
             $this->dispatch('notifikasi', [
                 'tipe' => 'error',
-                'pesan' => 'Maaf, stok produk ini sedang habis.'
+                'pesan' => 'Maaf, stok produk ini sedang habis.',
             ]);
+
             return;
         }
 
@@ -74,22 +77,22 @@ class DetailProduk extends Component
 
         if ($item) {
             $item->update([
-                'jumlah' => $item->jumlah + $this->jumlah
+                'jumlah' => $item->jumlah + $this->jumlah,
             ]);
         } else {
             \App\Models\Keranjang::create([
                 'pengguna_id' => auth()->id(),
                 'produk_id' => $this->produk->id,
-                'jumlah' => $this->jumlah
+                'jumlah' => $this->jumlah,
             ]);
         }
-        
+
         // Beritahu Navbar untuk update counter
         $this->dispatch('update-keranjang');
 
         $this->dispatch('notifikasi', [
             'tipe' => 'sukses',
-            'pesan' => "{$this->produk->nama} berhasil ditambahkan ke keranjang!"
+            'pesan' => "{$this->produk->nama} berhasil ditambahkan ke keranjang!",
         ]);
     }
 }

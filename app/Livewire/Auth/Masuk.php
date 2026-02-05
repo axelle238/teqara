@@ -2,14 +2,16 @@
 
 namespace App\Livewire\Auth;
 
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 class Masuk extends Component
 {
     public $email = '';
+
     public $kata_sandi = '';
+
     public $ingat_saya = false;
 
     public function masuk()

@@ -23,10 +23,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/keranjang', \App\Livewire\KeranjangBelanja::class)->name('keranjang');
     Route::get('/checkout', \App\Livewire\Checkout::class)->name('checkout');
     Route::get('/pesanan/riwayat', \App\Livewire\Pesanan\Riwayat::class)->name('pesanan.riwayat');
-
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', \App\Livewire\Pelanggan\Profil::class)->name('dashboard');
 });
 
 // Rute Admin (Memerlukan Login & Peran Admin)

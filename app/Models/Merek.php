@@ -11,6 +11,7 @@ class Merek extends Model
     use HasFactory;
 
     protected $table = 'merek';
+
     protected $guarded = ['id'];
 
     public function produk(): HasMany

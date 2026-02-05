@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Komponen;
 
-use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 class Notifikasi extends Component
 {

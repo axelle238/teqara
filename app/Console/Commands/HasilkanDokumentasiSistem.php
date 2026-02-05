@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 class HasilkanDokumentasiSistem extends Command
 {
@@ -36,7 +36,7 @@ class HasilkanDokumentasiSistem extends Command
             'versi_laravel' => app()->version(),
             'bahasa_sistem' => '100% Bahasa Indonesia',
             'terakhir_diperbarui' => now()->format('d/m/Y H:i:s'),
-            
+
             'modul_aktif' => [
                 'Hulu' => ['Manajemen Produk', 'Kategori', 'Merek', 'Manajemen Stok'],
                 'Tengah' => ['Katalog Publik', 'Detail Produk', 'Keranjang Belanja', 'Checkout'],
@@ -44,18 +44,18 @@ class HasilkanDokumentasiSistem extends Command
             ],
 
             'struktur_database' => $this->ambilStrukturDatabase(),
-            
+
             'endpoint_sistem' => $this->ambilDaftarEndpoint(),
 
             'status_keamanan' => [
                 'Middleware' => ['auth', 'CekPeranAdmin'],
                 'Akses_Modal' => 'DILARANG (0% Modal)',
-            ]
+            ],
         ];
 
         $path = storage_path('dokumentasi/dokumentasi_sistem.json');
-        
-        if (!File::exists(dirname($path))) {
+
+        if (! File::exists(dirname($path))) {
             File::makeDirectory(dirname($path), 0755, true);
         }
 
@@ -73,7 +73,7 @@ class HasilkanDokumentasiSistem extends Command
             if (Schema::hasTable($tabel)) {
                 $hasil[$tabel] = [
                     'jumlah_baris' => DB::table($tabel)->count(),
-                    'status' => 'Aktif'
+                    'status' => 'Aktif',
                 ];
             }
         }
@@ -89,8 +89,8 @@ class HasilkanDokumentasiSistem extends Command
                 'nama' => $route->getName(),
                 'method' => implode('|', $route->methods()),
             ];
-        })->filter(fn($r) => str_contains($r['uri'], 'admin') || $r['nama'] !== null)
-          ->values()
-          ->toArray();
+        })->filter(fn ($r) => str_contains($r['uri'], 'admin') || $r['nama'] !== null)
+            ->values()
+            ->toArray();
     }
 }

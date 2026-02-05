@@ -2,18 +2,25 @@
 
 namespace App\Livewire\Admin\Merek;
 
-use Livewire\Component;
-use App\Models\Merek;
 use App\Models\LogAktivitas;
+use App\Models\Merek;
 use Illuminate\Support\Str;
-use Livewire\WithPagination;
 use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class DaftarMerek extends Component
 {
     use WithPagination;
 
-    public $nama, $slug, $logo, $merekId;
+    public $nama;
+
+    public $slug;
+
+    public $logo;
+
+    public $merekId;
+
     public $modeEdit = false;
 
     protected $rules = [
@@ -39,8 +46,8 @@ class DaftarMerek extends Component
             'pengguna_id' => auth()->id(),
             'aksi' => 'tambah_merek',
             'target' => $this->nama,
-            'pesan_naratif' => "Admin menambahkan merek baru: " . $this->nama,
-            'waktu' => now()
+            'pesan_naratif' => 'Admin menambahkan merek baru: '.$this->nama,
+            'waktu' => now(),
         ]);
 
         $this->reset(['nama', 'slug', 'logo']);
@@ -60,7 +67,7 @@ class DaftarMerek extends Component
     public function perbarui()
     {
         $this->validate([
-            'nama' => 'required|min:2|unique:merek,nama,' . $this->merekId,
+            'nama' => 'required|min:2|unique:merek,nama,'.$this->merekId,
         ]);
 
         $merek = Merek::find($this->merekId);
@@ -85,8 +92,8 @@ class DaftarMerek extends Component
             'pengguna_id' => auth()->id(),
             'aksi' => 'hapus_merek',
             'target' => $nama,
-            'pesan_naratif' => "Admin menghapus merek: " . $nama,
-            'waktu' => now()
+            'pesan_naratif' => 'Admin menghapus merek: '.$nama,
+            'waktu' => now(),
         ]);
 
         $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Merek berhasil dihapus.']);
@@ -96,7 +103,7 @@ class DaftarMerek extends Component
     public function render()
     {
         return view('livewire.admin.merek.daftar-merek', [
-            'daftarMerek' => Merek::latest()->paginate(10)
+            'daftarMerek' => Merek::latest()->paginate(10),
         ])->layout('components.layouts.admin');
     }
 }

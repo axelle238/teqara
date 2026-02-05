@@ -15,7 +15,7 @@ class CekPeranAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || auth()->user()->peran !== 'admin') {
+        if (! auth()->check() || auth()->user()->peran !== 'admin') {
             abort(403, 'AKSES DITOLAK: Halaman ini hanya untuk Administrator.');
         }
 

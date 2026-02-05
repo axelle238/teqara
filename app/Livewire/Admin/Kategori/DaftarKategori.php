@@ -2,18 +2,25 @@
 
 namespace App\Livewire\Admin\Kategori;
 
-use Livewire\Component;
 use App\Models\Kategori;
 use App\Models\LogAktivitas;
 use Illuminate\Support\Str;
-use Livewire\WithPagination;
 use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class DaftarKategori extends Component
 {
     use WithPagination;
 
-    public $nama, $slug, $ikon, $kategoriId;
+    public $nama;
+
+    public $slug;
+
+    public $ikon;
+
+    public $kategoriId;
+
     public $modeEdit = false;
 
     protected $rules = [
@@ -40,8 +47,8 @@ class DaftarKategori extends Component
             'pengguna_id' => auth()->id(),
             'aksi' => 'tambah_kategori',
             'target' => $this->nama,
-            'pesan_naratif' => "Admin berhasil menambahkan kategori baru: " . $this->nama,
-            'waktu' => now()
+            'pesan_naratif' => 'Admin berhasil menambahkan kategori baru: '.$this->nama,
+            'waktu' => now(),
         ]);
 
         $this->reset(['nama', 'slug', 'ikon']);
@@ -61,7 +68,7 @@ class DaftarKategori extends Component
     public function perbarui()
     {
         $this->validate([
-            'nama' => 'required|min:3|unique:kategori,nama,' . $this->kategoriId,
+            'nama' => 'required|min:3|unique:kategori,nama,'.$this->kategoriId,
         ]);
 
         $kategori = Kategori::find($this->kategoriId);
@@ -86,8 +93,8 @@ class DaftarKategori extends Component
             'pengguna_id' => auth()->id(),
             'aksi' => 'hapus_kategori',
             'target' => $nama,
-            'pesan_naratif' => "Admin menghapus kategori: " . $nama,
-            'waktu' => now()
+            'pesan_naratif' => 'Admin menghapus kategori: '.$nama,
+            'waktu' => now(),
         ]);
 
         $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Kategori berhasil dihapus.']);
@@ -97,7 +104,7 @@ class DaftarKategori extends Component
     public function render()
     {
         return view('livewire.admin.kategori.daftar-kategori', [
-            'daftarKategori' => Kategori::latest()->paginate(10)
+            'daftarKategori' => Kategori::latest()->paginate(10),
         ])->layout('components.layouts.admin');
     }
 }

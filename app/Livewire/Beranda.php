@@ -2,8 +2,8 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Kategori;
+use Livewire\Component;
 
 class Beranda extends Component
 {
@@ -11,16 +11,16 @@ class Beranda extends Component
     {
         // Ambil kategori untuk ditampilkan di menu
         $kategori = Kategori::all();
-        
+
         // Ambil 4 produk terbaru
         $produkTerbaru = \App\Models\Produk::with(['kategori', 'merek'])
             ->latest()
             ->take(4)
             ->get();
-        
+
         return view('livewire.beranda', [
             'kategori' => $kategori,
-            'produkTerbaru' => $produkTerbaru
+            'produkTerbaru' => $produkTerbaru,
         ])->layout('components.layouts.app');
     }
 }

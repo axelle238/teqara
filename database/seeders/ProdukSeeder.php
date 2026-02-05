@@ -16,19 +16,19 @@ class ProdukSeeder extends Seeder
         $katLaptop = Kategori::create([
             'nama' => 'Laptop & Notebook',
             'slug' => 'laptop-notebook',
-            'ikon' => 'laptop'
+            'ikon' => 'laptop',
         ]);
-        
+
         $katHp = Kategori::create([
             'nama' => 'Smartphone',
             'slug' => 'smartphone',
-            'ikon' => 'device-phone-mobile'
+            'ikon' => 'device-phone-mobile',
         ]);
 
         $katAcc = Kategori::create([
             'nama' => 'Aksesoris',
             'slug' => 'aksesoris',
-            'ikon' => 'cpu-chip'
+            'ikon' => 'cpu-chip',
         ]);
 
         // 2. Buat Merek
@@ -50,7 +50,7 @@ class ProdukSeeder extends Seeder
             'harga_jual' => 32500000,
             'stok' => 5,
             'status' => 'aktif',
-            'gambar_utama' => 'https://dlcdnwebimgs.asus.com/gain/46480749-9359-4299-8E2E-158A5499D508/w750/h470'
+            'gambar_utama' => 'https://dlcdnwebimgs.asus.com/gain/46480749-9359-4299-8E2E-158A5499D508/w750/h470',
         ]);
 
         // MacBook
@@ -66,7 +66,7 @@ class ProdukSeeder extends Seeder
             'harga_jual' => 31999000,
             'stok' => 10,
             'status' => 'aktif',
-            'gambar_utama' => 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp14-spacegray-select-202310?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1697311054290'
+            'gambar_utama' => 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp14-spacegray-select-202310?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1697311054290',
         ]);
 
         // Mouse
@@ -82,7 +82,7 @@ class ProdukSeeder extends Seeder
             'harga_jual' => 1650000,
             'stok' => 50,
             'status' => 'aktif',
-            'gambar_utama' => 'https://resource.logitech.com/w_692,c_lpad,ar_4:3,q_auto:best,f_auto,dpr_auto/content/dam/logitech/en/products/mice/mx-master-3s/gallery/mx-master-3s-mouse-top-view-graphite.png'
+            'gambar_utama' => 'https://resource.logitech.com/w_692,c_lpad,ar_4:3,q_auto:best,f_auto,dpr_auto/content/dam/logitech/en/products/mice/mx-master-3s/gallery/mx-master-3s-mouse-top-view-graphite.png',
         ]);
     }
 }

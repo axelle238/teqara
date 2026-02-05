@@ -2,18 +2,19 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use App\Models\Keranjang;
-use App\Models\Pesanan;
 use App\Models\DetailPesanan;
-use App\Models\Produk;
+use App\Models\Keranjang;
 use App\Models\LogAktivitas;
+use App\Models\Pesanan;
+use App\Models\Produk;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 class Checkout extends Component
 {
     public $alamat_pengiriman = '';
+
     public $catatan = '';
 
     public function mount()
@@ -50,7 +51,7 @@ class Checkout extends Component
             DB::beginTransaction();
 
             // 1. Generate Nomor Invoice
-            $nomorInvoice = 'TRX-' . date('Ymd') . '-' . strtoupper(bin2hex(random_bytes(3)));
+            $nomorInvoice = 'TRX-'.date('Ymd').'-'.strtoupper(bin2hex(random_bytes(3)));
 
             // 2. Buat Pesanan
             $pesanan = Pesanan::create([
@@ -86,7 +87,7 @@ class Checkout extends Component
                 'pengguna_id' => auth()->id(),
                 'aksi' => 'buat_pesanan',
                 'target' => $nomorInvoice,
-                'pesan_naratif' => "Pelanggan " . auth()->user()->nama . " berhasil membuat pesanan baru dengan nomor invoice {$nomorInvoice} total Rp " . number_format($this->total_harga, 0, ',', '.'),
+                'pesan_naratif' => 'Pelanggan '.auth()->user()->nama." berhasil membuat pesanan baru dengan nomor invoice {$nomorInvoice} total Rp ".number_format($this->total_harga, 0, ',', '.'),
             ]);
 
             // 5. Kosongkan Keranjang
@@ -97,7 +98,7 @@ class Checkout extends Component
             $this->dispatch('update-keranjang');
             $this->dispatch('notifikasi', [
                 'tipe' => 'sukses',
-                'pesan' => "Pesanan #{$nomorInvoice} berhasil dibuat!"
+                'pesan' => "Pesanan #{$nomorInvoice} berhasil dibuat!",
             ]);
 
             return redirect()->to('/pesanan/riwayat');
@@ -106,7 +107,7 @@ class Checkout extends Component
             DB::rollBack();
             $this->dispatch('notifikasi', [
                 'tipe' => 'error',
-                'pesan' => 'Gagal membuat pesanan: ' . $e->getMessage()
+                'pesan' => 'Gagal membuat pesanan: '.$e->getMessage(),
             ]);
         }
     }

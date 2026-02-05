@@ -2,17 +2,18 @@
 
 namespace App\Livewire\Admin\Pengguna;
 
-use Livewire\Component;
-use App\Models\Pengguna;
 use App\Models\LogAktivitas;
-use Livewire\WithPagination;
+use App\Models\Pengguna;
 use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class DaftarPengguna extends Component
 {
     use WithPagination;
 
     public $cari = '';
+
     public $filterPeran = '';
 
     public function updatedCari()
@@ -31,7 +32,7 @@ class DaftarPengguna extends Component
             'aksi' => 'ubah_peran',
             'target' => $pengguna->nama,
             'pesan_naratif' => "Admin mengubah peran {$pengguna->nama} dari {$peranLama} menjadi {$peranBaru}",
-            'waktu' => now()
+            'waktu' => now(),
         ]);
 
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "Peran {$pengguna->nama} berhasil diperbarui."]);
@@ -41,16 +42,16 @@ class DaftarPengguna extends Component
     public function render()
     {
         $query = Pengguna::query()
-            ->when($this->cari, function($q) {
-                $q->where('nama', 'like', '%' . $this->cari . '%')
-                  ->orWhere('email', 'like', '%' . $this->cari . '%');
+            ->when($this->cari, function ($q) {
+                $q->where('nama', 'like', '%'.$this->cari.'%')
+                    ->orWhere('email', 'like', '%'.$this->cari.'%');
             })
-            ->when($this->filterPeran, function($q) {
+            ->when($this->filterPeran, function ($q) {
                 $q->where('peran', $this->filterPeran);
             });
 
         return view('livewire.admin.pengguna.daftar-pengguna', [
-            'daftarPengguna' => $query->latest()->paginate(10)
+            'daftarPengguna' => $query->latest()->paginate(10),
         ])->layout('components.layouts.admin', ['title' => 'Manajemen Pengguna & Pelanggan']);
     }
 }

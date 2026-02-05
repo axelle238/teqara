@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Pesanan;
 
-use Livewire\Component;
 use App\Models\Pesanan;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 class Riwayat extends Component
 {

@@ -2,16 +2,17 @@
 
 namespace App\Livewire\Admin\Pesanan;
 
-use Livewire\Component;
-use Livewire\WithPagination;
 use App\Models\Pesanan;
 use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class DaftarPesanan extends Component
 {
     use WithPagination;
 
     public $filterStatus = '';
+
     public $cari = '';
 
     public function updated($property)
@@ -31,11 +32,11 @@ class DaftarPesanan extends Component
         }
 
         if ($this->cari) {
-            $query->where('nomor_invoice', 'like', '%' . $this->cari . '%');
+            $query->where('nomor_invoice', 'like', '%'.$this->cari.'%');
         }
 
         return view('livewire.admin.pesanan.daftar-pesanan', [
-            'pesanan' => $query->paginate(10)
+            'pesanan' => $query->paginate(10),
         ])->layout('components.layouts.admin', ['title' => 'Kelola Pesanan']);
     }
 }

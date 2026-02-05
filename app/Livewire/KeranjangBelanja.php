@@ -2,9 +2,9 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Keranjang;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 class KeranjangBelanja extends Component
 {
@@ -14,7 +14,7 @@ class KeranjangBelanja extends Component
             ->with('produk')
             ->get();
     }
-    
+
     // ... method lainnya tetap sama ...
 
     public function tambahJumlah($id)
@@ -50,7 +50,7 @@ class KeranjangBelanja extends Component
         $this->dispatch('update-keranjang');
         $this->dispatch('notifikasi', [
             'tipe' => 'info',
-            'pesan' => 'Produk berhasil dihapus dari keranjang.'
+            'pesan' => 'Produk berhasil dihapus dari keranjang.',
         ]);
     }
 
