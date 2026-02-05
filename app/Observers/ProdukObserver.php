@@ -3,38 +3,12 @@
 namespace App\Observers;
 
 use App\Models\Produk;
-use Illuminate\Support\Facades\Cache;
+use App\Services\LayananDokumentasi;
 
 class ProdukObserver
 {
-    /**
-     * Handle the Produk "created" event.
-     */
-    public function created(Produk $produk): void
-    {
-        $this->bersihkanCache();
-    }
+    public function __construct(protected LayananDokumentasi $layanan) {}
 
-    /**
-     * Handle the Produk "updated" event.
-     */
-    public function updated(Produk $produk): void
-    {
-        $this->bersihkanCache();
-    }
-
-    /**
-     * Handle the Produk "deleted" event.
-     */
-    public function deleted(Produk $produk): void
-    {
-        $this->bersihkanCache();
-    }
-
-    private function bersihkanCache()
-    {
-        Cache::forget('beranda_kategori');
-        Cache::forget('beranda_produk_unggulan');
-        Cache::forget('beranda_statistik');
-    }
+    public function saved(Produk $produk): void { $this->layanan->perbaruiDokumentasi(); }
+    public function deleted(Produk $produk): void { $this->layanan->perbaruiDokumentasi(); }
 }

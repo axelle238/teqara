@@ -21,7 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Produk::observe(ProdukObserver::class);
+        \App\Models\Produk::observe(\App\Observers\ProdukObserver::class);
+        \App\Models\Pesanan::observe(\App\Observers\PesananObserver::class);
+        \App\Models\Pengguna::observe(\App\Observers\PenggunaObserver::class);
 
         // Share Pengaturan Global ke Semua View
         try {
