@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\LayananDokumentasi;
+use Illuminate\Console\Command;
 
 class HasilkanDokumentasiSistem extends Command
 {
     protected $signature = 'dokumentasi:generate';
+
     protected $description = 'Menghasilkan dokumentasi sistem TEQARA otomatis via Layanan';
 
     public function handle(LayananDokumentasi $layanan)

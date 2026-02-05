@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Admin\Laporan;
 
+use App\Models\DetailPesanan;
 use App\Models\Pesanan;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -51,8 +53,8 @@ class DaftarLaporan extends Component
         $totalPesanan = $pesananData->count();
 
         // Produk Terlaris
-        $produkTerlaris = \App\Models\DetailPesanan::query()
-            ->select('produk_id', \Illuminate\Support\Facades\DB::raw('SUM(jumlah) as total_terjual'), \Illuminate\Support\Facades\DB::raw('SUM(subtotal) as total_omzet'))
+        $produkTerlaris = DetailPesanan::query()
+            ->select('produk_id', DB::raw('SUM(jumlah) as total_terjual'), DB::raw('SUM(subtotal) as total_omzet'))
             ->whereIn('pesanan_id', $pesananData->pluck('id'))
             ->groupBy('produk_id')
             ->with('produk')

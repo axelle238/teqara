@@ -2,6 +2,9 @@
 
 namespace App\Livewire\Admin\Stok;
 
+use App\Helpers\LogHelper;
+use App\Models\Gudang;
+use App\Models\MutasiStok;
 use App\Models\Produk;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
@@ -40,7 +43,7 @@ class ManajemenStok extends Component
         return view('livewire.admin.stok.manajemen-stok', [
             'stokGlobal' => $stokGlobal,
             'mutasiTerbaru' => $mutasiTerbaru,
-            'daftarGudang' => \App\Models\Gudang::all(),
+            'daftarGudang' => Gudang::all(),
         ])->layout('components.layouts.admin');
     }
 
@@ -74,7 +77,7 @@ class ManajemenStok extends Component
             ]);
 
             // Log Aktivitas
-            \App\Helpers\LogHelper::catat(
+            LogHelper::catat(
                 'mutasi_stok',
                 $produk->nama,
                 "Admin memindahkan {$this->jumlahMutasi} unit produk {$produk->nama}."

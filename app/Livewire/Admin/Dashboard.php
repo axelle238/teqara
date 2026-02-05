@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\Pesanan;
-use App\Models\Produk;
 use App\Models\DetailPesanan;
 use App\Models\Kategori;
 use App\Models\LogAktivitas;
+use App\Models\Pesanan;
+use App\Models\Produk;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -26,13 +26,13 @@ class Dashboard extends Component
         $pendapatanBulanIni = Pesanan::where('status_pembayaran', 'lunas')
             ->whereMonth('created_at', now()->month)
             ->sum('total_harga');
-            
+
         $pendapatanBulanLalu = Pesanan::where('status_pembayaran', 'lunas')
             ->whereMonth('created_at', now()->subMonth()->month)
             ->sum('total_harga');
 
-        $pertumbuhan = $pendapatanBulanLalu > 0 
-            ? (($pendapatanBulanIni - $pendapatanBulanLalu) / $pendapatanBulanLalu) * 100 
+        $pertumbuhan = $pendapatanBulanLalu > 0
+            ? (($pendapatanBulanIni - $pendapatanBulanLalu) / $pendapatanBulanLalu) * 100
             : 100;
 
         // 3. Tren Penjualan Harian (Grafik Area)
@@ -43,7 +43,7 @@ class Dashboard extends Component
             $total = Pesanan::whereDate('created_at', $tanggal->format('Y-m-d'))
                 ->where('status_pembayaran', 'lunas')
                 ->sum('total_harga');
-            
+
             $trenPenjualan[] = $total;
             $labelHari[] = $tanggal->translatedFormat('d M');
         }
@@ -69,16 +69,16 @@ class Dashboard extends Component
                 'pesanan' => $totalPesanan,
                 'produk' => $totalProduk,
                 'pelanggan' => $totalPelanggan,
-                'pertumbuhan' => $pertumbuhan
+                'pertumbuhan' => $pertumbuhan,
             ],
             'grafik' => [
                 'tren_data' => $trenPenjualan,
                 'tren_label' => $labelHari,
                 'kategori_label' => $kategoriTerlaris->pluck('nama'),
-                'kategori_data' => $kategoriTerlaris->pluck('total_pendapatan')
+                'kategori_data' => $kategoriTerlaris->pluck('total_pendapatan'),
             ],
             'pesananTerbaru' => $pesananTerbaru,
-            'logTerbaru' => $logTerbaru
+            'logTerbaru' => $logTerbaru,
         ])->layout('components.layouts.admin');
     }
 }

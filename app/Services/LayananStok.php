@@ -2,10 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Produk;
 use App\Models\Pesanan;
-use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 /**
  * LayananStok Enterprise v2.2
@@ -21,7 +20,7 @@ class LayananStok
         DB::transaction(function () use ($pesanan) {
             foreach ($pesanan->detailPesanan as $detail) {
                 $produk = $detail->produk;
-                
+
                 if ($produk->stok < $detail->jumlah) {
                     throw new Exception("Stok fisik tidak cukup untuk: {$produk->nama}");
                 }
@@ -41,7 +40,7 @@ class LayananStok
         DB::transaction(function () use ($pesanan) {
             foreach ($pesanan->detailPesanan as $detail) {
                 $produk = $detail->produk;
-                
+
                 $produk->decrement('stok_ditahan', $detail->jumlah);
 
                 // Kurangi Stok dari Gudang (Default: Toko Utama ID 1)
@@ -56,7 +55,7 @@ class LayananStok
                     'jumlah' => -$detail->jumlah,
                     'jenis_mutasi' => 'penjualan',
                     'referensi_id' => $pesanan->nomor_invoice,
-                    'keterangan' => 'Penjualan Invoice ' . $pesanan->nomor_invoice,
+                    'keterangan' => 'Penjualan Invoice '.$pesanan->nomor_invoice,
                     'oleh_pengguna_id' => $pesanan->pengguna_id,
                     'created_at' => now(),
                     'updated_at' => now(),

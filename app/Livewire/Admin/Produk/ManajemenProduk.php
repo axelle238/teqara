@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Produk;
 
+use App\Helpers\LogHelper;
 use App\Models\Kategori;
 use App\Models\Merek;
 use App\Models\Produk;
@@ -18,15 +19,38 @@ use Livewire\WithPagination;
  */
 class ManajemenProduk extends Component
 {
-    use WithPagination, WithFileUploads;
+    use WithFileUploads, WithPagination;
 
     // Properti Form
     public $produk_id;
-    public $kategori_id, $merek_id, $nama, $sku, $harga_modal, $harga_jual, $stok, $berat_gram, $deskripsi_singkat, $deskripsi_lengkap, $status = 'aktif';
+
+    public $kategori_id;
+
+    public $merek_id;
+
+    public $nama;
+
+    public $sku;
+
+    public $harga_modal;
+
+    public $harga_jual;
+
+    public $stok;
+
+    public $berat_gram;
+
+    public $deskripsi_singkat;
+
+    public $deskripsi_lengkap;
+
+    public $status = 'aktif';
+
     public $gambar_baru;
 
     // Filter & Pencarian
     public $cari = '';
+
     public $filter_kategori = '';
 
     protected $rules = [
@@ -77,14 +101,14 @@ class ManajemenProduk extends Component
 
         // Catat mutasi stok awal jika stok > 0
         if ($this->stok > 0) {
-            $layananStok = new LayananStok();
+            $layananStok = new LayananStok;
             $layananStok->tambahStok(Produk::latest()->first(), $this->stok, 'Input stok awal produk baru');
         }
 
         // Catat Log Aktivitas
-        \App\Helpers\LogHelper::catat(
-            'create_produk', 
-            $this->nama, 
+        LogHelper::catat(
+            'create_produk',
+            $this->nama,
             "Admin menambahkan produk baru: {$this->nama} (SKU: {$this->sku})",
             $data
         );
@@ -98,8 +122,8 @@ class ManajemenProduk extends Component
     {
         $daftar_produk = Produk::query()
             ->with(['kategori', 'merek'])
-            ->where('nama', 'like', '%' . $this->cari . '%')
-            ->when($this->filter_kategori, fn($q) => $q->where('kategori_id', $this->filter_kategori))
+            ->where('nama', 'like', '%'.$this->cari.'%')
+            ->when($this->filter_kategori, fn ($q) => $q->where('kategori_id', $this->filter_kategori))
             ->latest()
             ->paginate(10);
 

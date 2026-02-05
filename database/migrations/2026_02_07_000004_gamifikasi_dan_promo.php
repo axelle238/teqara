@@ -55,7 +55,7 @@ return new class extends Migration
         Schema::dropIfExists('produk_flash_sale');
         Schema::dropIfExists('flash_sale');
         Schema::dropIfExists('riwayat_poin');
-        
+
         Schema::table('pengguna', function (Blueprint $table) {
             $table->dropColumn(['poin_loyalitas', 'level_member']);
         });

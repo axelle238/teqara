@@ -6,7 +6,6 @@ use App\Models\DetailPesanan;
 use App\Models\Keranjang;
 use App\Models\LogAktivitas;
 use App\Models\Pesanan;
-use App\Models\Produk;
 use App\Models\Voucher;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
@@ -149,7 +148,7 @@ class Checkout extends Component
             }
 
             // 4. Tahan Stok (Enterprise Logic)
-            $layananStok = new \App\Services\LayananStok();
+            $layananStok = new \App\Services\LayananStok;
             $layananStok->tahanStok($pesanan);
 
             // 5. Update Kuota Voucher

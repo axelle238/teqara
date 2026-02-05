@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 class CekDepartemen
 {
@@ -30,7 +30,7 @@ class CekDepartemen
             ->select('departemen.kode')
             ->first();
 
-        if (!$karyawan || $karyawan->kode !== $kodeDepartemen) {
+        if (! $karyawan || $karyawan->kode !== $kodeDepartemen) {
             abort(403, 'Akses Ditolak: Anda tidak memiliki wewenang departemen.');
         }
 

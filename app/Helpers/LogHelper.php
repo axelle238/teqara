@@ -8,11 +8,11 @@ class LogHelper
 {
     /**
      * Catat aktivitas baru ke database.
-     * 
-     * @param string $aksi Jenis aksi (create, update, delete, dll)
-     * @param string $target Objek yang dikenai aksi (Nama Produk, No Invoice)
-     * @param string $pesan Pesan naratif untuk manusia
-     * @param array|null $meta Data teknis tambahan (opsional)
+     *
+     * @param  string  $aksi  Jenis aksi (create, update, delete, dll)
+     * @param  string  $target  Objek yang dikenai aksi (Nama Produk, No Invoice)
+     * @param  string  $pesan  Pesan naratif untuk manusia
+     * @param  array|null  $meta  Data teknis tambahan (opsional)
      */
     public static function catat($aksi, $target, $pesan, $meta = null)
     {
@@ -23,7 +23,7 @@ class LogHelper
                 'target' => $target,
                 'pesan_naratif' => $pesan,
                 'meta_data' => $meta,
-                'waktu' => now()
+                'waktu' => now(),
             ]);
         } catch (\Exception $e) {
             // Jangan biarkan log error menghentikan proses utama

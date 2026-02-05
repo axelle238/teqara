@@ -10,7 +10,7 @@ class GamifikasiService
     /**
      * Tambah poin ke pengguna.
      */
-    public function tambahPoin(Pengguna $user, int $jumlah, string $sumber, string $ref = null)
+    public function tambahPoin(Pengguna $user, int $jumlah, string $sumber, ?string $ref = null)
     {
         DB::transaction(function () use ($user, $jumlah, $sumber, $ref) {
             $user->increment('poin_loyalitas', $jumlah);
@@ -37,13 +37,17 @@ class GamifikasiService
         $poin = $user->poin_loyalitas;
         $levelBaru = 'Classic';
 
-        if ($poin >= 10000) $levelBaru = 'Platinum';
-        elseif ($poin >= 5000) $levelBaru = 'Gold';
-        elseif ($poin >= 1000) $levelBaru = 'Silver';
+        if ($poin >= 10000) {
+            $levelBaru = 'Platinum';
+        } elseif ($poin >= 5000) {
+            $levelBaru = 'Gold';
+        } elseif ($poin >= 1000) {
+            $levelBaru = 'Silver';
+        }
 
         if ($user->level_member !== $levelBaru) {
             $user->update(['level_member' => $levelBaru]);
-            
+
             // Log Level Up (Opsional: Kirim Notifikasi)
             \App\Helpers\LogHelper::catat('level_up', $user->nama, "Selamat! Anda naik ke level $levelBaru");
         }

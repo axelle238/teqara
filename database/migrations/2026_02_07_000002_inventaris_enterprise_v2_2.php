@@ -27,7 +27,7 @@ return new class extends Migration
             $table->foreignId('gudang_id')->constrained('gudang')->onDelete('cascade');
             $table->integer('jumlah')->default(0);
             $table->timestamps();
-            
+
             $table->unique(['produk_id', 'gudang_id']);
         });
 

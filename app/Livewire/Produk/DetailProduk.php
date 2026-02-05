@@ -63,8 +63,8 @@ class DetailProduk extends Component
 
         return view('livewire.produk.detail-produk')
             ->layout('components.layouts.app', [
-                'title' => $this->produk->nama . ' | Teqara Enterprise',
-                'deskripsi' => $deskripsi_seo
+                'title' => $this->produk->nama.' | Teqara Enterprise',
+                'deskripsi' => $deskripsi_seo,
             ]);
     }
 

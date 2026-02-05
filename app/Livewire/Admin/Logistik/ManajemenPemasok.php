@@ -3,19 +3,30 @@
 namespace App\Livewire\Admin\Logistik;
 
 use App\Models\Pemasok;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Title;
 
 class ManajemenPemasok extends Component
 {
     use WithPagination;
 
     public $cari = '';
-    
+
     // Form State
     public $pemasokId;
-    public $nama_perusahaan, $penanggung_jawab, $telepon, $email, $alamat, $status = 'aktif';
+
+    public $nama_perusahaan;
+
+    public $penanggung_jawab;
+
+    public $telepon;
+
+    public $email;
+
+    public $alamat;
+
+    public $status = 'aktif';
 
     protected $rules = [
         'nama_perusahaan' => 'required|min:3',
@@ -23,7 +34,7 @@ class ManajemenPemasok extends Component
         'telepon' => 'required|numeric',
         'email' => 'nullable|email',
         'alamat' => 'required',
-        'status' => 'required'
+        'status' => 'required',
     ];
 
     public function tambah()
@@ -42,7 +53,7 @@ class ManajemenPemasok extends Component
         $this->email = $p->email;
         $this->alamat = $p->alamat;
         $this->status = $p->status;
-        
+
         $this->dispatch('open-slide-over', id: 'form-pemasok');
     }
 
@@ -63,7 +74,7 @@ class ManajemenPemasok extends Component
             Pemasok::find($this->pemasokId)->update($data);
             $msg = 'Data pemasok diperbarui.';
         } else {
-            $data['kode_pemasok'] = 'SUP-' . mt_rand(1000, 9999);
+            $data['kode_pemasok'] = 'SUP-'.mt_rand(1000, 9999);
             Pemasok::create($data);
             $msg = 'Pemasok baru ditambahkan.';
         }
@@ -75,12 +86,12 @@ class ManajemenPemasok extends Component
     #[Title('Manajemen Pemasok - Teqara')]
     public function render()
     {
-        $pemasok = Pemasok::where('nama_perusahaan', 'like', '%' . $this->cari . '%')
+        $pemasok = Pemasok::where('nama_perusahaan', 'like', '%'.$this->cari.'%')
             ->latest()
             ->paginate(10);
 
         return view('livewire.admin.logistik.manajemen-pemasok', [
-            'pemasok' => $pemasok
+            'pemasok' => $pemasok,
         ])->layout('components.layouts.admin');
     }
 }
