@@ -38,7 +38,8 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     // 1. Manajemen Produk
     Route::prefix('produk')->group(function () {
         Route::get('/dashboard', \App\Livewire\Admin\Produk\DashboardProduk::class)->name('admin.produk.dashboard');
-        Route::get('/katalog', \App\Livewire\Admin\Produk\ManajemenProduk::class)->name('admin.produk.katalog'); // Ganti nama route lama
+        Route::get('/katalog', \App\Livewire\Admin\Produk\ManajemenProduk::class)->name('admin.produk.katalog');
+        Route::get('/spesifikasi/{produk}', \App\Livewire\Admin\Produk\ManajemenSpesifikasi::class)->name('admin.produk.spesifikasi');
         Route::get('/stok', \App\Livewire\Admin\Stok\ManajemenStok::class)->name('admin.produk.stok');
     });
     // Redirect route lama untuk kompatibilitas
@@ -53,6 +54,7 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     Route::prefix('pesanan')->group(function () {
         Route::get('/dashboard', \App\Livewire\Admin\Pesanan\DashboardPesanan::class)->name('admin.pesanan.dashboard');
         Route::get('/daftar', \App\Livewire\Admin\Pesanan\DaftarPesanan::class)->name('admin.pesanan.daftar');
+        Route::get('/verifikasi', \App\Livewire\Admin\Pesanan\VerifikasiPembayaran::class)->name('admin.pesanan.verifikasi');
         Route::get('/detail/{pesanan}', \App\Livewire\Admin\Pesanan\DetailPesanan::class)->name('admin.pesanan.detail');
     });
     // Redirect route lama
@@ -63,7 +65,8 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     // 3. Manajemen Pelanggan
     Route::prefix('pelanggan')->group(function () {
         Route::get('/dashboard', \App\Livewire\Admin\Pelanggan\DashboardPelanggan::class)->name('admin.pelanggan.dashboard');
-        Route::get('/daftar', \App\Livewire\Admin\Pengguna\DaftarPengguna::class)->name('admin.pelanggan.daftar'); // Gunakan DaftarPengguna yg sudah ada tapi di-wrapper
+        Route::get('/daftar', \App\Livewire\Admin\Pengguna\DaftarPengguna::class)->name('admin.pelanggan.daftar');
+        Route::get('/ulasan', \App\Livewire\Admin\Pelanggan\ManajemenUlasan::class)->name('admin.pelanggan.ulasan');
     });
 
     // 4. Manajemen Pengguna (Admin/Staff)

@@ -9,7 +9,7 @@
         "pola_interaksi": "SPA / Real-time Events",
         "kebijakan_modal": "0% Modal (Mutlak)"
     },
-    "waktu_pembaruan_terakhir": "05/02/2026 18:19:17",
+    "waktu_pembaruan_terakhir": "05/02/2026 18:28:07",
     "statistik_data": {
         "pengguna": 11,
         "produk": 2,
@@ -177,6 +177,11 @@
             "metode": "GET|HEAD"
         },
         {
+            "uri": "admin/produk/spesifikasi/{produk}",
+            "nama": "admin.produk.spesifikasi",
+            "metode": "GET|HEAD"
+        },
+        {
             "uri": "admin/produk/stok",
             "nama": "admin.produk.stok",
             "metode": "GET|HEAD"
@@ -202,6 +207,11 @@
             "metode": "GET|HEAD"
         },
         {
+            "uri": "admin/pesanan/verifikasi",
+            "nama": "admin.pesanan.verifikasi",
+            "metode": "GET|HEAD"
+        },
+        {
             "uri": "admin/pesanan/detail/{pesanan}",
             "nama": "admin.pesanan.detail",
             "metode": "GET|HEAD"
@@ -219,6 +229,11 @@
         {
             "uri": "admin/pelanggan/daftar",
             "nama": "admin.pelanggan.daftar",
+            "metode": "GET|HEAD"
+        },
+        {
+            "uri": "admin/pelanggan/ulasan",
+            "nama": "admin.pelanggan.ulasan",
             "metode": "GET|HEAD"
         },
         {

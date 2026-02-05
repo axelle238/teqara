@@ -13,7 +13,7 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
-    #[Title('Executive Dashboard - Teqara')]
+    #[Title('Pusat Komando Enterprise - Admin Teqara')]
     public function render()
     {
         // 1. Metrik Utama (Kartu Atas)
@@ -22,7 +22,16 @@ class Dashboard extends Component
         $totalProduk = Produk::count();
         $totalPelanggan = \App\Models\Pengguna::where('peran', 'pelanggan')->count();
 
-        // 2. Analisis Pertumbuhan (Bulan Ini vs Bulan Lalu)
+        // 2. Statistik Departemen Tambahan (Agregasi Baru)
+        $statsManajemen = [
+            'stok_menipis' => Produk::where('stok', '<', 10)->count(),
+            'menunggu_bayar' => Pesanan::where('status_pembayaran', 'belum_dibayar')->count(),
+            'perlu_dikirim' => Pesanan::where('status_pesanan', 'diproses')->count(),
+            'total_karyawan' => \App\Models\Karyawan::count(),
+            'insiden_keamanan' => 0, // Placeholder
+        ];
+
+        // 3. Analisis Pertumbuhan (Bulan Ini vs Bulan Lalu)
         $pendapatanBulanIni = Pesanan::where('status_pembayaran', 'lunas')
             ->whereMonth('created_at', now()->month)
             ->sum('total_harga');
@@ -35,7 +44,7 @@ class Dashboard extends Component
             ? (($pendapatanBulanIni - $pendapatanBulanLalu) / $pendapatanBulanLalu) * 100
             : 100;
 
-        // 3. Tren Penjualan Harian (Grafik Area)
+        // 4. Tren Penjualan Harian (Grafik Area)
         $trenPenjualan = [];
         $labelHari = [];
         for ($i = 6; $i >= 0; $i--) {
@@ -48,7 +57,7 @@ class Dashboard extends Component
             $labelHari[] = $tanggal->translatedFormat('d M');
         }
 
-        // 4. Kategori Terlaris (Grafik Donut)
+        // 5. Kategori Terlaris (Grafik Donut)
         $kategoriTerlaris = DetailPesanan::select('kategori.nama', DB::raw('SUM(detail_pesanan.subtotal) as total_pendapatan'))
             ->join('produk', 'detail_pesanan.produk_id', '=', 'produk.id')
             ->join('kategori', 'produk.kategori_id', '=', 'kategori.id')
@@ -59,7 +68,7 @@ class Dashboard extends Component
             ->take(5)
             ->get();
 
-        // 5. Aktivitas & Pesanan Terbaru
+        // 6. Aktivitas & Pesanan Terbaru
         $pesananTerbaru = Pesanan::with('pengguna')->latest()->take(5)->get();
         $logTerbaru = LogAktivitas::with('pengguna')->latest('waktu')->take(5)->get();
 
@@ -71,6 +80,7 @@ class Dashboard extends Component
                 'pelanggan' => $totalPelanggan,
                 'pertumbuhan' => $pertumbuhan,
             ],
+            'statsManajemen' => $statsManajemen,
             'grafik' => [
                 'tren_data' => $trenPenjualan,
                 'tren_label' => $labelHari,

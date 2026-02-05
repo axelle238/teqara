@@ -18,8 +18,8 @@
         <!-- Kartu Pendapatan -->
         <div class="bg-white p-6 rounded-[28px] border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-lg transition-all">
             <div class="relative z-10">
-                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Total Pendapatan</p>
-                <h3 class="text-3xl font-black text-slate-900 mb-1">{{ 'Rp ' . number_format($metrik['pendapatan'], 0, ',', '.') }}</h3>
+                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Omzet Lunas</p>
+                <h3 class="text-3xl font-black text-slate-900 mb-1">Rp {{ number_format($metrik['pendapatan'], 0, ',', '.') }}</h3>
                 <div class="flex items-center gap-2">
                     <span class="flex items-center text-xs font-bold {{ $metrik['pertumbuhan'] >= 0 ? 'text-emerald-600' : 'text-red-600' }}">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $metrik['pertumbuhan'] >= 0 ? 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' : 'M13 17h8m0 0V9m0 8l-8-8-4 4-6-6' }}"></path></svg>
@@ -29,40 +29,40 @@
                 </div>
             </div>
             <div class="absolute right-0 top-0 w-32 h-32 bg-indigo-50 rounded-bl-[100px] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
-            <svg class="absolute right-6 top-6 w-8 h-8 text-indigo-200 z-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         </div>
 
-        <!-- Kartu Pesanan -->
+        <!-- Ringkasan Stok -->
         <div class="bg-white p-6 rounded-[28px] border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-lg transition-all">
             <div class="relative z-10">
-                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Total Pesanan</p>
-                <h3 class="text-3xl font-black text-slate-900 mb-1">{{ number_format($metrik['pesanan']) }}</h3>
-                <p class="text-[10px] text-slate-400 font-bold">Transaksi berhasil</p>
+                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Status Inventaris</p>
+                <h3 class="text-3xl font-black text-slate-900 mb-1">{{ number_format($metrik['produk']) }} <span class="text-xs text-slate-400">SKU</span></h3>
+                <p class="text-[10px] {{ $statsManajemen['stok_menipis'] > 0 ? 'text-red-500 animate-pulse' : 'text-slate-400' }} font-bold uppercase tracking-tighter">
+                    {{ $statsManajemen['stok_menipis'] }} Perangkat Stok Kritis
+                </p>
             </div>
             <div class="absolute right-0 top-0 w-32 h-32 bg-emerald-50 rounded-bl-[100px] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
-            <svg class="absolute right-6 top-6 w-8 h-8 text-emerald-200 z-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
         </div>
 
-        <!-- Kartu Produk -->
+        <!-- Alur Pesanan -->
         <div class="bg-white p-6 rounded-[28px] border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-lg transition-all">
             <div class="relative z-10">
-                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Inventaris</p>
-                <h3 class="text-3xl font-black text-slate-900 mb-1">{{ number_format($metrik['produk']) }}</h3>
-                <p class="text-[10px] text-slate-400 font-bold">SKU Terdaftar</p>
-            </div>
-            <div class="absolute right-0 top-0 w-32 h-32 bg-cyan-50 rounded-bl-[100px] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
-            <svg class="absolute right-6 top-6 w-8 h-8 text-cyan-200 z-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-        </div>
-
-        <!-- Kartu Pelanggan -->
-        <div class="bg-white p-6 rounded-[28px] border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-lg transition-all">
-            <div class="relative z-10">
-                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Pelanggan</p>
-                <h3 class="text-3xl font-black text-slate-900 mb-1">{{ number_format($metrik['pelanggan']) }}</h3>
-                <p class="text-[10px] text-slate-400 font-bold">Akun Aktif</p>
+                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Antrian Logistik</p>
+                <h3 class="text-3xl font-black text-slate-900 mb-1">{{ number_format($statsManajemen['perlu_dikirim']) }} <span class="text-xs text-slate-400">UNIT</span></h3>
+                <p class="text-[10px] text-amber-600 font-bold uppercase tracking-tighter">
+                    {{ $statsManajemen['menunggu_bayar'] }} Menunggu Pembayaran
+                </p>
             </div>
             <div class="absolute right-0 top-0 w-32 h-32 bg-amber-50 rounded-bl-[100px] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
-            <svg class="absolute right-6 top-6 w-8 h-8 text-amber-200 z-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        </div>
+
+        <!-- SDM & Keamanan -->
+        <div class="bg-white p-6 rounded-[28px] border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-lg transition-all">
+            <div class="relative z-10">
+                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">SDM & Keamanan</p>
+                <h3 class="text-3xl font-black text-slate-900 mb-1">{{ number_format($statsManajemen['total_karyawan']) }} <span class="text-xs text-slate-400">STAFF</span></h3>
+                <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-tighter">Sistem Terproteksi</p>
+            </div>
+            <div class="absolute right-0 top-0 w-32 h-32 bg-rose-50 rounded-bl-[100px] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
         </div>
     </div>
 
