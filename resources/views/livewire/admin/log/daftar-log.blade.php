@@ -70,38 +70,47 @@
     </div>
 
     <!-- Panel Detail Log -->
-    <x-ui.slide-over id="detail-log" title="Bukti Digital">
+    <x-ui.slide-over id="detail-log" title="Analisis Forensik Aktivitas">
         @if($logTerpilih)
         <div class="space-y-8 p-2">
-            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Pesan Naratif</p>
-                <p class="text-sm font-medium text-slate-800 leading-relaxed">{{ $logTerpilih->pesan_naratif }}</p>
+            <!-- Informasi Utama -->
+            <div class="bg-indigo-50 p-6 rounded-3xl border border-indigo-100">
+                <p class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em] mb-3">Narasi Aktivitas</p>
+                <p class="text-sm font-bold text-slate-900 leading-relaxed">{{ $logTerpilih->pesan_naratif }}</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Waktu Kejadian</p>
-                    <p class="text-xs font-bold text-slate-900">{{ $logTerpilih->waktu->format('d F Y H:i:s') }}</p>
+            <!-- Metadata Forensik -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Alamat IP</p>
+                    <p class="text-xs font-black text-slate-900">{{ $logTerpilih->meta_data['ip_address'] ?? 'Internal System' }}</p>
                 </div>
-                <div>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">IP Address</p>
-                    <p class="text-xs font-bold text-slate-900">127.0.0.1 (Lokal)</p>
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Aktor (Pengguna)</p>
+                    <p class="text-xs font-black text-slate-900">{{ $logTerpilih->pengguna->nama ?? 'Sistem Otomatis' }}</p>
                 </div>
-                <div>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Aktor</p>
-                    <p class="text-xs font-bold text-slate-900">{{ $logTerpilih->pengguna->nama ?? 'Sistem' }}</p>
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Waktu Presisi</p>
+                    <p class="text-xs font-black text-slate-900">{{ $logTerpilih->waktu->format('d/m/Y H:i:s.u') }}</p>
                 </div>
-                <div>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Target Objek</p>
-                    <p class="text-xs font-bold text-slate-900">{{ $logTerpilih->target }}</p>
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Metode Akses</p>
+                    <p class="text-xs font-black text-slate-900">{{ $logTerpilih->meta_data['metode'] ?? 'N/A' }}</p>
                 </div>
             </div>
 
-            @if(!empty($logTerpilih->meta_data))
-            <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Metadata Teknis (JSON)</p>
-                <div class="bg-slate-900 text-green-400 p-4 rounded-xl text-[10px] font-mono overflow-x-auto">
-                    <pre>{{ json_encode($logTerpilih->meta_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
+            <!-- User Agent -->
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Identitas Perangkat (User Agent)</p>
+                <p class="text-[10px] font-medium text-slate-600 leading-snug break-all">{{ $logTerpilih->meta_data['user_agent'] ?? 'Unknown Device' }}</p>
+            </div>
+
+            <!-- Snapshot Data -->
+            @if(!empty($logTerpilih->meta_data['snapshot']))
+            <div class="space-y-3">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Snapshot Data Teknis</p>
+                <div class="bg-slate-900 text-emerald-400 p-6 rounded-[32px] text-[10px] font-mono overflow-x-auto shadow-2xl">
+                    <pre>{{ json_encode($logTerpilih->meta_data['snapshot'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
                 </div>
             </div>
             @endif

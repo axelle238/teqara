@@ -9,7 +9,7 @@
         "pola_interaksi": "SPA / Real-time Events",
         "kebijakan_modal": "0% Modal (Mutlak)"
     },
-    "waktu_pembaruan_terakhir": "05/02/2026 19:00:40",
+    "waktu_pembaruan_terakhir": "05/02/2026 19:03:28",
     "statistik_data": {
         "pengguna": 11,
         "produk": 2,
@@ -232,6 +232,11 @@
             "metode": "GET|HEAD"
         },
         {
+            "uri": "admin/cs/tiket",
+            "nama": "admin.cs.tiket",
+            "metode": "GET|HEAD"
+        },
+        {
             "uri": "admin/cs/ulasan",
             "nama": "admin.pelanggan.ulasan",
             "metode": "GET|HEAD"
@@ -267,8 +272,13 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pengguna/hrd",
+            "uri": "admin/pengguna/struktur",
             "nama": "admin.hrd.karyawan",
+            "metode": "GET|HEAD"
+        },
+        {
+            "uri": "admin/pengguna/hrd",
+            "nama": "admin.pengguna.hrd",
             "metode": "GET|HEAD"
         },
         {

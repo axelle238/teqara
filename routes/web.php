@@ -66,6 +66,7 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     // Pilar 5: Manajemen Customer Service
     Route::prefix('cs')->group(function () {
         Route::get('/dashboard', \App\Livewire\Admin\CustomerService\DashboardCs::class)->name('admin.cs.dashboard');
+        Route::get('/tiket', \App\Livewire\Admin\CustomerService\ManajemenTiket::class)->name('admin.cs.tiket');
         Route::get('/ulasan', \App\Livewire\Admin\Pelanggan\ManajemenUlasan::class)->name('admin.pelanggan.ulasan');
     });
 
@@ -85,7 +86,8 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     Route::prefix('pengguna')->group(function () {
         Route::get('/dashboard', \App\Livewire\Admin\Pengguna\DashboardPengguna::class)->name('admin.pengguna.dashboard');
         Route::get('/daftar', \App\Livewire\Admin\Pengguna\DaftarPengguna::class)->name('admin.pengguna.daftar');
-        Route::get('/hrd', \App\Livewire\Admin\HRD\ManajemenKaryawan::class)->name('admin.hrd.karyawan');
+        Route::get('/struktur', \App\Livewire\Admin\HRD\ManajemenStruktur::class)->name('admin.hrd.karyawan');
+        Route::get('/hrd', \App\Livewire\Admin\HRD\ManajemenKaryawan::class)->name('admin.pengguna.hrd');
     });
 
     // Pilar 9: Manajemen Laporan & Analitik
