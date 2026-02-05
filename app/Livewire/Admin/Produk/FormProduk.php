@@ -2,39 +2,58 @@
 
 namespace App\Livewire\Admin\Produk;
 
-use Livewire\Component;
-use Livewire\WithFileUploads;
-use App\Models\Produk;
+use App\Models\GambarProduk;
 use App\Models\Kategori;
 use App\Models\Merek;
-use App\Models\VarianProduk;
+use App\Models\Produk;
 use App\Models\SpesifikasiProduk;
-use App\Models\GambarProduk;
+use App\Models\VarianProduk;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class FormProduk extends Component
 {
     use WithFileUploads;
 
     public $produkId;
-    
+
     // Tab State
     public $activeTab = 'info'; // info, media, varian, spesifikasi
 
     // Info Dasar
-    public $nama, $slug, $sku, $kategori_id, $merek_id;
-    public $harga_modal = 0, $harga_jual = 0, $stok = 0;
-    public $deskripsi_singkat, $deskripsi_lengkap;
+    public $nama;
+
+    public $slug;
+
+    public $sku;
+
+    public $kategori_id;
+
+    public $merek_id;
+
+    public $harga_modal = 0;
+
+    public $harga_jual = 0;
+
+    public $stok = 0;
+
+    public $deskripsi_singkat;
+
+    public $deskripsi_lengkap;
+
     public $status = 'aktif';
+
     public $memiliki_varian = false;
 
     // Media
     public $gambar_baru = []; // Upload multiple
+
     public $gambar_lama = []; // Existing
 
     // Varian (Array of Arrays)
-    public $daftarVarian = []; 
+    public $daftarVarian = [];
 
     // Spesifikasi
     public $daftarSpesifikasi = [];
@@ -44,7 +63,7 @@ class FormProduk extends Component
         if ($id) {
             $produk = Produk::with(['varian', 'gambar', 'spesifikasi'])->findOrFail($id);
             $this->produkId = $produk->id;
-            
+
             // Hydrate Info
             $this->nama = $produk->nama;
             $this->slug = $produk->slug;
@@ -74,7 +93,7 @@ class FormProduk extends Component
             foreach ($produk->spesifikasi as $spek) {
                 $this->daftarSpesifikasi[] = [
                     'judul' => $spek->judul,
-                    'nilai' => $spek->nilai
+                    'nilai' => $spek->nilai,
                 ];
             }
 
@@ -99,7 +118,7 @@ class FormProduk extends Component
             'nama_varian' => '',
             'sku' => '',
             'harga_tambahan' => 0,
-            'stok' => 0
+            'stok' => 0,
         ];
     }
 
@@ -125,7 +144,7 @@ class FormProduk extends Component
     public function hapusGambarLama($id)
     {
         GambarProduk::destroy($id);
-        $this->gambar_lama = array_filter($this->gambar_lama, fn($g) => $g['id'] != $id);
+        $this->gambar_lama = array_filter($this->gambar_lama, fn ($g) => $g['id'] != $id);
     }
 
     public function simpan()
@@ -165,7 +184,7 @@ class FormProduk extends Component
             // Hapus yang tidak ada di list (jika edit) - Simplifikasi: delete all insert all or update logic
             // Untuk demo ini, kita update yang punya ID, create yang null
             foreach ($this->daftarVarian as $var) {
-                if (!empty($var['nama_varian'])) {
+                if (! empty($var['nama_varian'])) {
                     VarianProduk::updateOrCreate(
                         ['id' => $var['id'] ?? null],
                         [
@@ -173,7 +192,7 @@ class FormProduk extends Component
                             'nama_varian' => $var['nama_varian'],
                             'sku' => $var['sku'],
                             'harga_tambahan' => $var['harga_tambahan'],
-                            'stok' => $var['stok']
+                            'stok' => $var['stok'],
                         ]
                     );
                 }
@@ -183,11 +202,11 @@ class FormProduk extends Component
         // Simpan Spesifikasi (Delete all insert new for simplicity in repeater)
         SpesifikasiProduk::where('produk_id', $produk->id)->delete();
         foreach ($this->daftarSpesifikasi as $spek) {
-            if (!empty($spek['judul'])) {
+            if (! empty($spek['judul'])) {
                 SpesifikasiProduk::create([
                     'produk_id' => $produk->id,
                     'judul' => $spek['judul'],
-                    'nilai' => $spek['nilai']
+                    'nilai' => $spek['nilai'],
                 ]);
             }
         }
@@ -195,11 +214,11 @@ class FormProduk extends Component
         // Simpan Gambar Baru
         foreach ($this->gambar_baru as $img) {
             // Simulasi URL (Di production pakai Storage::put)
-            $url = $img->temporaryUrl(); 
+            $url = $img->temporaryUrl();
             GambarProduk::create([
                 'produk_id' => $produk->id,
                 'url' => $url,
-                'is_utama' => false
+                'is_utama' => false,
             ]);
         }
 

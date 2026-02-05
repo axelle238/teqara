@@ -2,13 +2,13 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
-use Livewire\Attributes\Url;
-use Livewire\WithPagination;
-use App\Models\Produk;
 use App\Models\Kategori;
 use App\Models\Merek;
+use App\Models\Produk;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class Katalog extends Component
 {
@@ -47,17 +47,17 @@ class Katalog extends Component
         $query = Produk::query()->with(['kategori', 'merek', 'gambar']);
 
         if ($this->cari) {
-            $query->where('nama', 'like', '%' . $this->cari . '%');
+            $query->where('nama', 'like', '%'.$this->cari.'%');
         }
 
-        if (!empty($this->filterKategori)) {
+        if (! empty($this->filterKategori)) {
             $query->whereHas('kategori', function (Builder $q) {
                 $filters = is_array($this->filterKategori) ? $this->filterKategori : [$this->filterKategori];
                 $q->whereIn('slug', $filters);
             });
         }
 
-        if (!empty($this->filterMerek)) {
+        if (! empty($this->filterMerek)) {
             $query->whereHas('merek', function (Builder $q) {
                 $filters = is_array($this->filterMerek) ? $this->filterMerek : [$this->filterMerek];
                 $q->whereIn('slug', $filters);
@@ -69,10 +69,14 @@ class Katalog extends Component
         }
 
         switch ($this->urutkan) {
-            case 'termurah': $query->orderBy('harga_jual', 'asc'); break;
-            case 'termahal': $query->orderBy('harga_jual', 'desc'); break;
-            case 'rating': $query->orderBy('rating_rata_rata', 'desc'); break;
-            default: $query->latest(); break;
+            case 'termurah': $query->orderBy('harga_jual', 'asc');
+                break;
+            case 'termahal': $query->orderBy('harga_jual', 'desc');
+                break;
+            case 'rating': $query->orderBy('rating_rata_rata', 'desc');
+                break;
+            default: $query->latest();
+                break;
         }
 
         return view('livewire.katalog', [

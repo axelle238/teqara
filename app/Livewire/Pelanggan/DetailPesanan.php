@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Pelanggan;
 
-use Livewire\Component;
 use App\Models\Pesanan;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 class DetailPesanan extends Component
 {
@@ -25,13 +25,16 @@ class DetailPesanan extends Component
             'menunggu' => 1,
             'diproses' => 2,
             'dikirim' => 3,
-            'selesai' => 4
+            'selesai' => 4,
         ];
 
         $statusSaatIni = $urutan[$this->pesanan->status_pesanan] ?? 0;
         $target = $urutan[$tahap] ?? 99;
 
-        if ($statusSaatIni >= $target) return 'aktif';
+        if ($statusSaatIni >= $target) {
+            return 'aktif';
+        }
+
         return 'nanti';
     }
 

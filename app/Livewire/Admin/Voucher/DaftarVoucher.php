@@ -2,21 +2,37 @@
 
 namespace App\Livewire\Admin\Voucher;
 
-use Livewire\Component;
-use App\Models\Voucher;
 use App\Models\LogAktivitas;
-use Livewire\WithPagination;
+use App\Models\Voucher;
 use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class DaftarVoucher extends Component
 {
     use WithPagination;
 
-    public $kode, $deskripsi, $tipe_diskon = 'persen', $nilai_diskon;
-    public $min_pembelian = 0, $maks_potongan, $kuota = 100;
-    public $berlaku_mulai, $berlaku_sampai;
-    
-    public $voucherId, $modeEdit = false;
+    public $kode;
+
+    public $deskripsi;
+
+    public $tipe_diskon = 'persen';
+
+    public $nilai_diskon;
+
+    public $min_pembelian = 0;
+
+    public $maks_potongan;
+
+    public $kuota = 100;
+
+    public $berlaku_mulai;
+
+    public $berlaku_sampai;
+
+    public $voucherId;
+
+    public $modeEdit = false;
 
     protected $rules = [
         'kode' => 'required|unique:voucher,kode',
@@ -47,8 +63,8 @@ class DaftarVoucher extends Component
             'pengguna_id' => auth()->id(),
             'aksi' => 'tambah_voucher',
             'target' => $this->kode,
-            'pesan_naratif' => "Admin membuat voucher baru: " . strtoupper($this->kode),
-            'waktu' => now()
+            'pesan_naratif' => 'Admin membuat voucher baru: '.strtoupper($this->kode),
+            'waktu' => now(),
         ]);
 
         $this->reset();
@@ -65,8 +81,8 @@ class DaftarVoucher extends Component
             'pengguna_id' => auth()->id(),
             'aksi' => 'hapus_voucher',
             'target' => $kode,
-            'pesan_naratif' => "Admin menghapus voucher: " . $kode,
-            'waktu' => now()
+            'pesan_naratif' => 'Admin menghapus voucher: '.$kode,
+            'waktu' => now(),
         ]);
 
         $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Voucher dihapus.']);
@@ -76,7 +92,7 @@ class DaftarVoucher extends Component
     public function render()
     {
         return view('livewire.admin.voucher.daftar-voucher', [
-            'vouchers' => Voucher::latest()->paginate(10)
+            'vouchers' => Voucher::latest()->paginate(10),
         ])->layout('components.layouts.admin');
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\GambarProduk;
 use App\Models\Kategori;
 use App\Models\Merek;
 use App\Models\Produk;
-use App\Models\GambarProduk;
-use App\Models\VarianProduk;
 use App\Models\SpesifikasiProduk;
+use App\Models\VarianProduk;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -23,7 +23,7 @@ class ProdukSeeder extends Seeder
         // 2. Buat Merek
         $brandAsus = Merek::create(['nama' => 'ASUS', 'slug' => 'asus', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/2/2e/ASUS_Logo.svg']);
         $brandApple = Merek::create(['nama' => 'Apple', 'slug' => 'apple', 'logo' => 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg']);
-        
+
         // 3. Produk 1: ASUS ROG Strix (Kompleks dengan Varian)
         $p1 = Produk::create([
             'kategori_id' => $katLaptop->id,
@@ -38,7 +38,7 @@ class ProdukSeeder extends Seeder
             'stok' => 10,
             'status' => 'aktif',
             'memiliki_varian' => true,
-            'rating_rata_rata' => 4.8
+            'rating_rata_rata' => 4.8,
         ]);
 
         // Gambar
@@ -66,11 +66,11 @@ class ProdukSeeder extends Seeder
             'stok' => 20,
             'status' => 'aktif',
             'memiliki_varian' => true,
-            'rating_rata_rata' => 4.9
+            'rating_rata_rata' => 4.9,
         ]);
 
         GambarProduk::create(['produk_id' => $p2->id, 'url' => 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-max-natural-titanium-select-202309?wid=940&hei=1112&fmt=png-alpha&.v=1693510919706', 'is_utama' => true]);
-        
+
         VarianProduk::create(['produk_id' => $p2->id, 'nama_varian' => '256GB - Natural Titanium', 'sku' => '15PM-NAT-256', 'harga_tambahan' => 0, 'stok' => 10]);
         VarianProduk::create(['produk_id' => $p2->id, 'nama_varian' => '512GB - Blue Titanium', 'sku' => '15PM-BLU-512', 'harga_tambahan' => 4000000, 'stok' => 5]);
     }

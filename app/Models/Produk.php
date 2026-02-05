@@ -12,6 +12,7 @@ class Produk extends Model
     use HasFactory;
 
     protected $table = 'produk';
+
     protected $guarded = ['id'];
 
     protected $casts = [
@@ -52,6 +53,7 @@ class Produk extends Model
     public function getGambarUtamaUrlAttribute()
     {
         $gambar = $this->gambar->where('is_utama', true)->first() ?? $this->gambar->first();
+
         return $gambar ? $gambar->url : 'https://via.placeholder.com/400x400?text=No+Image';
     }
 
@@ -61,12 +63,14 @@ class Produk extends Model
         if ($this->memiliki_varian && $this->varian->count() > 0) {
             $min = $this->harga_jual + $this->varian->min('harga_tambahan');
             $max = $this->harga_jual + $this->varian->max('harga_tambahan');
-            
+
             if ($min == $max) {
-                return 'Rp ' . number_format($min, 0, ',', '.');
+                return 'Rp '.number_format($min, 0, ',', '.');
             }
-            return 'Rp ' . number_format($min, 0, ',', '.') . ' - ' . number_format($max, 0, ',', '.');
+
+            return 'Rp '.number_format($min, 0, ',', '.').' - '.number_format($max, 0, ',', '.');
         }
-        return 'Rp ' . number_format($this->harga_jual, 0, ',', '.');
+
+        return 'Rp '.number_format($this->harga_jual, 0, ',', '.');
     }
 }

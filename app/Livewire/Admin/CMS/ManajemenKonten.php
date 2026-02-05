@@ -2,19 +2,28 @@
 
 namespace App\Livewire\Admin\CMS;
 
+use App\Models\LogAktivitas;
+use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Illuminate\Support\Facades\DB;
-use App\Models\LogAktivitas;
-use Livewire\Attributes\Title;
 
 class ManajemenKonten extends Component
 {
     use WithFileUploads;
 
     // Hero Section
-    public $hero_judul, $hero_deskripsi, $hero_tombol, $hero_url;
-    public $hero_gambar_lama, $hero_gambar_baru;
+    public $hero_judul;
+
+    public $hero_deskripsi;
+
+    public $hero_tombol;
+
+    public $hero_url;
+
+    public $hero_gambar_lama;
+
+    public $hero_gambar_baru;
 
     public function mount()
     {
@@ -53,8 +62,8 @@ class ManajemenKonten extends Component
             'pengguna_id' => auth()->id(),
             'aksi' => 'update_cms',
             'target' => 'Hero Section',
-            'pesan_naratif' => "Admin memperbarui tampilan Hero Section halaman depan.",
-            'waktu' => now()
+            'pesan_naratif' => 'Admin memperbarui tampilan Hero Section halaman depan.',
+            'waktu' => now(),
         ]);
 
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Tampilan Beranda diperbarui!']);

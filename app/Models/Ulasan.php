@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Ulasan extends Model
 {
     protected $table = 'ulasan';
+
     protected $guarded = ['id'];
+
     protected $casts = ['foto_ulasan' => 'array'];
 
     public function pengguna()

@@ -2,17 +2,20 @@
 
 namespace App\Livewire\Pelanggan;
 
-use Livewire\Component;
 use App\Models\Pesanan;
 use App\Models\TransaksiPembayaran;
 use App\Services\PaymentGatewayService;
 use Livewire\Attributes\Title;
+use Livewire\Component;
 
 class BayarPesanan extends Component
 {
     public Pesanan $pesanan;
+
     public $metodeTerpilih = null; // bank_transfer, qris
+
     public $providerTerpilih = null; // bca, mandiri, gopay
+
     public $transaksiAktif = null;
 
     public function mount($invoice)
@@ -22,7 +25,7 @@ class BayarPesanan extends Component
             ->firstOrFail();
 
         if ($this->pesanan->status_pembayaran === 'lunas') {
-            return redirect()->to('/pesanan/lacak/' . $this->pesanan->nomor_invoice);
+            return redirect()->to('/pesanan/lacak/'.$this->pesanan->nomor_invoice);
         }
 
         // Cek jika ada transaksi pending
@@ -40,11 +43,13 @@ class BayarPesanan extends Component
 
     public function buatPembayaran(PaymentGatewayService $service)
     {
-        if (!$this->metodeTerpilih) return;
+        if (! $this->metodeTerpilih) {
+            return;
+        }
 
         $this->transaksiAktif = $service->buatTransaksi(
-            $this->pesanan, 
-            $this->metodeTerpilih, 
+            $this->pesanan,
+            $this->metodeTerpilih,
             $this->providerTerpilih
         );
     }
@@ -53,9 +58,10 @@ class BayarPesanan extends Component
     {
         if ($this->transaksiAktif) {
             $service->prosesNotifikasi($this->transaksiAktif->id, 'success');
-            
+
             $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Pembayaran Berhasil!']);
-            return redirect()->to('/pesanan/lacak/' . $this->pesanan->nomor_invoice);
+
+            return redirect()->to('/pesanan/lacak/'.$this->pesanan->nomor_invoice);
         }
     }
 

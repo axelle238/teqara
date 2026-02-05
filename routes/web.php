@@ -20,13 +20,15 @@ Route::get('/logout', function () {
 
 // Rute Pelanggan (Memerlukan Login)
 Route::middleware(['auth'])->group(function () {
-        Route::get('/keranjang', \App\Livewire\KeranjangBelanja::class)->name('keranjang');
-        Route::get('/checkout', \App\Livewire\Checkout::class)->name('checkout');
-            Route::get('/pesanan/riwayat', \App\Livewire\Pesanan\Riwayat::class)->name('pesanan.riwayat');
-            Route::get('/pesanan/lacak/{invoice}', \App\Livewire\Pelanggan\DetailPesanan::class)->name('pesanan.lacak');
-            Route::get('/pesanan/bayar/{invoice}', \App\Livewire\Pelanggan\BayarPesanan::class)->name('pesanan.bayar');
-            Route::get('/ulasan/{pesananId}/{produkId}', \App\Livewire\Pelanggan\BeriUlasan::class)->name('ulasan.buat');        
-            Route::get('/dashboard', \App\Livewire\Pelanggan\Profil::class)->name('dashboard');});
+    Route::get('/keranjang', \App\Livewire\KeranjangBelanja::class)->name('keranjang');
+    Route::get('/checkout', \App\Livewire\Checkout::class)->name('checkout');
+    Route::get('/pesanan/riwayat', \App\Livewire\Pesanan\Riwayat::class)->name('pesanan.riwayat');
+    Route::get('/pesanan/lacak/{invoice}', \App\Livewire\Pelanggan\DetailPesanan::class)->name('pesanan.lacak');
+    Route::get('/pesanan/bayar/{invoice}', \App\Livewire\Pelanggan\BayarPesanan::class)->name('pesanan.bayar');
+    Route::get('/pesanan/faktur/{invoice}', \App\Http\Controllers\CetakFakturController::class)->name('pesanan.faktur');
+    Route::get('/ulasan/{pesananId}/{produkId}', \App\Livewire\Pelanggan\BeriUlasan::class)->name('ulasan.buat');
+    Route::get('/dashboard', \App\Livewire\Pelanggan\Profil::class)->name('dashboard');
+});
 
 // Rute Admin (Memerlukan Login & Peran Admin)
 Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('admin')->group(function () {

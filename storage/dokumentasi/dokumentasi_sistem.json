@@ -2,7 +2,7 @@
     "nama_sistem": "TEQARA - Sistem Penjualan Komputer & Gadget",
     "versi_laravel": "12.50.0",
     "bahasa_sistem": "100% Bahasa Indonesia",
-    "terakhir_diperbarui": "05/02/2026 16:51:53",
+    "terakhir_diperbarui": "05/02/2026 17:11:19",
     "modul_aktif": {
         "Hulu": [
             "Manajemen Produk",
@@ -115,6 +115,26 @@
             "method": "GET|HEAD"
         },
         {
+            "uri": "pesanan/lacak/{invoice}",
+            "nama": "pesanan.lacak",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "pesanan/bayar/{invoice}",
+            "nama": "pesanan.bayar",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "pesanan/faktur/{invoice}",
+            "nama": "pesanan.faktur",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "ulasan/{pesananId}/{produkId}",
+            "nama": "ulasan.buat",
+            "method": "GET|HEAD"
+        },
+        {
             "uri": "dashboard",
             "nama": "dashboard",
             "method": "GET|HEAD"
@@ -177,6 +197,11 @@
         {
             "uri": "admin/pengguna",
             "nama": "admin.pengguna",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/cms",
+            "nama": "admin.cms",
             "method": "GET|HEAD"
         },
         {

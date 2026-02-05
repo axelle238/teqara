@@ -2,50 +2,24 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class Pengguna extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * Nama tabel di database.
-     */
     protected $table = 'pengguna';
 
-    /**
-     * Atribut yang bisa diisi massal.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
-        'nama',
-        'email',
-        'kata_sandi',
-        'peran',
-        'nomor_telepon',
-        'foto_profil',
+        'nama', 'email', 'kata_sandi', 'peran', 'nomor_telepon', 'foto_profil',
     ];
 
-    /**
-     * Atribut yang harus disembunyikan saat serialisasi.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'kata_sandi',
-        'remember_token',
-    ];
+    protected $hidden = ['kata_sandi', 'remember_token'];
 
-    /**
-     * Atribut yang harus di-cast tipe datanya.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -54,11 +28,19 @@ class Pengguna extends Authenticatable
         ];
     }
 
-    /**
-     * Override nama kolom password untuk otentikasi Laravel.
-     */
     public function getAuthPasswordName()
     {
         return 'kata_sandi';
+    }
+
+    // Relasi Wishlist (Many to Many via tabel daftar_keinginan)
+    public function wishlist(): BelongsToMany
+    {
+        return $this->belongsToMany(Produk::class, 'daftar_keinginan', 'pengguna_id', 'produk_id')->withTimestamps();
+    }
+
+    public function alamat(): HasMany
+    {
+        return $this->hasMany(AlamatPengiriman::class, 'pengguna_id');
     }
 }

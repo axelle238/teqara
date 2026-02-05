@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\LogAktivitas;
 use App\Models\Pesanan;
 use App\Models\TransaksiPembayaran;
-use App\Models\LogAktivitas;
 use Illuminate\Support\Str;
 
 class PaymentGatewayService
@@ -12,10 +12,10 @@ class PaymentGatewayService
     public function buatTransaksi(Pesanan $pesanan, $metode, $provider)
     {
         // Simulasi Request ke API Gateway (Midtrans/Xendit)
-        
+
         $kodePembayaran = '';
         if ($metode == 'bank_transfer') {
-            $kodePembayaran = '8800' . rand(1000000000, 9999999999); // Simulasi VA
+            $kodePembayaran = '8800'.rand(1000000000, 9999999999); // Simulasi VA
         } elseif ($metode == 'qris') {
             $kodePembayaran = Str::uuid(); // ID QRIS
         }
@@ -27,7 +27,7 @@ class PaymentGatewayService
             'provider' => $provider,
             'jumlah_bayar' => $pesanan->total_harga,
             'status' => 'pending',
-            'payload_gateway' => ['mock' => true, 'desc' => 'Simulasi Gateway Teqara']
+            'payload_gateway' => ['mock' => true, 'desc' => 'Simulasi Gateway Teqara'],
         ]);
 
         return $transaksi;
@@ -41,12 +41,12 @@ class PaymentGatewayService
         if ($status == 'success') {
             $transaksi->update([
                 'status' => 'success',
-                'waktu_bayar' => now()
+                'waktu_bayar' => now(),
             ]);
 
             $pesanan->update([
                 'status_pembayaran' => 'lunas',
-                'status_pesanan' => 'diproses' // Auto move to processing
+                'status_pesanan' => 'diproses', // Auto move to processing
             ]);
 
             LogAktivitas::create([
@@ -54,7 +54,7 @@ class PaymentGatewayService
                 'aksi' => 'pembayaran_sukses',
                 'target' => $pesanan->nomor_invoice,
                 'pesan_naratif' => "Pembayaran untuk pesanan {$pesanan->nomor_invoice} berhasil via {$transaksi->provider}.",
-                'waktu' => now()
+                'waktu' => now(),
             ]);
         } else {
             $transaksi->update(['status' => 'failed']);

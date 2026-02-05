@@ -2,22 +2,25 @@
 
 namespace App\Livewire\Pelanggan;
 
-use Livewire\Component;
-use Livewire\WithFileUploads;
-use App\Models\Produk;
 use App\Models\Pesanan;
+use App\Models\Produk;
 use App\Models\Ulasan;
 use Livewire\Attributes\Title;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class BeriUlasan extends Component
 {
     use WithFileUploads;
 
     public $produk;
+
     public $pesanan;
-    
+
     public $rating = 5;
+
     public $komentar;
+
     public $foto = [];
 
     public function mount($pesananId, $produkId)
@@ -36,6 +39,7 @@ class BeriUlasan extends Component
 
         if ($sudahUlas) {
             session()->flash('pesan', 'Anda sudah mengulas produk ini.');
+
             return redirect()->to('/pesanan/riwayat');
         }
     }
@@ -51,7 +55,7 @@ class BeriUlasan extends Component
         $urls = [];
         foreach ($this->foto as $f) {
             // Di production: $f->store('ulasan', 'public');
-            $urls[] = $f->temporaryUrl(); 
+            $urls[] = $f->temporaryUrl();
         }
 
         Ulasan::create([
@@ -60,7 +64,7 @@ class BeriUlasan extends Component
             'pesanan_id' => $this->pesanan->id,
             'rating' => $this->rating,
             'komentar' => $this->komentar,
-            'foto_ulasan' => $urls
+            'foto_ulasan' => $urls,
         ]);
 
         // Update Rating Produk
@@ -68,7 +72,8 @@ class BeriUlasan extends Component
         $this->produk->update(['rating_rata_rata' => $rataRata]);
 
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Terima kasih atas ulasan Anda!']);
-        return redirect()->to('/produk/' . $this->produk->slug);
+
+        return redirect()->to('/produk/'.$this->produk->slug);
     }
 
     #[Title('Tulis Ulasan - Teqara')]

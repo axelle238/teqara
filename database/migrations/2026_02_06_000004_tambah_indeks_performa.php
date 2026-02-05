@@ -21,7 +21,7 @@ return new class extends Migration
             $table->index('status_pesanan'); // Filter status dashboard
             $table->index('created_at'); // Filter tanggal laporan
         });
-        
+
         Schema::table('log_aktivitas', function (Blueprint $table) {
             $table->index('waktu'); // Sorting log terbaru
         });
@@ -36,7 +36,7 @@ return new class extends Migration
         Schema::table('pesanan', function (Blueprint $table) {
             $table->dropIndex(['nomor_invoice', 'status_pesanan', 'created_at']);
         });
-        
+
         Schema::table('log_aktivitas', function (Blueprint $table) {
             $table->dropIndex(['waktu']);
         });

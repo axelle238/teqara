@@ -27,7 +27,7 @@ class CmsSeeder extends Seeder
                 'tombol_text' => 'Mulai Menjelajah',
                 'urutan' => 1,
                 'aktif' => true,
-            ]
+            ],
         ]);
 
         // 3. Banner Promo (Tengah Halaman)
@@ -41,7 +41,7 @@ class CmsSeeder extends Seeder
                 'tombol_text' => 'Lihat Paket',
                 'urutan' => 1,
                 'aktif' => true,
-            ]
+            ],
         ]);
     }
 }

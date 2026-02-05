@@ -104,7 +104,7 @@ return new class extends Migration
         Schema::dropIfExists('varian_produk');
         Schema::dropIfExists('gambar_produk');
         Schema::dropIfExists('alamat_pengiriman');
-        
+
         Schema::table('produk', function (Blueprint $table) {
             $table->string('gambar_utama')->nullable();
             $table->dropColumn(['memiliki_varian', 'rating_rata_rata']);
