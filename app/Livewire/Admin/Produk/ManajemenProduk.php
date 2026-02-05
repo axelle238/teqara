@@ -81,6 +81,14 @@ class ManajemenProduk extends Component
             $layananStok->tambahStok(Produk::latest()->first(), $this->stok, 'Input stok awal produk baru');
         }
 
+        // Catat Log Aktivitas
+        \App\Helpers\LogHelper::catat(
+            'create_produk', 
+            $this->nama, 
+            "Admin menambahkan produk baru: {$this->nama} (SKU: {$this->sku})",
+            $data
+        );
+
         $this->dispatch('close-panel-form-produk');
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "Produk {$this->nama} berhasil ditambahkan!"]);
     }
