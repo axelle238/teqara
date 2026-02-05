@@ -38,10 +38,8 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     Route::get('/pesanan', \App\Livewire\Admin\Pesanan\DaftarPesanan::class)->name('admin.pesanan');
     Route::get('/pesanan/{pesanan}', \App\Livewire\Admin\Pesanan\DetailPesanan::class)->name('admin.pesanan.detail');
 
-    // Manajemen Produk
-    Route::get('/produk', \App\Livewire\Admin\Produk\DaftarProduk::class)->name('admin.produk');
-    Route::get('/produk/tambah', \App\Livewire\Admin\Produk\FormProduk::class)->name('admin.produk.tambah');
-    Route::get('/produk/{id}/edit', \App\Livewire\Admin\Produk\FormProduk::class)->name('admin.produk.edit');
+    // Manajemen Produk (Enterprise Style - No Modal)
+    Route::get('/produk', \App\Livewire\Admin\Produk\ManajemenProduk::class)->name('admin.produk');
 
     // Manajemen Master & Audit
     Route::get('/kategori', \App\Livewire\Admin\Kategori\DaftarKategori::class)->name('admin.kategori');
