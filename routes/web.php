@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Livewire\Beranda;
+use Illuminate\Support\Facades\Route;
 
 // Rute Publik
 Route::get('/', Beranda::class)->name('beranda');
@@ -14,6 +14,7 @@ Route::get('/logout', function () {
     auth()->logout();
     session()->invalidate();
     session()->regenerateToken();
+
     return redirect('/');
 })->name('logout');
 
@@ -31,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
 // Rute Admin (Memerlukan Login & Peran Admin)
 Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('admin')->group(function () {
     Route::get('/dashboard', \App\Livewire\Admin\Dashboard::class)->name('admin.dashboard');
-    
+
     // Manajemen Pesanan
     Route::get('/pesanan', \App\Livewire\Admin\Pesanan\DaftarPesanan::class)->name('admin.pesanan');
     Route::get('/pesanan/{pesanan}', \App\Livewire\Admin\Pesanan\DetailPesanan::class)->name('admin.pesanan.detail');
@@ -45,4 +46,5 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     Route::get('/kategori', \App\Livewire\Admin\Kategori\DaftarKategori::class)->name('admin.kategori');
     Route::get('/merek', \App\Livewire\Admin\Merek\DaftarMerek::class)->name('admin.merek');
     Route::get('/log', \App\Livewire\Admin\Log\DaftarLog::class)->name('admin.log');
+    Route::get('/laporan', \App\Livewire\Admin\Laporan\DaftarLaporan::class)->name('admin.laporan');
 });

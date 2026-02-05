@@ -58,6 +58,14 @@
         </div>
     </div>
 
+    <!-- Grafik Analitik -->
+    <div class="mt-8 grid grid-cols-1 gap-8">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <h3 class="text-lg font-bold text-slate-900 mb-6">Tren Penjualan (7 Hari Terakhir)</h3>
+            <div id="grafik-penjualan"></div>
+        </div>
+    </div>
+
     <!-- Tabel Pesanan Terbaru -->
     <div class="mt-8">
         <h3 class="text-lg font-bold leading-6 text-slate-900 mb-4">Aktivitas Pesanan Terbaru</h3>
@@ -100,4 +108,44 @@
             </table>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('livewire:navigated', () => {
+            const options = {
+                series: [{
+                    name: 'Omzet Penjualan',
+                    data: @json($dataTren)
+                }],
+                chart: {
+                    type: 'area',
+                    height: 350,
+                    toolbar: { show: false },
+                    fontFamily: 'Inter, sans-serif'
+                },
+                colors: ['#0891b2'],
+                dataLabels: { enabled: false },
+                stroke: { curve: 'smooth', width: 3 },
+                xaxis: {
+                    categories: @json($labelTren),
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function (value) {
+                            return "Rp " + value.toLocaleString('id-ID');
+                        }
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (value) {
+                            return "Rp " + value.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            };
+
+            const chart = new ApexCharts(document.querySelector("#grafik-penjualan"), options);
+            chart.render();
+        });
+    </script>
 </div>

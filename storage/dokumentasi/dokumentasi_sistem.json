@@ -2,7 +2,7 @@
     "nama_sistem": "TEQARA - Sistem Penjualan Komputer & Gadget",
     "versi_laravel": "12.50.0",
     "bahasa_sistem": "100% Bahasa Indonesia",
-    "terakhir_diperbarui": "05/02/2026 16:14:34",
+    "terakhir_diperbarui": "05/02/2026 16:17:09",
     "modul_aktif": {
         "Hulu": [
             "Manajemen Produk",
@@ -162,6 +162,11 @@
         {
             "uri": "admin/log",
             "nama": "admin.log",
+            "method": "GET|HEAD"
+        },
+        {
+            "uri": "admin/laporan",
+            "nama": "admin.laporan",
             "method": "GET|HEAD"
         },
         {
