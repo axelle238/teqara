@@ -30,7 +30,7 @@ class ProdukSeeder extends Seeder
             'merek_id' => $brandAsus->id,
             'nama' => 'ASUS ROG Strix G16 (2024)',
             'slug' => Str::slug('ASUS ROG Strix G16 2024'),
-            'sku' => 'LPT-ASUS-G16',
+            'kode_unit' => 'LPT-ASUS-G16',
             'deskripsi_singkat' => 'Laptop Gaming Powerhouse dengan Intel Core i9 dan RTX 4070.',
             'deskripsi_lengkap' => '<p>Dominasi permainan dengan ROG Strix G16 baru...</p>',
             'harga_modal' => 28000000,
@@ -46,8 +46,8 @@ class ProdukSeeder extends Seeder
         GambarProduk::create(['produk_id' => $p1->id, 'url' => 'https://dlcdnwebimgs.asus.com/gain/0f9d6574-d4d3-4e76-836e-587037583389/w750/h470', 'is_utama' => false]);
 
         // Varian
-        VarianProduk::create(['produk_id' => $p1->id, 'nama_varian' => 'RTX 4060 / 16GB / 1TB', 'sku' => 'G16-4060', 'harga_tambahan' => 0, 'stok' => 5]);
-        VarianProduk::create(['produk_id' => $p1->id, 'nama_varian' => 'RTX 4070 / 32GB / 2TB', 'sku' => 'G16-4070', 'harga_tambahan' => 5000000, 'stok' => 3]);
+        VarianProduk::create(['produk_id' => $p1->id, 'nama_varian' => 'RTX 4060 / 16GB / 1TB', 'kode_unit' => 'G16-4060', 'harga_tambahan' => 0, 'stok' => 5]);
+        VarianProduk::create(['produk_id' => $p1->id, 'nama_varian' => 'RTX 4070 / 32GB / 2TB', 'kode_unit' => 'G16-4070', 'harga_tambahan' => 5000000, 'stok' => 3]);
 
         // Spesifikasi
         SpesifikasiProduk::create(['produk_id' => $p1->id, 'judul' => 'Processor', 'nilai' => 'Intel Core i9-13980HX']);
@@ -59,7 +59,7 @@ class ProdukSeeder extends Seeder
             'merek_id' => $brandApple->id,
             'nama' => 'iPhone 15 Pro Max',
             'slug' => Str::slug('iPhone 15 Pro Max'),
-            'sku' => 'HP-APPL-15PM',
+            'kode_unit' => 'HP-APPL-15PM',
             'deskripsi_singkat' => 'Titanium. Begitu kuat. Begitu ringan. Begitu Pro.',
             'harga_modal' => 20000000,
             'harga_jual' => 24999000,
@@ -71,7 +71,7 @@ class ProdukSeeder extends Seeder
 
         GambarProduk::create(['produk_id' => $p2->id, 'url' => 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-max-natural-titanium-select-202309?wid=940&hei=1112&fmt=png-alpha&.v=1693510919706', 'is_utama' => true]);
 
-        VarianProduk::create(['produk_id' => $p2->id, 'nama_varian' => '256GB - Natural Titanium', 'sku' => '15PM-NAT-256', 'harga_tambahan' => 0, 'stok' => 10]);
-        VarianProduk::create(['produk_id' => $p2->id, 'nama_varian' => '512GB - Blue Titanium', 'sku' => '15PM-BLU-512', 'harga_tambahan' => 4000000, 'stok' => 5]);
+        VarianProduk::create(['produk_id' => $p2->id, 'nama_varian' => '256GB - Natural Titanium', 'kode_unit' => '15PM-NAT-256', 'harga_tambahan' => 0, 'stok' => 10]);
+        VarianProduk::create(['produk_id' => $p2->id, 'nama_varian' => '512GB - Blue Titanium', 'kode_unit' => '15PM-BLU-512', 'harga_tambahan' => 4000000, 'stok' => 5]);
     }
 }

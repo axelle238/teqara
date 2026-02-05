@@ -10,7 +10,7 @@ use Livewire\Component;
 class Profil extends Component
 {
     // Tab State
-    public $tabAktif = 'ringkasan'; // ringkasan, pesanan, pengaturan
+    public $tabAktif = 'ringkasan'; // ringkasan, pesanan, pengaturan_sistem
 
     // Data Diri
     public $nama;

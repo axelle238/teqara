@@ -7,6 +7,10 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * Class DaftarLog
+ * Tujuan: Rekaman forensik aktivitas digital seluruh aktor sistem.
+ */
 class DaftarLog extends Component
 {
     use WithPagination;
@@ -26,7 +30,7 @@ class DaftarLog extends Component
         $this->dispatch('open-slide-over', id: 'detail-log');
     }
 
-    #[Title('Audit Log Aktivitas - Admin Teqara')]
+    #[Title('Jejak Audit Digital - Admin Teqara')]
     public function render()
     {
         $logs = LogAktivitas::with('pengguna')

@@ -8,10 +8,10 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     Kembali ke Riwayat
                 </a>
-                <h1 class="text-3xl font-black text-slate-900 tracking-tighter">Lacak Pesanan <span class="text-cyan-600">#{{ $pesanan->nomor_invoice }}</span></h1>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tighter">Lacak Pesanan <span class="text-cyan-600">#{{ $pesanan->nomor_faktur }}</span></h1>
             </div>
             <div class="flex gap-2">
-                <a href="/pesanan/faktur/{{ $pesanan->nomor_invoice }}" target="_blank" class="px-6 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition shadow-sm flex items-center gap-2">
+                <a href="/pesanan/faktur/{{ $pesanan->nomor_faktur }}" target="_blank" class="px-6 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition shadow-sm flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                     Cetak Invoice
                 </a>

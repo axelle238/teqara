@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Class Produk
+ * Tujuan: Manajemen data unit komputasi, gadget, dan inventaris hulu.
+ */
 class Produk extends Model
 {
     use HasFactory;
@@ -64,20 +68,18 @@ class Produk extends Model
         return $this->hasMany(ProdukSeri::class, 'produk_id');
     }
 
-    public function produkFlashSale(): HasMany
+    public function produkPenjualanKilat(): HasMany
     {
-        return $this->hasMany(ProdukFlashSale::class, 'produk_id');
+        return $this->hasMany(ProdukPenjualanKilat::class, 'produk_id');
     }
 
-    // Helper: Ambil gambar utama (urutan pertama atau default)
     public function getGambarUtamaUrlAttribute()
     {
         $gambar = $this->gambar->where('is_utama', true)->first() ?? $this->gambar->first();
 
-        return $gambar ? $gambar->url : 'https://via.placeholder.com/400x400?text=No+Image';
+        return $gambar ? $gambar->url : 'https://via.placeholder.com/400x400?text=Tanpa+Gambar';
     }
 
-    // Helper: Harga Rupiah (Range jika ada varian)
     public function getHargaRupiahAttribute()
     {
         if ($this->memiliki_varian && $this->varian->count() > 0) {

@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="utf-8">
-    <title>Invoice #{{ $pesanan->nomor_invoice }}</title>
+    <title>Invoice #{{ $pesanan->nomor_faktur }}</title>
     <style>
         body { font-family: sans-serif; color: #333; line-height: 1.6; }
         .invoice-box { max-width: 800px; margin: auto; padding: 30px; border: 1px solid #eee; }
@@ -36,7 +36,7 @@
             <div style="text-align: right;">
                 <div class="title">INVOICE</div>
                 <div class="info">
-                    Nomor: #{{ $pesanan->nomor_invoice }}<br>
+                    Nomor: #{{ $pesanan->nomor_faktur }}<br>
                     Tanggal: {{ $pesanan->created_at->format('d M Y') }}<br>
                     Status: <span class="status {{ $pesanan->status_pembayaran == 'lunas' ? 'lunas' : 'belum' }}">{{ $pesanan->status_pembayaran }}</span>
                 </div>

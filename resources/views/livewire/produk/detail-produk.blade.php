@@ -47,7 +47,7 @@
                         <div class="flex items-center gap-3">
                             <span class="px-3 py-1 rounded-lg bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest">{{ $produk->merek->nama ?? 'Unit Resmi' }}</span>
                             <div class="h-1 w-1 rounded-full bg-slate-200"></div>
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $produk->sku }}</span>
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ `produk->kode_unit }}</span>
                         </div>
                         <h1 class="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.1] tracking-tighter uppercase">{{ $produk->nama }}</h1>
                     </div>

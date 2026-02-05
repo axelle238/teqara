@@ -17,8 +17,8 @@ return new class extends Migration
         });
 
         Schema::table('pesanan', function (Blueprint $table) {
-            $table->index('nomor_invoice'); // Pencarian invoice
-            $table->index('status_pesanan'); // Filter status dashboard
+            $table->index('nomor_faktur'); // Pencarian invoice
+            $table->index('status_pesanan'); // Filter status Beranda
             $table->index('created_at'); // Filter tanggal laporan
         });
 
@@ -34,7 +34,7 @@ return new class extends Migration
         });
 
         Schema::table('pesanan', function (Blueprint $table) {
-            $table->dropIndex(['nomor_invoice', 'status_pesanan', 'created_at']);
+            $table->dropIndex(['nomor_faktur', 'status_pesanan', 'created_at']);
         });
 
         Schema::table('log_aktivitas', function (Blueprint $table) {

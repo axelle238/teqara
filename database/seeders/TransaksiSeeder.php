@@ -27,7 +27,7 @@ class TransaksiSeeder extends Seeder
             $totalHarga = 0;
 
             $pesanan = Pesanan::create([
-                'nomor_invoice' => 'TEQ-'.date('Ymd').'-'.str_pad($i, 4, '0', STR_PAD_LEFT),
+                'nomor_faktur' => 'TEQ-'.date('Ymd').'-'.str_pad($i, 4, '0', STR_PAD_LEFT),
                 'pengguna_id' => $user->id,
                 'total_harga' => 0,
                 'status_pembayaran' => rand(0, 1) ? 'lunas' : 'belum_dibayar',
@@ -58,8 +58,8 @@ class TransaksiSeeder extends Seeder
             LogAktivitas::create([
                 'pengguna_id' => $user->id,
                 'aksi' => 'checkout',
-                'target' => $pesanan->nomor_invoice,
-                'pesan_naratif' => "Pelanggan {$user->nama} melakukan pemesanan baru #{$pesanan->nomor_invoice}",
+                'target' => $pesanan->nomor_faktur,
+                'pesan_naratif' => "Pelanggan {$user->nama} melakukan pemesanan baru #{$pesanan->nomor_faktur}",
                 'waktu' => $pesanan->created_at,
             ]);
         }

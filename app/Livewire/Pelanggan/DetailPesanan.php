@@ -12,7 +12,7 @@ class DetailPesanan extends Component
 
     public function mount($invoice)
     {
-        $this->pesanan = Pesanan::where('nomor_invoice', $invoice)
+        $this->pesanan = Pesanan::where('nomor_faktur', $invoice)
             ->where('pengguna_id', auth()->id())
             ->with(['detailPesanan.produk', 'pengguna'])
             ->firstOrFail();

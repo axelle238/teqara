@@ -151,7 +151,7 @@
                     <div class="px-2 space-y-4 flex-1">
                         <div class="flex items-center justify-between">
                             <span class="text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-lg">{{ $p->kategori->nama }}</span>
-                            <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">{{ $p->sku }}</span>
+                            <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">{{ `p->kode_unit }}</span>
                         </div>
                         <h4 class="text-xl font-black text-slate-900 leading-[1.2] line-clamp-2 h-14 group-hover:text-emerald-600 transition-colors">
                             <a href="/produk/{{ $p->slug }}" wire:navigate>{{ $p->nama }}</a>

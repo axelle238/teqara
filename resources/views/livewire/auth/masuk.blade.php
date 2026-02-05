@@ -52,7 +52,7 @@
 
                     <div class="pt-4">
                         <button type="submit" class="w-full flex justify-center py-5 px-4 bg-gradient-to-r from-indigo-600 to-cyan-600 text-white rounded-[24px] shadow-2xl shadow-indigo-500/30 text-xs font-black uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all">
-                            AKTIVASI DASHBOARD
+                            AKTIVASI Beranda
                         </button>
                     </div>
                 </form>

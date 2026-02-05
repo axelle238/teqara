@@ -83,8 +83,8 @@
                     <div class="h-10 w-px bg-slate-100 mx-2 hidden sm:block"></div>
 
                     @auth
-                        <a href="/dashboard" wire:navigate class="hidden sm:flex items-center gap-3 px-6 py-3 vibrant-btn text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-indigo-500/20">
-                            Dashboard
+                        <a href="/Beranda" wire:navigate class="hidden sm:flex items-center gap-3 px-6 py-3 vibrant-btn text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all shadow-lg shadow-indigo-500/20">
+                            Beranda
                         </a>
                     @else
                         <a href="/login" wire:navigate class="px-8 py-3 bg-slate-100 hover:bg-indigo-600 hover:text-white text-indigo-600 rounded-2xl text-xs font-black uppercase tracking-widest transition-all">Masuk</a>

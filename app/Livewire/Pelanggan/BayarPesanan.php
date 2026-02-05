@@ -4,33 +4,36 @@ namespace App\Livewire\Pelanggan;
 
 use App\Models\Pesanan;
 use App\Models\TransaksiPembayaran;
-use App\Services\PaymentGatewayService;
+use App\Services\LayananGerbangPembayaran;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
+/**
+ * Class BayarPesanan
+ * Tujuan: Proses penyelesaian pembayaran pesanan pelanggan via gerbang digital.
+ */
 class BayarPesanan extends Component
 {
     public Pesanan $pesanan;
 
-    public $metodeTerpilih = null; // bank_transfer, qris
+    public $metodeTerpilih = null;
 
-    public $providerTerpilih = null; // bca, mandiri, gopay
+    public $providerTerpilih = null;
 
     public $transaksiAktif = null;
 
     public function mount($invoice)
     {
-        $this->pesanan = Pesanan::where('nomor_invoice', $invoice)
+        $this->pesanan = Pesanan::where('nomor_faktur', $invoice)
             ->where('pengguna_id', auth()->id())
             ->firstOrFail();
 
         if ($this->pesanan->status_pembayaran === 'lunas') {
-            return redirect()->to('/pesanan/lacak/'.$this->pesanan->nomor_invoice);
+            return redirect()->to('/pesanan/lacak/'.$this->pesanan->nomor_faktur);
         }
 
-        // Cek jika ada transaksi pending
         $this->transaksiAktif = TransaksiPembayaran::where('pesanan_id', $this->pesanan->id)
-            ->where('status', 'pending')
+            ->where('status', 'menunggu')
             ->latest()
             ->first();
     }
@@ -41,31 +44,31 @@ class BayarPesanan extends Component
         $this->providerTerpilih = $provider;
     }
 
-    public function buatPembayaran(PaymentGatewayService $service)
+    public function buatPembayaran(LayananGerbangPembayaran $layanan)
     {
         if (! $this->metodeTerpilih) {
             return;
         }
 
-        $this->transaksiAktif = $service->buatTransaksi(
+        $this->transaksiAktif = $layanan->buatTransaksi(
             $this->pesanan,
             $this->metodeTerpilih,
             $this->providerTerpilih
         );
     }
 
-    public function simulasiBayarSukses(PaymentGatewayService $service)
+    public function simulasiBayarSukses(LayananGerbangPembayaran $layanan)
     {
         if ($this->transaksiAktif) {
-            $service->prosesNotifikasi($this->transaksiAktif->id, 'success');
+            $layanan->prosesNotifikasi($this->transaksiAktif->id, 'sukses');
 
-            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Pembayaran Berhasil!']);
+            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Pembayaran Berhasil Diverifikasi!']);
 
-            return redirect()->to('/pesanan/lacak/'.$this->pesanan->nomor_invoice);
+            return redirect()->to('/pesanan/lacak/'.$this->pesanan->nomor_faktur);
         }
     }
 
-    #[Title('Pembayaran - Teqara')]
+    #[Title('Otoritas Pembayaran - Teqara')]
     public function render()
     {
         return view('livewire.pelanggan.bayar-pesanan')

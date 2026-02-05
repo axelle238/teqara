@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
+/**
+ * Class Masuk
+ * Tujuan: Kendali otoritas akses (Login) pelanggan dan administrator.
+ */
 class Masuk extends Component
 {
     public $email = '';
@@ -28,21 +32,20 @@ class Masuk extends Component
         if (Auth::attempt(['email' => $this->email, 'password' => $this->kata_sandi], $this->ingat_saya)) {
             session()->regenerate();
 
-            // Cek peran, arahkan sesuai hak akses
             if (auth()->user()->peran === 'admin') {
-                return redirect()->intended('/admin/dashboard');
+                return redirect()->intended('/admin/beranda');
             }
 
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/profil');
         }
 
-        $this->addError('email', 'Kombinasi email dan kata sandi tidak cocok.');
+        $this->addError('email', 'Kombinasi otoritas tidak valid.');
     }
 
-    #[Title('Masuk - Teqara')]
+    #[Title('Masuk - Teqara Hub')]
     public function render()
     {
         return view('livewire.auth.masuk')
-            ->layout('components.layouts.app', ['title' => 'Masuk - Teqara']);
+            ->layout('components.layouts.app', ['title' => 'Masuk - Teqara Hub']);
     }
 }

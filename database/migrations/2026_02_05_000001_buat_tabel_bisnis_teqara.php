@@ -34,7 +34,7 @@ return new class extends Migration
             $table->foreignId('merek_id')->nullable()->constrained('merek')->onDelete('set null');
             $table->string('nama');
             $table->string('slug')->unique();
-            $table->string('sku')->unique(); // Stock Keeping Unit
+            $table->string('kode_unit')->unique(); // Stock Keeping Unit
             $table->text('deskripsi_singkat')->nullable();
             $table->longText('deskripsi_lengkap')->nullable();
             $table->decimal('harga_modal', 15, 2)->default(0);
@@ -56,7 +56,7 @@ return new class extends Migration
 
         Schema::create('pesanan', function (Blueprint $table) {
             $table->id();
-            $table->string('nomor_invoice')->unique(); // TRX-20260205-001
+            $table->string('nomor_faktur')->unique(); // TRX-20260205-001
             $table->foreignId('pengguna_id')->constrained('pengguna')->onDelete('cascade');
             $table->decimal('total_harga', 15, 2);
             $table->enum('status_pembayaran', ['belum_dibayar', 'menunggu_verifikasi', 'lunas', 'gagal'])->default('belum_dibayar');

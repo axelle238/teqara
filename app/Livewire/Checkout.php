@@ -126,7 +126,7 @@ class Checkout extends Component
 
             // 2. Buat Pesanan
             $pesanan = Pesanan::create([
-                'nomor_invoice' => $nomorInvoice,
+                'nomor_faktur' => $nomorInvoice,
                 'pengguna_id' => auth()->id(),
                 'total_harga' => $this->totalBayar, // Total setelah diskon
                 'potongan_diskon' => $this->nilaiPotongan,

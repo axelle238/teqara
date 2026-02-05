@@ -8,13 +8,17 @@ use App\Models\Produk;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
+/**
+ * Class Beranda
+ * Tujuan: Halaman depan utama toko pelanggan dengan visual High-Tech dan Colorful.
+ */
 class Beranda extends Component
 {
     public function render()
     {
-        // Ambil Konten CMS Hero
-        $hero = \Illuminate\Support\Facades\Cache::remember('cms_hero', 60, function () {
-            return DB::table('cms_konten')->where('bagian', 'hero_section')->first();
+        // Ambil Konten Halaman Hero
+        $hero = \Illuminate\Support\Facades\Cache::remember('konten_hero', 60, function () {
+            return DB::table('konten_halaman')->where('bagian', 'hero_section')->first();
         });
 
         // Cache Kategori (60 Menit)
@@ -22,7 +26,7 @@ class Beranda extends Component
             return Kategori::withCount('produk')->get();
         });
 
-        // Cache Produk Unggulan (15 Menit) - Agar stok update relatif cepat
+        // Cache Produk Unggulan (15 Menit)
         $produkUnggulan = \Illuminate\Support\Facades\Cache::remember('beranda_produk_unggulan', 15, function () {
             return Produk::with(['kategori', 'gambar'])
                 ->where('status', 'aktif')
@@ -32,16 +36,16 @@ class Beranda extends Component
                 ->get();
         });
 
-        // Flash Sale Aktif
-        $flashSale = \Illuminate\Support\Facades\Cache::remember('flash_sale_aktif', 60, function () {
-            return DB::table('flash_sale')
+        // Penjualan Kilat Aktif
+        $penjualanKilat = \Illuminate\Support\Facades\Cache::remember('penjualan_kilat_aktif', 60, function () {
+            return DB::table('penjualan_kilat')
                 ->where('aktif', true)
                 ->where('waktu_mulai', '<=', now())
                 ->where('waktu_selesai', '>=', now())
                 ->first();
         });
 
-        // Statistik Beranda (Real-time atau Short Cache 5 menit)
+        // Statistik Beranda
         $statistik = \Illuminate\Support\Facades\Cache::remember('beranda_statistik', 5, function () {
             return [
                 'transaksi_sukses' => Pesanan::where('status_pembayaran', 'lunas')->count() + 1250,
@@ -59,11 +63,11 @@ class Beranda extends Component
                 ->get();
         });
 
-        return view('livewire.beranda', [
+        return view('livewire\Beranda', [
             'hero' => $hero,
             'kategori' => $kategori,
             'produkUnggulan' => $produkUnggulan,
-            'flashSale' => $flashSale,
+            'penjualanKilat' => $penjualanKilat,
             'statistik' => $statistik,
             'beritaTerbaru' => $beritaTerbaru,
         ])->layout('components.layouts.app');

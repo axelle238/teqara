@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Schema;
 /**
  * LayananDokumentasi
  * Tujuan: Menghasilkan dokumentasi sistem TEQARA secara otomatis dalam format JSON.
- * Peran: Memastikan transparansi struktur sistem setiap saat.
+ * Peran: Memastikan transparansi struktur sistem setiap saat sesuai standar v16.0.
  */
 class LayananDokumentasi
 {
@@ -20,41 +20,32 @@ class LayananDokumentasi
     public function perbaruiDokumentasi(): void
     {
         $data = [
-            'nama_sistem' => 'TEQARA Enterprise v3.0',
-            'deskripsi' => 'Ekosistem Penjualan Komputer & Gadget Enterprise Grade',
-            'versi_laravel' => app()->version(),
-            'bahasa_sistem' => '100% Bahasa Indonesia',
+            'nama_sistem' => 'TEQARA Enterprise Hub v16.0',
+            'deskripsi' => 'Ekosistem Kendali Komputasi & Gadget Enterprise',
+            'versi_laravel' => '12.0',
+            'bahasa_sistem' => '100% Bahasa Indonesia (Nasionalisasi Mutlak)',
             'arsitektur' => [
                 'backend' => 'Laravel 12 (Core)',
                 'frontend' => 'Livewire 4 + Tailwind CSS 4',
                 'pola_interaksi' => 'SPA / Real-time Events',
-                'kebijakan_modal' => '0% Modal (Mutlak)',
+                'kebijakan_modal' => '0% Modal (Ganti Panel Geser)',
+                'kebijakan_warna' => 'Vibrant High-Tech (No Dark/Black Policy)',
             ],
             'waktu_pembaruan_terakhir' => now()->format('d/m/Y H:i:s'),
 
             'statistik_data' => $this->ambilStatistikDatabase(),
-            'cakupan_bisnis' => [
-                'Hulu (Supply Chain)' => [
-                    'Manajemen Pemasok (Vendor Management)',
-                    'Purchase Order (PO) Stok',
-                    'Multi-Gudang & Stok Gudang',
-                    'Mutasi & Audit Stok',
-                    'Pelacakan Nomor Seri (Serial Number)',
-                ],
-                'Tengah (Customer Experience)' => [
-                    'Katalog High-Tech Spotlight',
-                    'Varian Produk Kompleks',
-                    'Promo Flash Sale & Voucher',
-                    'Keranjang Belanja Persisten',
-                    'Checkout Multiproses Real-time',
-                ],
-                'Hilir (Operations & Analytics)' => [
-                    'Manajemen Pengiriman (Tracking)',
-                    'Audit Log Naratif (Activity Stream)',
-                    'Dasbor Analitik Eksekutif',
-                    'Manajemen HRD & Organisasi',
-                    'Gamifikasi (Loyalty Points)',
-                ],
+            'sebelas_pilar_manajemen' => [
+                'Pilar 1' => 'Manajemen Halaman Toko (Konten & Berita)',
+                'Pilar 2' => 'Manajemen Produk & Gadget (Katalog & Stok)',
+                'Pilar 3' => 'Manajemen Pesanan (Antrian Transaksi)',
+                'Pilar 4' => 'Manajemen Transaksi & Finansial (Arus Kas)',
+                'Pilar 5' => 'Manajemen Layanan Pelanggan (Helpdesk Tiket)',
+                'Pilar 6' => 'Manajemen Logistik & Pengiriman (Mitra Pemasok)',
+                'Pilar 7' => 'Manajemen Pelanggan (CRM Member)',
+                'Pilar 8' => 'Manajemen Pegawai & Peran (SDM Organisasi)',
+                'Pilar 9' => 'Manajemen Laporan & Analitik (Profit)',
+                'Pilar 10' => 'Pengaturan Sistem Terpusat (Identitas & Promo)',
+                'Pilar 11' => 'Pengaturan Keamanan Terpusat (Radar Audit)',
             ],
             'daftar_endpoint' => $this->ambilDaftarRute(),
         ];
@@ -68,9 +59,6 @@ class LayananDokumentasi
         File::put($jalurSimpan, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 
-    /**
-     * Mengambil jumlah data dari tabel-tabel utama.
-     */
     private function ambilStatistikDatabase(): array
     {
         $tabelTarget = [
@@ -85,16 +73,13 @@ class LayananDokumentasi
                     $hasil[$tabel] = DB::table($tabel)->count();
                 }
             } catch (\Exception $e) {
-                // Abaikan jika error
+                // Abaikan
             }
         }
 
         return $hasil;
     }
 
-    /**
-     * Mengambil daftar rute aplikasi yang terdaftar.
-     */
     private function ambilDaftarRute(): array
     {
         return collect(Route::getRoutes())->map(function ($rute) {

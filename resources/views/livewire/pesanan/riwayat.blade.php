@@ -11,7 +11,7 @@
                     <div class="flex items-center gap-6">
                         <div>
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nomor Invoice</p>
-                            <p class="text-sm font-bold text-slate-900">{{ $p->nomor_invoice }}</p>
+                            <p class="text-sm font-bold text-slate-900">{{ $p->nomor_faktur }}</p>
                         </div>
                         <div>
                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tanggal</p>

@@ -4,7 +4,7 @@
         <!-- Header -->
         <div class="text-center mb-10">
             <p class="text-slate-500 font-bold uppercase tracking-widest text-xs mb-2">Menunggu Pembayaran</p>
-            <h1 class="text-3xl font-black text-slate-900">Selesaikan Pesanan #{{ $pesanan->nomor_invoice }}</h1>
+            <h1 class="text-3xl font-black text-slate-900">Selesaikan Pesanan #{{ $pesanan->nomor_faktur }}</h1>
             <div class="mt-4 inline-block bg-white px-6 py-2 rounded-full shadow-sm border border-slate-200">
                 <span class="text-slate-500 font-bold text-sm">Total Tagihan:</span>
                 <span class="ml-2 text-xl font-black text-cyan-600">{{ 'Rp ' . number_format($pesanan->total_harga, 0, ',', '.') }}</span>

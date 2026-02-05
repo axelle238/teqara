@@ -39,12 +39,12 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 4. Tabel Varian Produk (SKU Management)
+        // 4. Tabel Varian Produk (kode_unit Management)
         Schema::create('varian_produk', function (Blueprint $table) {
             $table->id();
             $table->foreignId('produk_id')->constrained('produk')->onDelete('cascade');
             $table->string('nama_varian'); // Contoh: "8GB/256GB - Midnight Black"
-            $table->string('sku')->unique();
+            $table->string('kode_unit')->unique();
             $table->decimal('harga_tambahan', 15, 2)->default(0); // Harga tambah dari base price
             $table->integer('stok');
             $table->timestamps();

@@ -29,7 +29,7 @@ return new class extends Migration
         });
 
         // 3. Tabel Flash Sale
-        Schema::create('flash_sale', function (Blueprint $table) {
+        Schema::create('penjualan_kilat', function (Blueprint $table) {
             $table->id();
             $table->string('judul');
             $table->dateTime('waktu_mulai');
@@ -39,9 +39,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('produk_flash_sale', function (Blueprint $table) {
+        Schema::create('produk_penjualan_kilat', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('flash_sale_id')->constrained('flash_sale')->onDelete('cascade');
+            $table->foreignId('penjualan_kilat_id')->constrained('penjualan_kilat')->onDelete('cascade');
             $table->foreignId('produk_id')->constrained('produk')->onDelete('cascade');
             $table->decimal('harga_diskon', 15, 2);
             $table->integer('kuota_stok');
@@ -52,8 +52,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('produk_flash_sale');
-        Schema::dropIfExists('flash_sale');
+        Schema::dropIfExists('produk_penjualan_kilat');
+        Schema::dropIfExists('penjualan_kilat');
         Schema::dropIfExists('riwayat_poin');
 
         Schema::table('pengguna', function (Blueprint $table) {

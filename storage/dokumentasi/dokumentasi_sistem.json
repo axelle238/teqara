@@ -1,15 +1,16 @@
 {
-    "nama_sistem": "TEQARA Enterprise v3.0",
-    "deskripsi": "Ekosistem Penjualan Komputer & Gadget Enterprise Grade",
-    "versi_laravel": "12.50.0",
-    "bahasa_sistem": "100% Bahasa Indonesia",
+    "nama_sistem": "TEQARA Enterprise Hub v16.0",
+    "deskripsi": "Ekosistem Kendali Komputasi & Gadget Enterprise",
+    "versi_laravel": "12.0",
+    "bahasa_sistem": "100% Bahasa Indonesia (Nasionalisasi Mutlak)",
     "arsitektur": {
         "backend": "Laravel 12 (Core)",
         "frontend": "Livewire 4 + Tailwind CSS 4",
         "pola_interaksi": "SPA / Real-time Events",
-        "kebijakan_modal": "0% Modal (Mutlak)"
+        "kebijakan_modal": "0% Modal (Ganti Panel Geser)",
+        "kebijakan_warna": "Vibrant High-Tech (No Dark/Black Policy)"
     },
-    "waktu_pembaruan_terakhir": "05/02/2026 19:41:29",
+    "waktu_pembaruan_terakhir": "05/02/2026 23:18:10",
     "statistik_data": {
         "pengguna": 11,
         "produk": 2,
@@ -22,28 +23,18 @@
         "karyawan": 0,
         "mutasi_stok": 0
     },
-    "cakupan_bisnis": {
-        "Hulu (Supply Chain)": [
-            "Manajemen Pemasok (Vendor Management)",
-            "Purchase Order (PO) Stok",
-            "Multi-Gudang & Stok Gudang",
-            "Mutasi & Audit Stok",
-            "Pelacakan Nomor Seri (Serial Number)"
-        ],
-        "Tengah (Customer Experience)": [
-            "Katalog High-Tech Spotlight",
-            "Varian Produk Kompleks",
-            "Promo Flash Sale & Voucher",
-            "Keranjang Belanja Persisten",
-            "Checkout Multiproses Real-time"
-        ],
-        "Hilir (Operations & Analytics)": [
-            "Manajemen Pengiriman (Tracking)",
-            "Audit Log Naratif (Activity Stream)",
-            "Dasbor Analitik Eksekutif",
-            "Manajemen HRD & Organisasi",
-            "Gamifikasi (Loyalty Points)"
-        ]
+    "sebelas_pilar_manajemen": {
+        "Pilar 1": "Manajemen Halaman Toko (Konten & Berita)",
+        "Pilar 2": "Manajemen Produk & Gadget (Katalog & Stok)",
+        "Pilar 3": "Manajemen Pesanan (Antrian Transaksi)",
+        "Pilar 4": "Manajemen Transaksi & Finansial (Arus Kas)",
+        "Pilar 5": "Manajemen Layanan Pelanggan (Helpdesk Tiket)",
+        "Pilar 6": "Manajemen Logistik & Pengiriman (Mitra Pemasok)",
+        "Pilar 7": "Manajemen Pelanggan (CRM Member)",
+        "Pilar 8": "Manajemen Pegawai & Peran (SDM Organisasi)",
+        "Pilar 9": "Manajemen Laporan & Analitik (Profit)",
+        "Pilar 10": "Pengaturan Sistem Terpusat (Identitas & Promo)",
+        "Pilar 11": "Pengaturan Keamanan Terpusat (Radar Audit)"
     },
     "daftar_endpoint": [
         {
@@ -112,12 +103,12 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "login",
+            "uri": "masuk",
             "nama": "login",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "logout",
+            "uri": "keluar",
             "nama": "logout",
             "metode": "GET|HEAD"
         },
@@ -157,18 +148,18 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "dashboard",
+            "uri": "profil",
             "nama": "dashboard",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/dashboard",
-            "nama": "admin.dashboard",
+            "uri": "admin/beranda",
+            "nama": "admin.beranda",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/toko/dashboard",
-            "nama": "admin.toko.dashboard",
+            "uri": "admin/toko/beranda",
+            "nama": "admin.toko.beranda",
             "metode": "GET|HEAD"
         },
         {
@@ -182,8 +173,8 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/produk/dashboard",
-            "nama": "admin.produk.dashboard",
+            "uri": "admin/produk/beranda",
+            "nama": "admin.produk.beranda",
             "metode": "GET|HEAD"
         },
         {
@@ -202,8 +193,8 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pesanan/dashboard",
-            "nama": "admin.pesanan.dashboard",
+            "uri": "admin/pesanan/beranda",
+            "nama": "admin.pesanan.beranda",
             "metode": "GET|HEAD"
         },
         {
@@ -217,8 +208,8 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/transaksi/dashboard",
-            "nama": "admin.transaksi.dashboard",
+            "uri": "admin/transaksi/beranda",
+            "nama": "admin.transaksi.beranda",
             "metode": "GET|HEAD"
         },
         {
@@ -227,23 +218,23 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/cs/dashboard",
-            "nama": "admin.cs.dashboard",
+            "uri": "admin/layanan/beranda",
+            "nama": "admin.cs.beranda",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/cs/tiket",
+            "uri": "admin/layanan/tiket",
             "nama": "admin.cs.tiket",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/cs/ulasan",
+            "uri": "admin/layanan/ulasan",
             "nama": "admin.pelanggan.ulasan",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/logistik/dashboard",
-            "nama": "admin.logistik.dashboard",
+            "uri": "admin/logistik/beranda",
+            "nama": "admin.logistik.beranda",
             "metode": "GET|HEAD"
         },
         {
@@ -252,8 +243,8 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pelanggan/dashboard",
-            "nama": "admin.pelanggan.dashboard",
+            "uri": "admin/pelanggan/beranda",
+            "nama": "admin.pelanggan.beranda",
             "metode": "GET|HEAD"
         },
         {
@@ -262,22 +253,17 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pengguna/dashboard",
-            "nama": "admin.pengguna.dashboard",
+            "uri": "admin/pegawai/beranda",
+            "nama": "admin.pengguna.beranda",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pengguna/daftar",
-            "nama": "admin.pengguna.daftar",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/pengguna/struktur",
+            "uri": "admin/pegawai/struktur",
             "nama": "admin.hrd.karyawan",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pengguna/hrd",
+            "uri": "admin/pegawai/karyawan",
             "nama": "admin.pengguna.hrd",
             "metode": "GET|HEAD"
         },
@@ -287,22 +273,22 @@
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pengaturan/sistem",
+            "uri": "admin/sistem/identitas",
             "nama": "admin.pengaturan.sistem",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pengaturan/sistem/voucher",
+            "uri": "admin/sistem/voucher",
             "nama": "admin.voucher",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pengaturan/keamanan",
+            "uri": "admin/keamanan/radar",
             "nama": "admin.pengaturan.keamanan",
             "metode": "GET|HEAD"
         },
         {
-            "uri": "admin/pengaturan/keamanan/log",
+            "uri": "admin/keamanan/log",
             "nama": "admin.pengaturan.log",
             "metode": "GET|HEAD"
         },
