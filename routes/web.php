@@ -42,6 +42,9 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     Route::get('/produk', \App\Livewire\Admin\Produk\ManajemenProduk::class)->name('admin.produk');
     Route::get('/stok', \App\Livewire\Admin\Stok\ManajemenStok::class)->name('admin.stok');
 
+    // Manajemen Logistik
+    Route::get('/logistik/pemasok', \App\Livewire\Admin\Logistik\ManajemenPemasok::class)->name('admin.logistik.pemasok');
+
     // Manajemen Master & Audit
     Route::get('/kategori', \App\Livewire\Admin\Kategori\DaftarKategori::class)->name('admin.kategori');
     Route::get('/merek', \App\Livewire\Admin\Merek\DaftarMerek::class)->name('admin.merek');

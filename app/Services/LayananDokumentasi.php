@@ -30,8 +30,8 @@ class LayananDokumentasi
             
             'statistik_data' => $this->ambilStatistikDatabase(),
             'modul_aktif' => [
-                'Hulu' => ['Manajemen Produk Kompleks', 'Varian SKU', 'Gudang Multi-Lokasi', 'Pelacakan Nomor Seri', 'Stok & Gudang'],
-                'Tengah' => ['Katalog Spotlight', 'Detail Produk Rich-Media', 'Keranjang Persisten', 'Voucher Promo'],
+                'Hulu' => ['Manajemen Produk Kompleks', 'Varian SKU', 'Gudang Multi-Lokasi', 'Pelacakan Nomor Seri', 'Stok & Gudang', 'Supply Chain Management'],
+                'Tengah' => ['Katalog Spotlight', 'Detail Produk Rich-Media', 'Keranjang Persisten', 'Voucher Promo', 'Perbandingan Produk'],
                 'Hilir' => ['Checkout Multiproses', 'Gateway Pembayaran Simulasi', 'Timeline Pelacakan', 'Audit Log Naratif', 'Analitik Eksekutif'],
             ],
             'daftar_endpoint' => $this->ambilDaftarRute(),
