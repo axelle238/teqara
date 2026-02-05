@@ -47,4 +47,5 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     Route::get('/merek', \App\Livewire\Admin\Merek\DaftarMerek::class)->name('admin.merek');
     Route::get('/log', \App\Livewire\Admin\Log\DaftarLog::class)->name('admin.log');
     Route::get('/laporan', \App\Livewire\Admin\Laporan\DaftarLaporan::class)->name('admin.laporan');
+    Route::get('/pengguna', \App\Livewire\Admin\Pengguna\DaftarPengguna::class)->name('admin.pengguna');
 });
