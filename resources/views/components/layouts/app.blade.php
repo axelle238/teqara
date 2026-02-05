@@ -134,7 +134,7 @@
     </footer>
 
     <!-- Global Components -->
-    <livewire:komponen.notifikasi />
+    <x-ui.notifikasi-toast />
     <x-ui.slide-over id="global-panel" title="Panel Sistem" />
 
 </body>

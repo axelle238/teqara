@@ -136,6 +136,7 @@
     <!-- Overlay for Mobile Sidebar -->
     <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-30 bg-slate-900/50 backdrop-blur-sm lg:hidden transition-opacity"></div>
 
-    <livewire:komponen.notifikasi />
+    <x-ui.notifikasi-toast />
+    @livewireScripts
 </body>
 </html>
