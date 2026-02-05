@@ -79,34 +79,60 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
         return redirect()->route('admin.pengguna.daftar');
     })->name('admin.pengguna');
 
-    // 5. Manajemen Laporan
-    Route::prefix('laporan')->group(function () {
-        // Dashboard laporan belum dibuat khusus, gunakan DaftarLaporan sebagai pusat sementara
-        Route::get('/pusat', \App\Livewire\Admin\Laporan\DaftarLaporan::class)->name('admin.laporan.pusat');
+    // 6. Manajemen Halaman Toko (Baru - Terpisah dari Pengaturan)
+
+    Route::prefix('toko')->group(function () {
+
+        Route::get('/dashboard', \App\Livewire\Admin\Toko\DashboardToko::class)->name('admin.toko.dashboard');
+
+        Route::get('/konten', \App\Livewire\Admin\Toko\ManajemenKonten::class)->name('admin.toko.konten');
+
+        // Fitur masa depan: Menu Navigasi, Halaman Statis
+
     });
+
+    // 7. Laporan & Analitik
+
+    Route::prefix('laporan')->group(function () {
+
+        Route::get('/pusat', \App\Livewire\Admin\Laporan\DaftarLaporan::class)->name('admin.laporan.pusat');
+
+    });
+
     Route::get('/laporan', function () {
         return redirect()->route('admin.laporan.pusat');
     })->name('admin.laporan');
 
-    // 6. Pengaturan Sistem (Baru)
+    // 8. Pengaturan Sistem Terpusat
+
     Route::prefix('pengaturan')->group(function () {
+
         Route::get('/sistem', \App\Livewire\Admin\Pengaturan\DashboardPengaturan::class)->name('admin.pengaturan.sistem');
+
         Route::get('/keamanan', \App\Livewire\Admin\Keamanan\DashboardKeamanan::class)->name('admin.pengaturan.keamanan');
+
         Route::get('/log', \App\Livewire\Admin\Log\DaftarLog::class)->name('admin.pengaturan.log');
-        Route::get('/cms', \App\Livewire\Admin\CMS\ManajemenKonten::class)->name('admin.pengaturan.cms');
+
     });
 
-    // 7. Master Data (Tetap)
+    // 9. Master Data (Tetap)
+
     Route::get('/kategori', \App\Livewire\Admin\Kategori\DaftarKategori::class)->name('admin.kategori');
+
     Route::get('/merek', \App\Livewire\Admin\Merek\DaftarMerek::class)->name('admin.merek');
+
     Route::get('/voucher', \App\Livewire\Admin\Voucher\DaftarVoucher::class)->name('admin.voucher');
 
-    // Legacy Route Fallback (untuk mencegah error 404 pada link lama)
+    // Legacy Route Fallback
+
     Route::get('/logistik/pemasok', \App\Livewire\Admin\Logistik\ManajemenPemasok::class)->name('admin.logistik.pemasok');
+
     Route::get('/log', function () {
         return redirect()->route('admin.pengaturan.log');
     })->name('admin.log');
+
     Route::get('/cms', function () {
-        return redirect()->route('admin.pengaturan.cms');
+        return redirect()->route('admin.toko.konten');
     })->name('admin.cms');
+
 });

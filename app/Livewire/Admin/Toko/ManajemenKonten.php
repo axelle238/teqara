@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin\CMS;
+namespace App\Livewire\Admin\Toko;
 
 use App\Helpers\LogHelper;
 use App\Models\CmsKonten;
@@ -70,10 +70,10 @@ class ManajemenKonten extends Component
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Tampilan Beranda diperbarui!']);
     }
 
-    #[Title('Manajemen Konten - Admin')]
+    #[Title('Editor Visual - Admin Teqara')]
     public function render()
     {
-        return view('livewire.admin.c-m-s.manajemen-konten')
+        return view('livewire.admin.toko.manajemen-konten')
             ->layout('components.layouts.admin');
     }
 }

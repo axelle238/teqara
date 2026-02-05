@@ -1,86 +1,101 @@
-<div class="p-6 lg:p-10 space-y-8">
-    
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="space-y-10">
+    <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-3xl font-black text-slate-900 tracking-tighter">AUDIT <span class="text-indigo-600">TRAIL</span></h1>
-            <p class="text-slate-500 font-medium">Rekaman jejak digital seluruh aktivitas sistem.</p>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tighter uppercase">JEJAK <span class="text-slate-500">AUDIT</span></h1>
+            <p class="text-slate-500 font-medium">Rekaman forensik seluruh aktivitas pengguna dalam sistem.</p>
         </div>
-        <div class="relative w-full sm:w-72">
-            <input 
-                wire:model.live.debounce.300ms="cari" 
-                type="text" 
-                placeholder="Cari aktivitas, user, atau ID..." 
-                class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm"
-            >
-            <svg class="w-5 h-5 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <div class="relative w-72">
+            <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari ID, Aktor, atau Aktivitas..." class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-slate-500 shadow-sm">
+            <svg class="w-5 h-5 absolute left-3 top-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
     </div>
 
-    <!-- Timeline Log -->
-    <div class="relative pl-8 border-l-2 border-slate-100 space-y-10">
-        @forelse($logs as $log)
-        <div class="relative group">
-            <!-- Timeline Dot -->
-            <div class="absolute -left-[41px] top-1 w-5 h-5 rounded-full border-4 border-white shadow-sm flex items-center justify-center 
-                @if(str_contains($log->aksi, 'create') || str_contains($log->aksi, 'tambah')) bg-emerald-500
-                @elseif(str_contains($log->aksi, 'update') || str_contains($log->aksi, 'edit')) bg-amber-500
-                @elseif(str_contains($log->aksi, 'delete') || str_contains($log->aksi, 'hapus')) bg-red-500
-                @else bg-indigo-500 @endif
-            "></div>
+    <div class="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-slate-50/50 border-b border-slate-100">
+                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Waktu Kejadian</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Aktor</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Aktivitas</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Target</th>
+                        <th class="px-8 py-5"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse($logs as $log)
+                    <tr class="group hover:bg-slate-50/50 transition cursor-pointer" wire:click="lihatDetail({{ $log->id }})">
+                        <td class="px-8 py-4">
+                            <p class="text-xs font-bold text-slate-900">{{ $log->waktu->format('d M Y H:i:s') }}</p>
+                            <p class="text-[10px] text-slate-400">{{ $log->waktu->diffForHumans() }}</p>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-black text-slate-600 border-2 border-white shadow-sm">
+                                    {{ substr($log->pengguna->nama ?? 'S', 0, 1) }}
+                                </div>
+                                <span class="text-xs font-bold text-slate-700">{{ $log->pengguna->nama ?? 'Sistem Otomatis' }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex px-2 py-1 bg-slate-100 text-slate-600 rounded text-[10px] font-mono font-bold uppercase mb-1">{{ $log->aksi }}</span>
+                            <p class="text-xs text-slate-600 leading-snug truncate max-w-md">{{ $log->pesan_naratif }}</p>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-xs font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">{{ $log->target ?? '-' }}</span>
+                        </td>
+                        <td class="px-8 py-4 text-right">
+                            <svg class="w-5 h-5 text-slate-300 group-hover:text-slate-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="5" class="px-8 py-20 text-center text-slate-400 font-bold">Tidak ada catatan aktivitas.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="p-6 bg-slate-50/30 border-t border-slate-50">
+            {{ $logs->links() }}
+        </div>
+    </div>
 
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all">
-                <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-2">
-                    <div class="flex items-center gap-3">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($log->pengguna->nama ?? 'Sistem') }}&background=f1f5f9&color=64748b" class="w-8 h-8 rounded-lg">
-                        <div>
-                            <p class="text-sm font-bold text-slate-900">
-                                {{ $log->pengguna->nama ?? 'Sistem Otomatis' }}
-                                <span class="text-slate-400 font-medium text-xs">melakukan</span>
-                                <span class="uppercase tracking-wider text-[10px] font-black 
-                                    @if(str_contains($log->aksi, 'create')) text-emerald-600
-                                    @elseif(str_contains($log->aksi, 'delete')) text-red-600
-                                    @else text-indigo-600 @endif
-                                ">{{ $log->aksi }}</span>
-                            </p>
-                            <p class="text-xs text-slate-400">{{ $log->waktu->format('d M Y, H:i') }} • {{ $log->waktu->diffForHumans() }}</p>
-                        </div>
-                    </div>
-                    <span class="px-3 py-1 rounded-lg bg-slate-50 border border-slate-100 text-xs font-bold text-slate-600 font-mono">
-                        {{ $log->target }}
-                    </span>
-                </div>
-                
-                <p class="text-slate-600 text-sm leading-relaxed border-l-4 border-slate-100 pl-4 py-1">
-                    {{ $log->pesan_naratif }}
-                </p>
-
-                @if(!empty($log->meta_data))
-                <div class="mt-4" x-data="{ open: false }">
-                    <button @click="open = !open" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
-                        <span x-text="open ? 'Sembunyikan Detail Teknis' : 'Lihat Detail Teknis'"></span>
-                        <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div x-show="open" class="mt-2 p-4 bg-slate-900 rounded-xl overflow-x-auto">
-                        <pre class="text-[10px] text-emerald-400 font-mono">{{ json_encode($log->meta_data, JSON_PRETTY_PRINT) }}</pre>
-                    </div>
-                </div>
-                @endif
+    <!-- Panel Detail Log -->
+    <x-ui.slide-over id="detail-log" title="Bukti Digital">
+        @if($logTerpilih)
+        <div class="space-y-8 p-2">
+            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Pesan Naratif</p>
+                <p class="text-sm font-medium text-slate-800 leading-relaxed">{{ $logTerpilih->pesan_naratif }}</p>
             </div>
-        </div>
-        @empty
-        <div class="text-center py-12">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4">
-                <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            </div>
-            <h3 class="text-lg font-bold text-slate-900">Belum Ada Aktivitas</h3>
-            <p class="text-slate-500 text-sm">Sistem belum mencatat kegiatan apapun.</p>
-        </div>
-        @endforelse
-    </div>
 
-    <!-- Pagination -->
-    <div class="pt-6">
-        {{ $logs->links() }}
-    </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Waktu Kejadian</p>
+                    <p class="text-xs font-bold text-slate-900">{{ $logTerpilih->waktu->format('d F Y H:i:s') }}</p>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">IP Address</p>
+                    <p class="text-xs font-bold text-slate-900">127.0.0.1 (Lokal)</p>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Aktor</p>
+                    <p class="text-xs font-bold text-slate-900">{{ $logTerpilih->pengguna->nama ?? 'Sistem' }}</p>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Target Objek</p>
+                    <p class="text-xs font-bold text-slate-900">{{ $logTerpilih->target }}</p>
+                </div>
+            </div>
+
+            @if(!empty($logTerpilih->meta_data))
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Metadata Teknis (JSON)</p>
+                <div class="bg-slate-900 text-green-400 p-4 rounded-xl text-[10px] font-mono overflow-x-auto">
+                    <pre>{{ json_encode($logTerpilih->meta_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
+                </div>
+            </div>
+            @endif
+        </div>
+        @endif
+    </x-ui.slide-over>
 </div>

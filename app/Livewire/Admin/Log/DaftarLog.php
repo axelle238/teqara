@@ -13,12 +13,20 @@ class DaftarLog extends Component
 
     public $cari = '';
 
+    public $logTerpilih;
+
     public function updatedCari()
     {
         $this->resetPage();
     }
 
-    #[Title('Log Aktivitas - Admin')]
+    public function lihatDetail($id)
+    {
+        $this->logTerpilih = LogAktivitas::with('pengguna')->find($id);
+        $this->dispatch('open-slide-over', id: 'detail-log');
+    }
+
+    #[Title('Audit Log Aktivitas - Admin Teqara')]
     public function render()
     {
         $logs = LogAktivitas::with('pengguna')
@@ -32,6 +40,6 @@ class DaftarLog extends Component
 
         return view('livewire.admin.log.daftar-log', [
             'logs' => $logs,
-        ])->layout('components.layouts.admin', ['title' => 'Log Aktivitas Sistem']);
+        ])->layout('components.layouts.admin');
     }
 }

@@ -9,7 +9,7 @@
         "pola_interaksi": "SPA / Real-time Events",
         "kebijakan_modal": "0% Modal (Mutlak)"
     },
-    "waktu_pembaruan_terakhir": "05/02/2026 18:28:07",
+    "waktu_pembaruan_terakhir": "05/02/2026 18:31:17",
     "statistik_data": {
         "pengguna": 11,
         "produk": 2,
@@ -257,6 +257,16 @@
             "metode": "GET|HEAD"
         },
         {
+            "uri": "admin/toko/dashboard",
+            "nama": "admin.toko.dashboard",
+            "metode": "GET|HEAD"
+        },
+        {
+            "uri": "admin/toko/konten",
+            "nama": "admin.toko.konten",
+            "metode": "GET|HEAD"
+        },
+        {
             "uri": "admin/laporan/pusat",
             "nama": "admin.laporan.pusat",
             "metode": "GET|HEAD"
@@ -279,11 +289,6 @@
         {
             "uri": "admin/pengaturan/log",
             "nama": "admin.pengaturan.log",
-            "metode": "GET|HEAD"
-        },
-        {
-            "uri": "admin/pengaturan/cms",
-            "nama": "admin.pengaturan.cms",
             "metode": "GET|HEAD"
         },
         {
