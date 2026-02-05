@@ -137,7 +137,7 @@ class Checkout extends Component
                 'alamat_pengiriman' => $this->alamat_pengiriman,
             ]);
 
-            // 3. Pindahkan item & Kurangi Stok
+            // 3. Pindahkan item ke DetailPesanan
             foreach ($this->items as $item) {
                 DetailPesanan::create([
                     'pesanan_id' => $pesanan->id,
@@ -146,15 +146,13 @@ class Checkout extends Component
                     'jumlah' => $item->jumlah,
                     'subtotal' => $item->produk->harga_jual * $item->jumlah,
                 ]);
-
-                $produk = Produk::find($item->produk_id);
-                if ($produk->stok < $item->jumlah) {
-                    throw new \Exception("Stok produk {$produk->nama} tidak mencukupi.");
-                }
-                $produk->decrement('stok', $item->jumlah);
             }
 
-            // 4. Update Kuota Voucher
+            // 4. Tahan Stok (Enterprise Logic)
+            $layananStok = new \App\Services\LayananStok();
+            $layananStok->tahanStok($pesanan);
+
+            // 5. Update Kuota Voucher
             if ($this->voucherTerpakai) {
                 $this->voucherTerpakai->decrement('kuota');
             }

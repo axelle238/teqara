@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\LogAktivitas;
 use App\Models\Pesanan;
 use App\Models\TransaksiPembayaran;
+use App\Services\LayananStok;
 use Illuminate\Support\Str;
 
 class PaymentGatewayService
@@ -48,6 +49,9 @@ class PaymentGatewayService
                 'status_pembayaran' => 'lunas',
                 'status_pesanan' => 'diproses', // Auto move to processing
             ]);
+
+            // Finalisasi Stok
+            (new LayananStok)->finalisasiStok($pesanan);
 
             LogAktivitas::create([
                 'pengguna_id' => $pesanan->pengguna_id,
