@@ -1,135 +1,151 @@
-<div class="space-y-12 pb-32">
-    <!-- Header: Vibrant & Professional -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white p-10 rounded-[40px] shadow-sm border border-indigo-50">
-        <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-100 mb-2">
-                <span class="w-2 h-2 rounded-full bg-rose-600 animate-pulse"></span>
-                <span class="text-[10px] font-black text-rose-600 uppercase tracking-widest">Database Personel Enterprise</span>
-            </div>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">DATA <span class="text-rose-600">PEGAWAI</span></h1>
-            <p class="text-slate-500 font-medium text-lg">Direktori lengkap profil profesional dan status ketenagakerjaan internal.</p>
+<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Direktori Pegawai</h1>
+            <p class="text-slate-500 text-sm mt-1">Basis data seluruh personil perusahaan.</p>
         </div>
-        <div class="flex items-center gap-3">
-            <button 
-                wire:click="tambahBaru" 
-                class="flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-2xl hover:bg-rose-600 transition-all group"
-            >
-                <svg class="w-5 h-5 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M12 4v16m8-8H4"></path></svg>
-                REGISTRASI PEGAWAI
-            </button>
+        <button wire:click="tambahBaru" class="flex items-center gap-2 px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all active:scale-95">
+            <i class="fa-solid fa-user-plus"></i> Tambah Pegawai
+        </button>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div class="flex gap-2 w-full md:w-auto">
+            <div class="relative flex-1 md:w-64">
+                <i class="fa-solid fa-search absolute left-3 top-3 text-slate-400 text-xs"></i>
+                <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari Nama atau NIP..." class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all">
+            </div>
+            <select wire:model.live="filter_departemen" class="bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-600 py-2.5 px-4 focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                <option value="">Semua Departemen</option>
+                @foreach($departemen as $dept)
+                    <option value="{{ $dept->id }}">{{ $dept->nama }}</option>
+                @endforeach
+            </select>
         </div>
     </div>
 
-    <!-- Karyawan Grid Card -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        @forelse($karyawan as $k)
-        <div class="group bg-white rounded-[40px] border border-slate-100 p-8 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500 relative overflow-hidden">
-            <!-- Background Decoration -->
-            <div class="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[40px] -mr-8 -mt-8 transition-colors group-hover:bg-indigo-50"></div>
-            
-            <div class="relative z-10 flex flex-col h-full">
-                <div class="flex justify-between items-start mb-6">
-                    <div class="w-20 h-20 rounded-[24px] bg-indigo-50 flex items-center justify-center text-2xl font-black text-indigo-600 shadow-inner group-hover:scale-110 transition-transform duration-500">
-                        {{ substr($k->pengguna->nama, 0, 1) }}
-                    </div>
-                    <span class="px-3 py-1 bg-white border border-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest text-slate-400">
-                        {{ $k->nip }}
-                    </span>
+    <!-- Employee Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        @foreach($karyawan as $k)
+        <div class="bg-white rounded-[24px] border border-slate-100 p-6 hover:shadow-xl hover:border-indigo-100 transition-all duration-300 relative group">
+            <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button wire:click="edit({{ $k->id }})" class="w-8 h-8 rounded-lg bg-slate-50 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+            </div>
+
+            <div class="flex flex-col items-center text-center">
+                <div class="w-20 h-20 rounded-full bg-slate-100 border-4 border-white shadow-sm flex items-center justify-center text-2xl font-bold text-slate-400 mb-4 overflow-hidden relative">
+                    @if($k->foto)
+                        <img src="{{ asset($k->foto) }}" class="w-full h-full object-cover">
+                    @else
+                        {{ substr($k->nama_lengkap, 0, 1) }}
+                    @endif
+                    <div class="absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-white {{ $k->status == 'aktif' ? 'bg-emerald-500' : 'bg-rose-500' }}"></div>
                 </div>
                 
-                <div class="mb-6">
-                    <h3 class="text-xl font-black text-slate-900 leading-tight mb-1 group-hover:text-indigo-600 transition-colors">{{ $k->pengguna->nama }}</h3>
-                    <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">{{ $k->jabatan->nama }}</p>
-                    <p class="text-xs text-indigo-400 font-bold mt-1">{{ $k->jabatan->departemen->nama }}</p>
-                </div>
-                
-                <div class="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
-                    <div>
-                        <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">Status</p>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest {{ $k->status_kerja === 'tetap' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600' }}">
-                            {{ $k->status_kerja }}
-                        </span>
-                    </div>
-                    <button wire:click="edit({{ $k->id }})" class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                    </button>
+                <h3 class="font-bold text-slate-900 text-lg">{{ $k->nama_lengkap }}</h3>
+                <p class="text-xs font-mono text-slate-400 mb-2">{{ $k->nip }}</p>
+                <span class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest mb-4">
+                    {{ $k->jabatan->nama ?? '-' }}
+                </span>
+
+                <div class="w-full border-t border-slate-100 pt-4 mt-2 grid grid-cols-2 gap-2">
+                    <a href="mailto:{{ $k->email }}" class="flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-50 text-slate-600 text-xs font-bold hover:bg-slate-100 transition-colors">
+                        <i class="fa-solid fa-envelope"></i> Email
+                    </a>
+                    <a href="tel:{{ $k->telepon }}" class="flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-50 text-slate-600 text-xs font-bold hover:bg-slate-100 transition-colors">
+                        <i class="fa-solid fa-phone"></i> Kontak
+                    </a>
                 </div>
             </div>
         </div>
-        @empty
-        <div class="col-span-full py-20 text-center">
-            <div class="text-6xl mb-6">🤝</div>
-            <h3 class="text-2xl font-black text-slate-900 tracking-tighter uppercase mb-2">Data Kosong</h3>
-            <p class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Belum ada pegawai yang terdaftar dalam manifest radar.</p>
-        </div>
-        @endforelse
+        @endforeach
     </div>
     
-    <div class="mt-10">
+    <div class="mt-6">
         {{ $karyawan->links() }}
     </div>
 
-    <!-- Panel Form Pegawai (Vibrant Slide-over) -->
-    <x-ui.panel-geser id="form-karyawan" judul="REGISTRASI PEGAWAI ENTERPRISE">
-        <form wire:submit.prevent="simpan" class="space-y-10 p-2">
-            <!-- Data Otoritas -->
-            <div class="space-y-6">
-                <div class="flex items-center gap-3">
-                    <span class="w-8 h-1 bg-rose-600 rounded-full"></span>
-                    <p class="text-[10px] font-black text-rose-600 uppercase tracking-[0.3em]">Otoritas & Identitas</p>
+    <!-- Slide Over Form -->
+    <x-ui.panel-geser id="panel-form-karyawan" :judul="$karyawan_id ? 'Edit Data Pegawai' : 'Onboarding Pegawai Baru'">
+        <form wire:submit="simpan" class="space-y-6">
+            
+            <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex gap-4 items-start">
+                <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                    <i class="fa-solid fa-id-badge"></i>
                 </div>
-                <div class="grid grid-cols-1 gap-6">
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Pilih Pengguna Sistem</label>
-                        <select wire:model="pengguna_id" class="w-full rounded-2xl border-none bg-rose-50/50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-rose-500 transition-all">
-                            <option value="">Pilih Member</option>
-                            @foreach($list_pengguna as $u) <option value="{{ $u->id }}">{{ $u->nama }} ({{ $u->email }})</option> @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Nomor Induk Pegawai (NIP)</label>
-                        <input wire:model="nip" type="text" class="w-full rounded-2xl border-none bg-rose-50/50 px-6 py-4 text-sm font-black text-rose-600 focus:ring-2 focus:ring-rose-500 placeholder:text-slate-300 transition-all uppercase" placeholder="TEQ-NIP-001">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Posisi Jabatan</label>
-                        <select wire:model="jabatan_id" class="w-full rounded-2xl border-none bg-rose-50/50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-rose-500 transition-all">
-                            <option value="">Pilih Jabatan</option>
-                            @foreach($list_jabatan as $j) <option value="{{ $j->id }}">{{ $j->nama }} - {{ $j->departemen->nama }}</option> @endforeach
-                        </select>
-                    </div>
+                <div>
+                    <h4 class="text-sm font-bold text-indigo-900">Identitas Pegawai</h4>
+                    <p class="text-xs text-indigo-700 mt-1">Pastikan NIP unik dan sesuai format perusahaan.</p>
                 </div>
             </div>
 
-            <!-- Kontrak Kerja -->
-            <div class="space-y-6">
-                <div class="flex items-center gap-3">
-                    <span class="w-8 h-1 bg-indigo-600 rounded-full"></span>
-                    <p class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">Detail Penugasan</p>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Nama Lengkap</label>
+                    <input wire:model="nama_lengkap" type="text" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 font-bold" placeholder="Nama sesuai KTP">
                 </div>
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tanggal Bergabung</label>
-                        <input wire:model="tanggal_bergabung" type="date" class="w-full rounded-2xl border-none bg-indigo-50/50 px-6 py-4 text-sm font-black text-slate-900 focus:ring-2 focus:ring-indigo-500 transition-all">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Status Kepegawaian</label>
-                        <select wire:model="status_kerja" class="w-full rounded-2xl border-none bg-indigo-50/50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 transition-all">
-                            <option value="tetap">Pegawai Tetap</option>
-                            <option value="kontrak">Kontrak Project</option>
-                            <option value="magang">Magang / Intern</option>
-                        </select>
-                    </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">NIP</label>
+                    <input wire:model="nip" type="text" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 font-mono" placeholder="2024001">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Tanggal Bergabung</label>
+                    <input wire:model="tanggal_bergabung" type="date" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500">
+                </div>
+
+                <div class="col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Jabatan & Posisi</label>
+                    <select wire:model="jabatan_id" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 font-bold">
+                        <option value="">Pilih Jabatan</option>
+                        @foreach($departemen as $dept)
+                            <optgroup label="{{ $dept->nama }}">
+                                @foreach($dept->jabatan as $jab)
+                                    <option value="{{ $jab->id }}">{{ $jab->nama }}</option>
+                                @endforeach
+                            </optgroup>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Email Korporat</label>
+                    <input wire:model="email" type="email" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Telepon</label>
+                    <input wire:model="telepon" type="text" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500">
+                </div>
+
+                <div class="col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Alamat Domisili</label>
+                    <textarea wire:model="alamat" rows="2" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500"></textarea>
                 </div>
             </div>
 
-            <!-- Action Command -->
-            <div class="pt-10 border-t-2 border-dashed border-slate-100 flex gap-4">
-                <button type="submit" class="flex-1 bg-slate-900 text-white py-5 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] hover:bg-rose-600 hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-rose-500/20 group">
-                    SAHKAN DATA PEGAWAI
+            @if(!$karyawan_id)
+            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" wire:model="buat_akun_pengguna" class="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                    <div>
+                        <span class="block text-sm font-bold text-slate-900">Buat Akun Sistem</span>
+                        <span class="text-xs text-slate-500">Login dengan password default: <strong>Teqara123</strong></span>
+                    </div>
+                </label>
+            </div>
+            @endif
+
+            <div class="fixed bottom-0 right-0 w-full md:w-[480px] bg-white border-t border-slate-200 p-6 z-50">
+                <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-600/20 transition-all active:scale-95">
+                    Simpan Data Pegawai
                 </button>
-                <button type="button" @click="$dispatch('close-panel-form-karyawan')" class="px-10 py-5 bg-slate-100 text-slate-400 rounded-[28px] font-black text-xs uppercase tracking-[0.2em] hover:bg-red-50 hover:text-red-500 transition-all">BATAL</button>
             </div>
         </form>
     </x-ui.panel-geser>
