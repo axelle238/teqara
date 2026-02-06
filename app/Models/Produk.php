@@ -92,12 +92,31 @@ class Produk extends Model
         if ($this->tipe_produk === 'bundle') {
             $minStok = 999999;
             foreach ($this->bundlingItems as $item) {
-                $stokComponent = floor($item->child->stok / $item->jumlah);
-                if ($stokComponent < $minStok) {
-                    $minStok = $stokComponent;
+                if ($item->child) {
+                    $stokComponent = floor($item->child->stok / $item->jumlah);
+                    if ($stokComponent < $minStok) {
+                        $minStok = $stokComponent;
+                    }
                 }
             }
             return $minStok === 999999 ? 0 : $minStok;
         }
         return $this->stok;
     }
+
+    public function getHargaRupiahAttribute()
+    {
+        if ($this->memiliki_varian && $this->varian->count() > 0) {
+            $min = $this->harga_jual + $this->varian->min('harga_tambahan');
+            $max = $this->harga_jual + $this->varian->max('harga_tambahan');
+
+            if ($min == $max) {
+                return 'Rp '.number_format($min, 0, ',', '.');
+            }
+
+            return 'Rp '.number_format($min, 0, ',', '.').' - '.number_format($max, 0, ',', '.');
+        }
+
+        return 'Rp '.number_format($this->harga_jual, 0, ',', '.');
+    }
+}
