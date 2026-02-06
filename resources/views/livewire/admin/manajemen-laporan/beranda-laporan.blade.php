@@ -33,16 +33,22 @@
         </div>
     </div>
 
-    <!-- Ringkasan Eksekutif -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div class="bg-gradient-to-br from-slate-900 to-indigo-900 p-10 rounded-[48px] text-white shadow-2xl relative overflow-hidden">
-            <div class="relative z-10">
-                <p class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-4">Total Omzet Bruto</p>
-                <h3 class="text-5xl font-black tracking-tighter mb-2">Rp {{ number_format($totalOmzet, 0, ',', '.') }}</h3>
-                <div class="flex items-center gap-3 mt-8">
+    <!-- Ringkasan Eksekutif & Profitabilitas -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Revenue Card -->
+        <div class="md:col-span-2 bg-gradient-to-br from-slate-900 to-indigo-900 p-10 rounded-[48px] text-white shadow-2xl relative overflow-hidden">
+            <div class="relative z-10 flex flex-col justify-between h-full">
+                <div>
+                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-4">Total Omzet Bruto</p>
+                    <h3 class="text-5xl font-black tracking-tighter mb-2">Rp {{ number_format($totalOmzet, 0, ',', '.') }}</h3>
+                </div>
+                <div class="flex items-center gap-6 mt-8">
                     <div class="px-4 py-2 bg-white/10 rounded-xl border border-white/10 flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                        <span class="text-xs font-black uppercase tracking-widest">{{ $totalPesanan }} Transaksi Berhasil</span>
+                        <span class="text-xs font-black uppercase tracking-widest">{{ $totalPesanan }} Transaksi Sukses</span>
+                    </div>
+                    <div class="px-4 py-2 bg-white/10 rounded-xl border border-white/10 flex items-center gap-2">
+                        <span class="text-xs font-black uppercase tracking-widest text-indigo-200">COGS: Rp {{ number_format($totalModal, 0, ',', '.') }}</span>
                     </div>
                 </div>
             </div>
@@ -50,19 +56,17 @@
             <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500/20 rounded-full blur-[120px]"></div>
         </div>
 
-        <div class="bg-white p-10 rounded-[48px] shadow-sm border border-slate-100 flex flex-col justify-between">
-            <div>
-                <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 border-b border-slate-50 pb-4">Distribusi Omzet Kategori</h4>
-                <div class="space-y-4">
-                    @foreach($omzetPerKategori as $nama => $nilai)
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-                            <span class="text-sm font-bold text-slate-700">{{ $nama }}</span>
-                        </div>
-                        <span class="text-sm font-black text-slate-900">Rp {{ number_format($nilai, 0, ',', '.') }}</span>
-                    </div>
-                    @endforeach
+        <!-- Profitability KPI -->
+        <div class="md:col-span-1 space-y-6">
+            <div class="bg-emerald-50 p-8 rounded-[40px] border border-emerald-100 flex flex-col justify-center h-1/2">
+                <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2">Laba Bersih (Net Profit)</p>
+                <h3 class="text-3xl font-black text-emerald-700 tracking-tighter">Rp {{ number_format($totalProfit, 0, ',', '.') }}</h3>
+            </div>
+            <div class="bg-white p-8 rounded-[40px] shadow-sm border border-slate-100 flex flex-col justify-center h-1/2">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Margin Keuntungan</p>
+                <div class="flex items-end gap-2">
+                    <h3 class="text-3xl font-black text-slate-900 tracking-tighter">{{ number_format($marginProfit, 1) }}%</h3>
+                    <span class="text-xs font-bold text-slate-400 mb-1">Net Margin</span>
                 </div>
             </div>
         </div>

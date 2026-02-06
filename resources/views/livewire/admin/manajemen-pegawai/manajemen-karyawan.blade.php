@@ -20,79 +20,53 @@
         </div>
     </div>
 
-    <!-- Karyawan Table: No Dark Policy -->
-    <div class="bg-white rounded-[56px] border border-indigo-50 shadow-sm overflow-hidden">
-        <div class="p-8 border-b border-indigo-50 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-slate-50/30">
-            <div class="relative w-full md:w-96 group">
-                <input 
-                    wire:model.live.debounce.300ms="cari" 
-                    type="text" 
-                    placeholder="Cari NIP atau Nama..." 
-                    class="w-full pl-12 pr-4 py-4 bg-white border-none rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-rose-500 shadow-sm transition-all"
-                >
-                <svg class="w-5 h-5 absolute left-4 top-4 text-slate-300 group-focus-within:text-rose-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    <!-- Karyawan Grid Card -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        @forelse($karyawan as $k)
+        <div class="group bg-white rounded-[40px] border border-slate-100 p-8 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500 relative overflow-hidden">
+            <!-- Background Decoration -->
+            <div class="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[40px] -mr-8 -mt-8 transition-colors group-hover:bg-indigo-50"></div>
+            
+            <div class="relative z-10 flex flex-col h-full">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="w-20 h-20 rounded-[24px] bg-indigo-50 flex items-center justify-center text-2xl font-black text-indigo-600 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                        {{ substr($k->pengguna->nama, 0, 1) }}
+                    </div>
+                    <span class="px-3 py-1 bg-white border border-slate-100 rounded-full text-[9px] font-black uppercase tracking-widest text-slate-400">
+                        {{ $k->nip }}
+                    </span>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-xl font-black text-slate-900 leading-tight mb-1 group-hover:text-indigo-600 transition-colors">{{ $k->pengguna->nama }}</h3>
+                    <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">{{ $k->jabatan->nama }}</p>
+                    <p class="text-xs text-indigo-400 font-bold mt-1">{{ $k->jabatan->departemen->nama }}</p>
+                </div>
+                
+                <div class="mt-auto pt-6 border-t border-slate-50 flex items-center justify-between">
+                    <div>
+                        <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">Status</p>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest {{ $k->status_kerja === 'tetap' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600' }}">
+                            {{ $k->status_kerja }}
+                        </span>
+                    </div>
+                    <button class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                    </button>
+                </div>
             </div>
         </div>
-
-        <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead>
-                    <tr class="bg-white border-b border-slate-50">
-                        <th class="px-10 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Identitas (NIP)</th>
-                        <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Profil Pegawai</th>
-                        <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Penugasan</th>
-                        <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Status Kerja</th>
-                        <th class="px-10 py-6 text-right"></th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-indigo-50">
-                    @forelse($karyawan as $k)
-                    <tr class="group hover:bg-rose-50/20 transition-all duration-300">
-                        <td class="px-10 py-6">
-                            <span class="text-sm font-black text-rose-600 tracking-widest uppercase">{{ $k->nip }}</span>
-                            <p class="text-[9px] text-slate-400 font-bold mt-1 uppercase">Gabung: {{ $k->tanggal_bergabung->format('d M Y') }}</p>
-                        </td>
-                        <td class="px-6 py-6">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-[16px] bg-indigo-50 flex items-center justify-center font-black text-indigo-600 shadow-sm group-hover:scale-110 transition-transform">
-                                    {{ substr($k->pengguna->nama, 0, 1) }}
-                                </div>
-                                <div class="space-y-0.5">
-                                    <p class="text-sm font-black text-slate-900 uppercase">{{ $k->pengguna->nama }}</p>
-                                    <p class="text-[10px] font-bold text-slate-400 lowercase">{{ $k->pengguna->email }}</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-6">
-                            <p class="text-sm font-black text-slate-900 uppercase tracking-tight">{{ $k->jabatan->nama }}</p>
-                            <p class="text-[9px] font-bold text-indigo-400 uppercase tracking-widest mt-1">{{ $k->jabatan->departemen->nama }}</p>
-                        </td>
-                        <td class="px-6 py-6">
-                            <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest {{ $k->status_kerja === 'tetap' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100' }}">
-                                {{ $k->status_kerja }}
-                            </span>
-                        </td>
-                        <td class="px-10 py-6 text-right">
-                            <button class="p-3 bg-white border border-indigo-50 text-indigo-400 hover:text-white hover:bg-indigo-600 rounded-2xl transition-all shadow-sm opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                            </button>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="px-10 py-32 text-center">
-                            <div class="text-6xl mb-6">🤝</div>
-                            <h3 class="text-2xl font-black text-slate-900 tracking-tighter uppercase mb-2">Data Kosong</h3>
-                            <p class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Belum ada pegawai yang terdaftar dalam manifest radar.</p>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        @empty
+        <div class="col-span-full py-20 text-center">
+            <div class="text-6xl mb-6">🤝</div>
+            <h3 class="text-2xl font-black text-slate-900 tracking-tighter uppercase mb-2">Data Kosong</h3>
+            <p class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Belum ada pegawai yang terdaftar dalam manifest radar.</p>
         </div>
-        <div class="p-10 bg-slate-50/30 border-t border-slate-50 flex justify-center">
-            {{ $karyawan->links() }}
-        </div>
+        @endforelse
+    </div>
+    
+    <div class="mt-10">
+        {{ $karyawan->links() }}
     </div>
 
     <!-- Panel Form Pegawai (Vibrant Slide-over) -->

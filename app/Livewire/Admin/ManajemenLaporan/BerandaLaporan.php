@@ -52,7 +52,21 @@ class BerandaLaporan extends Component
         }
 
         $pesananData = $query->get();
-        $totalOmzet = $pesananData->sum('total_harga');
+
+        // Hitung Finansial Detail
+        $totalOmzet = 0;
+        $totalModal = 0;
+
+        foreach ($pesananData as $p) {
+            $totalOmzet += $p->total_harga;
+            foreach ($p->detailPesanan as $d) {
+                // Asumsi harga modal statis dari master produk saat ini (ideal snapshot di detail_pesanan, tapi kita pakai master dulu)
+                $totalModal += ($d->produk->harga_modal * $d->jumlah);
+            }
+        }
+
+        $totalProfit = $totalOmzet - $totalModal;
+        $marginProfit = $totalOmzet > 0 ? ($totalProfit / $totalOmzet) * 100 : 0;
         $totalPesanan = $pesananData->count();
 
         $produkTerlaris = DetailPesanan::query()
@@ -73,9 +87,12 @@ class BerandaLaporan extends Component
         }
         arsort($omzetPerKategori);
 
-        return view('livewire.admin.manajemen-laporan\Beranda-laporan', [
+        return view('livewire.admin.manajemen-laporan.beranda-laporan', [
             'pesanan' => $query->latest()->paginate(15),
             'totalOmzet' => $totalOmzet,
+            'totalModal' => $totalModal,
+            'totalProfit' => $totalProfit,
+            'marginProfit' => $marginProfit,
             'totalPesanan' => $totalPesanan,
             'produkTerlaris' => $produkTerlaris,
             'omzetPerKategori' => $omzetPerKategori,
