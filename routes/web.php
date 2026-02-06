@@ -13,6 +13,11 @@ Route::get('/', Beranda::class)->name('beranda');
 Route::get('/katalog', \App\Livewire\Katalog::class)->name('katalog');
 Route::get('/produk/{slug}', \App\Livewire\Produk\DetailProduk::class)->name('produk.detail');
 
+// Rute Informasi & Bantuan (Enterprise Updates)
+Route::get('/bantuan', \App\Livewire\LayananPelanggan\PusatBantuan::class)->name('bantuan');
+Route::get('/berita', \App\Livewire\Berita\DaftarBerita::class)->name('berita.daftar');
+Route::get('/berita/{slug}', \App\Livewire\Berita\DetailBerita::class)->name('berita.detail');
+
 // Otentikasi (Bahasa Indonesia)
 Route::get('/masuk', \App\Livewire\Auth\Masuk::class)->name('login');
 Route::redirect('/login', '/masuk'); // Alias untuk kompatibilitas sistem

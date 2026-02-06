@@ -7,33 +7,51 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+/**
+ * Class DaftarBerita
+ * Tujuan: Menampilkan daftar artikel, berita, dan informasi teknologi.
+ */
 class DaftarBerita extends Component
 {
     use WithPagination;
 
-    public $kategori = 'semua';
-
     public $cari = '';
+    public $kategori = '';
 
-    public function updatedCari()
+    public function updated($property)
     {
-        $this->resetPage();
+        if ($property !== 'page') {
+            $this->resetPage();
+        }
     }
 
-    #[Title('Newsroom & Artikel Teknologi - Teqara')]
+    #[Title('Berita & Artikel - Teqara Hub')]
     public function render()
     {
-        $query = Berita::where('status', 'publikasi')
-            ->when($this->cari, fn($q) => $q->where('judul', 'like', '%'.$this->cari.'%'))
-            ->latest();
+        $query = Berita::query()
+            ->with('penulis')
+            ->where('status', 'publikasi');
 
-        if ($this->kategori !== 'semua') {
+        if ($this->cari) {
+            $query->where('judul', 'like', '%'.$this->cari.'%');
+        }
+
+        if ($this->kategori) {
             $query->where('kategori', $this->kategori);
         }
 
+        $beritaUtama = null;
+        if ($this->page == 1 && empty($this->cari) && empty($this->kategori)) {
+            $beritaUtama = $query->clone()->latest()->first();
+            if ($beritaUtama) {
+                $query->where('id', '!=', $beritaUtama->id);
+            }
+        }
+
         return view('livewire.berita.daftar-berita', [
-            'beritaUtama' => $this->cari ? null : Berita::where('status', 'publikasi')->latest()->first(),
-            'daftarBerita' => $query->paginate(9)
+            'berita' => $query->latest()->paginate(9),
+            'beritaUtama' => $beritaUtama,
+            'kategoriList' => Berita::select('kategori')->distinct()->pluck('kategori'),
         ])->layout('components.layouts.app');
     }
 }

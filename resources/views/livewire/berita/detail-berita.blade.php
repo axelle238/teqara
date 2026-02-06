@@ -1,105 +1,102 @@
 <div class="bg-white min-h-screen">
-    <!-- Progress Bar Reading -->
-    <div class="fixed top-0 left-0 h-1 bg-indigo-600 z-50 w-0" id="reading-progress"></div>
+    <!-- Progress Bar Reading (Optional Visual) -->
+    <div class="fixed top-0 left-0 h-1 bg-indigo-600 z-[70] w-full origin-left scale-x-0" id="readingProgress"></div>
 
-    <div class="container mx-auto px-6 py-12">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            
-            <!-- Article Content -->
-            <article class="lg:col-span-8">
-                <nav class="flex text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-8 gap-2">
-                    <a href="/berita" class="hover:text-indigo-600">Newsroom</a>
-                    <span>/</span>
-                    <span class="text-indigo-600">{{ $berita->kategori }}</span>
-                </nav>
-
-                <h1 class="text-4xl md:text-5xl font-black text-slate-900 leading-tight mb-6 tracking-tighter">{{ $berita->judul }}</h1>
+    <!-- Hero Header -->
+    <div class="relative h-[500px] w-full overflow-hidden">
+        <img src="{{ $berita->gambar_sampul }}" class="absolute inset-0 w-full h-full object-cover">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px]"></div>
+        
+        <div class="absolute inset-0 flex items-center">
+            <div class="mx-auto max-w-4xl px-6 text-center space-y-8">
+                <div class="flex items-center justify-center gap-4 animate-in slide-in-from-bottom-4 duration-700">
+                    <span class="px-4 py-1.5 bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 rounded-full text-[10px] font-black uppercase tracking-[0.2em] backdrop-blur-md">
+                        {{ $berita->kategori }}
+                    </span>
+                    <span class="text-white/60 text-xs font-bold uppercase tracking-widest">
+                        {{ $berita->created_at->translatedFormat('d F Y') }}
+                    </span>
+                </div>
                 
-                <div class="flex items-center gap-6 mb-10 pb-10 border-b border-slate-100">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-black text-slate-500">
-                            {{ substr($berita->penulis->nama, 0, 1) }}
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-900">{{ $berita->penulis->nama }}</p>
-                            <p class="text-[10px] text-slate-400 uppercase tracking-widest">Editor</p>
-                        </div>
+                <h1 class="text-4xl md:text-6xl font-black text-white tracking-tighter leading-tight animate-in slide-in-from-bottom-4 duration-1000 delay-100">
+                    {{ $berita->judul }}
+                </h1>
+                
+                <div class="flex items-center justify-center gap-3 animate-in slide-in-from-bottom-4 duration-1000 delay-200">
+                    <div class="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-black text-sm border-2 border-slate-900">
+                        {{ substr($berita->penulis->nama ?? 'A', 0, 1) }}
                     </div>
-                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                        <p>{{ $berita->created_at->format('d F Y') }}</p>
-                        <p>5 Menit Baca</p>
+                    <div class="text-left">
+                        <p class="text-xs font-black text-white uppercase tracking-widest">{{ $berita->penulis->nama ?? 'Tim Editorial Teqara' }}</p>
+                        <p class="text-[9px] font-bold text-indigo-300 uppercase tracking-widest">Penulis Terverifikasi</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <div class="rounded-[32px] overflow-hidden mb-12 shadow-xl shadow-indigo-900/5">
-                    <img src="{{ $berita->gambar_utama }}" class="w-full h-auto object-cover">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            
+            <!-- Main Content -->
+            <article class="lg:col-span-8">
+                <div class="prose prose-lg prose-slate max-w-none first-letter:text-7xl first-letter:font-black first-letter:text-slate-900 first-letter:mr-3 first-letter:float-left">
+                    {!! $berita->konten !!}
                 </div>
-
-                <div class="prose prose-lg prose-slate max-w-none prose-headings:font-black prose-headings:tracking-tight prose-a:text-indigo-600 hover:prose-a:text-indigo-500">
-                    {!! $berita->isi !!}
-                </div>
-
-                <!-- Tags -->
-                <div class="mt-12 pt-12 border-t border-slate-100 flex gap-2">
-                    <span class="px-4 py-2 bg-slate-50 rounded-lg text-xs font-bold text-slate-600">#Teknologi</span>
-                    <span class="px-4 py-2 bg-slate-50 rounded-lg text-xs font-bold text-slate-600">#Gadget</span>
+                
+                <!-- Share & Tags -->
+                <div class="mt-16 pt-10 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="flex gap-2">
+                        @foreach(explode(',', $berita->tags ?? '') as $tag)
+                            <span class="px-3 py-1 bg-slate-50 text-slate-500 rounded-lg text-xs font-bold uppercase tracking-wide">#{{ trim($tag) }}</span>
+                        @endforeach
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-xs font-black text-slate-400 uppercase tracking-widest">Bagikan:</span>
+                        <button class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-600 hover:bg-indigo-600 hover:text-white transition-all">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                        </button>
+                        <button class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-600 hover:bg-blue-600 hover:text-white transition-all">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+                        </button>
+                    </div>
                 </div>
             </article>
 
             <!-- Sidebar -->
-            <aside class="lg:col-span-4 space-y-12">
-                
-                <!-- Related Products -->
-                @if($produkTerkait->count() > 0)
-                <div class="bg-indigo-50 rounded-[32px] p-8 border border-indigo-100 sticky top-24">
-                    <h3 class="font-black text-indigo-900 uppercase tracking-widest text-xs mb-6">Produk Terkait</h3>
+            <aside class="lg:col-span-4 space-y-10">
+                <!-- Newsletter -->
+                <div class="bg-indigo-600 rounded-[40px] p-8 text-white relative overflow-hidden">
+                    <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                    <h3 class="text-xl font-black uppercase tracking-tight mb-2">Buletin Mingguan</h3>
+                    <p class="text-sm text-white/80 mb-6 font-medium">Dapatkan wawasan teknologi terbaru langsung di inbox Anda.</p>
+                    <div class="relative">
+                        <input type="email" placeholder="Email Anda" class="w-full pl-4 pr-12 py-3 rounded-xl bg-white/10 border border-white/20 text-sm placeholder:text-white/50 focus:ring-2 focus:ring-white/30 text-white">
+                        <button class="absolute right-2 top-2 p-1 bg-white text-indigo-600 rounded-lg">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Related Posts -->
+                <div>
+                    <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs mb-6 border-b border-slate-100 pb-4">Artikel Terkait</h3>
                     <div class="space-y-6">
-                        @foreach($produkTerkait as $p)
-                        <div class="flex gap-4 group">
-                            <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center shrink-0 shadow-sm border border-indigo-100 p-2">
-                                <img src="{{ $p->gambar_utama_url }}" class="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform">
+                        @foreach($terkait as $t)
+                        <a href="{{ route('berita.detail', $t->slug) }}" class="group flex gap-4 items-start">
+                            <div class="w-20 h-20 rounded-2xl bg-slate-50 overflow-hidden shrink-0">
+                                <img src="{{ $t->gambar_sampul }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                             </div>
                             <div>
-                                <h4 class="font-bold text-slate-900 text-sm leading-tight mb-1 group-hover:text-indigo-600 transition-colors">
-                                    <a href="{{ route('produk.detail', $p->slug) }}">{{ $p->nama }}</a>
-                                </h4>
-                                <p class="text-xs font-black text-indigo-500">Rp {{ number_format($p->harga_jual) }}</p>
+                                <h4 class="font-bold text-slate-900 text-sm leading-tight group-hover:text-indigo-600 transition-colors line-clamp-2 mb-2">{{ $t->judul }}</h4>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ $t->created_at->translatedFormat('d M Y') }}</span>
                             </div>
-                        </div>
-                        @endforeach
-                    </div>
-                    <a href="/katalog" class="block w-full py-3 bg-white text-indigo-600 text-center rounded-xl text-[10px] font-black uppercase tracking-widest mt-8 hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
-                        Lihat Katalog Lengkap
-                    </a>
-                </div>
-                @endif
-
-                <!-- More News -->
-                <div>
-                    <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs mb-6">Artikel Lainnya</h3>
-                    <div class="space-y-6">
-                        @foreach($beritaLain as $bl)
-                        <div class="group">
-                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block mb-1">{{ $bl->kategori }}</span>
-                            <h4 class="font-bold text-slate-900 leading-tight group-hover:text-indigo-600 transition-colors">
-                                <a href="{{ route('berita.detail', $bl->slug) }}">{{ $bl->judul }}</a>
-                            </h4>
-                        </div>
+                        </a>
                         @endforeach
                     </div>
                 </div>
-
             </aside>
+
         </div>
     </div>
-
-    <!-- Reading Progress Script -->
-    <script>
-        window.onscroll = function() {
-            var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            var scrolled = (winScroll / height) * 100;
-            document.getElementById("reading-progress").style.width = scrolled + "%";
-        };
-    </script>
 </div>

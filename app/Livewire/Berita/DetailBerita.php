@@ -3,7 +3,6 @@
 namespace App\Livewire\Berita;
 
 use App\Models\Berita;
-use App\Models\Produk;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -15,29 +14,26 @@ class DetailBerita extends Component
     {
         $this->berita = Berita::where('slug', $slug)
             ->where('status', 'publikasi')
+            ->with('penulis')
             ->firstOrFail();
+            
+        // Increment views counter (optional logic for future)
     }
 
     #[Title('Baca Artikel')]
     public function render()
     {
-        // Rekomendasi Produk Terkait (Simulasi berdasarkan keyword judul)
-        $keyword = explode(' ', $this->berita->judul)[0];
-        $produkTerkait = Produk::where('nama', 'like', "%{$keyword}%")
-            ->where('status', 'aktif')
+        $artikelTerkait = Berita::where('kategori', $this->berita->kategori)
+            ->where('id', '!=', $this->berita->id)
+            ->where('status', 'publikasi')
+            ->latest()
             ->take(3)
             ->get();
 
         return view('livewire.berita.detail-berita', [
-            'produkTerkait' => $produkTerkait,
-            'beritaLain' => Berita::where('id', '!=', $this->berita->id)
-                ->where('status', 'publikasi')
-                ->latest()
-                ->take(3)
-                ->get()
+            'terkait' => $artikelTerkait
         ])->layout('components.layouts.app', [
-            'title' => $this->berita->judul . ' - Teqara News',
-            'deskripsi' => $this->berita->ringkasan
+            'title' => $this->berita->judul . ' | Teqara Insights'
         ]);
     }
 }
