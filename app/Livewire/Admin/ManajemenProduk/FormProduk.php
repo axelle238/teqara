@@ -25,13 +25,7 @@ class FormProduk extends Component
     use WithFileUploads;
 
     public $produkId;
-    public $activeTab = 'info'; // info, media, varian, spesifikasi, seo
-
-    // Properti Inti
-    public $nama, $slug, $kode_unit, $kategori_id, $merek_id;
-    public $harga_modal = 0, $harga_jual = 0, $stok = 0;
-    public $deskripsi_singkat, $deskripsi_lengkap;
-    public $status = 'aktif', $memiliki_varian = false;
+    public $activeTab = 'info'; // info, media, varian, bundling, logistik, spesifikasi, seo
 
     // Properti Inti
     public $nama, $slug, $kode_unit, $kategori_id, $merek_id;
@@ -46,8 +40,8 @@ class FormProduk extends Component
     public $daftarVarian = [];
     public $daftarSpesifikasi = [];
     public $daftarGrosir = [];
-    public $daftarBundling = []; // [child_id, jumlah]
     public $dimensi = ['p' => 0, 'l' => 0, 't' => 0];
+    public $daftarBundling = []; // [child_id, jumlah]
     
     // SEO State
     public $meta_judul, $meta_deskripsi;
@@ -307,16 +301,6 @@ class FormProduk extends Component
             'daftarKategori' => Kategori::all(),
             'daftarMerek' => Merek::all(),
             'semuaProduk' => Produk::where('tipe_produk', 'fisik')->orderBy('nama')->get(), // Untuk pilihan bundling
-        ])->layout('components.layouts.admin');
-    }
-}
-
-    #[Title('Editor Command Center - Admin Teqara')]
-    public function render()
-    {
-        return view('livewire.admin.manajemen-produk.form-produk', [
-            'daftarKategori' => Kategori::all(),
-            'daftarMerek' => Merek::all(),
         ])->layout('components.layouts.admin');
     }
 }
