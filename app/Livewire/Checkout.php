@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\AlamatPengiriman;
 use App\Models\DetailPesanan;
 use App\Models\Keranjang;
 use App\Models\LogAktivitas;
@@ -13,22 +14,62 @@ use Livewire\Component;
 
 class Checkout extends Component
 {
+    // Alamat State
+    public $alamatTerpilihId = null;
+    public $alamat_baru = false;
     public $alamat_pengiriman = '';
+
+    // Pengiriman State
+    public $metodePengiriman = 'standar';
+    public $biayaPengiriman = 15000;
+
+    // Voucher & Poin State
+    public $kodeVoucherInput = '';
+    public $voucherTerpakai = null;
+    public $nilaiPotonganVoucher = 0;
+    
+    public $gunakanPoin = false;
+    public $poinDiterapkan = 0;
+    public $nilaiPotonganPoin = 0;
 
     public $catatan = '';
 
-    // Voucher State
-    public $kodeVoucherInput = '';
-
-    public $voucherTerpakai = null;
-
-    public $nilaiPotongan = 0;
-
     public function mount()
     {
-        if (Keranjang::where('pengguna_id', auth()->id())->count() === 0) {
+        $keranjangCount = Keranjang::where('pengguna_id', auth()->id())->count();
+        if ($keranjangCount === 0) {
             return redirect()->to('/keranjang');
         }
+
+        // Set alamat utama jika ada
+        $alamatUtama = AlamatPengiriman::where('pengguna_id', auth()->id())->where('is_utama', true)->first();
+        if ($alamatUtama) {
+            $this->alamatTerpilihId = $alamatUtama->id;
+            $this->alamat_pengiriman = $alamatUtama->alamat_lengkap;
+        }
+    }
+
+    public function getDaftarAlamatProperty()
+    {
+        return AlamatPengiriman::where('pengguna_id', auth()->id())->get();
+    }
+
+    public function pilihAlamat($id)
+    {
+        $this->alamatTerpilihId = $id;
+        $alamat = AlamatPengiriman::find($id);
+        $this->alamat_pengiriman = $alamat->alamat_lengkap;
+        $this->alamat_baru = false;
+    }
+
+    public function setMetodePengiriman($metode)
+    {
+        $this->metodePengiriman = $metode;
+        $this->biayaPengiriman = match($metode) {
+            'ekspres' => 35000,
+            'prioritas' => 75000,
+            default => 15000,
+        };
     }
 
     public function getItemsProperty()
@@ -41,20 +82,27 @@ class Checkout extends Component
     public function getSubtotalProperty()
     {
         return $this->items->sum(function ($item) {
-            // Hitung harga dasar + tambahan varian (logic sederhana: pakai harga jual base dulu)
-            // Idealnya keranjang simpan harga snapshot varian.
             return $item->produk->harga_jual * $item->jumlah;
         });
     }
 
-    public function getTotalBayarProperty()
+    public function togglePoin()
     {
-        return max(0, $this->subtotal - $this->nilaiPotongan);
+        if ($this->gunakanPoin) {
+            $poinUser = auth()->user()->poin_loyalitas ?? 0;
+            // Limit poin yang bisa dipakai (maks 50% dari subtotal)
+            $maksPoinBisaPakai = ($this->subtotal * 0.5); 
+            $this->poinDiterapkan = min($poinUser, $maksPoinBisaPakai);
+            $this->nilaiPotonganPoin = $this->poinDiterapkan; // 1 Poin = 1 Rupiah
+        } else {
+            $this->poinDiterapkan = 0;
+            $this->nilaiPotonganPoin = 0;
+        }
     }
 
     public function terapkanVoucher()
     {
-        $this->reset(['voucherTerpakai', 'nilaiPotongan']);
+        $this->reset(['voucherTerpakai', 'nilaiPotonganVoucher']);
 
         if (empty($this->kodeVoucherInput)) {
             return;
@@ -62,32 +110,21 @@ class Checkout extends Component
 
         $voucher = Voucher::where('kode', $this->kodeVoucherInput)->first();
 
-        // Validasi Voucher
         if (! $voucher) {
-            $this->addError('kodeVoucherInput', 'Kode voucher tidak ditemukan.');
-
+            $this->addError('kodeVoucherInput', 'Kode voucher tidak valid.');
             return;
         }
 
-        if ($voucher->kuota <= 0) {
-            $this->addError('kodeVoucherInput', 'Kuota voucher telah habis.');
-
-            return;
-        }
-
-        if (now() < $voucher->berlaku_mulai || now() > $voucher->berlaku_sampai) {
-            $this->addError('kodeVoucherInput', 'Voucher tidak berlaku saat ini.');
-
+        if ($voucher->kuota <= 0 || now() < $voucher->berlaku_mulai || now() > $voucher->berlaku_sampai) {
+            $this->addError('kodeVoucherInput', 'Voucher tidak dapat digunakan.');
             return;
         }
 
         if ($this->subtotal < $voucher->min_pembelian) {
-            $this->addError('kodeVoucherInput', 'Min. belanja Rp '.number_format($voucher->min_pembelian, 0, ',', '.').' untuk pakai voucher ini.');
-
+            $this->addError('kodeVoucherInput', 'Min. belanja tidak terpenuhi.');
             return;
         }
 
-        // Hitung Potongan
         $potongan = 0;
         if ($voucher->tipe_diskon == 'nominal') {
             $potongan = $voucher->nilai_diskon;
@@ -99,44 +136,46 @@ class Checkout extends Component
         }
 
         $this->voucherTerpakai = $voucher;
-        $this->nilaiPotongan = $potongan;
-
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Voucher berhasil diterapkan! Hemat Rp '.number_format($potongan, 0, ',', '.')]);
+        $this->nilaiPotonganVoucher = $potongan;
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Voucher berhasil diterapkan!']);
     }
 
     public function hapusVoucher()
     {
-        $this->reset(['kodeVoucherInput', 'voucherTerpakai', 'nilaiPotongan']);
+        $this->reset(['kodeVoucherInput', 'voucherTerpakai', 'nilaiPotonganVoucher']);
+    }
+
+    public function getTotalBayarProperty()
+    {
+        $total = $this->subtotal + $this->biayaPengiriman - $this->nilaiPotonganVoucher - $this->nilaiPotonganPoin;
+        return max(0, $total);
     }
 
     public function buatPesanan()
     {
         $this->validate([
             'alamat_pengiriman' => 'required|min:10',
-        ], [
-            'alamat_pengiriman.required' => 'Alamat pengiriman wajib diisi.',
-            'alamat_pengiriman.min' => 'Alamat pengiriman terlalu pendek (minimal 10 karakter).',
         ]);
 
         try {
             DB::beginTransaction();
 
-            // 1. Generate Nomor Invoice
             $nomorInvoice = 'TRX-'.date('Ymd').'-'.strtoupper(bin2hex(random_bytes(3)));
 
-            // 2. Buat Pesanan
             $pesanan = Pesanan::create([
                 'nomor_faktur' => $nomorInvoice,
                 'pengguna_id' => auth()->id(),
-                'total_harga' => $this->totalBayar, // Total setelah diskon
-                'potongan_diskon' => $this->nilaiPotongan,
+                'total_harga' => $this->totalBayar,
+                'potongan_diskon' => $this->nilaiPotonganVoucher + $this->nilaiPotonganPoin,
                 'kode_voucher' => $this->voucherTerpakai ? $this->voucherTerpakai->kode : null,
+                'biaya_pengiriman' => $this->biayaPengiriman,
+                'metode_pengiriman' => $this->metodePengiriman,
                 'status_pembayaran' => 'belum_dibayar',
                 'status_pesanan' => 'menunggu',
                 'alamat_pengiriman' => $this->alamat_pengiriman,
+                'catatan' => $this->catatan,
             ]);
 
-            // 3. Pindahkan item ke DetailPesanan
             foreach ($this->items as $item) {
                 DetailPesanan::create([
                     'pesanan_id' => $pesanan->id,
@@ -147,32 +186,37 @@ class Checkout extends Component
                 ]);
             }
 
-            // 4. Tahan Stok (Enterprise Logic)
-            $layananStok = new \App\Services\LayananStok;
-            $layananStok->tahanStok($pesanan);
+            // Integrasi Stok & Poin
+            (new \App\Services\LayananStok)->tahanStok($pesanan);
 
-            // 5. Update Kuota Voucher
             if ($this->voucherTerpakai) {
                 $this->voucherTerpakai->decrement('kuota');
             }
 
-            // 5. Catat Log
+            if ($this->gunakanPoin && $this->poinDiterapkan > 0) {
+                auth()->user()->decrement('poin_loyalitas', $this->poinDiterapkan);
+                \App\Models\RiwayatPoin::create([
+                    'pengguna_id' => auth()->id(),
+                    'jumlah' => -$this->poinDiterapkan,
+                    'sumber' => 'pembelian',
+                    'referensi_id' => $nomorInvoice,
+                    'keterangan' => 'Penggunaan poin untuk potongan belanja',
+                ]);
+            }
+
             LogAktivitas::create([
                 'pengguna_id' => auth()->id(),
                 'aksi' => 'buat_pesanan',
                 'target' => $nomorInvoice,
-                'pesan_naratif' => 'Pelanggan '.auth()->user()->nama." membuat pesanan {$nomorInvoice}. Total: ".number_format($this->totalBayar, 0, ',', '.'),
+                'pesan_naratif' => "Pesanan {$nomorInvoice} berhasil dibuat dengan metode pengiriman ".strtoupper($this->metodePengiriman),
                 'waktu' => now(),
             ]);
 
-            // 6. Bersihkan Keranjang
             Keranjang::where('pengguna_id', auth()->id())->delete();
 
             DB::commit();
 
             $this->dispatch('update-keranjang');
-            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "Pesanan #{$nomorInvoice} berhasil dibuat!"]);
-
             return redirect()->to('/pesanan/bayar/'.$nomorInvoice);
 
         } catch (\Exception $e) {
@@ -181,7 +225,7 @@ class Checkout extends Component
         }
     }
 
-    #[Title('Checkout - Teqara')]
+    #[Title('Otorisasi Checkout - Teqara')]
     public function render()
     {
         return view('livewire.checkout')

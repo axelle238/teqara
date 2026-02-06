@@ -8,8 +8,8 @@
 <div
     x-data="{ terbuka: false }"
     x-show="terbuka"
-    @open-panel-{{ $id }}.window="terbuka = true"
-    @close-panel-{{ $id }}.window="terbuka = false"
+    @open-slide-over.window="if ($event.detail.id === '{{ $id }}') terbuka = true"
+    @close-slide-over.window="if ($event.detail.id === '{{ $id }}') terbuka = false"
     @keydown.escape.window="terbuka = false"
     class="relative z-[100]"
     style="display: none;"
