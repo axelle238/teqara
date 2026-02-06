@@ -72,11 +72,14 @@
         </div>
 
         <!-- Main Table -->
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto relative">
             <table class="w-full text-left">
                 <thead>
                     <tr class="bg-slate-50/50">
-                        <th class="px-10 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Identitas Unit</th>
+                        <th class="pl-10 py-6 w-10">
+                            <input type="checkbox" wire:model.live="selectAll" class="rounded-lg border-slate-300 text-indigo-600 focus:ring-indigo-500 w-5 h-5">
+                        </th>
+                        <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Identitas Unit</th>
                         <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Klasifikasi</th>
                         <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Status Stok</th>
                         <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Nilai Jual</th>
@@ -86,8 +89,11 @@
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     @foreach($produk as $p)
-                    <tr class="group hover:bg-indigo-50/20 transition-colors duration-300">
-                        <td class="px-10 py-6">
+                    <tr class="group hover:bg-indigo-50/20 transition-colors duration-300 {{ in_array($p->id, $selectedProduk) ? 'bg-indigo-50/40' : '' }}">
+                        <td class="pl-10 py-6">
+                            <input type="checkbox" wire:model.live="selectedProduk" value="{{ $p->id }}" class="rounded-lg border-slate-300 text-indigo-600 focus:ring-indigo-500 w-5 h-5">
+                        </td>
+                        <td class="px-6 py-6">
                             <div class="flex items-center gap-6">
                                 <div class="w-16 h-16 rounded-[24px] bg-white border border-indigo-50 flex-shrink-0 p-2 shadow-sm group-hover:scale-110 transition-transform">
                                     <img src="{{ $p->gambar_utama_url }}" class="w-full h-full object-contain">
@@ -150,6 +156,34 @@
         <!-- Pagination -->
         <div class="p-10 bg-slate-50/30 border-t border-slate-50 flex justify-center">
             {{ $produk->links() }}
+        </div>
+
+        <!-- Floating Action Bar (Bulk Actions) -->
+        <div 
+            x-data="{ show: @entangle('selectedProduk').live }" 
+            x-show="show.length > 0"
+            x-transition:enter="transform transition duration-300 ease-out"
+            x-transition:enter-start="translate-y-20 opacity-0"
+            x-transition:enter-end="translate-y-0 opacity-100"
+            x-transition:leave="transform transition duration-200 ease-in"
+            x-transition:leave-start="translate-y-0 opacity-100"
+            x-transition:leave-end="translate-y-20 opacity-0"
+            class="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-8 py-4 rounded-full shadow-2xl flex items-center gap-6 border border-slate-700"
+        >
+            <div class="flex items-center gap-3 border-r border-slate-700 pr-6">
+                <span class="bg-indigo-600 text-white text-xs font-black w-6 h-6 rounded-full flex items-center justify-center" x-text="show.length"></span>
+                <span class="text-xs font-bold uppercase tracking-widest text-slate-300">Unit Terpilih</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button wire:click="bulkArchive" class="px-4 py-2 hover:bg-slate-800 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-400 transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                    Arsipkan
+                </button>
+                <button wire:click="bulkDelete" wire:confirm="Apakah Anda yakin ingin menghapus produk terpilih secara permanen?" class="px-4 py-2 hover:bg-rose-900/30 rounded-xl text-[10px] font-black uppercase tracking-widest text-rose-500 transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    Hapus Permanen
+                </button>
+            </div>
         </div>
     </div>
 

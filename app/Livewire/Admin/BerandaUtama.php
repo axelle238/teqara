@@ -75,6 +75,15 @@ class BerandaUtama extends Component
         $pesananTerbaru = Pesanan::with('pengguna')->latest()->take(5)->get();
         $logTerbaru = LogAktivitas::with('pengguna')->latest('waktu')->take(5)->get();
 
+        $targetBulanIni = $pendapatanBulanLalu * 1.10; // Target tumbuh 10%
+        $persentaseTarget = $targetBulanIni > 0 ? ($pendapatanBulanIni / $targetBulanIni) * 100 : 0;
+
+        // 7. Efisiensi Sistem (Rasio Pesanan Sukses vs Batal)
+        $totalPesananSelesai = Pesanan::where('status_pesanan', 'selesai')->count();
+        $totalPesananBatal = Pesanan::where('status_pesanan', 'batal')->count();
+        $totalSemua = $totalPesananSelesai + $totalPesananBatal;
+        $rasioSukses = $totalSemua > 0 ? ($totalPesananSelesai / $totalSemua) * 100 : 100;
+
         return view('livewire.admin.beranda-utama', [
             'metrik' => [
                 'pendapatan' => $totalPendapatan,
@@ -82,6 +91,9 @@ class BerandaUtama extends Component
                 'produk' => $totalProduk,
                 'pelanggan' => $totalPelanggan,
                 'pertumbuhan' => $pertumbuhan,
+                'target_pencapaian' => $persentaseTarget,
+                'target_nominal' => $targetBulanIni,
+                'rasio_sukses' => $rasioSukses,
             ],
             'statsManajemen' => $statsManajemen,
             'grafik' => [

@@ -52,6 +52,55 @@ class ManajemenProduk extends Component
 
     public $filter_kategori = '';
 
+    public $selectedProduk = [];
+
+    public $selectAll = false;
+
+    // ... (rest of existing properties)
+
+    public function updatedSelectAll($value)
+    {
+        if ($value) {
+            $this->selectedProduk = Produk::pluck('id')->map(fn($id) => (string) $id)->toArray();
+        } else {
+            $this->selectedProduk = [];
+        }
+    }
+
+    public function bulkDelete()
+    {
+        $count = count($this->selectedProduk);
+        if ($count > 0) {
+            Produk::whereIn('id', $this->selectedProduk)->delete();
+            
+            LogHelper::catat(
+                'hapus_massal_produk',
+                "{$count} Produk",
+                "Admin menghapus {$count} produk sekaligus dari inventaris."
+            );
+
+            $this->reset(['selectedProduk', 'selectAll']);
+            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "{$count} unit berhasil dihapus."]);
+        }
+    }
+
+    public function bulkArchive()
+    {
+        $count = count($this->selectedProduk);
+        if ($count > 0) {
+            Produk::whereIn('id', $this->selectedProduk)->update(['status' => 'arsip']);
+
+            LogHelper::catat(
+                'arsip_massal_produk',
+                "{$count} Produk",
+                "Admin mengarsipkan {$count} produk sekaligus."
+            );
+
+            $this->reset(['selectedProduk', 'selectAll']);
+            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "{$count} unit berhasil diarsipkan."]);
+        }
+    }
+
     protected function rules()
     {
         return [
