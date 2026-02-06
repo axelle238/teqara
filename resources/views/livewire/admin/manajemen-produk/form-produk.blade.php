@@ -20,8 +20,11 @@
             <button wire:click="$set('activeTab', 'media')" class="{{ $activeTab === 'media' ? 'border-cyan-500 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition">
                 Media & Galeri
             </button>
-            <button wire:click="$set('activeTab', 'varian')" class="{{ $activeTab === 'varian' ? 'border-cyan-500 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition">
+            <button wire:click="$set('activeTab', 'varian')" class="{{ $activeTab === 'varian' ? 'border-cyan-500 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition" style="{{ $tipe_produk === 'bundle' ? 'display:none;' : '' }}">
                 Varian & Harga
+            </button>
+            <button wire:click="$set('activeTab', 'bundling')" class="{{ $activeTab === 'bundling' ? 'border-cyan-500 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition" style="{{ $tipe_produk !== 'bundle' ? 'display:none;' : '' }}">
+                Komponen Paket
             </button>
             <button wire:click="$set('activeTab', 'logistik')" class="{{ $activeTab === 'logistik' ? 'border-cyan-500 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition">
                 Logistik & Dimensi
@@ -75,11 +78,19 @@
                     <h3 class="text-lg font-bold text-slate-900 mb-4">Pengelompokan</h3>
                     <div class="space-y-4">
                         <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Klasifikasi Produk</label>
+                            <select wire:model.live="tipe_produk" class="w-full rounded-xl border-slate-300 focus:border-cyan-500 focus:ring-cyan-500 font-bold text-slate-900 bg-slate-50">
+                                <option value="fisik">📦 Produk Fisik (Standard)</option>
+                                <option value="bundle">🎁 Paket Bundling</option>
+                                <option value="digital">☁️ Produk Digital</option>
+                            </select>
+                        </div>
+                        <div>
                             <label class="block text-sm font-bold text-slate-700 mb-1">Status</label>
                             <select wire:model="status" class="w-full rounded-xl border-slate-300 focus:border-cyan-500 focus:ring-cyan-500">
-                                <option value="aktif">Aktif (Tampil)</option>
-                                <option value="arsip">Arsip (Sembunyi)</option>
-                                <option value="habis">Habis</option>
+                                <option value="aktif">🟢 PUBLIKASI AKTIF</option>
+                                <option value="arsip">⚪ ARSIP INTERNAL</option>
+                                <option value="habis">🔴 STOK KOSONG</option>
                             </select>
                         </div>
                         <div>
@@ -116,7 +127,10 @@
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-slate-700 mb-1">Stok Total</label>
-                            <input wire:model="stok" type="number" class="w-full rounded-xl border-slate-300 focus:border-cyan-500 focus:ring-cyan-500">
+                            <input wire:model="stok" type="number" class="w-full rounded-xl border-slate-300 focus:border-cyan-500 focus:ring-cyan-500" {{ $tipe_produk === 'bundle' ? 'disabled bg-slate-100' : '' }}>
+                            @if($tipe_produk === 'bundle')
+                                <p class="text-[10px] text-slate-500 mt-1">Stok bundle dihitung otomatis dari komponen.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -228,6 +242,56 @@
                         <p class="text-center text-slate-400 text-sm italic">Belum ada konfigurasi harga grosir.</p>
                     @endif
                 </div>
+            </div>
+        </div>
+
+        <!-- Tab: Bundling -->
+        <div x-show="$wire.activeTab === 'bundling'" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-bold text-slate-900">Komposisi Paket Bundling</h3>
+                    <p class="text-sm text-slate-500">Tentukan produk apa saja yang termasuk dalam paket ini.</p>
+                </div>
+                <button type="button" wire:click="tambahBarisBundling" class="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-500/20">+ Tambah Komponen</button>
+            </div>
+
+            <div class="overflow-x-auto rounded-2xl border border-slate-200">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Produk Komponen</th>
+                            <th class="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest w-40">Jumlah (Qty)</th>
+                            <th class="px-6 py-4 w-20"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @foreach($daftarBundling as $index => $bund)
+                        <tr>
+                            <td class="px-6 py-4">
+                                <select wire:model="daftarBundling.{{ $index }}.child_id" class="w-full rounded-xl border-slate-200 text-sm font-bold focus:ring-indigo-500">
+                                    <option value="">Pilih Produk</option>
+                                    @foreach($semuaProduk as $p)
+                                        @if($p->id != $produkId) 
+                                            <option value="{{ $p->id }}">{{ $p->nama }} (Stok: {{ $p->stok }})</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td class="px-6 py-4">
+                                <input wire:model="daftarBundling.{{ $index }}.jumlah" type="number" min="1" class="w-full rounded-xl border-slate-200 text-sm font-bold text-center focus:ring-indigo-500">
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <button type="button" wire:click="hapusBarisBundling({{ $index }})" class="p-2 bg-rose-50 text-rose-500 rounded-lg hover:bg-rose-100">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </td>
+                        </tr>
+                        @endforeach
+                        @if(empty($daftarBundling))
+                        <tr><td colspan="3" class="px-6 py-12 text-center text-slate-400 font-medium italic">Belum ada komponen dalam paket ini.</td></tr>
+                        @endif
+                    </tbody>
+                </table>
             </div>
         </div>
 

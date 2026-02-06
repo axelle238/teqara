@@ -33,12 +33,20 @@ class FormProduk extends Component
     public $deskripsi_singkat, $deskripsi_lengkap;
     public $status = 'aktif', $memiliki_varian = false;
 
+    // Properti Inti
+    public $nama, $slug, $kode_unit, $kategori_id, $merek_id;
+    public $harga_modal = 0, $harga_jual = 0, $stok = 0;
+    public $deskripsi_singkat, $deskripsi_lengkap;
+    public $status = 'aktif', $memiliki_varian = false;
+    public $tipe_produk = 'fisik'; // fisik, digital, bundle
+
     // Koleksi Dinamis
     public $gambar_baru = [];
     public $gambar_lama = [];
     public $daftarVarian = [];
     public $daftarSpesifikasi = [];
     public $daftarGrosir = [];
+    public $daftarBundling = []; // [child_id, jumlah]
     public $dimensi = ['p' => 0, 'l' => 0, 't' => 0];
     
     // SEO State
@@ -47,7 +55,7 @@ class FormProduk extends Component
     public function mount($id = null)
     {
         if ($id) {
-            $produk = Produk::with(['varian', 'gambar', 'spesifikasi'])->findOrFail($id);
+            $produk = Produk::with(['varian', 'gambar', 'spesifikasi', 'bundlingItems'])->findOrFail($id);
             $this->produkId = $produk->id;
             $this->nama = $produk->nama;
             $this->slug = $produk->slug;
@@ -61,6 +69,7 @@ class FormProduk extends Component
             $this->deskripsi_lengkap = $produk->deskripsi_lengkap;
             $this->status = $produk->status;
             $this->memiliki_varian = $produk->memiliki_varian;
+            $this->tipe_produk = $produk->tipe_produk;
             $this->daftarGrosir = $produk->harga_grosir ?? [];
             $this->dimensi = $produk->dimensi_kemasan ?? ['p' => 0, 'l' => 0, 't' => 0];
 
@@ -82,6 +91,13 @@ class FormProduk extends Component
                 ];
             }
 
+            foreach ($produk->bundlingItems as $bund) {
+                $this->daftarBundling[] = [
+                    'child_id' => $bund->child_produk_id,
+                    'jumlah' => $bund->jumlah,
+                ];
+            }
+
             $this->gambar_lama = $produk->gambar->toArray();
         } else {
             $this->tambahBarisSpesifikasi();
@@ -92,6 +108,18 @@ class FormProduk extends Component
     {
         $this->slug = Str::slug($value);
         if (empty($this->meta_judul)) $this->meta_judul = $value;
+    }
+
+    // --- Manajemen Bundling ---
+    public function tambahBarisBundling()
+    {
+        $this->daftarBundling[] = ['child_id' => '', 'jumlah' => 1];
+    }
+
+    public function hapusBarisBundling($index)
+    {
+        unset($this->daftarBundling[$index]);
+        $this->daftarBundling = array_values($this->daftarBundling);
     }
 
     // --- Manajemen Grosir ---
@@ -179,10 +207,11 @@ class FormProduk extends Component
                 'merek_id' => $this->merek_id,
                 'harga_modal' => $this->harga_modal,
                 'harga_jual' => $this->harga_jual,
-                'stok' => $this->stok,
+                'stok' => $this->tipe_produk === 'bundle' ? 0 : $this->stok, // Stok bundle dihitung dinamis
                 'deskripsi_singkat' => $this->deskripsi_singkat,
                 'deskripsi_lengkap' => $this->deskripsi_lengkap,
                 'status' => $this->status,
+                'tipe_produk' => $this->tipe_produk,
                 'memiliki_varian' => $this->memiliki_varian,
                 'harga_grosir' => $this->daftarGrosir,
                 'dimensi_kemasan' => $this->dimensi,
@@ -199,14 +228,28 @@ class FormProduk extends Component
                 $aksi = 'registrasi_unit';
                 $memo = "Pendaftaran unit teknologi baru {$this->nama} ke inventaris.";
                 
-                // Input Stok Awal
-                if ($this->stok > 0) {
+                // Input Stok Awal (Hanya non-bundle)
+                if ($this->stok > 0 && $this->tipe_produk !== 'bundle') {
                     (new LayananStok)->tambahStok($produk, $this->stok, 'Registrasi awal unit');
                 }
             }
 
+            // Sync Bundling
+            if ($this->tipe_produk === 'bundle') {
+                \App\Models\ProdukBundling::where('parent_produk_id', $produk->id)->delete();
+                foreach ($this->daftarBundling as $bund) {
+                    if (!empty($bund['child_id'])) {
+                        \App\Models\ProdukBundling::create([
+                            'parent_produk_id' => $produk->id,
+                            'child_produk_id' => $bund['child_id'],
+                            'jumlah' => $bund['jumlah']
+                        ]);
+                    }
+                }
+            }
+
             // Sync Varian
-            if ($this->memiliki_varian) {
+            if ($this->memiliki_varian && $this->tipe_produk !== 'bundle') {
                 foreach ($this->daftarVarian as $var) {
                     if (! empty($var['nama_varian'])) {
                         VarianProduk::updateOrCreate(
@@ -256,6 +299,17 @@ class FormProduk extends Component
             $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Gagal sinkronisasi: ' . $e->getMessage()]);
         }
     }
+
+    #[Title('Editor Command Center - Admin Teqara')]
+    public function render()
+    {
+        return view('livewire.admin.manajemen-produk.form-produk', [
+            'daftarKategori' => Kategori::all(),
+            'daftarMerek' => Merek::all(),
+            'semuaProduk' => Produk::where('tipe_produk', 'fisik')->orderBy('nama')->get(), // Untuk pilihan bundling
+        ])->layout('components.layouts.admin');
+    }
+}
 
     #[Title('Editor Command Center - Admin Teqara')]
     public function render()
