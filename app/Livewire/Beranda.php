@@ -51,6 +51,9 @@ class Beranda extends Component
             return \App\Models\KontenHalaman::orderBy('urutan')->get()->groupBy('bagian');
         });
 
+        // Ekstrak Hero secara eksplisit untuk view
+        $hero = isset($semuaKonten['hero_section']) ? $semuaKonten['hero_section']->first() : null;
+
         // Cache Kategori (60 Menit)
         $kategori = \Illuminate\Support\Facades\Cache::remember('beranda_kategori', 60, function () {
             return Kategori::withCount('produk')->get();
@@ -76,6 +79,7 @@ class Beranda extends Component
 
         return view('livewire.beranda', [
             'konten' => $semuaKonten,
+            'hero' => $hero,
             'kategori' => $kategori,
             'produkUnggulan' => $produkUnggulan,
             'produkTerlaris' => $produkTerlaris,
