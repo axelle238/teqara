@@ -21,6 +21,8 @@ class Produk extends Model
 
     protected $casts = [
         'memiliki_varian' => 'boolean',
+        'harga_grosir' => 'array',
+        'dimensi_kemasan' => 'array',
     ];
 
     public function kategori(): BelongsTo

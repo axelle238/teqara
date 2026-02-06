@@ -38,6 +38,8 @@ class FormProduk extends Component
     public $gambar_lama = [];
     public $daftarVarian = [];
     public $daftarSpesifikasi = [];
+    public $daftarGrosir = [];
+    public $dimensi = ['p' => 0, 'l' => 0, 't' => 0];
     
     // SEO State
     public $meta_judul, $meta_deskripsi;
@@ -59,6 +61,8 @@ class FormProduk extends Component
             $this->deskripsi_lengkap = $produk->deskripsi_lengkap;
             $this->status = $produk->status;
             $this->memiliki_varian = $produk->memiliki_varian;
+            $this->daftarGrosir = $produk->harga_grosir ?? [];
+            $this->dimensi = $produk->dimensi_kemasan ?? ['p' => 0, 'l' => 0, 't' => 0];
 
             foreach ($produk->varian as $var) {
                 $this->daftarVarian[] = [
@@ -88,6 +92,18 @@ class FormProduk extends Component
     {
         $this->slug = Str::slug($value);
         if (empty($this->meta_judul)) $this->meta_judul = $value;
+    }
+
+    // --- Manajemen Grosir ---
+    public function tambahBarisGrosir()
+    {
+        $this->daftarGrosir[] = ['min_qty' => 10, 'harga' => 0];
+    }
+
+    public function hapusBarisGrosir($index)
+    {
+        unset($this->daftarGrosir[$index]);
+        $this->daftarGrosir = array_values($this->daftarGrosir);
     }
 
     // --- Manajemen Varian ---
@@ -168,6 +184,8 @@ class FormProduk extends Component
                 'deskripsi_lengkap' => $this->deskripsi_lengkap,
                 'status' => $this->status,
                 'memiliki_varian' => $this->memiliki_varian,
+                'harga_grosir' => $this->daftarGrosir,
+                'dimensi_kemasan' => $this->dimensi,
             ];
 
             if ($this->produkId) {
