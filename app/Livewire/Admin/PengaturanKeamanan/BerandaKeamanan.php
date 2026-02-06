@@ -22,10 +22,29 @@ class BerandaKeamanan extends Component
 
     public $aktifkan_2fa_admin = false;
 
+    public $mode_pemeliharaan = false;
+
     public function mount()
     {
         $this->wajib_ganti_sandi_90_hari = PengaturanSistem::where('kunci', 'security_wajib_ganti_sandi')->value('nilai') === '1';
         $this->aktifkan_2fa_admin = PengaturanSistem::where('kunci', 'security_2fa_admin')->value('nilai') === '1';
+        $this->mode_pemeliharaan = app()->isDownForMaintenance();
+    }
+
+    public function toggleMaintenance()
+    {
+        if ($this->mode_pemeliharaan) {
+            \Illuminate\Support\Facades\Artisan::call('up');
+            $this->mode_pemeliharaan = false;
+            $pesan = 'Sistem telah dipulihkan. Akses publik dibuka kembali.';
+        } else {
+            \Illuminate\Support\Facades\Artisan::call('down', ['--secret' => 'teqara-admin-access']);
+            $this->mode_pemeliharaan = true;
+            $pesan = 'Sistem dikunci (Maintenance Mode). Akses publik ditutup.';
+        }
+
+        \App\Helpers\LogHelper::catat('system_lock', 'Core System', $pesan);
+        $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => $pesan]);
     }
 
     public function simpanKebijakan()
@@ -36,9 +55,18 @@ class BerandaKeamanan extends Component
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Kebijakan keamanan diperbarui.']);
     }
 
-    #[Title('Pusat Keamanan - Admin Teqara')]
+    #[Title('Pusat Keamanan Siber - Admin Teqara')]
     public function render()
     {
+        // Analisis Anomali Sederhana
+        $loginGagal = LogAktivitas::where('aksi', 'login_gagal')
+            ->where('waktu', '>=', now()->subDay())
+            ->count();
+
+        $ipUnik = LogAktivitas::where('waktu', '>=', now()->subDay())
+            ->distinct('meta_data->ip_address') // Perlu penanganan khusus di SQLite/MySQL versi lama, tapi kita coba standar
+            ->count();
+
         $logs = LogAktivitas::with('pengguna')
             ->when($this->filterAksi, fn ($q) => $q->where('aksi', $this->filterAksi))
             ->latest('waktu')
@@ -46,7 +74,11 @@ class BerandaKeamanan extends Component
 
         return view('livewire.admin.pengaturan-keamanan.beranda-keamanan', [
             'logs' => $logs,
-            'total_insiden' => 0,
+            'statistik' => [
+                'login_gagal' => $loginGagal,
+                'ip_aktif' => $ipUnik,
+                'insiden_kritis' => 0,
+            ],
         ])->layout('components.layouts.admin');
     }
 }

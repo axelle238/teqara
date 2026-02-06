@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Admin\PengaturanSistem;
 
-use App\Models\LogAktivitas;
 use App\Models\Voucher;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -34,24 +33,47 @@ class ManajemenVoucher extends Component
 
     public $berlaku_sampai;
 
-    public $voucherId;
+    public $cari = '';
 
-    public $modeEdit = false;
+    public function generateCode()
+    {
+        $this->kode = 'TEQ-'.strtoupper(\Illuminate\Support\Str::random(6));
+    }
 
-    protected $rules = [
-        'kode' => 'required|unique:voucher,kode',
-        'tipe_diskon' => 'required|in:persen,nominal',
-        'nilai_diskon' => 'required|numeric',
-        'kuota' => 'required|integer|min:1',
-        'berlaku_mulai' => 'required|date',
-        'berlaku_sampai' => 'required|date|after:berlaku_mulai',
-    ];
+    public function tambahBaru()
+    {
+        $this->reset(['voucherId', 'kode', 'deskripsi', 'tipe_diskon', 'nilai_diskon', 'min_pembelian', 'maks_potongan', 'kuota', 'berlaku_mulai', 'berlaku_sampai']);
+        $this->berlaku_mulai = now()->format('Y-m-d\TH:i');
+        $this->berlaku_sampai = now()->addMonth()->format('Y-m-d\TH:i');
+        $this->dispatch('open-slide-over', id: 'form-voucher');
+    }
+
+    public function edit($id)
+    {
+        $v = Voucher::findOrFail($id);
+        $this->voucherId = $v->id;
+        $this->kode = $v->kode;
+        $this->deskripsi = $v->deskripsi;
+        $this->tipe_diskon = $v->tipe_diskon;
+        $this->nilai_diskon = $v->nilai_diskon;
+        $this->min_pembelian = $v->min_pembelian;
+        $this->maks_potongan = $v->maks_potongan;
+        $this->kuota = $v->kuota;
+        $this->berlaku_mulai = $v->berlaku_mulai ? \Carbon\Carbon::parse($v->berlaku_mulai)->format('Y-m-d\TH:i') : null;
+        $this->berlaku_sampai = $v->berlaku_sampai ? \Carbon\Carbon::parse($v->berlaku_sampai)->format('Y-m-d\TH:i') : null;
+
+        $this->dispatch('open-slide-over', id: 'form-voucher');
+    }
 
     public function simpan()
     {
-        $this->validate();
+        $rules = $this->rules;
+        if ($this->voucherId) {
+            $rules['kode'] = 'required|unique:voucher,kode,'.$this->voucherId;
+        }
+        $this->validate($rules);
 
-        Voucher::create([
+        $data = [
             'kode' => strtoupper($this->kode),
             'deskripsi' => $this->deskripsi,
             'tipe_diskon' => $this->tipe_diskon,
@@ -61,18 +83,21 @@ class ManajemenVoucher extends Component
             'kuota' => $this->kuota,
             'berlaku_mulai' => $this->berlaku_mulai,
             'berlaku_sampai' => $this->berlaku_sampai,
-        ]);
+        ];
 
-        LogAktivitas::create([
-            'pengguna_id' => auth()->id(),
-            'aksi' => 'buat_voucher',
-            'target' => $this->kode,
-            'pesan_naratif' => 'Admin membuat voucher baru: '.strtoupper($this->kode),
-            'waktu' => now(),
-        ]);
+        if ($this->voucherId) {
+            Voucher::find($this->voucherId)->update($data);
+            $aksi = 'update_voucher';
+            $pesan = "Voucher {$this->kode} diperbarui.";
+        } else {
+            Voucher::create($data);
+            $aksi = 'buat_voucher';
+            $pesan = "Voucher baru {$this->kode} dibuat.";
+        }
 
-        $this->reset();
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Voucher berhasil dibuat.']);
+        \App\Helpers\LogHelper::catat($aksi, $this->kode, $pesan);
+        $this->dispatch('close-slide-over', id: 'form-voucher');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
     }
 
     public function hapus($id)
@@ -81,22 +106,15 @@ class ManajemenVoucher extends Component
         $kode = $voucher->kode;
         $voucher->delete();
 
-        LogAktivitas::create([
-            'pengguna_id' => auth()->id(),
-            'aksi' => 'hapus_voucher',
-            'target' => $kode,
-            'pesan_naratif' => 'Admin menghapus voucher: '.$kode,
-            'waktu' => now(),
-        ]);
-
-        $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Voucher dihapus.']);
+        \App\Helpers\LogHelper::catat('hapus_voucher', $kode, "Admin menghapus voucher: {$kode}");
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Voucher dihapus.']);
     }
 
     #[Title('Manajemen Voucher - Admin')]
     public function render()
     {
         return view('livewire.admin.pengaturan-sistem.manajemen-voucher', [
-            'vouchers' => Voucher::latest()->paginate(10),
+            'vouchers' => Voucher::where('kode', 'like', '%'.$this->cari.'%')->latest()->paginate(10),
         ])->layout('components.layouts.admin');
     }
 }
