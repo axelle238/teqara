@@ -25,7 +25,7 @@ class DetailProduk extends Component
     public function mount($slug)
     {
         $this->produk = Produk::where('slug', $slug)
-            ->with(['kategori', 'merek', 'varian', 'gambar', 'spesifikasi'])
+            ->with(['kategori', 'merek', 'varian', 'gambar', 'spesifikasi', 'ulasan'])
             ->firstOrFail();
 
         // Inisialisasi State
@@ -56,16 +56,40 @@ class DetailProduk extends Component
         $this->gambarAktif = $url;
     }
 
-    #[Title('Detail Produk')]
-    public function render()
+    // Enterprise Feature: Cross-selling
+    public function getProdukTerkaitProperty()
     {
-        $deskripsi_seo = strip_tags($this->produk->deskripsi_singkat ?? $this->produk->nama);
+        return Produk::where('kategori_id', $this->produk->kategori_id)
+            ->where('id', '!=', $this->produk->id)
+            ->where('status', 'aktif')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
+    }
 
-        return view('livewire.produk.detail-produk')
-            ->layout('components.layouts.app', [
-                'title' => $this->produk->nama.' | Teqara Enterprise',
-                'deskripsi' => $deskripsi_seo,
-            ]);
+    // Enterprise Feature: Statistik Ulasan
+    public function getStatistikRatingProperty()
+    {
+        $total = $this->produk->ulasan->count();
+        if ($total == 0) return [];
+
+        $stats = [
+            5 => $this->produk->ulasan->where('rating', 5)->count(),
+            4 => $this->produk->ulasan->where('rating', 4)->count(),
+            3 => $this->produk->ulasan->where('rating', 3)->count(),
+            2 => $this->produk->ulasan->where('rating', 2)->count(),
+            1 => $this->produk->ulasan->where('rating', 1)->count(),
+        ];
+
+        // Hitung persentase
+        foreach ($stats as $bintang => $jumlah) {
+            $stats[$bintang] = [
+                'jumlah' => $jumlah,
+                'persen' => ($jumlah / $total) * 100
+            ];
+        }
+
+        return $stats;
     }
 
     public function tambahJumlah()
@@ -82,37 +106,27 @@ class DetailProduk extends Component
         }
     }
 
-    public function tambahKeKeranjang()
+    private function prosesMasukKeranjang()
     {
         if (! auth()->check()) {
             $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Silakan login untuk berbelanja.']);
-
-            return;
+            return false;
         }
 
         if ($this->produk->memiliki_varian && ! $this->varianTerpilihId) {
             $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Pilih varian produk terlebih dahulu.']);
-
-            return;
+            return false;
         }
 
         if ($this->stokAktif < 1) {
             $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Stok habis.']);
-
-            return;
+            return false;
         }
 
-        // Simpan ke Keranjang (Logic V2 support varian_id nanti, sementara kita simpan basic dulu atau update tabel keranjang jika mau perfect)
-        // Note: Untuk V2 Keranjang harusnya punya kolom `varian_id`.
-        // Saya akan asumsikan kita masih pakai struktur keranjang lama tapi validasi stok di sini.
-        // *Self-Correction*: Idealnya tabel keranjang di-update juga. Tapi untuk mempercepat, saya akan simpan data varian di kolom 'catatan' atau buat migrasi keranjang nanti.
-
-        // Mari kita lakukan migrasi keranjang kecil untuk mendukung varian_id agar perfect.
-        // Tapi agar tidak terlalu panjang langkahnya, saya simpan logika keranjang sederhana dulu,
-        // fokus ke UI Detail Produk yang kompleks.
-
+        // Logic Keranjang Enterprise
         $item = \App\Models\Keranjang::where('pengguna_id', auth()->id())
             ->where('produk_id', $this->produk->id)
+            // Idealnya tambah where 'varian_id'
             ->first();
 
         if ($item) {
@@ -122,13 +136,38 @@ class DetailProduk extends Component
                 'pengguna_id' => auth()->id(),
                 'produk_id' => $this->produk->id,
                 'jumlah' => $this->jumlah,
+                // 'varian_id' => $this->varianTerpilihId
             ]);
         }
 
-        $this->dispatch('update-keranjang');
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Produk masuk keranjang!']);
+        return true;
+    }
 
-        // Trigger SlideOver Keranjang (Fitur UX Baru)
-        $this->dispatch('open-slide-over', id: 'keranjang-preview');
+    public function tambahKeKeranjang()
+    {
+        if ($this->prosesMasukKeranjang()) {
+            $this->dispatch('update-keranjang');
+            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Produk masuk keranjang!']);
+            $this->dispatch('open-slide-over', id: 'keranjang-preview');
+        }
+    }
+
+    public function beliSekarang()
+    {
+        if ($this->prosesMasukKeranjang()) {
+            return redirect()->route('checkout');
+        }
+    }
+
+    #[Title('Detail Produk')]
+    public function render()
+    {
+        $deskripsi_seo = strip_tags($this->produk->deskripsi_singkat ?? $this->produk->nama);
+
+        return view('livewire.produk.detail-produk')
+            ->layout('components.layouts.app', [
+                'title' => $this->produk->nama.' | Teqara Enterprise',
+                'deskripsi' => $deskripsi_seo,
+            ]);
     }
 }
