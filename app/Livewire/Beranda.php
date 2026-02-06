@@ -77,12 +77,32 @@ class Beranda extends Component
                 ->get();
         });
 
+        // Penjualan Kilat Aktif
+        $penjualanKilat = \Illuminate\Support\Facades\Cache::remember('penjualan_kilat_aktif', 60, function () {
+            return \Illuminate\Support\Facades\DB::table('penjualan_kilat')
+                ->where('aktif', true)
+                ->where('waktu_mulai', '<=', now())
+                ->where('waktu_selesai', '>=', now())
+                ->first();
+        });
+
+        // Berita & Informasi Terbaru
+        $beritaTerbaru = \Illuminate\Support\Facades\Cache::remember('beranda_berita', 30, function () {
+            return \App\Models\Berita::with('penulis')
+                ->where('status', 'publikasi')
+                ->latest()
+                ->take(3)
+                ->get();
+        });
+
         return view('livewire.beranda', [
             'konten' => $semuaKonten,
             'hero' => $hero,
             'kategori' => $kategori,
             'produkUnggulan' => $produkUnggulan,
             'produkTerlaris' => $produkTerlaris,
+            'penjualanKilat' => $penjualanKilat,
+            'beritaTerbaru' => $beritaTerbaru,
         ])->layout('components.layouts.app');
     }
 }
