@@ -13,7 +13,7 @@ class KeranjangBelanja extends Component
     public function getItemsProperty()
     {
         return Keranjang::where('pengguna_id', auth()->id())
-            ->with(['produk.kategori', 'produk.gambar'])
+            ->with(['produk.kategori', 'produk.gambar', 'varian'])
             ->get();
     }
 
@@ -21,13 +21,18 @@ class KeranjangBelanja extends Component
     {
         $item = Keranjang::where('id', $id)
             ->where('pengguna_id', auth()->id())
+            ->with('varian')
             ->first();
 
-        if ($item && $item->jumlah < $item->produk->stok) {
+        if (!$item) return;
+
+        $stokTersedia = $item->varian ? $item->varian->stok : $item->produk->stok;
+
+        if ($item->jumlah < $stokTersedia) {
             $item->increment('jumlah');
             $this->dispatch('update-keranjang');
         } else {
-            $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Batas stok tercapai.']);
+            $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Mencapai batas stok tersedia.']);
         }
     }
 
@@ -66,7 +71,7 @@ class KeranjangBelanja extends Component
     public function getTotalHargaProperty()
     {
         return $this->items->sum(function ($item) {
-            return $item->produk->harga_jual * $item->jumlah;
+            return $item->subtotal;
         });
     }
 

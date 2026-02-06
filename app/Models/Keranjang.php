@@ -23,4 +23,25 @@ class Keranjang extends Model
     {
         return $this->belongsTo(Produk::class, 'produk_id');
     }
+
+    public function varian(): BelongsTo
+    {
+        return $this->belongsTo(VarianProduk::class, 'varian_id');
+    }
+
+    public function getHargaSatuanAttribute()
+    {
+        $hargaDasar = $this->produk->harga_jual;
+        
+        if ($this->varian_id && $this->varian) {
+            return $hargaDasar + $this->varian->harga_tambahan;
+        }
+
+        return $hargaDasar;
+    }
+
+    public function getSubtotalAttribute()
+    {
+        return $this->harga_satuan * $this->jumlah;
+    }
 }
