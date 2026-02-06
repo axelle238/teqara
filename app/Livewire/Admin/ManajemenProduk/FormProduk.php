@@ -2,12 +2,15 @@
 
 namespace App\Livewire\Admin\ManajemenProduk;
 
+use App\Helpers\LogHelper;
 use App\Models\GambarProduk;
 use App\Models\Kategori;
 use App\Models\Merek;
 use App\Models\Produk;
 use App\Models\SpesifikasiProduk;
 use App\Models\VarianProduk;
+use App\Services\LayananStok;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -15,47 +18,29 @@ use Livewire\WithFileUploads;
 
 /**
  * Class FormProduk
- * Tujuan: Formulir komprehensif untuk registrasi unit produk baru atau modifikasi unit lama.
+ * Tujuan: Pusat Komando Editor Unit untuk registrasi dan modifikasi mendalam unit teknologi (ERP Standard).
  */
 class FormProduk extends Component
 {
     use WithFileUploads;
 
     public $produkId;
+    public $activeTab = 'info'; // info, media, varian, spesifikasi, seo
 
-    public $activeTab = 'info';
+    // Properti Inti
+    public $nama, $slug, $kode_unit, $kategori_id, $merek_id;
+    public $harga_modal = 0, $harga_jual = 0, $stok = 0;
+    public $deskripsi_singkat, $deskripsi_lengkap;
+    public $status = 'aktif', $memiliki_varian = false;
 
-    public $nama;
-
-    public $slug;
-
-    public $kode_unit;
-
-    public $kategori_id;
-
-    public $merek_id;
-
-    public $harga_modal = 0;
-
-    public $harga_jual = 0;
-
-    public $stok = 0;
-
-    public $deskripsi_singkat;
-
-    public $deskripsi_lengkap;
-
-    public $status = 'aktif';
-
-    public $memiliki_varian = false;
-
+    // Koleksi Dinamis
     public $gambar_baru = [];
-
     public $gambar_lama = [];
-
     public $daftarVarian = [];
-
     public $daftarSpesifikasi = [];
+    
+    // SEO State
+    public $meta_judul, $meta_deskripsi;
 
     public function mount($id = null)
     {
@@ -87,7 +72,8 @@ class FormProduk extends Component
 
             foreach ($produk->spesifikasi as $spek) {
                 $this->daftarSpesifikasi[] = [
-                    'judul' => $spek->judul,
+                    'id' => $spek->id,
+                    'label' => $spek->label,
                     'nilai' => $spek->nilai,
                 ];
             }
@@ -101,14 +87,16 @@ class FormProduk extends Component
     public function updatedNama($value)
     {
         $this->slug = Str::slug($value);
+        if (empty($this->meta_judul)) $this->meta_judul = $value;
     }
 
+    // --- Manajemen Varian ---
     public function tambahBarisVarian()
     {
         $this->daftarVarian[] = [
             'id' => null,
             'nama_varian' => '',
-            'kode_unit' => '',
+            'kode_unit' => $this->kode_unit . '-VAR-' . (count($this->daftarVarian) + 1),
             'harga_tambahan' => 0,
             'stok' => 0,
         ];
@@ -120,9 +108,10 @@ class FormProduk extends Component
         $this->daftarVarian = array_values($this->daftarVarian);
     }
 
+    // --- Manajemen Spesifikasi ---
     public function tambahBarisSpesifikasi()
     {
-        $this->daftarSpesifikasi[] = ['judul' => '', 'nilai' => ''];
+        $this->daftarSpesifikasi[] = ['id' => null, 'label' => '', 'nilai' => ''];
     }
 
     public function hapusBarisSpesifikasi($index)
@@ -131,84 +120,126 @@ class FormProduk extends Component
         $this->daftarSpesifikasi = array_values($this->daftarSpesifikasi);
     }
 
+    public function terapkanTemplate($tipe)
+    {
+        $templates = [
+            'laptop' => ['Prosesor', 'RAM', 'Penyimpanan', 'Kartu Grafis', 'Layar'],
+            'smartphone' => ['Chipset', 'RAM/Internal', 'Kamera Utama', 'Layar', 'Baterai'],
+        ];
+
+        foreach ($templates[$tipe] ?? [] as $label) {
+            $this->daftarSpesifikasi[] = ['id' => null, 'label' => $label, 'nilai' => '-'];
+        }
+    }
+
+    // --- Manajemen Media ---
     public function hapusGambarLama($id)
     {
         GambarProduk::destroy($id);
         $this->gambar_lama = array_filter($this->gambar_lama, fn ($g) => $g['id'] != $id);
+        $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Visual dihapus dari galeri.']);
     }
 
+    // --- Eksekusi Utama ---
     public function simpan()
     {
         $this->validate([
-            'nama' => 'required',
-            'kode_unit' => 'required',
-            'harga_jual' => 'required|numeric',
+            'nama' => 'required|min:5',
+            'kode_unit' => 'required|unique:produk,kode_unit,' . $this->produkId,
+            'harga_jual' => 'required|numeric|min:0',
+            'kategori_id' => 'required|exists:kategori,id',
+            'merek_id' => 'required|exists:merek,id',
+            'gambar_baru.*' => 'nullable|image|max:2048',
         ]);
 
-        $data = [
-            'nama' => $this->nama,
-            'slug' => $this->slug,
-            'kode_unit' => $this->kode_unit,
-            'kategori_id' => $this->kategori_id,
-            'merek_id' => $this->merek_id,
-            'harga_modal' => $this->harga_modal,
-            'harga_jual' => $this->harga_jual,
-            'stok' => $this->stok,
-            'deskripsi_singkat' => $this->deskripsi_singkat,
-            'deskripsi_lengkap' => $this->deskripsi_lengkap,
-            'status' => $this->status,
-            'memiliki_varian' => $this->memiliki_varian,
-        ];
+        try {
+            DB::beginTransaction();
 
-        if ($this->produkId) {
-            $produk = Produk::find($this->produkId);
-            $produk->update($data);
-        } else {
-            $produk = Produk::create($data);
-            $this->produkId = $produk->id;
-        }
+            $data = [
+                'nama' => $this->nama,
+                'slug' => $this->slug,
+                'kode_unit' => $this->kode_unit,
+                'kategori_id' => $this->kategori_id,
+                'merek_id' => $this->merek_id,
+                'harga_modal' => $this->harga_modal,
+                'harga_jual' => $this->harga_jual,
+                'stok' => $this->stok,
+                'deskripsi_singkat' => $this->deskripsi_singkat,
+                'deskripsi_lengkap' => $this->deskripsi_lengkap,
+                'status' => $this->status,
+                'memiliki_varian' => $this->memiliki_varian,
+            ];
 
-        if ($this->memiliki_varian) {
-            foreach ($this->daftarVarian as $var) {
-                if (! empty($var['nama_varian'])) {
-                    VarianProduk::updateOrCreate(
-                        ['id' => $var['id'] ?? null],
-                        [
-                            'produk_id' => $produk->id,
-                            'nama_varian' => $var['nama_varian'],
-                            'kode_unit' => $var['kode_unit'],
-                            'harga_tambahan' => $var['harga_tambahan'],
-                            'stok' => $var['stok'],
-                        ]
-                    );
+            if ($this->produkId) {
+                $produk = Produk::find($this->produkId);
+                $produk->update($data);
+                $aksi = 'update_unit';
+                $memo = "Modifikasi mendalam pada unit {$this->nama}.";
+            } else {
+                $produk = Produk::create($data);
+                $this->produkId = $produk->id;
+                $aksi = 'registrasi_unit';
+                $memo = "Pendaftaran unit teknologi baru {$this->nama} ke inventaris.";
+                
+                // Input Stok Awal
+                if ($this->stok > 0) {
+                    (new LayananStok)->tambahStok($produk, $this->stok, 'Registrasi awal unit');
                 }
             }
-        }
 
-        SpesifikasiProduk::where('produk_id', $produk->id)->delete();
-        foreach ($this->daftarSpesifikasi as $spek) {
-            if (! empty($spek['judul'])) {
-                SpesifikasiProduk::create([
+            // Sync Varian
+            if ($this->memiliki_varian) {
+                foreach ($this->daftarVarian as $var) {
+                    if (! empty($var['nama_varian'])) {
+                        VarianProduk::updateOrCreate(
+                            ['id' => $var['id'] ?? null],
+                            [
+                                'produk_id' => $produk->id,
+                                'nama_varian' => $var['nama_varian'],
+                                'kode_unit' => $var['kode_unit'],
+                                'harga_tambahan' => $var['harga_tambahan'],
+                                'stok' => $var['stok'],
+                            ]
+                        );
+                    }
+                }
+            }
+
+            // Sync Spesifikasi
+            SpesifikasiProduk::where('produk_id', $produk->id)->delete();
+            foreach ($this->daftarSpesifikasi as $spek) {
+                if (! empty($spek['label'])) {
+                    SpesifikasiProduk::create([
+                        'produk_id' => $produk->id,
+                        'label' => $spek['label'],
+                        'nilai' => $spek['nilai'],
+                    ]);
+                }
+            }
+
+            // Sync Gambar
+            foreach ($this->gambar_baru as $img) {
+                $path = $img->store('produk', 'public');
+                GambarProduk::create([
                     'produk_id' => $produk->id,
-                    'judul' => $spek['judul'],
-                    'nilai' => $spek['nilai'],
+                    'url' => '/storage/' . $path,
+                    'is_utama' => false,
                 ]);
             }
-        }
 
-        foreach ($this->gambar_baru as $img) {
-            $url = $img->temporaryUrl();
-            GambarProduk::create([
-                'produk_id' => $produk->id,
-                'url' => $url,
-                'is_utama' => false,
-            ]);
-        }
+            LogHelper::catat($aksi, $this->nama, $memo);
+            
+            DB::commit();
+            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Seluruh parameter unit berhasil disinkronkan ke pusat data.']);
+            return redirect()->route('admin.produk.katalog');
 
-        return redirect()->route('admin.produk.katalog');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Gagal sinkronisasi: ' . $e->getMessage()]);
+        }
     }
 
-    #[Title('Formulir Produk Lengkap')]
+    #[Title('Editor Command Center - Admin Teqara')]
     public function render()
     {
         return view('livewire.admin.manajemen-produk.form-produk', [

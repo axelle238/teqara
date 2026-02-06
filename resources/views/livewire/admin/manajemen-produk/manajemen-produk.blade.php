@@ -11,13 +11,14 @@
             <p class="text-slate-500 font-medium">Manajemen seluruh unit komputasi dan gadget dalam satu kendali terpusat.</p>
         </div>
         <div class="flex items-center gap-3">
-            <button 
-                wire:click="tambahBaru" 
+            <a 
+                href="{{ route('admin.produk.tambah') }}" 
+                wire:navigate
                 class="flex items-center gap-3 px-8 py-4 bg-indigo-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-indigo-500/30 hover:bg-indigo-700 hover:scale-105 transition-all group"
             >
                 <svg class="w-5 h-5 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path d="M12 4v16m8-8H4"></path></svg>
                 Registrasi Unit Baru
-            </button>
+            </a>
         </div>
     </div>
 
@@ -136,13 +137,13 @@
                         </td>
                         <td class="px-10 py-6 text-right">
                             <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-x-0 translate-x-4">
-                                <a href="{{ route('admin.produk.spesifikasi', $p->id) }}" wire:navigate class="p-3 bg-white border border-indigo-100 text-indigo-400 hover:text-white hover:bg-indigo-600 rounded-2xl transition-all shadow-sm">
+                                <a href="{{ route('admin.produk.edit', $p->id) }}" wire:navigate class="p-3 bg-white border border-indigo-100 text-indigo-600 hover:text-white hover:bg-indigo-600 rounded-2xl transition-all shadow-sm" title="Editor Komprehensif">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
                                 </a>
-                                <button wire:click="edit({{ $p->id }})" class="p-3 bg-white border border-indigo-100 text-indigo-400 hover:text-white hover:bg-indigo-600 rounded-2xl transition-all shadow-sm">
+                                <button wire:click="edit({{ $p->id }})" class="p-3 bg-white border border-indigo-100 text-slate-400 hover:text-white hover:bg-slate-900 rounded-2xl transition-all shadow-sm" title="Ubah Cepat">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </button>
-                                <button wire:click="hapus({{ $p->id }})" wire:confirm="Apakah Anda yakin ingin menghapus unit ini dari inventaris? Tindakan ini tidak dapat dibatalkan." class="p-3 bg-white border border-rose-100 text-rose-400 hover:text-white hover:bg-rose-600 rounded-2xl transition-all shadow-sm">
+                                <button wire:click="hapus({{ $p->id }})" wire:confirm="Apakah Anda yakin ingin menghapus unit ini dari inventaris? Tindakan ini tidak dapat dibatalkan." class="p-3 bg-white border border-rose-100 text-rose-400 hover:text-white hover:bg-rose-600 rounded-2xl transition-all shadow-sm" title="Hapus Unit">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                 </button>
                             </div>

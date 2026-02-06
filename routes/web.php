@@ -60,6 +60,8 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     Route::prefix('produk')->group(function () {
         Route::get('/beranda', \App\Livewire\Admin\ManajemenProduk\BerandaProduk::class)->name('admin.produk.beranda');
         Route::get('/katalog', \App\Livewire\Admin\ManajemenProduk\ManajemenProduk::class)->name('admin.produk.katalog');
+        Route::get('/tambah', \App\Livewire\Admin\ManajemenProduk\FormProduk::class)->name('admin.produk.tambah');
+        Route::get('/edit/{id}', \App\Livewire\Admin\ManajemenProduk\FormProduk::class)->name('admin.produk.edit');
         Route::get('/spesifikasi/{produk}', \App\Livewire\Admin\ManajemenProduk\ManajemenSpesifikasi::class)->name('admin.produk.spesifikasi');
         Route::get('/stok', \App\Livewire\Admin\ManajemenProduk\ManajemenStok::class)->name('admin.produk.stok');
     });

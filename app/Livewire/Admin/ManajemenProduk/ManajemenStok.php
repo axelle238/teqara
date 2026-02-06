@@ -13,61 +13,46 @@ use Livewire\WithPagination;
 
 /**
  * Class ManajemenStok
- * Tujuan: Audit dan manajemen mutasi inventaris antar gudang.
+ * Tujuan: Pusat kendali inventaris Enterprise dengan audit trail mendalam dan forecasting.
  */
 class ManajemenStok extends Component
 {
     use WithPagination;
 
+    // State Filter
     public $cari = '';
+    public $filterKesehatan = ''; // kritis, habis, aman, overstock
+    public $tabAktif = 'posisi'; // posisi, mutasi
 
+    // State Mutasi
     public $produkTerpilihId;
-
-    public $dariGudang;
-
-    public $keGudang;
-
+    public $jenisAksi = 'penyesuaian'; // penyesuaian, penerimaan
     public $jumlahMutasi;
-
     public $keteranganMutasi = '';
 
-    #[Title('Audit Inventaris & Forecasting - Teqara')]
-    public function render()
+    public function updated($property)
     {
-        $query = Produk::query()
-            ->with(['kategori', 'merek'])
-            ->where('nama', 'like', '%'.$this->cari.'%');
-
-        $stokGlobal = $query->paginate(10);
-
-        // Analitik Enterprise
-        $totalValuasi = Produk::sum(DB::raw('stok * harga_modal'));
-        $totalUnit = Produk::sum('stok');
-        $itemKritis = Produk::where('stok', '<=', 5)->count();
-        $itemOverstock = Produk::where('stok', '>', 100)->count();
-
-        // Data Mutasi untuk Audit Trail
-        $mutasiTerbaru = MutasiStok::with(['produk', 'pengguna'])
-            ->latest()
-            ->take(5)
-            ->get();
-
-        return view('livewire.admin.manajemen-produk.manajemen-stok', [
-            'stokGlobal' => $stokGlobal,
-            'mutasiTerbaru' => $mutasiTerbaru,
-            'daftarGudang' => Gudang::all(),
-            'analitik' => [
-                'valuasi' => $totalValuasi,
-                'total_unit' => $totalUnit,
-                'kritis' => $itemKritis,
-                'overstock' => $itemOverstock,
-            ],
-        ])->layout('components.layouts.admin');
+        if (in_array($property, ['cari', 'filterKesehatan', 'tabAktif'])) {
+            $this->resetPage();
+        }
     }
 
-    public function bukaMutasi($id)
+    public function getAnalitikProperty()
+    {
+        return [
+            'valuasi' => Produk::sum(DB::raw('stok * harga_modal')),
+            'total_unit' => Produk::sum('stok'),
+            'kritis' => Produk::where('stok', '>', 0)->where('stok', '<=', 5)->count(),
+            'habis' => Produk::where('stok', '<=', 0)->count(),
+            'aman' => Produk::where('stok', '>', 5)->where('stok', '<=', 50)->count(),
+            'overstock' => Produk::where('stok', '>', 50)->count(),
+        ];
+    }
+
+    public function bukaMutasi($id, $aksi = 'penyesuaian')
     {
         $this->produkTerpilihId = $id;
+        $this->jenisAksi = $aksi;
         $this->dispatch('open-slide-over', id: 'panel-mutasi');
     }
 
@@ -81,33 +66,61 @@ class ManajemenStok extends Component
 
         $produk = Produk::find($this->produkTerpilihId);
 
-        if ($produk->stok < $this->jumlahMutasi) {
-            $this->addError('jumlahMutasi', 'Stok saat ini tidak mencukupi untuk mutasi keluar.');
-
+        if ($this->jenisAksi === 'penyesuaian' && $produk->stok < $this->jumlahMutasi) {
+            $this->addError('jumlahMutasi', 'Stok fisik tidak mencukupi untuk pengurangan ini.');
             return;
         }
 
         DB::transaction(function () use ($produk) {
-            $produk->decrement('stok', $this->jumlahMutasi);
+            $jumlahFinal = $this->jenisAksi === 'penerimaan' ? $this->jumlahMutasi : -$this->jumlahMutasi;
+            
+            $produk->increment('stok', $jumlahFinal);
 
             MutasiStok::create([
                 'produk_id' => $produk->id,
-                'jumlah' => -$this->jumlahMutasi,
-                'jenis_mutasi' => 'penyesuaian_manual', // Bisa dikembangkan jadi 'pindah_gudang' dll
+                'jumlah' => $jumlahFinal,
+                'jenis_mutasi' => $this->jenisAksi === 'penerimaan' ? 'masuk' : 'penyesuaian_manual',
                 'keterangan' => $this->keteranganMutasi,
-                'pengguna_id' => auth()->id(), // Pastikan nama kolom di DB benar, biasanya pengguna_id atau oleh_pengguna_id
+                'pengguna_id' => auth()->id(),
                 'waktu' => now(),
             ]);
 
             LogHelper::catat(
                 'mutasi_stok',
                 $produk->nama,
-                "Admin melakukan penyesuaian stok manual: -{$this->jumlahMutasi} unit. Alasan: {$this->keteranganMutasi}"
+                "Admin eksekusi " . strtoupper($this->jenisAksi) . ": " . ($jumlahFinal > 0 ? '+' : '') . "{$jumlahFinal} unit. Memo: {$this->keteranganMutasi}"
             );
         });
 
         $this->reset(['produkTerpilihId', 'jumlahMutasi', 'keteranganMutasi']);
         $this->dispatch('close-slide-over', id: 'panel-mutasi');
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Penyesuaian inventaris berhasil dicatat dalam audit trail.']);
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Logistik berhasil diperbarui & tercatat di Jurnal Audit.']);
+    }
+
+    #[Title('Audit Inventaris Hub - Teqara Admin')]
+    public function render()
+    {
+        // 1. Query Posisi Stok
+        $queryProduk = Produk::query()
+            ->with(['kategori', 'merek'])
+            ->where('nama', 'like', '%'.$this->cari.'%');
+
+        if ($this->filterKesehatan) {
+            switch ($this->filterKesehatan) {
+                case 'kritis': $queryProduk->where('stok', '>', 0)->where('stok', '<=', 5); break;
+                case 'habis': $queryProduk->where('stok', '<=', 0); break;
+                case 'aman': $queryProduk->where('stok', '>', 5)->where('stok', '<=', 50); break;
+                case 'overstock': $queryProduk->where('stok', '>', 50); break;
+            }
+        }
+
+        // 2. Query Jurnal Mutasi
+        $queryMutasi = MutasiStok::with(['produk', 'pengguna'])->latest();
+
+        return view('livewire.admin.manajemen-produk.manajemen-stok', [
+            'stokGlobal' => $queryProduk->paginate(10, pageName: 'produk-page'),
+            'jurnalMutasi' => $queryMutasi->paginate(15, pageName: 'mutasi-page'),
+            'daftarGudang' => Gudang::all(),
+        ])->layout('components.layouts.admin');
     }
 }

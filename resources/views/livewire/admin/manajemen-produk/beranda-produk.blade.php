@@ -61,6 +61,15 @@
         </div>
     </div>
 
+    <!-- Visual Analytics: Stock Distribution -->
+    <div class="bg-white rounded-[56px] shadow-sm border border-indigo-50 p-10 relative overflow-hidden">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">Distribusi Aset Kategori</h3>
+            <span class="px-4 py-1.5 bg-slate-50 text-slate-500 rounded-full text-[10px] font-black uppercase tracking-widest">Real-time Visualization</span>
+        </div>
+        <div id="chart-stok" class="w-full h-80"></div>
+    </div>
+
     <!-- Feed Produk Baru: No Dark Policy -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
         <div class="bg-white rounded-[56px] shadow-sm border border-indigo-50 overflow-hidden">
@@ -112,4 +121,50 @@
             <div class="absolute top-0 left-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('livewire:navigated', () => {
+            var options = {
+                series: [{
+                    name: 'Total Unit',
+                    data: @json($chart_data['series'])
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 320,
+                    fontFamily: 'Plus Jakarta Sans, sans-serif',
+                    toolbar: { show: false }
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 12,
+                        columnWidth: '40%',
+                        distributed: true
+                    }
+                },
+                colors: ['#4f46e5', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'],
+                dataLabels: { enabled: false },
+                legend: { show: false },
+                xaxis: {
+                    categories: @json($chart_data['labels']),
+                    labels: {
+                        style: {
+                            colors: '#64748b',
+                            fontSize: '10px',
+                            fontWeight: 800
+                        }
+                    },
+                    axisBorder: { show: false },
+                    axisTicks: { show: false }
+                },
+                grid: {
+                    strokeDashArray: 4,
+                    borderColor: '#f1f5f9'
+                }
+            };
+
+            var chart = new ApexCharts(document.querySelector("#chart-stok"), options);
+            chart.render();
+        });
+    </script>
 </div>
