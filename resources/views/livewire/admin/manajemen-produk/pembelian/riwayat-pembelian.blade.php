@@ -52,7 +52,7 @@
                             <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{ $r->created_at->format('d M Y') }}</p>
                         </td>
                         <td class="px-6 py-6">
-                            <span class="text-xs font-bold text-slate-700 uppercase">{{ $r->pemasok->nama ?? 'Umum' }}</span>
+                            <span class="text-xs font-bold text-slate-700 uppercase">{{ $r->pemasok->nama_perusahaan ?? 'Umum' }}</span>
                         </td>
                         <td class="px-6 py-6">
                             <span class="text-sm font-black text-slate-900">Rp {{ number_format($r->total_biaya, 0, ',', '.') }}</span>

@@ -20,7 +20,7 @@
                     <div class="flex gap-2">
                         <select wire:model="pemasok_id" class="w-full rounded-2xl border-none bg-slate-50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-4 focus:ring-indigo-500/10">
                             <option value="">Pilih Pemasok</option>
-                            @foreach($daftarPemasok as $p) <option value="{{ $p->id }}">{{ $p->nama }}</option> @endforeach
+                            @foreach($daftarPemasok as $p) <option value="{{ $p->id }}">{{ $p->nama_perusahaan }}</option> @endforeach
                         </select>
                         <button class="p-4 bg-indigo-100 text-indigo-600 rounded-2xl hover:bg-indigo-200 transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
