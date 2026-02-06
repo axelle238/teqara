@@ -20,9 +20,46 @@ class DaftarMember extends Component
 
     public $filterPeran = '';
 
+    public $memberTerpilih = null;
+
+    public $statistikMember = [];
+
     public function updatedCari()
     {
         $this->resetPage();
+    }
+
+    public function inspeksi($id)
+    {
+        $this->memberTerpilih = Pengguna::with(['pesanan.detailPesanan', 'alamat', 'tiketBantuan'])->findOrFail($id);
+
+        // Hitung Analitik CRM 360
+        $totalBelanja = $this->memberTerpilih->pesanan->where('status_pembayaran', 'lunas')->sum('total_harga');
+        $frekuensiBelanja = $this->memberTerpilih->pesanan->count();
+        $rataRataKeranjang = $frekuensiBelanja > 0 ? $totalBelanja / $frekuensiBelanja : 0;
+
+        // Tentukan Segmen Pelanggan
+        $segmen = 'Bronze';
+        if ($totalBelanja > 50000000) {
+            $segmen = 'Platinum';
+        } // > 50 Juta
+        elseif ($totalBelanja > 10000000) {
+            $segmen = 'Gold';
+        } // > 10 Juta
+        elseif ($totalBelanja > 2000000) {
+            $segmen = 'Silver';
+        } // > 2 Juta
+
+        $this->statistikMember = [
+            'ltv' => $totalBelanja,
+            'frekuensi' => $frekuensiBelanja,
+            'aov' => $rataRataKeranjang,
+            'segmen' => $segmen,
+            'terakhir_login' => now(), // Placeholder jika belum ada kolom last_login
+            'tiket_terbuka' => $this->memberTerpilih->tiketBantuan ? $this->memberTerpilih->tiketBantuan->where('status', '!=', 'selesai')->count() : 0,
+        ];
+
+        $this->dispatch('open-panel-inspeksi-member');
     }
 
     public function ubahPeran($id, $peranBaru)
