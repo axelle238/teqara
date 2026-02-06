@@ -6,6 +6,7 @@ use App\Helpers\LogHelper;
 use App\Models\Gudang;
 use App\Models\MutasiStok;
 use App\Models\Produk;
+use App\Models\StokGudang;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -26,9 +27,13 @@ class ManajemenStok extends Component
 
     // State Mutasi
     public $produkTerpilihId;
-    public $jenisAksi = 'penyesuaian'; // penyesuaian, penerimaan
+    public $jenisAksi = 'penyesuaian'; // penyesuaian, penerimaan, transfer
     public $jumlahMutasi;
     public $keteranganMutasi = '';
+    
+    // State Transfer Gudang
+    public $dariGudangId;
+    public $keGudangId;
 
     public function updated($property)
     {
@@ -62,39 +67,88 @@ class ManajemenStok extends Component
             'produkTerpilihId' => 'required|exists:produk,id',
             'jumlahMutasi' => 'required|integer|min:1',
             'keteranganMutasi' => 'required|min:5',
+            'dariGudangId' => 'required_if:jenisAksi,transfer',
+            'keGudangId' => 'required_if:jenisAksi,transfer|different:dariGudangId',
         ]);
 
         $produk = Produk::find($this->produkTerpilihId);
 
-        if ($this->jenisAksi === 'penyesuaian' && $produk->stok < $this->jumlahMutasi) {
-            $this->addError('jumlahMutasi', 'Stok fisik tidak mencukupi untuk pengurangan ini.');
-            return;
-        }
-
         DB::transaction(function () use ($produk) {
-            $jumlahFinal = $this->jenisAksi === 'penerimaan' ? $this->jumlahMutasi : -$this->jumlahMutasi;
             
-            $produk->increment('stok', $jumlahFinal);
+            if ($this->jenisAksi === 'transfer') {
+                // Logic Transfer Antar Gudang
+                $stokAsal = StokGudang::firstOrCreate(
+                    ['produk_id' => $produk->id, 'gudang_id' => $this->dariGudangId],
+                    ['jumlah' => 0]
+                );
 
-            MutasiStok::create([
-                'produk_id' => $produk->id,
-                'jumlah' => $jumlahFinal,
-                'jenis_mutasi' => $this->jenisAksi === 'penerimaan' ? 'masuk' : 'penyesuaian_manual',
-                'keterangan' => $this->keteranganMutasi,
-                'pengguna_id' => auth()->id(),
-                'waktu' => now(),
-            ]);
+                if ($stokAsal->jumlah < $this->jumlahMutasi) {
+                    // Fallback: Jika data stok gudang belum sinkron, cek stok global (untuk fase transisi)
+                    // Namun idealnya strictly check warehouse stock.
+                    // Kita asumsikan sistem ini enforce stok gudang.
+                    throw new \Exception("Stok di gudang asal tidak mencukupi (Tersedia: {$stokAsal->jumlah}).");
+                }
 
-            LogHelper::catat(
-                'mutasi_stok',
-                $produk->nama,
-                "Admin eksekusi " . strtoupper($this->jenisAksi) . ": " . ($jumlahFinal > 0 ? '+' : '') . "{$jumlahFinal} unit. Memo: {$this->keteranganMutasi}"
-            );
+                $stokTujuan = StokGudang::firstOrCreate(
+                    ['produk_id' => $produk->id, 'gudang_id' => $this->keGudangId],
+                    ['jumlah' => 0]
+                );
+
+                $stokAsal->decrement('jumlah', $this->jumlahMutasi);
+                $stokTujuan->increment('jumlah', $this->jumlahMutasi);
+                
+                // Tidak ubah stok global produk, hanya lokasi.
+
+                MutasiStok::create([
+                    'produk_id' => $produk->id,
+                    'jumlah' => 0, // Net zero global change
+                    'jenis_mutasi' => 'transfer_gudang',
+                    'keterangan' => "Transfer: " . Gudang::find($this->dariGudangId)->nama . " -> " . Gudang::find($this->keGudangId)->nama . ". " . $this->keteranganMutasi,
+                    'pengguna_id' => auth()->id(),
+                    'waktu' => now(),
+                ]);
+
+                LogHelper::catat(
+                    'transfer_stok',
+                    $produk->nama,
+                    "Admin memindahkan {$this->jumlahMutasi} unit antar gudang."
+                );
+
+            } else {
+                // Logic Penyesuaian / Penerimaan Global
+                if ($this->jenisAksi === 'penyesuaian' && $produk->stok < $this->jumlahMutasi) {
+                    throw new \Exception('Stok fisik global tidak mencukupi untuk pengurangan ini.');
+                }
+
+                $jumlahFinal = $this->jenisAksi === 'penerimaan' ? $this->jumlahMutasi : -$this->jumlahMutasi;
+                $produk->increment('stok', $jumlahFinal);
+
+                // Update gudang utama (Default ID 1) jika ada, agar sinkron
+                StokGudang::updateOrCreate(
+                    ['produk_id' => $produk->id, 'gudang_id' => 1], // Asumsi ID 1 adalah Gudang Pusat
+                    ['jumlah' => DB::raw("GREATEST(0, jumlah + $jumlahFinal)")]
+                );
+
+                MutasiStok::create([
+                    'produk_id' => $produk->id,
+                    'jumlah' => $jumlahFinal,
+                    'jenis_mutasi' => $this->jenisAksi === 'penerimaan' ? 'masuk' : 'penyesuaian_manual',
+                    'keterangan' => $this->keteranganMutasi,
+                    'pengguna_id' => auth()->id(),
+                    'waktu' => now(),
+                ]);
+
+                LogHelper::catat(
+                    'mutasi_stok',
+                    $produk->nama,
+                    "Admin eksekusi " . strtoupper($this->jenisAksi) . ": " . ($jumlahFinal > 0 ? '+' : '') . "{$jumlahFinal} unit. Memo: {$this->keteranganMutasi}"
+                );
+            }
         });
 
-        $this->reset(['produkTerpilihId', 'jumlahMutasi', 'keteranganMutasi']);
+        $this->reset(['produkTerpilihId', 'jumlahMutasi', 'keteranganMutasi', 'dariGudangId', 'keGudangId']);
         $this->dispatch('close-slide-over', id: 'panel-mutasi');
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Logistik berhasil diperbarui & tercatat di Jurnal Audit.']);
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Operasi logistik berhasil dijalankan.']);
     }
 
     #[Title('Audit Inventaris Hub - Teqara Admin')]
