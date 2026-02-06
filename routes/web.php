@@ -99,12 +99,17 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     // Pilar 6: Manajemen Logistik & Pengiriman
     Route::prefix('logistik')->group(function () {
         Route::get('/beranda', \App\Livewire\Admin\ManajemenLogistik\BerandaLogistik::class)->name('admin.logistik.beranda');
-        Route::get('/pemasok', \App\Livewire\Admin\ManajemenProduk\Pemasok\DaftarPemasok::class)->name('admin.logistik.pemasok');
-        Route::get('/pemasok/baru', \App\Livewire\Admin\ManajemenProduk\Pemasok\FormPemasok::class)->name('admin.logistik.pemasok.tambah');
-        Route::get('/pemasok/edit/{id}', \App\Livewire\Admin\ManajemenProduk\Pemasok\FormPemasok::class)->name('admin.logistik.pemasok.edit');
     });
 
-    // Pilar 7: Manajemen Pelanggan (CRM)
+    // Pilar 7: Manajemen Vendor (Pemasok)
+    Route::prefix('vendor')->group(function () {
+        Route::get('/beranda', \App\Livewire\Admin\ManajemenVendor\BerandaVendor::class)->name('admin.vendor.beranda');
+        Route::get('/daftar', \App\Livewire\Admin\ManajemenLogistik\ManajemenPemasok::class)->name('admin.vendor.daftar');
+        Route::get('/pemasok/baru', \App\Livewire\Admin\ManajemenProduk\Pemasok\FormPemasok::class)->name('admin.vendor.tambah');
+        Route::get('/pemasok/edit/{id}', \App\Livewire\Admin\ManajemenProduk\Pemasok\FormPemasok::class)->name('admin.vendor.edit');
+    });
+
+    // Pilar 8: Manajemen Pelanggan (CRM)
     Route::prefix('pelanggan')->group(function () {
         Route::get('/beranda', \App\Livewire\Admin\ManajemenPelanggan\BerandaPelanggan::class)->name('admin.pelanggan.beranda');
         Route::get('/daftar', \App\Livewire\Admin\ManajemenPelanggan\DaftarMember::class)->name('admin.pelanggan.daftar');

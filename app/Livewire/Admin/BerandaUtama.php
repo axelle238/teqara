@@ -14,7 +14,6 @@ use App\Models\Produk;
 use App\Models\TiketBantuan;
 use App\Models\Ulasan;
 use App\Models\Voucher;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -50,7 +49,10 @@ class BerandaUtama extends Component
         $statsKeuangan = [
             'pendapatan_hari_ini' => Pesanan::whereDate('created_at', now())->where('status_pembayaran', 'lunas')->sum('total_harga'),
             'verifikasi_tertunda' => Pesanan::where('status_pembayaran', 'menunggu_verifikasi')->count(),
-            'voucher_aktif' => Voucher::where('status', 'aktif')->count(),
+            'voucher_aktif' => Voucher::where('berlaku_mulai', '<=', now())
+                ->where('berlaku_sampai', '>=', now())
+                ->where('kuota', '>', 0)
+                ->count(),
         ];
 
         // 5. Pilar Customer Service
@@ -59,28 +61,27 @@ class BerandaUtama extends Component
             'ulasan_baru' => Ulasan::whereDate('created_at', '>=', now()->subDays(7))->count(),
         ];
 
-        // 6. Pilar Logistik & Vendor
+        // 6. Pilar Logistik & Pengiriman
         $statsLogistik = [
             'pengiriman_aktif' => Pesanan::where('status_pesanan', 'dikirim')->count(),
-            'total_vendor' => Pemasok::count(),
         ];
 
-        // 7. Pilar Pelanggan (CRM)
+        // 7. Pilar Manajemen Vendor (NEW)
+        $statsVendor = [
+            'total_vendor' => Pemasok::count(),
+            'vendor_aktif' => Pemasok::where('status', 'aktif')->count(),
+        ];
+
+        // 8. Pilar Pelanggan (CRM)
         $statsPelanggan = [
             'total_member' => Pengguna::where('peran', 'pelanggan')->count(),
             'member_baru' => Pengguna::where('peran', 'pelanggan')->whereMonth('created_at', now()->month)->count(),
         ];
 
-        // 8. Pilar Pegawai (HRD)
+        // 9. Pilar Pegawai (HRD)
         $statsHRD = [
             'total_staf' => Karyawan::count(),
             'staf_aktif' => Karyawan::where('status', 'aktif')->count(),
-        ];
-
-        // 9. Pilar Keamanan
-        $statsKeamanan = [
-            'log_hari_ini' => LogAktivitas::whereDate('waktu', now())->count(),
-            'aksi_kritis' => LogAktivitas::whereIn('aksi', ['delete', 'update_keamanan'])->count(),
         ];
 
         // 10. Grafik Tren Pendapatan (7 Hari Terakhir)
@@ -98,6 +99,12 @@ class BerandaUtama extends Component
 
         // 11. Aktivitas Terbaru (Narasi Manusiawi)
         $aktivitasTerbaru = LogAktivitas::with('pengguna')->latest('waktu')->take(10)->get();
+        
+        // 12. Keamanan
+        $statsKeamanan = [
+            'log_hari_ini' => LogAktivitas::whereDate('waktu', now())->count(),
+            'aksi_kritis' => LogAktivitas::whereIn('aksi', ['delete', 'update_keamanan'])->count(),
+        ];
 
         return view('livewire.admin.beranda-utama', [
             'toko' => $statsToko,
@@ -106,6 +113,7 @@ class BerandaUtama extends Component
             'keuangan' => $statsKeuangan,
             'cs' => $statsCS,
             'logistik' => $statsLogistik,
+            'vendor' => $statsVendor,
             'pelanggan' => $statsPelanggan,
             'hrd' => $statsHRD,
             'keamanan' => $statsKeamanan,
