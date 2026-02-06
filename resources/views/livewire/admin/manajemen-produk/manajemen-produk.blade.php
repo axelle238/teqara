@@ -103,7 +103,14 @@
                         </td>
                         <td class="px-6 py-6">
                             <div class="space-y-1">
-                                <p class="text-sm font-black text-slate-900 tracking-tighter">{{ $p->stok }} <span class="text-[10px] text-slate-400 uppercase ml-0.5">Unit</span></p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-sm font-black text-slate-900 tracking-tighter">{{ $p->stok }} <span class="text-[10px] text-slate-400 uppercase ml-0.5">Unit</span></p>
+                                    @if($p->stok <= 5)
+                                        <span class="px-2 py-0.5 bg-rose-100 text-rose-600 rounded text-[9px] font-black uppercase tracking-widest animate-pulse">KRITIS</span>
+                                    @else
+                                        <span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 rounded text-[9px] font-black uppercase tracking-widest">AMAN</span>
+                                    @endif
+                                </div>
                                 @if($p->stok_ditahan > 0)
                                     <div class="flex items-center gap-1.5">
                                         <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
@@ -126,10 +133,10 @@
                                 <a href="{{ route('admin.produk.spesifikasi', $p->id) }}" wire:navigate class="p-3 bg-white border border-indigo-100 text-indigo-400 hover:text-white hover:bg-indigo-600 rounded-2xl transition-all shadow-sm">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
                                 </a>
-                                <button class="p-3 bg-white border border-indigo-100 text-indigo-400 hover:text-white hover:bg-indigo-600 rounded-2xl transition-all shadow-sm">
+                                <button wire:click="edit({{ $p->id }})" class="p-3 bg-white border border-indigo-100 text-indigo-400 hover:text-white hover:bg-indigo-600 rounded-2xl transition-all shadow-sm">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 </button>
-                                <button class="p-3 bg-white border border-rose-100 text-rose-400 hover:text-white hover:bg-rose-600 rounded-2xl transition-all shadow-sm">
+                                <button wire:click="hapus({{ $p->id }})" wire:confirm="Apakah Anda yakin ingin menghapus unit ini dari inventaris? Tindakan ini tidak dapat dibatalkan." class="p-3 bg-white border border-rose-100 text-rose-400 hover:text-white hover:bg-rose-600 rounded-2xl transition-all shadow-sm">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                 </button>
                             </div>
@@ -169,12 +176,27 @@
                         @error('kode_unit') <span class="text-rose-500 text-[9px] font-black uppercase tracking-widest mt-1 px-1">{{ $message }}</span> @enderror
                     </div>
                     <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Merek (Brand)</label>
+                        <select wire:model="merek_id" class="w-full rounded-2xl border-none bg-indigo-50/50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 transition-all">
+                            <option value="">Pilih Merek</option>
+                            @foreach($merek as $m) <option value="{{ $m->id }}">{{ $m->nama }}</option> @endforeach
+                        </select>
+                        @error('merek_id') <span class="text-rose-500 text-[9px] font-black uppercase tracking-widest mt-1 px-1">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="space-y-2">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Klasifikasi Kategori</label>
                         <select wire:model="kategori_id" class="w-full rounded-2xl border-none bg-indigo-50/50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 transition-all">
                             <option value="">Pilih Kategori</option>
                             @foreach($kategori as $k) <option value="{{ $k->id }}">{{ $k->nama }}</option> @endforeach
                         </select>
+                        @error('kategori_id') <span class="text-rose-500 text-[9px] font-black uppercase tracking-widest mt-1 px-1">{{ $message }}</span> @enderror
                     </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Deskripsi Singkat</label>
+                    <textarea wire:model="deskripsi_singkat" rows="3" class="w-full rounded-2xl border-none bg-indigo-50/50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Ringkasan fitur utama..."></textarea>
                 </div>
             </div>
 
@@ -184,14 +206,20 @@
                     <span class="w-8 h-1 bg-emerald-600 rounded-full"></span>
                     <p class="text-[10px] font-black text-emerald-600 uppercase tracking-[0.3em]">Komersial & Stok</p>
                 </div>
-                <div class="grid grid-cols-3 gap-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div class="space-y-2">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Stok Awal</label>
                         <input wire:model="stok" type="number" class="w-full rounded-2xl border-none bg-emerald-50/50 px-6 py-4 text-sm font-black text-emerald-700 focus:ring-2 focus:ring-emerald-500 transition-all">
+                        @error('stok') <span class="text-rose-500 text-[9px] font-black uppercase tracking-widest mt-1 px-1">{{ $message }}</span> @enderror
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Harga Modal (Rp)</label>
+                        <input wire:model="harga_modal" type="number" class="w-full rounded-2xl border-none bg-emerald-50/50 px-6 py-4 text-sm font-black text-slate-900 focus:ring-2 focus:ring-emerald-500 transition-all">
                     </div>
                     <div class="space-y-2">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Harga Jual (Rp)</label>
                         <input wire:model="harga_jual" type="number" class="w-full rounded-2xl border-none bg-emerald-50/50 px-6 py-4 text-sm font-black text-slate-900 focus:ring-2 focus:ring-emerald-500 transition-all">
+                        @error('harga_jual') <span class="text-rose-500 text-[9px] font-black uppercase tracking-widest mt-1 px-1">{{ $message }}</span> @enderror
                     </div>
                     <div class="space-y-2">
                         <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Otoritas</label>
