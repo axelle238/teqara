@@ -6,19 +6,39 @@ use App\Models\Pengguna;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-/**
- * Class BerandaPelanggan
- * Tujuan: Beranda pilar Manajemen Pelanggan (CRM).
- */
 class BerandaPelanggan extends Component
 {
-    #[Title('Beranda Pelanggan - Admin Teqara')]
+    #[Title('CRM Dashboard - Teqara Admin')]
     public function render()
     {
+        // 1. Statistik Utama
+        $totalPelanggan = Pengguna::where('peran', 'pelanggan')->count();
+        $pelangganBaru = Pengguna::where('peran', 'pelanggan')
+            ->whereMonth('created_at', now()->month)
+            ->count();
+        
+        // 2. Top Spenders (Pelanggan Sultan)
+        $topSpenders = Pengguna::where('peran', 'pelanggan')
+            ->withSum(['pesanan' => function ($q) {
+                $q->where('status_pembayaran', 'lunas');
+            }], 'total_harga')
+            ->orderByDesc('pesanan_sum_total_harga')
+            ->take(5)
+            ->get();
+
+        // 3. Demografi (Contoh sederhana: Active vs Inactive based on orders)
+        $activeUsers = Pengguna::where('peran', 'pelanggan')
+            ->whereHas('pesanan', fn($q) => $q->where('created_at', '>=', now()->subDays(30)))
+            ->count();
+
         return view('livewire.admin.manajemen-pelanggan.beranda-pelanggan', [
-            'total_pelanggan' => Pengguna::where('peran', 'pelanggan')->count(),
-            'pelanggan_baru_bulan_ini' => Pengguna::where('peran', 'pelanggan')->whereMonth('created_at', now()->month)->count(),
-            'pelanggan_terbaru' => Pengguna::where('peran', 'pelanggan')->latest()->take(5)->get(),
+            'stats' => [
+                'total' => $totalPelanggan,
+                'baru' => $pelangganBaru,
+                'aktif' => $activeUsers,
+                'retention_rate' => $totalPelanggan > 0 ? ($activeUsers / $totalPelanggan) * 100 : 0
+            ],
+            'topSpenders' => $topSpenders
         ])->layout('components.layouts.admin');
     }
 }

@@ -2,71 +2,86 @@
 
 namespace App\Livewire\Admin\ManajemenPesanan;
 
+use App\Helpers\LogHelper;
 use App\Models\Pesanan;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 /**
  * Class DetailPesanan
- * Tujuan: Monitoring detail transaksi dan pengelolaan status operasional.
+ * Tujuan: Pusat kontrol pemenuhan pesanan individual (Order Fulfillment Center).
  */
 class DetailPesanan extends Component
 {
     public Pesanan $pesanan;
 
-    public $statusPesanan;
-
-    public $statusPembayaran;
-
-    public $resiPengiriman;
+    // Form State
+    public $resiInput = '';
+    public $alasanTolak = '';
 
     public function mount(Pesanan $pesanan)
     {
-        $this->pesanan = $pesanan->load(['detailPesanan.produk', 'pengguna']);
-        $this->statusPesanan = $pesanan->status_pesanan;
-        $this->statusPembayaran = $pesanan->status_pembayaran;
-        $this->resiPengiriman = $pesanan->resi_pengiriman;
+        $this->pesanan = $pesanan->load(['detailPesanan.produk', 'detailPesanan.varian', 'pengguna', 'transaksiPembayaran']);
+        $this->resiInput = $pesanan->resi_pengiriman;
     }
 
-    public function simpanPerubahan()
+    public function verifikasiPembayaran()
     {
-        $this->validate([
-            'statusPesanan' => 'required',
-            'statusPembayaran' => 'required',
-            'resiPengiriman' => 'nullable|string|max:100',
-        ]);
-
-        $pesananLama = $this->pesanan->replicate();
+        if ($this->pesanan->status_pembayaran !== 'menunggu_verifikasi') {
+            return;
+        }
 
         $this->pesanan->update([
-            'status_pesanan' => $this->statusPesanan,
-            'status_pembayaran' => $this->statusPembayaran,
-            'resi_pengiriman' => $this->resiPengiriman,
+            'status_pembayaran' => 'lunas',
+            'status_pesanan' => 'diproses' // Masuk antrian packing
         ]);
 
-        if ($pesananLama->status_pesanan !== $this->statusPesanan) {
-            \App\Helpers\LogHelper::catat(
-                'update_status_pesanan',
-                $this->pesanan->nomor_faktur,
-                "Admin memperbarui status pesanan #{$this->pesanan->nomor_faktur} dari ".strtoupper($pesananLama->status_pesanan).' menjadi '.strtoupper($this->statusPesanan)
-            );
-        }
-
-        if ($pesananLama->status_pembayaran !== $this->statusPembayaran) {
-            \App\Helpers\LogHelper::catat(
-                'update_status_pembayaran',
-                $this->pesanan->nomor_faktur,
-                "Admin memperbarui status pembayaran #{$this->pesanan->nomor_faktur} menjadi ".strtoupper(str_replace('_', ' ', $this->statusPembayaran))
-            );
-        }
-
-        $this->dispatch('notifikasi', [
-            'tipe' => 'sukses',
-            'pesan' => "Data pesanan #{$this->pesanan->nomor_faktur} berhasil diperbarui.",
-        ]);
+        LogHelper::catat('verifikasi_pembayaran', $this->pesanan->nomor_faktur, 'Admin memverifikasi pembayaran manual.');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Pembayaran diverifikasi. Pesanan masuk antrian pengemasan.']);
     }
 
-    #[Title('Detail Transaksi - Admin Teqara')]
+    public function tolakPembayaran()
+    {
+        $this->pesanan->update([
+            'status_pembayaran' => 'gagal',
+            'status_pesanan' => 'batal'
+        ]);
+
+        // Opsional: Restore stok di sini jika bisnis mengharuskan restock saat batal
+        // (new \App\Services\LayananStok)->kembalikanStok($this->pesanan);
+
+        LogHelper::catat('tolak_pembayaran', $this->pesanan->nomor_faktur, 'Admin menolak bukti pembayaran.');
+        $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Pembayaran ditolak & pesanan dibatalkan.']);
+    }
+
+    public function updateResi()
+    {
+        $this->validate(['resiInput' => 'required|string|min:5']);
+
+        $statusBaru = 'dikirim';
+        
+        $this->pesanan->update([
+            'resi_pengiriman' => $this->resiInput,
+            'status_pesanan' => $statusBaru
+        ]);
+
+        LogHelper::catat('input_resi', $this->pesanan->nomor_faktur, "Resi pengiriman diupdate: {$this->resiInput}");
+        
+        $this->dispatch('close-panel-resi'); // Close slide-over if used
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Resi disimpan. Status berubah menjadi DIKIRIM.']);
+    }
+
+    public function selesaikanPesanan()
+    {
+        if ($this->pesanan->status_pesanan !== 'dikirim') return;
+
+        $this->pesanan->update(['status_pesanan' => 'selesai']);
+        
+        LogHelper::catat('selesai_pesanan', $this->pesanan->nomor_faktur, 'Admin menandai pesanan selesai manual.');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Pesanan ditandai SELESAI.']);
+    }
+
+    #[Title('Pusat Kontrol Pesanan - Admin Teqara')]
     public function render()
     {
         return view('livewire.admin.manajemen-pesanan.detail-pesanan')

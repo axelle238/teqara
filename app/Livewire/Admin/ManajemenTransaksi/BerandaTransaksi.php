@@ -2,51 +2,55 @@
 
 namespace App\Livewire\Admin\ManajemenTransaksi;
 
-use App\Models\Pesanan;
+use App\Models\TransaksiPembayaran;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 /**
  * Class BerandaTransaksi
- * Tujuan: Buku Besar (General Ledger) Keuangan Perusahaan.
+ * Tujuan: Pusat kontrol finansial (Financial Control Tower).
  */
 class BerandaTransaksi extends Component
 {
     use WithPagination;
 
-    public $filterWaktu = 'bulan_ini';
+    public $filterMetode = '';
+    public $cari = '';
 
-    #[Title('Buku Besar Keuangan - Admin Teqara')]
+    #[Title('Manajemen Transaksi Finansial - Admin Teqara')]
     public function render()
     {
-        $query = Pesanan::query()
-            ->with(['pengguna'])
-            ->where('status_pembayaran', 'lunas')
+        $query = TransaksiPembayaran::query()
+            ->with('pesanan.pengguna')
             ->latest();
 
-        if ($this->filterWaktu === 'bulan_ini') {
-            $query->whereMonth('created_at', now()->month);
-        } elseif ($this->filterWaktu === 'minggu_ini') {
-            $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+        if ($this->filterMetode) {
+            $query->where('metode_pembayaran', $this->filterMetode);
         }
 
-        $transaksi = $query->paginate(15);
+        if ($this->cari) {
+            $query->where('kode_pembayaran', 'like', '%'.$this->cari.'%');
+        }
 
-        // Kalkulasi Ringkasan
-        $totalMasuk = Pesanan::where('status_pembayaran', 'lunas')->sum('total_harga');
-        $totalPending = Pesanan::where('status_pembayaran', 'menunggu_verifikasi')->sum('total_harga');
-        // Asumsi pengeluaran 30% dari omzet untuk simulasi profit bersih di ledger
-        $estimasiKeluar = $totalMasuk * 0.3;
+        // Statistik Finansial
+        $totalMasuk = TransaksiPembayaran::where('status', 'success')->sum('jumlah_bayar');
+        $transaksiSukses = TransaksiPembayaran::where('status', 'success')->count();
+        $transaksiPending = TransaksiPembayaran::where('status', 'pending')->count();
+        
+        // Data Grafik Metode Pembayaran
+        $metodeStats = TransaksiPembayaran::selectRaw('provider, count(*) as total')
+            ->groupBy('provider')
+            ->get();
 
         return view('livewire.admin.manajemen-transaksi.beranda-transaksi', [
-            'transaksi' => $transaksi,
-            'ringkasan' => [
-                'masuk' => $totalMasuk,
-                'pending' => $totalPending,
-                'keluar' => $estimasiKeluar,
-                'saldo' => $totalMasuk - $estimasiKeluar,
-            ],
+            'transaksi' => $query->paginate(15),
+            'stats' => [
+                'total_masuk' => $totalMasuk,
+                'sukses' => $transaksiSukses,
+                'pending' => $transaksiPending,
+                'metode' => $metodeStats
+            ]
         ])->layout('components.layouts.admin');
     }
 }
