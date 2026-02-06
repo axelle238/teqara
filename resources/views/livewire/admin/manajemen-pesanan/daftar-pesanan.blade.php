@@ -93,7 +93,7 @@
                         </td>
                         <td class="px-8 py-5 text-right">
                             <a 
-                                href="/admin/pesanan/{{ $p->id }}" 
+                                href="{{ route('admin.pesanan.detail', $p->id) }}" 
                                 wire:navigate 
                                 class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all shadow-sm"
                             >
