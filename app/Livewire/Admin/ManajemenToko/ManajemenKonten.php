@@ -16,67 +16,96 @@ class ManajemenKonten extends Component
 {
     use WithFileUploads;
 
-    // Hero Section
-    public $hero_judul;
+    public $blokTerpilihId;
 
-    public $hero_deskripsi;
+    public $judul;
 
-    public $hero_tombol;
+    public $bagian = 'promo_banner'; // hero_section, promo_banner, fitur_unggulan
 
-    public $hero_url;
+    public $deskripsi;
 
-    public $hero_gambar_lama;
+    public $teks_tombol;
 
-    public $hero_gambar_baru;
+    public $tautan_tujuan;
 
-    public function mount()
+    public $urutan = 0;
+
+    public $gambar_baru;
+
+    public $gambar_lama;
+
+    public function tambahBlok()
     {
-        $hero = KontenHalaman::where('bagian', 'hero_section')->first();
-        if ($hero) {
-            $this->hero_judul = $hero->judul;
-            $this->hero_deskripsi = $hero->deskripsi;
-            $this->hero_tombol = $hero->teks_tombol;
-            $this->hero_url = $hero->tautan_tujuan;
-            $this->hero_gambar_lama = $hero->gambar;
-        }
+        $this->reset(['blokTerpilihId', 'judul', 'bagian', 'deskripsi', 'teks_tombol', 'tautan_tujuan', 'urutan', 'gambar_baru', 'gambar_lama']);
+        $this->dispatch('open-slide-over', id: 'form-konten');
     }
 
-    public function simpanHero()
+    public function editBlok($id)
+    {
+        $k = KontenHalaman::findOrFail($id);
+        $this->blokTerpilihId = $k->id;
+        $this->judul = $k->judul;
+        $this->bagian = $k->bagian;
+        $this->deskripsi = $k->deskripsi;
+        $this->teks_tombol = $k->teks_tombol;
+        $this->tautan_tujuan = $k->tautan_tujuan;
+        $this->urutan = $k->urutan;
+        $this->gambar_lama = $k->gambar;
+
+        $this->dispatch('open-slide-over', id: 'form-konten');
+    }
+
+    public function simpanBlok()
     {
         $this->validate([
-            'hero_judul' => 'required|max:255',
-            'hero_gambar_baru' => 'nullable|image|max:2048',
+            'judul' => 'required',
+            'bagian' => 'required',
+            'gambar_baru' => 'nullable|image|max:2048',
         ]);
 
-        $hero = KontenHalaman::where('bagian', 'hero_section')->first();
-
         $data = [
-            'judul' => $this->hero_judul,
-            'deskripsi' => $this->hero_deskripsi,
-            'teks_tombol' => $this->hero_tombol,
-            'tautan_tujuan' => $this->hero_url,
+            'judul' => $this->judul,
+            'bagian' => $this->bagian,
+            'deskripsi' => $this->deskripsi,
+            'teks_tombol' => $this->teks_tombol,
+            'tautan_tujuan' => $this->tautan_tujuan,
+            'urutan' => $this->urutan,
         ];
 
-        if ($this->hero_gambar_baru) {
-            $data['gambar'] = $this->hero_gambar_baru->temporaryUrl();
+        if ($this->gambar_baru) {
+            $path = $this->gambar_baru->store('cms', 'public');
+            $data['gambar'] = '/storage/'.$path;
         }
 
-        $hero->update($data);
+        if ($this->blokTerpilihId) {
+            KontenHalaman::find($this->blokTerpilihId)->update($data);
+            $aksi = 'update_konten';
+            $pesan = "Blok konten '{$this->judul}' diperbarui.";
+        } else {
+            KontenHalaman::create($data);
+            $aksi = 'buat_konten';
+            $pesan = "Blok konten baru '{$this->judul}' ditambahkan.";
+        }
 
-        LogHelper::catat(
-            'update_cms',
-            'Hero Section',
-            'Admin memperbarui tampilan Hero Section halaman depan.',
-            $data
-        );
+        LogHelper::catat($aksi, $this->judul, $pesan);
+        $this->dispatch('close-slide-over', id: 'form-konten');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
+        $this->reset(['blokTerpilihId', 'gambar_baru']);
+    }
 
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Tampilan Beranda diperbarui!']);
+    public function hapusBlok($id)
+    {
+        $k = KontenHalaman::findOrFail($id);
+        $k->delete();
+        LogHelper::catat('hapus_konten', $k->judul, 'Blok konten dihapus.');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Blok konten dihapus.']);
     }
 
     #[Title('Editor Visual - Admin Teqara')]
     public function render()
     {
-        return view('livewire.admin.manajemen-toko.manajemen-konten')
-            ->layout('components.layouts.admin');
+        return view('livewire.admin.manajemen-toko.manajemen-konten', [
+            'daftarKonten' => KontenHalaman::orderBy('bagian')->orderBy('urutan')->get(),
+        ])->layout('components.layouts.admin');
     }
 }

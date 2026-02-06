@@ -31,24 +31,37 @@ class ManajemenStok extends Component
 
     public $keteranganMutasi = '';
 
-    #[Title('Audit Inventaris - Teqara')]
+    #[Title('Audit Inventaris & Forecasting - Teqara')]
     public function render()
     {
-        $stokGlobal = Produk::query()
-            ->with(['kategori'])
-            ->where('nama', 'like', '%'.$this->cari.'%')
-            ->paginate(10);
+        $query = Produk::query()
+            ->with(['kategori', 'merek'])
+            ->where('nama', 'like', '%'.$this->cari.'%');
 
-        $mutasiTerbaru = MutasiStok::query()
-            ->with(['produk', 'pengguna'])
+        $stokGlobal = $query->paginate(10);
+
+        // Analitik Enterprise
+        $totalValuasi = Produk::sum(DB::raw('stok * harga_modal'));
+        $totalUnit = Produk::sum('stok');
+        $itemKritis = Produk::where('stok', '<=', 5)->count();
+        $itemOverstock = Produk::where('stok', '>', 100)->count();
+
+        // Data Mutasi untuk Audit Trail
+        $mutasiTerbaru = MutasiStok::with(['produk', 'pengguna'])
             ->latest()
-            ->take(10)
+            ->take(5)
             ->get();
 
         return view('livewire.admin.manajemen-produk.manajemen-stok', [
             'stokGlobal' => $stokGlobal,
             'mutasiTerbaru' => $mutasiTerbaru,
             'daftarGudang' => Gudang::all(),
+            'analitik' => [
+                'valuasi' => $totalValuasi,
+                'total_unit' => $totalUnit,
+                'kritis' => $itemKritis,
+                'overstock' => $itemOverstock,
+            ],
         ])->layout('components.layouts.admin');
     }
 
@@ -63,10 +76,16 @@ class ManajemenStok extends Component
         $this->validate([
             'produkTerpilihId' => 'required|exists:produk,id',
             'jumlahMutasi' => 'required|integer|min:1',
-            'keGudang' => 'required|exists:gudang,id',
+            'keteranganMutasi' => 'required|min:5',
         ]);
 
         $produk = Produk::find($this->produkTerpilihId);
+
+        if ($produk->stok < $this->jumlahMutasi) {
+            $this->addError('jumlahMutasi', 'Stok saat ini tidak mencukupi untuk mutasi keluar.');
+
+            return;
+        }
 
         DB::transaction(function () use ($produk) {
             $produk->decrement('stok', $this->jumlahMutasi);
@@ -74,19 +93,21 @@ class ManajemenStok extends Component
             MutasiStok::create([
                 'produk_id' => $produk->id,
                 'jumlah' => -$this->jumlahMutasi,
-                'jenis_mutasi' => 'pindah_gudang',
-                'keterangan' => "Mutasi {$this->jumlahMutasi} unit ke gudang ID: {$this->keGudang}",
-                'oleh_pengguna_id' => auth()->id(),
+                'jenis_mutasi' => 'penyesuaian_manual', // Bisa dikembangkan jadi 'pindah_gudang' dll
+                'keterangan' => $this->keteranganMutasi,
+                'pengguna_id' => auth()->id(), // Pastikan nama kolom di DB benar, biasanya pengguna_id atau oleh_pengguna_id
+                'waktu' => now(),
             ]);
 
             LogHelper::catat(
                 'mutasi_stok',
                 $produk->nama,
-                "Admin memindahkan {$this->jumlahMutasi} unit produk {$produk->nama}."
+                "Admin melakukan penyesuaian stok manual: -{$this->jumlahMutasi} unit. Alasan: {$this->keteranganMutasi}"
             );
         });
 
+        $this->reset(['produkTerpilihId', 'jumlahMutasi', 'keteranganMutasi']);
         $this->dispatch('close-slide-over', id: 'panel-mutasi');
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Mutasi stok berhasil dieksekusi!']);
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Penyesuaian inventaris berhasil dicatat dalam audit trail.']);
     }
 }
