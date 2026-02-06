@@ -50,8 +50,8 @@ class ProdukSeeder extends Seeder
         VarianProduk::create(['produk_id' => $p1->id, 'nama_varian' => 'RTX 4070 / 32GB / 2TB', 'kode_unit' => 'G16-4070', 'harga_tambahan' => 5000000, 'stok' => 3]);
 
         // Spesifikasi
-        SpesifikasiProduk::create(['produk_id' => $p1->id, 'judul' => 'Processor', 'nilai' => 'Intel Core i9-13980HX']);
-        SpesifikasiProduk::create(['produk_id' => $p1->id, 'judul' => 'GPU', 'nilai' => 'NVIDIA GeForce RTX 40 series']);
+        SpesifikasiProduk::create(['produk_id' => $p1->id, 'label' => 'Processor', 'nilai' => 'Intel Core i9-13980HX']);
+        SpesifikasiProduk::create(['produk_id' => $p1->id, 'label' => 'GPU', 'nilai' => 'NVIDIA GeForce RTX 40 series']);
 
         // Produk 2: iPhone 15 Pro (Varian Warna)
         $p2 = Produk::create([

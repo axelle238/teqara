@@ -22,9 +22,12 @@ class DatabaseSeeder extends Seeder
         // Buat 10 akun pelanggan dummy
         Pengguna::factory(10)->create();
 
-        // Seed Produk
+        // Seed Data Enterprise (11 Pilar)
         $this->call([
+            CmsSeeder::class,
             ProdukSeeder::class,
+            TransaksiSeeder::class,
+            HrdSeeder::class,
         ]);
     }
 }

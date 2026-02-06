@@ -50,15 +50,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 5. Tabel Spesifikasi Teknis
-        Schema::create('spesifikasi_produk', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('produk_id')->constrained('produk')->onDelete('cascade');
-            $table->string('judul'); // Processor, RAM, Screen
-            $table->string('nilai'); // Intel i9, 32GB, OLED 4K
-            $table->timestamps();
-        });
-
         // 6. Tabel Voucher (Marketing)
         Schema::create('voucher', function (Blueprint $table) {
             $table->id();
@@ -100,7 +91,6 @@ return new class extends Migration
         Schema::dropIfExists('daftar_keinginan');
         Schema::dropIfExists('ulasan');
         Schema::dropIfExists('voucher');
-        Schema::dropIfExists('spesifikasi_produk');
         Schema::dropIfExists('varian_produk');
         Schema::dropIfExists('gambar_produk');
         Schema::dropIfExists('alamat_pengiriman');
