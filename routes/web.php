@@ -12,7 +12,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', Beranda::class)->name('beranda');
 Route::get('/katalog', \App\Livewire\Katalog::class)->name('katalog');
 Route::get('/produk/{slug}', \App\Livewire\Produk\DetailProduk::class)->name('produk.detail');
+
+// Otentikasi (Bahasa Indonesia)
 Route::get('/masuk', \App\Livewire\Auth\Masuk::class)->name('login');
+Route::redirect('/login', '/masuk'); // Alias untuk kompatibilitas sistem
 
 // Keluar (Logout)
 Route::get('/keluar', function () {
