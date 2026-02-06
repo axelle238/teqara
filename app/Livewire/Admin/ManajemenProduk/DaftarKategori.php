@@ -2,113 +2,93 @@
 
 namespace App\Livewire\Admin\ManajemenProduk;
 
+use App\Helpers\LogHelper;
 use App\Models\Kategori;
-use App\Models\LogAktivitas;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Livewire\WithPagination;
+use Livewire\WithFileUploads;
 
-/**
- * Class DaftarKategori
- * Tujuan: Manajemen pengelompokan produk (Kategori) untuk mempermudah navigasi pelanggan.
- */
 class DaftarKategori extends Component
 {
-    use WithPagination;
-
-    public $nama;
-
-    public $slug;
-
-    public $ikon;
+    use WithFileUploads;
 
     public $kategoriId;
-
+    public $nama;
+    public $slug;
+    public $ikon_baru;
+    
     public $modeEdit = false;
 
     protected $rules = [
-        'nama' => 'required|min:3|unique:kategori,nama',
-        'ikon' => 'nullable',
+        'nama' => 'required|min:3',
+        'ikon_baru' => 'nullable|image|max:1024',
     ];
 
-    public function updatedNama($value)
+    public function tambah()
     {
-        $this->slug = Str::slug($value);
+        $this->reset(['kategoriId', 'nama', 'slug', 'ikon_baru', 'modeEdit']);
+        $this->dispatch('open-slide-over', id: 'form-kategori');
+    }
+
+    public function edit($id)
+    {
+        $k = Kategori::findOrFail($id);
+        $this->kategoriId = $k->id;
+        $this->nama = $k->nama;
+        $this->slug = $k->slug;
+        $this->modeEdit = true;
+        $this->dispatch('open-slide-over', id: 'form-kategori');
     }
 
     public function simpan()
     {
         $this->validate();
-
-        Kategori::create([
+        
+        $data = [
             'nama' => $this->nama,
-            'slug' => $this->slug,
-            'ikon' => $this->ikon,
-        ]);
+            'slug' => \Illuminate\Support\Str::slug($this->nama),
+        ];
 
-        LogAktivitas::create([
-            'pengguna_id' => auth()->id(),
-            'aksi' => 'buat_kategori',
-            'target' => $this->nama,
-            'pesan_naratif' => 'Admin berhasil menambahkan kategori baru: '.$this->nama,
-            'waktu' => now(),
-        ]);
+        if ($this->ikon_baru) {
+            $path = $this->ikon_baru->store('kategori', 'public');
+            $data['ikon'] = $path; // Simpan path relatif
+        }
 
-        $this->reset(['nama', 'slug', 'ikon']);
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Kategori berhasil ditambahkan.']);
-    }
+        if ($this->modeEdit) {
+            $k = Kategori::find($this->kategoriId);
+            $k->update($data);
+            $pesan = "Kategori {$this->nama} diperbarui.";
+            $aksi = 'update_kategori';
+        } else {
+            Kategori::create($data);
+            $pesan = "Kategori {$this->nama} ditambahkan.";
+            $aksi = 'buat_kategori';
+        }
 
-    public function edit($id)
-    {
-        $kategori = Kategori::findOrFail($id);
-        $this->kategoriId = $id;
-        $this->nama = $kategori->nama;
-        $this->slug = $kategori->slug;
-        $this->ikon = $kategori->ikon;
-        $this->modeEdit = true;
-    }
-
-    public function perbarui()
-    {
-        $this->validate([
-            'nama' => 'required|min:3|unique:kategori,nama,'.$this->kategoriId,
-        ]);
-
-        $kategori = Kategori::find($this->kategoriId);
-        $kategori->update([
-            'nama' => $this->nama,
-            'slug' => $this->slug,
-            'ikon' => $this->ikon,
-        ]);
-
-        $this->modeEdit = false;
-        $this->reset(['nama', 'slug', 'ikon', 'kategoriId']);
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Kategori berhasil diperbarui.']);
+        LogHelper::catat($aksi, $this->nama, $pesan);
+        $this->dispatch('close-slide-over', id: 'form-kategori');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
     }
 
     public function hapus($id)
     {
-        $kategori = Kategori::findOrFail($id);
-        $nama = $kategori->nama;
-        $kategori->delete();
-
-        LogAktivitas::create([
-            'pengguna_id' => auth()->id(),
-            'aksi' => 'hapus_kategori',
-            'target' => $nama,
-            'pesan_naratif' => 'Admin menghapus kategori: '.$nama,
-            'waktu' => now(),
-        ]);
-
-        $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Kategori berhasil dihapus.']);
+        $k = Kategori::withCount('produk')->findOrFail($id);
+        if ($k->produk_count > 0) {
+            $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Gagal: Kategori masih memiliki produk.']);
+            return;
+        }
+        
+        $nama = $k->nama;
+        $k->delete();
+        LogHelper::catat('hapus_kategori', $nama, "Kategori {$nama} dihapus.");
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Kategori dihapus.']);
     }
 
-    #[Title('Manajemen Kategori - Admin')]
+    #[Title('Master Kategori - Admin Teqara')]
     public function render()
     {
         return view('livewire.admin.manajemen-produk.kategori.daftar-kategori', [
-            'daftarKategori' => Kategori::latest()->paginate(10),
+            'kategori' => Kategori::withCount('produk')->get()
         ])->layout('components.layouts.admin');
     }
 }

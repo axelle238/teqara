@@ -1,152 +1,267 @@
-<div class="space-y-10 pb-20">
+<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
     
-    <!-- Header: Vibrant & Clear -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50">
-        <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 mb-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
-                <span class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Audit Inventaris Real-time</span>
-            </div>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">JEJAK <span class="text-emerald-600">DISTRIBUSI</span></h1>
-            <p class="text-slate-500 font-medium text-lg">Manajemen pergerakan unit lintas gudang dan kontrol KODE UNIT hulu-hilir.</p>
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Control Tower Inventaris</h1>
+            <p class="text-slate-500 text-sm mt-1">Pemantauan rantai pasok multi-gudang dan kesehatan stok.</p>
         </div>
-        <div class="flex items-center gap-4">
-            <div class="relative group">
-                <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari KODE UNIT atau Model..." class="w-72 pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 shadow-sm transition-all">
-                <svg class="w-5 h-5 absolute left-4 top-4 text-slate-300 group-focus-within:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            </div>
-            <button class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-slate-900/10">Laporan Stok</button>
+        <div class="flex gap-2">
+            <button class="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-xl text-sm font-bold shadow-sm border border-indigo-100 hover:bg-indigo-100 transition-colors">
+                <i class="fa-solid fa-file-pdf mr-2"></i> Laporan Opname
+            </button>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+    <!-- Inventory Health Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden">
+            <i class="fa-solid fa-layer-group text-6xl text-indigo-500 opacity-10 absolute right-0 top-0 p-4"></i>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Total Aset</p>
+            <h3 class="text-2xl font-black text-slate-900 mt-2">{{ number_format($this->analitik['total_unit']) }} Unit</h3>
+            <p class="text-[10px] text-slate-400 mt-1">Valuasi: Rp {{ number_format($this->analitik['valuasi']/1000000000, 2) }} Miliar</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer hover:border-emerald-200" wire:click="$set('filterKesehatan', 'aman')">
+            <i class="fa-solid fa-shield-heart text-6xl text-emerald-500 opacity-10 absolute right-0 top-0 p-4"></i>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Stok Sehat</p>
+            <h3 class="text-2xl font-black text-emerald-600 mt-2">{{ $this->analitik['aman'] }} SKU</h3>
+            <p class="text-[10px] text-slate-400 mt-1">Perputaran Optimal</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer hover:border-amber-200" wire:click="$set('filterKesehatan', 'kritis')">
+            <i class="fa-solid fa-triangle-exclamation text-6xl text-amber-500 opacity-10 absolute right-0 top-0 p-4"></i>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Kritis / Menipis</p>
+            <h3 class="text-2xl font-black text-amber-500 mt-2">{{ $this->analitik['kritis'] }} SKU</h3>
+            <p class="text-[10px] text-slate-400 mt-1">Perlu Restock Segera</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm relative overflow-hidden group cursor-pointer hover:border-rose-200" wire:click="$set('filterKesehatan', 'habis')">
+            <i class="fa-solid fa-ban text-6xl text-rose-500 opacity-10 absolute right-0 top-0 p-4"></i>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Stockout (Habis)</p>
+            <h3 class="text-2xl font-black text-rose-500 mt-2">{{ $this->analitik['habis'] }} SKU</h3>
+            <p class="text-[10px] text-slate-400 mt-1">Kehilangan Potensi Jual</p>
+        </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="border-b border-slate-200">
+        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+            <button wire:click="$set('tabAktif', 'posisi')" class="{{ $tabAktif === 'posisi' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-bold flex items-center gap-2">
+                <i class="fa-solid fa-cubes-stacked"></i> Posisi Stok Fisik
+            </button>
+            <button wire:click="$set('tabAktif', 'mutasi')" class="{{ $tabAktif === 'mutasi' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }} whitespace-nowrap border-b-2 py-4 px-1 text-sm font-bold flex items-center gap-2">
+                <i class="fa-solid fa-right-left"></i> Jurnal Mutasi
+            </button>
+        </nav>
+    </div>
+
+    <!-- Tab Content: Posisi Stok -->
+    @if($tabAktif === 'posisi')
+    <div class="bg-white border border-slate-100 rounded-[24px] shadow-sm overflow-hidden animate-in fade-in zoom-in duration-300">
+        <div class="p-4 border-b border-slate-100 flex justify-between items-center">
+            <div class="relative w-64">
+                <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari SKU / Nama Produk..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border-none rounded-xl text-xs font-bold focus:ring-2 focus:ring-indigo-500">
+                <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+            </div>
+            @if($filterKesehatan)
+                <button wire:click="$set('filterKesehatan', '')" class="text-xs font-bold text-rose-500 hover:underline">Hapus Filter</button>
+            @endif
+        </div>
         
-        <!-- KOLOM KIRI: DAFTAR STOK REAL-TIME -->
-        <div class="lg:col-span-2 space-y-8">
-            <div class="bg-white rounded-[56px] border border-indigo-50 shadow-sm overflow-hidden">
-                <div class="px-10 py-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/30">
-                    <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs">Status Unit Global</h3>
-                    <div class="flex items-center gap-2 px-3 py-1 bg-emerald-500 text-white rounded-full text-[9px] font-black uppercase tracking-widest">
-                        <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
-                        Live Update
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="bg-white">
-                                <th class="px-10 py-6 text-[9px] font-black text-slate-400 uppercase tracking-wider">Perangkat</th>
-                                <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-wider">Tersedia</th>
-                                <th class="px-6 py-6 text-[9px] font-black text-slate-400 uppercase tracking-wider text-center">Reserver</th>
-                                <th class="px-10 py-6 text-right"></th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            @foreach($stokGlobal as $s)
-                            <tr class="group hover:bg-emerald-50/30 transition-colors duration-300">
-                                <td class="px-10 py-6">
-                                    <p class="font-black text-slate-900 text-base tracking-tight leading-tight">{{ $s->nama }}</p>
-                                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter mt-1">{{ `s->kode_unit }} • <span class="text-indigo-500">{{ $s->kategori?->nama }}</span></p>
-                                </td>
-                                <td class="px-6 py-6">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-2.5 h-2.5 rounded-full {{ $s->stok > 10 ? 'bg-emerald-500 shadow-lg shadow-emerald-500/50' : 'bg-amber-500 animate-pulse' }}"></div>
-                                        <span class="text-sm font-black text-slate-900">{{ $s->stok }} <span class="text-[10px] text-slate-400 ml-0.5 font-bold">UNIT</span></span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-6 text-center">
-                                    <span class="px-3 py-1 bg-slate-100 text-slate-500 rounded-xl text-xs font-black">{{ $s->stok_ditahan }}</span>
-                                </td>
-                                <td class="px-10 py-6 text-right">
-                                    <button wire:click="bukaMutasi({{ $s->id }})" class="p-3 bg-white border border-indigo-50 text-indigo-400 hover:text-white hover:bg-indigo-600 rounded-[18px] transition-all shadow-sm opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-                                    </button>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                <div class="p-8 bg-slate-50/30 border-t border-slate-50 flex justify-center">
-                    {{ $stokGlobal->links() }}
-                </div>
-            </div>
-        </div>
-
-        <!-- KOLOM KANAN: LOG MUTASI NARATIF -->
-        <div class="lg:col-span-1 space-y-8">
-            <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-[56px] p-10 text-white shadow-2xl relative overflow-hidden">
-                <div class="relative z-10">
-                    <h3 class="font-black uppercase tracking-[0.3em] text-[10px] text-indigo-200 mb-10 border-b border-white/10 pb-4">Audit Distribusi</h3>
-                    <div class="space-y-10">
-                        @foreach($mutasiTerbaru as $m)
-                        <div class="relative pl-8 border-l border-white/20 pb-2 last:border-none">
-                            <div class="absolute -left-[5px] top-0 w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-lg shadow-cyan-400/50"></div>
-                            <p class="text-[9px] font-black text-indigo-200 uppercase tracking-widest mb-2">{{ $m->created_at->diffForHumans() }}</p>
-                            <p class="text-sm leading-relaxed font-medium text-white/90 italic">
-                                "{{ $m->keterangan }}"
-                            </p>
-                            <div class="mt-3 flex items-center gap-2">
-                                <span class="text-[10px] font-black text-cyan-200 uppercase tracking-tighter">{{ $m->produk?->nama }}</span>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-black tracking-wider">
+                    <tr>
+                        <th class="px-6 py-4">Identitas Produk</th>
+                        <th class="px-6 py-4">Lokasi & Kategori</th>
+                        <th class="px-6 py-4 text-center">Stok Global</th>
+                        <th class="px-6 py-4 text-center">Valuasi (HPP)</th>
+                        <th class="px-6 py-4 text-right">Kontrol</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($stokGlobal as $item)
+                    <tr class="hover:bg-slate-50/50 transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0">
+                                    @if($item->gambar_utama)
+                                        <img src="{{ asset($item->gambar_utama) }}" class="w-full h-full object-cover rounded-lg">
+                                    @else
+                                        <i class="fa-solid fa-box text-slate-300"></i>
+                                    @endif
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-900 text-xs">{{ $item->nama }}</p>
+                                    <p class="font-mono text-[10px] text-slate-400">{{ $item->kode_unit }}</p>
+                                </div>
                             </div>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-                <!-- Background Deco -->
-                <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[80px]"></div>
-            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <p class="text-xs font-bold text-slate-600">{{ $item->kategori->nama ?? '-' }}</p>
+                            <p class="text-[10px] text-slate-400">Gudang Pusat (Default)</p>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            @if($item->stok <= 0)
+                                <span class="px-3 py-1 rounded bg-rose-100 text-rose-700 text-[10px] font-black uppercase">Habis</span>
+                            @elseif($item->stok <= 5)
+                                <span class="px-3 py-1 rounded bg-amber-100 text-amber-700 text-[10px] font-black uppercase animate-pulse">{{ $item->stok }} Unit</span>
+                            @else
+                                <span class="px-3 py-1 rounded bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase">{{ $item->stok }} Unit</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-center font-mono font-bold text-slate-700">
+                            Rp {{ number_format($item->harga_modal * $item->stok, 0, ',', '.') }}
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex justify-end gap-2">
+                                <button wire:click="bukaMutasi({{ $item->id }}, 'penerimaan')" class="p-2 bg-emerald-50 text-emerald-600 rounded-lg hover:bg-emerald-100 transition-colors" title="Terima Barang">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                                <button wire:click="bukaMutasi({{ $item->id }}, 'transfer')" class="p-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition-colors" title="Transfer Gudang">
+                                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                                </button>
+                                <button wire:click="bukaMutasi({{ $item->id }}, 'penyesuaian')" class="p-2 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition-colors" title="Opname / Koreksi">
+                                    <i class="fa-solid fa-pen-ruler"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                            Data inventaris tidak ditemukan.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50">
+            {{ $stokGlobal->links() }}
         </div>
     </div>
+    @endif
 
-    <!-- Panel Mutasi (Slide-over) -->
-    <x-ui.slide-over id="panel-mutasi" title="EKSEKUSI MUTASI BARANG">
-        <div class="space-y-10 p-2">
-            <div class="p-8 bg-indigo-50 rounded-[40px] border border-indigo-100 shadow-inner relative overflow-hidden">
-                <p class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-3 relative z-10">Unit Terpilih</p>
-                <h4 class="text-2xl font-black text-slate-900 leading-tight relative z-10 uppercase tracking-tighter">
-                    {{ \App\Models\Produk::find($produkTerpilihId)?->nama ?? 'Unit Radar' }}
-                </h4>
-                <div class="mt-6 flex items-center gap-4 relative z-10">
-                    <div class="px-4 py-2 bg-white rounded-xl shadow-sm">
-                        <span class="text-xs font-black text-emerald-600">{{ \App\Models\Produk::find($produkTerpilihId)?->stok ?? 0 }} UNIT READY</span>
-                    </div>
+    <!-- Tab Content: Jurnal Mutasi -->
+    @if($tabAktif === 'mutasi')
+    <div class="bg-white border border-slate-100 rounded-[24px] shadow-sm overflow-hidden animate-in fade-in zoom-in duration-300">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-black tracking-wider">
+                    <tr>
+                        <th class="px-6 py-4">Waktu</th>
+                        <th class="px-6 py-4">Produk</th>
+                        <th class="px-6 py-4">Tipe Aksi</th>
+                        <th class="px-6 py-4 text-right">Perubahan</th>
+                        <th class="px-6 py-4">Keterangan</th>
+                        <th class="px-6 py-4">Oleh</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($jurnalMutasi as $log)
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 text-xs font-mono text-slate-500">
+                            {{ $log->waktu->format('d/m/Y H:i') }}
+                        </td>
+                        <td class="px-6 py-4 font-bold text-slate-900 text-xs">
+                            {{ $log->produk->nama ?? 'Produk Terhapus' }}
+                        </td>
+                        <td class="px-6 py-4">
+                            @php
+                                $tipeStyle = match($log->jenis_mutasi) {
+                                    'masuk', 'penerimaan' => 'bg-emerald-100 text-emerald-700',
+                                    'keluar', 'penjualan' => 'bg-rose-100 text-rose-700',
+                                    'transfer_gudang' => 'bg-indigo-100 text-indigo-700',
+                                    default => 'bg-amber-100 text-amber-700'
+                                };
+                            @endphp
+                            <span class="px-2 py-1 rounded text-[10px] font-black uppercase {{ $tipeStyle }}">
+                                {{ str_replace('_', ' ', $log->jenis_mutasi) }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-right font-mono font-bold {{ $log->jumlah > 0 ? 'text-emerald-600' : ($log->jumlah < 0 ? 'text-rose-600' : 'text-slate-400') }}">
+                            {{ $log->jumlah > 0 ? '+' : '' }}{{ $log->jumlah }}
+                        </td>
+                        <td class="px-6 py-4 text-xs text-slate-600 max-w-xs truncate">
+                            {{ $log->keterangan }}
+                        </td>
+                        <td class="px-6 py-4 text-xs text-slate-500">
+                            {{ $log->pengguna->nama ?? 'Sistem' }}
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                            Belum ada catatan mutasi stok.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50">
+            {{ $jurnalMutasi->links() }}
+        </div>
+    </div>
+    @endif
+
+    <!-- Slide Over: Form Mutasi -->
+    <x-ui.panel-geser id="panel-mutasi" :judul="'Operasi Logistik: ' . ucfirst($jenisAksi)">
+        <form wire:submit="eksekusiMutasi" class="space-y-6">
+            
+            <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 flex gap-4 items-center">
+                <i class="fa-solid fa-circle-info text-indigo-600 text-lg"></i>
+                <div class="text-xs text-indigo-800">
+                    @if($jenisAksi == 'transfer')
+                        Anda akan memindahkan stok fisik antar gudang. Total aset global tidak berubah.
+                    @elseif($jenisAksi == 'penerimaan')
+                        Mencatat barang masuk dari vendor atau retur. Stok akan bertambah.
+                    @else
+                        Koreksi manual untuk barang rusak/hilang (Opname). Stok akan berkurang.
+                    @endif
                 </div>
-                <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl"></div>
             </div>
 
-            <form wire:submit.prevent="eksekusiMutasi" class="space-y-8">
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Gudang Pengirim</label>
-                        <select wire:model="dariGudang" class="w-full rounded-[24px] border-none bg-indigo-50/50 p-5 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500">
-                            <option value="">Pilih Asal</option>
-                            @foreach($daftarGudang as $g) <option value="{{ $g->id }}">{{ $g->nama }}</option> @endforeach
-                        </select>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Gudang Penerima</label>
-                        <select wire:model="keGudang" class="w-full rounded-[24px] border-none bg-indigo-50/50 p-5 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500">
-                            <option value="">Pilih Tujuan</option>
-                            @foreach($daftarGudang as $g) <option value="{{ $g->id }}">{{ $g->nama }}</option> @endforeach
-                        </select>
-                    </div>
+            @if($jenisAksi == 'transfer')
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Dari Gudang</label>
+                    <select wire:model="dariGudangId" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 font-bold">
+                        <option value="">Pilih Asal</option>
+                        @foreach($daftarGudang as $g)
+                            <option value="{{ $g->id }}">{{ $g->nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Volume Unit</label>
-                    <input wire:model="jumlahMutasi" type="number" class="w-full rounded-[24px] border-none bg-indigo-50/50 p-6 text-2xl font-black text-indigo-600 focus:ring-2 focus:ring-indigo-500">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Ke Gudang</label>
+                    <select wire:model="keGudangId" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 font-bold">
+                        <option value="">Pilih Tujuan</option>
+                        @foreach($daftarGudang as $g)
+                            <option value="{{ $g->id }}">{{ $g->nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Narasi Mutasi</label>
-                    <textarea wire:model="keteranganMutasi" rows="3" class="w-full rounded-[24px] border-none bg-indigo-50/50 p-6 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 placeholder:text-slate-300" placeholder="Contoh: Pengalihan unit untuk pameran IT..."></textarea>
-                </div>
-                <div class="pt-6">
-                    <button type="submit" class="w-full py-6 bg-slate-900 text-white rounded-[32px] font-black text-xs uppercase tracking-[0.3em] hover:bg-emerald-600 transition-all shadow-2xl shadow-indigo-500/20 active:scale-95">
-                        KONFIRMASI PERPINDAHAN UNIT
-                    </button>
-                </div>
-            </form>
-        </div>
-    </x-ui.slide-over>
+            </div>
+            @endif
 
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Jumlah Unit</label>
+                <input wire:model="jumlahMutasi" type="number" min="1" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 font-bold text-lg" placeholder="0">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Keterangan / Memo</label>
+                <textarea wire:model="keteranganMutasi" rows="3" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500" placeholder="Contoh: Barang rusak karena air, atau PO Vendor #123..."></textarea>
+            </div>
+
+            <div class="fixed bottom-0 right-0 w-full md:w-[480px] bg-white border-t border-slate-200 p-6 z-50">
+                <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-lg transition-all active:scale-95">
+                    Konfirmasi Eksekusi
+                </button>
+            </div>
+        </form>
+    </x-ui.panel-geser>
 </div>
