@@ -14,6 +14,38 @@ use Livewire\Component;
  */
 class Beranda extends Component
 {
+    public function addToCart($produkId)
+    {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        $produk = Produk::find($produkId);
+
+        if (!$produk || $produk->stok < 1) {
+            $this->dispatch('notifikasi', tipe: 'error', pesan: 'Produk tidak tersedia.');
+            return;
+        }
+
+        // Cek Keranjang Existing
+        $keranjang = \App\Models\Keranjang::where('pengguna_id', auth()->id())
+            ->where('produk_id', $produkId)
+            ->first();
+
+        if ($keranjang) {
+            $keranjang->increment('jumlah');
+        } else {
+            \App\Models\Keranjang::create([
+                'pengguna_id' => auth()->id(),
+                'produk_id' => $produkId,
+                'jumlah' => 1
+            ]);
+        }
+
+        $this->dispatch('keranjang-diperbarui'); // Update badge navbar
+        $this->dispatch('notifikasi', tipe: 'sukses', pesan: 'Produk berhasil ditambahkan ke keranjang!');
+    }
+
     public function render()
     {
         // Ambil Konten Halaman Hero
