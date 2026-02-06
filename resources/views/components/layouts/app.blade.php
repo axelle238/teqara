@@ -144,8 +144,8 @@
     </footer>
 
     <!-- Global Feedback Components -->
+    <livewire:komponen.keranjang-preview />
     <x-ui.notifikasi-toast />
     @livewireScripts
-    <livewire:komponen.keranjang-preview />
 </body>
 </html>
