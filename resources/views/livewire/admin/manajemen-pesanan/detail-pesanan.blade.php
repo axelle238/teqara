@@ -137,6 +137,28 @@
                     <span class="font-bold text-slate-700">Ekspedisi Reguler (JNE/J&T/Sicepat)</span>
                 </div>
             </div>
+
+            <!-- Timeline Jejak Audit (New Feature) -->
+            <div class="bg-white p-8 rounded-[40px] border border-slate-100 shadow-sm">
+                <h3 class="font-black text-slate-900 uppercase tracking-widest text-[10px] mb-8">Jejak Audit Transaksi</h3>
+                <div class="relative pl-4 border-l-2 border-slate-100 space-y-8">
+                    <!-- Status Terkini -->
+                    <div class="relative group">
+                        <div class="absolute -left-[21px] top-1 w-4 h-4 rounded-full bg-indigo-600 border-4 border-white shadow-md group-hover:scale-125 transition-transform"></div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ now()->translatedFormat('d M Y, H:i') }}</p>
+                        <p class="font-bold text-slate-900 text-sm">Status Saat Ini: {{ strtoupper($pesanan->status_pesanan) }}</p>
+                        <p class="text-xs text-slate-500 mt-1">Sistem mencatat status terakhir transaksi.</p>
+                    </div>
+                    
+                    <!-- Waktu Dibuat -->
+                    <div class="relative group">
+                        <div class="absolute -left-[21px] top-1 w-4 h-4 rounded-full bg-slate-300 border-4 border-white shadow-sm group-hover:bg-indigo-400 transition-colors"></div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ $pesanan->created_at->translatedFormat('d M Y, H:i') }}</p>
+                        <p class="font-bold text-slate-900 text-sm">Pesanan Dibuat</p>
+                        <p class="text-xs text-slate-500 mt-1">Pelanggan {{ $pesanan->pengguna->nama }} melakukan checkout.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

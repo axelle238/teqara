@@ -340,6 +340,94 @@
     </div>
 
     <x-ui.notifikasi-toast />
+    
+    <!-- Global Command Palette (Ctrl/Cmd + K) -->
+    <div 
+        x-data="{ 
+            open: false, 
+            search: '',
+            items: [
+                { title: 'Dashboard Utama', url: '{{ route('admin.beranda') }}', category: 'Pusat' },
+                { title: 'Katalog Produk', url: '{{ route('admin.produk.katalog') }}', category: 'Hulu' },
+                { title: 'Tambah Produk Baru', url: '{{ route('admin.produk.katalog') }}', category: 'Aksi' },
+                { title: 'Daftar Pesanan', url: '{{ route('admin.pesanan.daftar') }}', category: 'Tengah' },
+                { title: 'Verifikasi Pembayaran', url: '{{ route('admin.pesanan.verifikasi') }}', category: 'Keuangan' },
+                { title: 'Laporan Laba Rugi', url: '{{ route('admin.laporan.pusat') }}', category: 'Hilir' },
+                { title: 'Manajemen Pegawai', url: '{{ route('admin.pengguna.beranda') }}', category: 'SDM' },
+            ],
+            get filteredItems() {
+                return this.items.filter(i => i.title.toLowerCase().includes(this.search.toLowerCase()))
+            }
+        }"
+        @keydown.window.prevent.ctrl.k="open = !open"
+        @keydown.window.prevent.cmd.k="open = !open"
+        @keydown.escape.window="open = false"
+        x-show="open"
+        class="relative z-[100]"
+        style="display: none;"
+    >
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" @click="open = false"></div>
+
+        <div class="fixed inset-0 overflow-y-auto p-4 sm:p-6 md:p-20">
+            <div 
+                x-show="open"
+                x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="mx-auto max-w-2xl transform divide-y divide-slate-100 overflow-hidden rounded-[32px] bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all"
+            >
+                <div class="relative">
+                    <svg class="pointer-events-none absolute left-6 top-6 h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input 
+                        x-model="search"
+                        x-ref="searchInput" 
+                        class="h-20 w-full border-0 bg-transparent pl-16 pr-4 text-slate-900 placeholder:text-slate-400 focus:ring-0 sm:text-lg font-bold" 
+                        placeholder="Ketik perintah atau nama modul..." 
+                        @open.window="$nextTick(() => $refs.searchInput.focus())"
+                    >
+                </div>
+
+                <ul x-show="filteredItems.length > 0" class="max-h-96 scroll-py-3 overflow-y-auto p-3">
+                    <template x-for="item in filteredItems" :key="item.title">
+                        <li class="group flex cursor-pointer select-none rounded-2xl p-4 hover:bg-indigo-50 transition-colors">
+                            <a :href="item.url" wire:navigate class="flex flex-1 items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="flex h-10 w-10 flex-none items-center justify-center rounded-xl bg-slate-100 group-hover:bg-indigo-200 group-hover:text-indigo-700 transition-colors">
+                                        <svg class="h-6 w-6 text-slate-400 group-hover:text-indigo-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    </div>
+                                    <span class="font-bold text-slate-900" x-text="item.title"></span>
+                                </div>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400 group-hover:text-indigo-500" x-text="item.category"></span>
+                            </a>
+                        </li>
+                    </template>
+                </ul>
+
+                <div x-show="filteredItems.length === 0" class="px-6 py-14 text-center sm:px-14">
+                    <svg class="mx-auto h-10 w-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="mt-4 text-sm font-bold text-slate-900">Tidak ditemukan.</p>
+                    <p class="mt-2 text-sm text-slate-500">Kami tidak dapat menemukan modul dengan kata kunci tersebut.</p>
+                </div>
+                
+                <div class="bg-slate-50 px-6 py-4 flex items-center justify-between border-t border-slate-100">
+                    <div class="flex flex-wrap items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                        <kbd class="mx-1 flex h-5 items-center justify-center rounded border bg-white px-2 font-semibold sm:mx-2 border-slate-200">↑↓</kbd> Navigasi
+                        <kbd class="mx-1 flex h-5 items-center justify-center rounded border bg-white px-2 font-semibold sm:mx-2 border-slate-200">Enter</kbd> Pilih
+                        <kbd class="mx-1 flex h-5 items-center justify-center rounded border bg-white px-2 font-semibold sm:mx-2 border-slate-200">Esc</kbd> Tutup
+                    </div>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">TEQARA OS v16.1</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @livewireScripts
 
     <script>
