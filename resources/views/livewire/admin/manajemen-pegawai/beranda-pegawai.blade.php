@@ -1,80 +1,97 @@
 <div class="space-y-12 pb-32">
-    <!-- Header: Vibrant & Professional -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 bg-white p-10 rounded-[40px] shadow-sm border border-indigo-50">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 bg-white p-10 rounded-[40px] shadow-sm border border-indigo-50">
         <div class="space-y-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-100 mb-2">
-                <span class="w-2 h-2 rounded-full bg-rose-600 animate-pulse"></span>
-                <span class="text-[10px] font-black text-rose-600 uppercase tracking-widest">Manajemen SDM Terintegrasi</span>
-            </div>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">BERANDA <span class="text-rose-600">PEGAWAI</span></h1>
-            <p class="text-slate-500 font-medium text-lg">Kelola otoritas, struktur organisasi, dan profil profesional internal.</p>
+            <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">HUMAN <span class="text-rose-600">CAPITAL</span></h1>
+            <p class="text-slate-500 font-medium text-lg">Pusat komando manajemen sumber daya manusia dan talenta.</p>
         </div>
-        <div class="flex items-center gap-3">
-            <a href="{{ route('admin.hrd.karyawan') }}" wire:navigate class="px-8 py-4 bg-indigo-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-500/20">ATUR STRUKTUR</a>
+        <a href="{{ route('admin.pengguna.hrd') }}" wire:navigate class="px-8 py-4 bg-slate-900 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-rose-600 transition-all shadow-xl">
+            DIREKTORI KARYAWAN
+        </a>
+    </div>
+
+    <!-- HR Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="bg-white p-8 rounded-[40px] shadow-sm border border-slate-100 flex flex-col justify-between h-full group hover:shadow-xl transition-all">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Total Headcount</p>
+            <div class="flex items-end justify-between">
+                <h3 class="text-4xl font-black text-slate-900 tracking-tighter">{{ $statistik['headcount'] }}</h3>
+                <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-emerald-50 p-8 rounded-[40px] border border-emerald-100 flex flex-col justify-between h-full">
+            <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-4">Kehadiran (Simulasi)</p>
+            <div class="flex items-end gap-2">
+                <h3 class="text-4xl font-black text-emerald-700 tracking-tighter">{{ $statistik['hadir'] }}</h3>
+                <span class="text-xs font-bold text-emerald-600 mb-2 uppercase">On-Site</span>
+            </div>
+        </div>
+
+        <div class="bg-amber-50 p-8 rounded-[40px] border border-amber-100 flex flex-col justify-between h-full">
+            <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-4">Absen / Cuti</p>
+            <div class="flex items-end gap-2">
+                <h3 class="text-4xl font-black text-amber-700 tracking-tighter">{{ $statistik['izin'] }}</h3>
+                <span class="text-xs font-bold text-amber-600 mb-2 uppercase">Personel</span>
+            </div>
+        </div>
+
+        <div class="bg-rose-50 p-8 rounded-[40px] border border-rose-100 flex flex-col justify-between h-full relative overflow-hidden">
+            <div class="relative z-10">
+                <p class="text-[10px] font-black text-rose-600 uppercase tracking-widest mb-4">Estimasi Payroll</p>
+                <h3 class="text-3xl font-black text-rose-700 tracking-tighter">Rp {{ number_format($statistik['payroll'] / 1000000, 1) }}M</h3>
+                <p class="text-[9px] font-bold text-rose-400 mt-1 uppercase tracking-widest">Beban Gaji Bulanan</p>
+            </div>
+            <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-rose-200/50 rounded-full blur-2xl"></div>
         </div>
     </div>
 
-    <!-- Statistik Pilar: Colorful HRD Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="bg-white p-10 rounded-[48px] shadow-sm border border-indigo-50 relative overflow-hidden group hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500">
-            <div class="relative z-10 space-y-4">
-                <div class="w-14 h-14 rounded-[20px] bg-indigo-50 flex items-center justify-center text-indigo-600 mb-2 group-hover:scale-110 transition-transform">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                </div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Administrator Sistem</p>
-                <h3 class="text-5xl font-black text-slate-900 tracking-tighter">{{ number_format($total_admin) }} <span class="text-sm text-slate-400 font-bold uppercase ml-1">Aktor</span></h3>
-            </div>
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-indigo-500/5 rounded-full blur-3xl"></div>
-        </div>
-
-        <div class="bg-white p-10 rounded-[48px] shadow-sm border border-indigo-50 relative overflow-hidden group hover:shadow-2xl hover:shadow-rose-500/10 transition-all duration-500">
-            <div class="relative z-10 space-y-4">
-                <div class="w-14 h-14 rounded-[20px] bg-rose-50 flex items-center justify-center text-rose-600 mb-2 group-hover:scale-110 transition-transform">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                </div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Staf & Operator</p>
-                <h3 class="text-5xl font-black text-rose-600 tracking-tighter">{{ number_format($total_staff) }} <span class="text-sm text-slate-400 font-bold uppercase ml-1">Personel</span></h3>
-            </div>
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-rose-500/5 rounded-full blur-3xl"></div>
-        </div>
-
-        <div class="bg-gradient-to-br from-rose-600 to-indigo-700 p-10 rounded-[48px] text-white shadow-2xl relative overflow-hidden group">
-            <div class="relative z-10 flex flex-col h-full justify-between">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Departemen Composition -->
+        <div class="lg:col-span-1 bg-white p-10 rounded-[48px] shadow-sm border border-slate-100">
+            <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs mb-8">Distribusi Departemen</h3>
+            <div class="space-y-6">
+                @foreach($komposisi as $dept => $count)
                 <div>
-                    <h3 class="text-2xl font-black mb-3 tracking-tight">KENDALI SDM</h3>
-                    <p class="text-sm font-medium text-rose-100 leading-relaxed mb-10 opacity-80">Registrasi karyawan baru dan verifikasi otoritas akses unit.</p>
+                    <div class="flex justify-between items-end mb-2">
+                        <span class="text-xs font-bold text-slate-700 uppercase tracking-wide">{{ $dept }}</span>
+                        <span class="text-xs font-black text-indigo-600">{{ $count }}</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2">
+                        <div class="bg-indigo-600 h-2 rounded-full" style="width: {{ ($count / $statistik['headcount']) * 100 }}%"></div>
+                    </div>
                 </div>
-                <a href="{{ route('admin.pengguna.hrd') }}" wire:navigate class="w-full py-4 bg-white text-rose-600 rounded-2xl text-xs font-black uppercase tracking-[0.2em] text-center hover:scale-105 transition-all shadow-xl">MANAJEMEN KARYAWAN</a>
+                @endforeach
             </div>
         </div>
-    </div>
 
-    <!-- Daftar Akses Internal: No Dark Policy -->
-    <div class="bg-white rounded-[56px] shadow-sm border border-indigo-50 overflow-hidden">
-        <div class="px-10 py-8 border-b border-indigo-50 bg-slate-50/30 flex items-center justify-between">
-            <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs">Personel Otoritas Aktif</h3>
-            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Real-time Directory</span>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 divide-x divide-indigo-50">
-            @foreach($daftar_admin as $a)
-            <div class="p-10 hover:bg-indigo-50/20 transition-all duration-300 group">
-                <div class="flex items-center gap-6">
-                    <div class="w-16 h-16 rounded-[24px] bg-white border-2 border-indigo-50 flex items-center justify-center text-xl font-black text-indigo-600 shadow-sm group-hover:scale-110 transition-transform">
-                        {{ substr($a->nama, 0, 1) }}
-                    </div>
-                    <div class="space-y-1">
-                        <p class="font-black text-slate-900 text-lg tracking-tight uppercase">{{ $a->nama }}</p>
-                        <span class="inline-flex px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest {{ $a->peran == 'admin' ? 'bg-rose-100 text-rose-600 border border-rose-200' : 'bg-indigo-50 text-indigo-600 border border-indigo-100' }}">
-                            Otoritas: {{ $a->peran }}
-                        </span>
-                    </div>
-                </div>
-                <div class="mt-8 flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    <span>Email: {{ $a->email }}</span>
-                </div>
+        <!-- Recent Hires -->
+        <div class="lg:col-span-2 bg-white rounded-[48px] shadow-sm border border-slate-100 overflow-hidden">
+            <div class="px-10 py-8 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
+                <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs">Perekrutan Terbaru</h3>
+                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">5 Karyawan Terakhir</span>
             </div>
-            @endforeach
+            <div class="divide-y divide-slate-50">
+                @foreach($karyawanTerbaru as $k)
+                <div class="px-10 py-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-[16px] bg-indigo-50 flex items-center justify-center font-black text-indigo-600">
+                            {{ substr($k->pengguna->nama, 0, 1) }}
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-900 text-sm uppercase">{{ $k->pengguna->nama }}</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{ $k->jabatan->nama }}</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-slate-100 rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-500">
+                        {{ $k->tanggal_bergabung->diffForHumans() }}
+                    </span>
+                </div>
+                @endforeach
+            </div>
         </div>
     </div>
 </div>
+

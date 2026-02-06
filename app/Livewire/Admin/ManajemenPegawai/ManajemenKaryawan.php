@@ -38,6 +38,19 @@ class ManajemenKaryawan extends Component
         $this->dispatch('open-slide-over', id: 'form-karyawan');
     }
 
+    public function edit($id)
+    {
+        $k = Karyawan::findOrFail($id);
+        $this->karyawan_id = $k->id;
+        $this->pengguna_id = $k->pengguna_id;
+        $this->jabatan_id = $k->jabatan_id;
+        $this->nip = $k->nip;
+        $this->tanggal_bergabung = $k->tanggal_bergabung->format('Y-m-d');
+        $this->status_kerja = $k->status_kerja;
+
+        $this->dispatch('open-slide-over', id: 'form-karyawan');
+    }
+
     public function simpan()
     {
         $this->validate([
