@@ -9,11 +9,13 @@ use Livewire\WithPagination;
 
 /**
  * Class ManajemenVoucher
- * Tujuan: Pengelolaan kode promo dan voucher diskon sistem.
+ * Tujuan: Pengelolaan kode promo dan voucher diskon sistem (Marketing Campaign).
  */
 class ManajemenVoucher extends Component
 {
     use WithPagination;
+
+    public $voucherId;
 
     public $kode;
 
@@ -35,6 +37,12 @@ class ManajemenVoucher extends Component
 
     public $cari = '';
 
+    protected $rules = [
+        'kode' => 'required|unique:voucher,kode',
+        'nilai_diskon' => 'required|numeric|min:1',
+        'kuota' => 'required|integer|min:1',
+    ];
+
     public function generateCode()
     {
         $this->kode = 'TEQ-'.strtoupper(\Illuminate\Support\Str::random(6));
@@ -45,7 +53,7 @@ class ManajemenVoucher extends Component
         $this->reset(['voucherId', 'kode', 'deskripsi', 'tipe_diskon', 'nilai_diskon', 'min_pembelian', 'maks_potongan', 'kuota', 'berlaku_mulai', 'berlaku_sampai']);
         $this->berlaku_mulai = now()->format('Y-m-d\TH:i');
         $this->berlaku_sampai = now()->addMonth()->format('Y-m-d\TH:i');
-        $this->dispatch('open-slide-over', id: 'form-voucher');
+        $this->dispatch('open-panel-form-voucher');
     }
 
     public function edit($id)
@@ -62,7 +70,7 @@ class ManajemenVoucher extends Component
         $this->berlaku_mulai = $v->berlaku_mulai ? \Carbon\Carbon::parse($v->berlaku_mulai)->format('Y-m-d\TH:i') : null;
         $this->berlaku_sampai = $v->berlaku_sampai ? \Carbon\Carbon::parse($v->berlaku_sampai)->format('Y-m-d\TH:i') : null;
 
-        $this->dispatch('open-slide-over', id: 'form-voucher');
+        $this->dispatch('open-panel-form-voucher');
     }
 
     public function simpan()
@@ -88,15 +96,15 @@ class ManajemenVoucher extends Component
         if ($this->voucherId) {
             Voucher::find($this->voucherId)->update($data);
             $aksi = 'update_voucher';
-            $pesan = "Voucher {$this->kode} diperbarui.";
+            $pesan = "Kampanye Promo {$this->kode} diperbarui.";
         } else {
             Voucher::create($data);
             $aksi = 'buat_voucher';
-            $pesan = "Voucher baru {$this->kode} dibuat.";
+            $pesan = "Kampanye Promo {$this->kode} diluncurkan.";
         }
 
         \App\Helpers\LogHelper::catat($aksi, $this->kode, $pesan);
-        $this->dispatch('close-slide-over', id: 'form-voucher');
+        $this->dispatch('close-panel-form-voucher');
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
     }
 
@@ -106,11 +114,11 @@ class ManajemenVoucher extends Component
         $kode = $voucher->kode;
         $voucher->delete();
 
-        \App\Helpers\LogHelper::catat('hapus_voucher', $kode, "Admin menghapus voucher: {$kode}");
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Voucher dihapus.']);
+        \App\Helpers\LogHelper::catat('hapus_voucher', $kode, "Admin menghentikan kampanye: {$kode}");
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Kampanye dihentikan.']);
     }
 
-    #[Title('Manajemen Voucher - Admin')]
+    #[Title('Manajemen Voucher - Teqara Admin')]
     public function render()
     {
         return view('livewire.admin.pengaturan-sistem.manajemen-voucher', [

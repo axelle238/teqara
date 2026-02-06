@@ -1,115 +1,134 @@
-<div class="space-y-12 pb-32">
+<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 bg-white p-10 rounded-[40px] shadow-sm border border-indigo-50">
-        <div class="space-y-2">
-            <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none">BUILDER <span class="text-indigo-600">HALAMAN</span></h1>
-            <p class="text-slate-500 font-medium text-lg">Manajemen blok konten dinamis untuk etalase toko.</p>
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Konten Toko Visual</h1>
+            <p class="text-slate-500 text-sm mt-1">Kelola tampilan Halaman Depan pelanggan secara dinamis.</p>
         </div>
-        <button wire:click="tambahBlok" class="flex items-center gap-3 px-8 py-4 bg-slate-900 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-xl">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-            BLOK BARU
+        <button wire:click="tambahBlok" class="flex items-center gap-2 px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all active:scale-95">
+            <i class="fa-solid fa-paintbrush"></i> Tambah Blok Baru
         </button>
     </div>
 
-    <!-- Grid Blok Konten -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        @forelse($daftarKonten as $konten)
-        <div class="group bg-white rounded-[40px] border border-slate-100 overflow-hidden hover:shadow-2xl hover:border-indigo-100 transition-all duration-500 flex flex-col h-full">
+    <!-- Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        @foreach($daftarKonten as $konten)
+        <div class="group bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden hover:shadow-xl hover:border-indigo-200 transition-all duration-300">
+            <!-- Preview Image -->
             <div class="relative h-48 bg-slate-100 overflow-hidden">
-                <img src="{{ $konten->gambar }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                <div class="absolute top-4 left-4">
-                    <span class="px-3 py-1 bg-white/90 backdrop-blur rounded-lg text-[9px] font-black uppercase tracking-widest text-slate-900 border border-white/20">
-                        {{ str_replace('_', ' ', $konten->bagian) }}
+                <img src="{{ $konten->gambar ?? 'https://via.placeholder.com/400x200?text=No+Image' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+                <div class="absolute bottom-4 left-4 right-4 text-white">
+                    <span class="inline-block px-2 py-1 mb-2 rounded bg-white/20 backdrop-blur text-[10px] font-black uppercase tracking-widest border border-white/10">
+                        {{ strtoupper(str_replace('_', ' ', $konten->bagian)) }}
                     </span>
+                    <h3 class="font-bold text-lg leading-tight truncate">{{ $konten->judul }}</h3>
                 </div>
             </div>
-            
-            <div class="p-8 flex-1 flex flex-col">
-                <h3 class="text-lg font-black text-slate-900 mb-2 leading-tight">{{ $konten->judul }}</h3>
-                <p class="text-xs text-slate-500 line-clamp-3 mb-6">{{ $konten->deskripsi }}</p>
+
+            <!-- Content -->
+            <div class="p-6">
+                <p class="text-slate-500 text-sm line-clamp-2 mb-4 h-10">{{ $konten->deskripsi }}</p>
                 
-                <div class="mt-auto flex items-center justify-between pt-6 border-t border-slate-50">
-                    <span class="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Urutan: {{ $konten->urutan }}</span>
+                <div class="flex items-center justify-between mt-4 pt-4 border-t border-slate-100">
                     <div class="flex gap-2">
-                        <button wire:click="editBlok({{ $konten->id }})" class="p-2 text-indigo-600 hover:bg-indigo-50 rounded-xl transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                        <button wire:click="editBlok({{ $konten->id }})" class="w-8 h-8 rounded-lg bg-slate-50 text-indigo-600 hover:bg-indigo-100 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-pen-nib"></i>
                         </button>
-                        <button wire:click="hapusBlok({{ $konten->id }})" wire:confirm="Hapus blok konten ini?" class="p-2 text-rose-400 hover:bg-rose-50 rounded-xl transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        <button wire:click="hapusBlok({{ $konten->id }})" wire:confirm="Hapus blok konten ini?" class="w-8 h-8 rounded-lg bg-slate-50 text-rose-600 hover:bg-rose-100 flex items-center justify-center transition-colors">
+                            <i class="fa-solid fa-trash"></i>
                         </button>
+                    </div>
+                    <div class="text-xs font-bold text-slate-400">
+                        Urutan: {{ $konten->urutan }}
                     </div>
                 </div>
             </div>
         </div>
-        @empty
-        <div class="col-span-full py-20 text-center">
-            <p class="text-slate-400 font-bold uppercase text-xs tracking-widest">Belum ada blok konten. Silakan buat baru.</p>
-        </div>
-        @endforelse
+        @endforeach
     </div>
 
-    <!-- Panel Form Konten -->
-    <x-ui.panel-geser id="form-konten" judul="KONFIGURASI BLOK VISUAL">
-        <form wire:submit.prevent="simpanBlok" class="space-y-8 p-2">
-            <div class="space-y-4">
-                <div class="border-2 border-dashed border-slate-200 rounded-3xl p-8 text-center hover:border-indigo-400 transition-colors relative cursor-pointer group">
-                    @if($gambar_baru)
-                        <img src="{{ $gambar_baru->temporaryUrl() }}" class="max-h-48 mx-auto rounded-xl shadow-lg">
-                    @elseif($gambar_lama)
-                        <img src="{{ $gambar_lama }}" class="max-h-48 mx-auto rounded-xl shadow-lg">
-                    @else
-                        <div class="py-8">
-                            <svg class="w-12 h-12 text-slate-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Unggah Visual</span>
+    <!-- Slide Over Editor -->
+    <x-ui.panel-geser id="form-konten" :judul="$blokTerpilihId ? 'Edit Blok Visual' : 'Buat Blok Baru'">
+        <form wire:submit="simpanBlok" class="space-y-6">
+            
+            <!-- Type Selector -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Tipe Bagian</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <label class="cursor-pointer">
+                        <input type="radio" wire:model="bagian" value="hero_section" class="peer sr-only">
+                        <div class="px-3 py-2 rounded-lg border text-center text-xs font-bold transition-all peer-checked:bg-indigo-600 peer-checked:text-white peer-checked:border-indigo-600 hover:bg-slate-50">
+                            HERO UTAMA
                         </div>
-                    @endif
-                    <input type="file" wire:model="gambar_baru" class="absolute inset-0 opacity-0 cursor-pointer">
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" wire:model="bagian" value="promo_banner" class="peer sr-only">
+                        <div class="px-3 py-2 rounded-lg border text-center text-xs font-bold transition-all peer-checked:bg-fuchsia-600 peer-checked:text-white peer-checked:border-fuchsia-600 hover:bg-slate-50">
+                            BANNER
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" wire:model="bagian" value="fitur_unggulan" class="peer sr-only">
+                        <div class="px-3 py-2 rounded-lg border text-center text-xs font-bold transition-all peer-checked:bg-cyan-600 peer-checked:text-white peer-checked:border-cyan-600 hover:bg-slate-50">
+                            FITUR
+                        </div>
+                    </label>
                 </div>
-                @error('gambar_baru') <span class="text-rose-500 text-[10px] font-bold block text-center">{{ $message }}</span> @enderror
             </div>
 
-            <div class="space-y-2">
-                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Judul Blok</label>
-                <input wire:model="judul" type="text" class="w-full bg-slate-50 border-none rounded-xl font-bold focus:ring-2 focus:ring-indigo-500">
-                @error('judul') <span class="text-rose-500 text-[10px] font-bold px-1">{{ $message }}</span> @enderror
+            <!-- Upload -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Visual</label>
+                <div class="flex items-center gap-4">
+                    <div class="w-24 h-24 rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden relative">
+                        @if($gambar_baru)
+                            <img src="{{ $gambar_baru->temporaryUrl() }}" class="w-full h-full object-cover">
+                        @elseif($gambar_lama)
+                            <img src="{{ asset($gambar_lama) }}" class="w-full h-full object-cover">
+                        @else
+                            <i class="fa-solid fa-image text-slate-300 text-xl"></i>
+                        @endif
+                        <input type="file" wire:model="gambar_baru" class="absolute inset-0 opacity-0 cursor-pointer">
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs text-slate-500">Klik kotak untuk mengunggah. Disarankan ukuran 1920x800px untuk Hero.</p>
+                        <div wire:loading wire:target="gambar_baru" class="text-xs text-indigo-600 font-bold mt-1">Mengunggah...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Fields -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Judul Utama</label>
+                <input wire:model="judul" type="text" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 font-bold" placeholder="Contoh: Promo Akhir Tahun">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Deskripsi Pendek</label>
+                <textarea wire:model="deskripsi" rows="3" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500" placeholder="Jelaskan penawaran menariknya..."></textarea>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Penempatan</label>
-                    <select wire:model="bagian" class="w-full bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500">
-                        <option value="hero_section">Hero Section (Atas)</option>
-                        <option value="promo_banner">Promo Banner</option>
-                        <option value="fitur_unggulan">Fitur Unggulan</option>
-                    </select>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Teks Tombol</label>
+                    <input wire:model="teks_tombol" type="text" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500" placeholder="Beli Sekarang">
                 </div>
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Urutan</label>
-                    <input wire:model="urutan" type="number" class="w-full bg-slate-50 border-none rounded-xl font-bold focus:ring-2 focus:ring-indigo-500">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Link Tujuan</label>
+                    <input wire:model="tautan_tujuan" type="text" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500" placeholder="/katalog">
                 </div>
             </div>
 
-            <div class="space-y-2">
-                <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Deskripsi / Narasi</label>
-                <textarea wire:model="deskripsi" rows="3" class="w-full bg-slate-50 border-none rounded-xl font-medium focus:ring-2 focus:ring-indigo-500"></textarea>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Urutan Tampil</label>
+                <input wire:model="urutan" type="number" class="w-20 rounded-xl border-slate-200 text-sm focus:ring-indigo-500 font-bold text-center">
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Label Tombol</label>
-                    <input wire:model="teks_tombol" type="text" class="w-full bg-slate-50 border-none rounded-xl font-bold focus:ring-2 focus:ring-indigo-500">
-                </div>
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tautan (URL)</label>
-                    <input wire:model="tautan_tujuan" type="text" class="w-full bg-slate-50 border-none rounded-xl font-bold focus:ring-2 focus:ring-indigo-500">
-                </div>
-            </div>
-
-            <div class="pt-6">
-                <button type="submit" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all shadow-xl">
-                    SIMPAN BLOK KONTEN
-                </button>
-            </div>
+            <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-lg transition-all mt-4">
+                Simpan Perubahan
+            </button>
         </form>
     </x-ui.panel-geser>
 </div>
