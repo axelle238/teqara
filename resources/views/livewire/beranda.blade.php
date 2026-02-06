@@ -1,194 +1,314 @@
-<div class="bg-slate-50 min-h-screen">
-    
-    <!-- Hero Section (CMS Dinamis) -->
-    @if(isset($konten['hero_section']) && $konten['hero_section']->count() > 0)
-        @foreach($konten['hero_section'] as $hero)
-        <div class="relative w-full h-[600px] overflow-hidden group">
-            <div class="absolute inset-0">
-                <img src="{{ $hero->gambar ?? 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80' }}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="{{ $hero->judul }}">
-                <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/50 to-transparent"></div>
-            </div>
-            <div class="relative z-10 container mx-auto px-6 h-full flex items-center">
-                <div class="max-w-2xl space-y-8 animate-in slide-in-from-left-10 duration-700">
-                    <span class="inline-block px-4 py-2 bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 rounded-full text-xs font-black uppercase tracking-[0.2em] backdrop-blur-md">
-                        Teqara Enterprise Store
-                    </span>
-                    <h1 class="text-5xl md:text-7xl font-black text-white leading-tight tracking-tighter">
-                        {{ $hero->judul }}
-                    </h1>
-                    <p class="text-lg md:text-xl text-slate-300 font-medium leading-relaxed max-w-lg">
-                        {{ $hero->deskripsi }}
-                    </p>
-                    <div class="flex items-center gap-4 pt-4">
-                        <a href="{{ $hero->tautan_tujuan ?? '/katalog' }}" wire:navigate class="px-8 py-4 bg-white text-slate-900 rounded-full font-black text-sm uppercase tracking-widest hover:bg-indigo-500 hover:text-white transition-all shadow-xl hover:shadow-indigo-500/50 transform hover:-translate-y-1">
-                            {{ $hero->teks_tombol ?? 'Jelajahi Sekarang' }}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endforeach
-    @else
-        <!-- Fallback Hero -->
-        <div class="relative w-full h-[500px] bg-slate-900 flex items-center justify-center">
-            <div class="text-center text-white space-y-4">
-                <h1 class="text-5xl font-black tracking-tighter">SELAMAT DATANG DI TEQARA</h1>
-                <p class="text-slate-400">Pusat teknologi masa depan.</p>
-                <a href="/katalog" class="inline-block px-8 py-3 bg-white text-slate-900 rounded-full font-bold mt-4">Lihat Katalog</a>
-            </div>
-        </div>
-    @endif
+<div class="space-y-16 pb-16">
 
-    <!-- Kategori Pilihan -->
-    <div class="container mx-auto px-6 py-20">
-        <div class="flex items-end justify-between mb-12">
-            <div>
-                <h2 class="text-3xl font-black text-slate-900 tracking-tighter uppercase mb-2">Eksplorasi <span class="text-indigo-600">Kategori</span></h2>
-                <p class="text-slate-500">Temukan perangkat yang sesuai dengan kebutuhan Anda.</p>
-            </div>
-            <a href="/katalog" class="text-sm font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-2 group">
-                Lihat Semua
-                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-            </a>
-        </div>
-        
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            @foreach($kategori as $kat)
-            <a href="/katalog?kategori={{ $kat->slug }}" wire:navigate class="group relative bg-white rounded-[32px] p-6 text-center border border-slate-100 hover:border-indigo-100 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300">
-                <div class="w-16 h-16 mx-auto bg-slate-50 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:scale-110 transition-all duration-300">
-                    <!-- Icon Placeholder (bisa diganti icon dinamis) -->
-                    <svg class="w-8 h-8 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                </div>
-                <h3 class="font-black text-slate-900 text-sm group-hover:text-indigo-600 transition-colors">{{ $kat->nama }}</h3>
-                <p class="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">{{ $kat->produk_count }} Unit</p>
-            </a>
-            @endforeach
-        </div>
-    </div>
-
-    <!-- Promo Banner (CMS) -->
-    @if(isset($konten['promo_banner']))
-    <div class="container mx-auto px-6 mb-20">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            @foreach($konten['promo_banner'] as $promo)
-            <div class="relative h-64 rounded-[40px] overflow-hidden group">
-                <img src="{{ $promo->gambar }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent p-10 flex flex-col justify-center items-start">
-                    <span class="px-3 py-1 bg-white/20 text-white rounded-lg text-[9px] font-black uppercase tracking-widest backdrop-blur mb-4">Promo Spesial</span>
-                    <h3 class="text-3xl font-black text-white mb-2 leading-tight max-w-xs">{{ $promo->judul }}</h3>
-                    <p class="text-white/80 text-sm mb-6 max-w-xs">{{ $promo->deskripsi }}</p>
-                    <a href="{{ $promo->tautan_tujuan }}" class="px-6 py-3 bg-white text-slate-900 rounded-full text-xs font-black uppercase tracking-widest hover:bg-indigo-500 hover:text-white transition-all">
-                        {{ $promo->teks_tombol }}
-                    </a>
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-    @endif
-
-    <!-- Produk Terlaris (Showcase) -->
-    <div class="bg-slate-900 py-24 text-white relative overflow-hidden">
-        <!-- Background Accents -->
-        <div class="absolute top-0 left-0 w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2"></div>
-        <div class="absolute bottom-0 right-0 w-96 h-96 bg-rose-600/20 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2"></div>
-
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <span class="text-indigo-400 font-black tracking-[0.2em] text-xs uppercase mb-2 block">Pilihan Pelanggan</span>
-                <h2 class="text-4xl md:text-5xl font-black tracking-tighter mb-6">PRODUK <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-rose-400">BEST SELLER</span></h2>
-                <p class="text-slate-400 text-lg">Unit paling diminati bulan ini dengan performa dan nilai terbaik.</p>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                @foreach($produkTerlaris as $p)
-                <div class="group bg-slate-800 rounded-[32px] p-4 hover:bg-slate-700 transition-all duration-300 border border-white/5 hover:border-indigo-500/50">
-                    <div class="relative bg-white rounded-[24px] aspect-square overflow-hidden mb-6 p-6 flex items-center justify-center">
-                        <img src="{{ $p->gambar_utama_url }}" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
-                        
-                        <!-- Quick Action Overlay -->
-                        <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                            <a href="{{ route('produk.detail', $p->slug) }}" class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-slate-900 shadow-xl hover:bg-indigo-600 hover:text-white transition-all transform hover:scale-110" title="Lihat Detail">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+    <!-- Hero Section -->
+    <section class="relative pt-8 pb-4 overflow-hidden">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="relative rounded-[2.5rem] bg-slate-900 overflow-hidden shadow-2xl shadow-indigo-500/30">
+                <!-- Background Decoration -->
+                <div class="absolute top-0 right-0 -mr-20 -mt-20 w-[600px] h-[600px] bg-gradient-to-br from-indigo-600 to-cyan-500 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+                <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-[400px] h-[400px] bg-gradient-to-tr from-fuchsia-600 to-pink-500 rounded-full blur-3xl opacity-20"></div>
+                
+                <div class="relative grid lg:grid-cols-2 gap-12 items-center p-8 sm:p-16">
+                    <div class="space-y-8">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-cyan-300 text-xs font-bold uppercase tracking-widest shadow-lg">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                            {{ $hero->judul_kecil ?? 'Teknologi Masa Depan' }}
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl lg:text-7xl font-black text-white leading-tight tracking-tight">
+                            {{ $hero->judul_utama ?? 'Upgrade Duniamu Sekarang.' }}
+                        </h1>
+                        <p class="text-lg text-slate-300 max-w-xl leading-relaxed">
+                            {{ $hero->deskripsi ?? 'Temukan koleksi gadget dan komputer terbaru dengan performa maksimal untuk kebutuhan profesional dan gaming Anda.' }}
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="{{ $hero->url_cta ?? '/katalog' }}" wire:navigate class="px-8 py-4 bg-white text-slate-900 rounded-2xl font-black hover:scale-105 transition-transform shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                                {{ $hero->teks_cta ?? 'BELANJA SEKARANG' }}
+                            </a>
+                            <a href="#unggulan" class="px-8 py-4 bg-transparent border border-white/20 text-white rounded-2xl font-bold hover:bg-white/10 transition-colors backdrop-blur-sm">
+                                Lihat Produk
                             </a>
                         </div>
                     </div>
                     
-                    <div class="px-2 pb-2">
-                        <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">{{ $p->kategori->nama }}</p>
-                        <h3 class="text-lg font-bold text-white mb-2 line-clamp-2 leading-tight min-h-[3rem] group-hover:text-indigo-300 transition-colors">{{ $p->nama }}</h3>
-                        <div class="flex items-end justify-between">
-                            <div>
-                                <p class="text-xs text-slate-400 line-through">Rp {{ number_format($p->harga_jual * 1.1, 0, ',', '.') }}</p>
-                                <p class="text-xl font-black text-white tracking-tight">Rp {{ number_format($p->harga_jual, 0, ',', '.') }}</p>
+                    <div class="relative hidden lg:block h-[500px]">
+                        @if($hero && $hero->gambar)
+                            <img src="{{ asset('storage/'.$hero->gambar) }}" alt="Hero Image" class="absolute inset-0 w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:scale-105 transition-transform duration-700 ease-out">
+                        @else
+                            <!-- Placeholder 3D Abstract -->
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-80 h-80 bg-gradient-to-tr from-indigo-500 to-cyan-400 rounded-3xl rotate-12 shadow-2xl flex items-center justify-center">
+                                    <span class="text-9xl">💻</span>
+                                </div>
+                                <div class="absolute w-80 h-80 bg-gradient-to-tr from-fuchsia-500 to-pink-400 rounded-3xl -rotate-6 -z-10 opacity-70 scale-90 translate-x-12 translate-y-12"></div>
                             </div>
-                            <div class="flex items-center text-amber-400 text-xs font-bold gap-1">
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                {{ $p->rating_rata_rata }}
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- USP Section -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- USP 1 -->
+            <div class="flex items-start gap-6 p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
+                <div class="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-3xl group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                    🛡️
+                </div>
+                <div>
+                    <h3 class="font-black text-lg text-slate-900 mb-2">Garansi Resmi</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Semua produk 100% original dengan jaminan garansi resmi distributor Indonesia.</p>
+                </div>
+            </div>
+             <!-- USP 2 -->
+             <div class="flex items-start gap-6 p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
+                <div class="w-16 h-16 rounded-2xl bg-cyan-50 flex items-center justify-center text-3xl group-hover:scale-110 group-hover:bg-cyan-600 group-hover:text-white transition-all duration-300">
+                    🚀
+                </div>
+                <div>
+                    <h3 class="font-black text-lg text-slate-900 mb-2">Pengiriman Kilat</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Layanan pengiriman instan dan berasuransi ke seluruh pelosok Nusantara.</p>
+                </div>
+            </div>
+             <!-- USP 3 -->
+             <div class="flex items-start gap-6 p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
+                <div class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-3xl group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                    💳
+                </div>
+                <div>
+                    <h3 class="font-black text-lg text-slate-900 mb-2">Cicilan 0%</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Nikmati kemudahan pembayaran dengan cicilan ringan tanpa bunga.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kategori Populer -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-10">
+            <div>
+                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Kategori Populer</h2>
+                <div class="h-1.5 w-24 bg-gradient-to-r from-indigo-500 to-cyan-400 rounded-full mt-2"></div>
+            </div>
+            <a href="/katalog" wire:navigate class="group flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700">
+                Lihat Semua
+                <span class="group-hover:translate-x-1 transition-transform">→</span>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            @foreach($kategori as $kat)
+                <a href="/katalog?kategori={{ $kat->slug }}" wire:navigate class="group relative overflow-hidden rounded-3xl bg-white border border-slate-100 p-6 hover:shadow-xl transition-all duration-300 text-center hover:-translate-y-1">
+                    <div class="mb-4 relative z-10 w-16 h-16 mx-auto rounded-2xl bg-slate-50 flex items-center justify-center text-3xl group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
+                        {{-- Menggunakan Ikon dari DB atau Placeholder --}}
+                        @if($kat->ikon && !str_starts_with($kat->ikon, 'fa'))
+                             <img src="{{ asset('storage/'.$kat->ikon) }}" class="w-10 h-10 object-contain">
+                        @else
+                             <span>💻</span>
+                        @endif
+                    </div>
+                    <h3 class="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{{ $kat->nama }}</h3>
+                    <p class="text-xs text-slate-500 mt-1">{{ $kat->produk_count }} Produk</p>
+                    
+                    <!-- Hover Decoration -->
+                    <div class="absolute -bottom-10 -right-10 w-24 h-24 bg-indigo-50 rounded-full group-hover:scale-150 transition-transform duration-500 -z-0"></div>
+                </a>
+            @endforeach
+        </div>
+    </section>
+
+    <!-- Flash Sale (Jika Ada) -->
+    @if($penjualanKilat)
+    <section class="py-12 bg-slate-900 relative overflow-hidden my-12">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#4f46e5 1px, transparent 1px); background-size: 32px 32px;"></div>
+        
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+                <div class="flex items-center gap-6">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-4xl shadow-lg shadow-orange-500/30 animate-bounce">⚡</div>
+                    <div>
+                        <h2 class="text-3xl font-black text-white tracking-tight uppercase italic">Flash Sale</h2>
+                        <p class="text-yellow-400 font-bold tracking-widest uppercase text-sm mt-1">Berakhir dalam: <span x-data="{ timer: '00:00:00' }" x-init="setInterval(() => { /* logic countdown */ }, 1000)">23:59:59</span></p>
+                    </div>
+                </div>
+                <a href="/flash-sale" class="px-8 py-3 bg-white/10 hover:bg-white text-white hover:text-slate-900 border border-white/20 rounded-2xl font-bold transition-all backdrop-blur-sm">
+                    Lihat Semua Deal
+                </a>
+            </div>
+
+            <!-- List Produk Flash Sale (Horizontal Scroll) -->
+            <div class="flex overflow-x-auto pb-8 gap-6 snap-x hide-scrollbar">
+                {{-- Di sini loop produk flash sale --}}
+                <div class="w-72 flex-shrink-0 snap-start bg-slate-800 rounded-3xl p-4 border border-white/5 hover:border-yellow-500/50 transition-colors group">
+                    <div class="relative aspect-square bg-slate-700 rounded-2xl overflow-hidden mb-4">
+                        <span class="absolute top-3 left-3 px-3 py-1 bg-red-500 text-white text-xs font-black rounded-lg uppercase tracking-wider">-50%</span>
+                        <div class="w-full h-full flex items-center justify-center text-4xl">📱</div>
+                    </div>
+                    <h3 class="text-white font-bold truncate">iPhone 16 Pro Max</h3>
+                    <div class="mt-2 flex items-baseline gap-2">
+                        <span class="text-yellow-400 font-black text-lg">Rp 15.000.000</span>
+                        <span class="text-slate-500 text-xs line-through">Rp 30.000.000</span>
+                    </div>
+                    <div class="mt-4 w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+                        <div class="bg-gradient-to-r from-yellow-400 to-orange-500 w-3/4 h-full"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-slate-400 mt-1 uppercase font-bold">
+                        <span>Terjual 75</span>
+                        <span>Sisa 25</span>
+                    </div>
+                </div>
+                <!-- ... more cards ... -->
+            </div>
+        </div>
+    </section>
+    @endif
+
+    <!-- Produk Unggulan -->
+    <section id="unggulan" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-10">
+            <div>
+                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Pilihan Editor</h2>
+                <div class="h-1.5 w-24 bg-gradient-to-r from-fuchsia-500 to-pink-400 rounded-full mt-2"></div>
+            </div>
+            <!-- Filter Sederhana -->
+            <div class="hidden sm:flex gap-2">
+                <button class="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold">Terbaru</button>
+                <button class="px-4 py-2 rounded-xl bg-white text-slate-500 hover:bg-slate-50 border border-slate-100 text-xs font-bold transition">Terlaris</button>
+                <button class="px-4 py-2 rounded-xl bg-white text-slate-500 hover:bg-slate-50 border border-slate-100 text-xs font-bold transition">Diskon</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            @foreach($produkUnggulan as $produk)
+                <div class="group relative bg-white rounded-3xl border border-slate-100 p-4 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-2 flex flex-col h-full">
+                    <!-- Badge -->
+                    @if($produk->stok < 1)
+                        <div class="absolute top-4 left-4 z-20 px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg">Habis</div>
+                    @elseif($produk->harga_jual < $produk->harga_modal) 
+                         <div class="absolute top-4 left-4 z-20 px-3 py-1 bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg">Promo</div>
+                    @endif
+
+                    <!-- Wishlist Button -->
+                    <button class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur border border-slate-100 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </button>
+
+                    <!-- Image Wrapper -->
+                    <a href="{{ route('produk.detail', $produk->slug) }}" wire:navigate class="block relative aspect-[4/3] rounded-2xl bg-slate-50 overflow-hidden mb-6">
+                        @if($produk->gambar_utama_url)
+                            <img src="{{ asset('storage/'.$produk->gambar_utama_url) }}" alt="{{ $produk->nama }}" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-6xl text-slate-300">🖼️</div>
+                        @endif
+                        
+                        <!-- Quick Action Overlay -->
+                        <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                             <button wire:click="addToCart({{ $produk->id }})" class="w-full py-3 bg-slate-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-indigo-600 transition-colors shadow-lg">
+                                + Keranjang
+                            </button>
+                        </div>
+                    </a>
+
+                    <!-- Content -->
+                    <div class="flex-1 flex flex-col">
+                        <div class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider mb-2">{{ $produk->kategori->nama ?? 'Umum' }}</div>
+                        <a href="{{ route('produk.detail', $produk->slug) }}" wire:navigate class="block">
+                            <h3 class="text-lg font-bold text-slate-900 mb-2 line-clamp-2 leading-tight group-hover:text-indigo-600 transition-colors">{{ $produk->nama }}</h3>
+                        </a>
+                        
+                        <!-- Rating -->
+                        <div class="flex items-center gap-1 mb-4">
+                            <div class="flex text-yellow-400 text-sm">
+                                @for($i=0; $i<5; $i++)
+                                    <span>{{ $i < round($produk->rating_rata_rata) ? '★' : '☆' }}</span>
+                                @endfor
+                            </div>
+                            <span class="text-xs text-slate-400 font-bold">({{ $produk->ulasan_count ?? 0 }})</span>
+                        </div>
+
+                        <div class="mt-auto flex items-center justify-between">
+                            <div>
+                                <p class="text-xl font-black text-slate-900">{{ $produk->harga_rupiah }}</p>
+                                {{-- Jika ada diskon --}}
+                                {{-- <p class="text-xs text-slate-400 line-through">Rp 15.000.000</p> --}}
                             </div>
                         </div>
                     </div>
                 </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    <!-- Koleksi Terbaru -->
-    <div class="container mx-auto px-6 py-24">
-        <div class="flex items-end justify-between mb-12">
-            <div>
-                <h2 class="text-3xl font-black text-slate-900 tracking-tighter uppercase mb-2">Koleksi <span class="text-indigo-600">Terbaru</span></h2>
-                <p class="text-slate-500">Inovasi terkini yang baru saja mendarat.</p>
-            </div>
-            <a href="/katalog" class="px-6 py-3 bg-white border border-slate-200 rounded-full text-xs font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all">Lihat Semua</a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            @foreach($produkUnggulan as $p)
-            <div class="bg-white rounded-[32px] p-4 border border-slate-100 hover:shadow-xl hover:border-indigo-100 transition-all duration-300 group">
-                <div class="relative bg-slate-50 rounded-[24px] aspect-[4/3] overflow-hidden mb-6 flex items-center justify-center">
-                    <span class="absolute top-4 left-4 px-3 py-1 bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest rounded-lg z-10">New Arrival</span>
-                    <img src="{{ $p->gambar_utama_url }}" class="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500 mix-blend-multiply">
-                </div>
-                <div class="px-2">
-                    <h3 class="font-bold text-slate-900 text-lg mb-1 truncate">{{ $p->nama }}</h3>
-                    <p class="text-sm text-indigo-600 font-black mb-4">Rp {{ number_format($p->harga_jual, 0, ',', '.') }}</p>
-                    <a href="{{ route('produk.detail', $p->slug) }}" class="block w-full py-3 bg-slate-900 text-white text-center rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-colors">
-                        Lihat Detail
-                    </a>
-                </div>
-            </div>
             @endforeach
         </div>
-    </div>
+        
+        <div class="mt-12 text-center">
+            <a href="/katalog" wire:navigate class="inline-flex items-center gap-3 px-8 py-4 bg-white border border-slate-200 text-slate-900 rounded-2xl font-black hover:bg-slate-50 hover:border-indigo-200 hover:text-indigo-600 transition-all shadow-sm">
+                JELAJAHI KATALOG LENGKAP
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+        </div>
+    </section>
 
-    <!-- Trust Badge -->
-    <div class="bg-indigo-50 border-y border-indigo-100 py-16">
-        <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div class="space-y-4">
-                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto text-indigo-600 shadow-sm">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </div>
-                    <h3 class="font-black text-slate-900 uppercase tracking-widest">Garansi Resmi</h3>
-                    <p class="text-sm text-slate-500 max-w-xs mx-auto">Semua produk 100% original dengan garansi resmi manufaktur.</p>
-                </div>
-                <div class="space-y-4">
-                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto text-indigo-600 shadow-sm">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    </div>
-                    <h3 class="font-black text-slate-900 uppercase tracking-widest">Pengiriman Kilat</h3>
-                    <p class="text-sm text-slate-500 max-w-xs mx-auto">Layanan logistik prioritas dengan asuransi pengiriman penuh.</p>
-                </div>
-                <div class="space-y-4">
-                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto text-indigo-600 shadow-sm">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    </div>
-                    <h3 class="font-black text-slate-900 uppercase tracking-widest">Dukungan 24/7</h3>
-                    <p class="text-sm text-slate-500 max-w-xs mx-auto">Tim ahli siap membantu konsultasi teknis dan purna jual.</p>
+    <!-- Berita Terbaru -->
+    <section class="bg-indigo-50/50 py-16 border-y border-indigo-100/50">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-10">
+                <div>
+                    <h2 class="text-3xl font-black text-slate-900 tracking-tight">Kabar Teqara</h2>
+                    <div class="h-1.5 w-24 bg-gradient-to-r from-indigo-500 to-cyan-400 rounded-full mt-2"></div>
                 </div>
             </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                @forelse($beritaTerbaru as $berita)
+                    <article class="bg-white rounded-3xl p-4 shadow-sm hover:shadow-xl transition-all duration-300 group">
+                        <div class="aspect-video bg-slate-200 rounded-2xl overflow-hidden mb-4 relative">
+                            @if($berita->thumbnail)
+                                <img src="{{ asset('storage/'.$berita->thumbnail) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-4xl bg-indigo-50 text-indigo-200">📰</div>
+                            @endif
+                            <div class="absolute bottom-3 left-3 px-3 py-1 bg-white/90 backdrop-blur rounded-lg text-[10px] font-black uppercase tracking-widest text-indigo-600">
+                                {{ $berita->created_at->format('d M Y') }}
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2 leading-tight group-hover:text-indigo-600 transition-colors">
+                            <a href="#">{{ $berita->judul }}</a>
+                        </h3>
+                        <p class="text-sm text-slate-500 line-clamp-2 mb-4">{{ $berita->ringkasan }}</p>
+                        <a href="#" class="inline-flex items-center text-xs font-black text-indigo-600 uppercase tracking-widest hover:gap-2 transition-all">
+                            Baca Selengkapnya ->
+                        </a>
+                    </article>
+                @empty
+                    <div class="col-span-3 text-center py-12 text-slate-400">
+                        Belum ada berita terbaru.
+                    </div>
+                @endforelse
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Newsletter CTA -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="relative rounded-[2.5rem] bg-indigo-600 overflow-hidden px-8 py-16 sm:px-16 text-center shadow-2xl shadow-indigo-500/30">
+            <!-- Background Decoration -->
+            <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-soft-light"></div>
+            <div class="absolute -top-24 -left-24 w-64 h-64 bg-cyan-400 rounded-full blur-3xl opacity-30"></div>
+            <div class="absolute -bottom-24 -right-24 w-64 h-64 bg-fuchsia-400 rounded-full blur-3xl opacity-30"></div>
+
+            <div class="relative z-10 max-w-2xl mx-auto space-y-8">
+                <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight">Jangan Ketinggalan Info Terbaru!</h2>
+                <p class="text-indigo-100 text-lg">Dapatkan info eksklusif tentang produk baru, promo flash sale, dan tips teknologi langsung di inbox Anda.</p>
+                
+                <form class="flex flex-col sm:flex-row gap-4">
+                    <input type="email" placeholder="Masukkan alamat email Anda" class="flex-1 px-6 py-4 rounded-2xl border-none focus:ring-4 focus:ring-cyan-400/50 bg-white/10 text-white placeholder-indigo-200 backdrop-blur-sm transition-all">
+                    <button type="submit" class="px-8 py-4 bg-white text-indigo-600 rounded-2xl font-black uppercase tracking-widest hover:bg-cyan-50 transition-colors shadow-lg">
+                        Berlangganan
+                    </button>
+                </form>
+                <p class="text-xs text-indigo-200">Kami menghargai privasi Anda. Unsubscribe kapan saja.</p>
+            </div>
+        </div>
+    </section>
+
 </div>
