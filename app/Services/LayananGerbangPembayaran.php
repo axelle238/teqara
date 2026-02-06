@@ -33,7 +33,7 @@ class LayananGerbangPembayaran
             'provider' => $provider,
             'jumlah_bayar' => $pesanan->total_harga,
             'status' => 'menunggu',
-            'payload_gateway' => ['mock' => true, 'deskripsi' => 'Simulasi Gateway Teqara'],
+            'muatan_gerbang' => ['mock' => true, 'deskripsi' => 'Simulasi Gateway Teqara'],
         ]);
 
         return $transaksi;

@@ -14,6 +14,9 @@ class ProdukSeri extends Model
 {
     use HasFactory;
 
+    const CREATED_AT = 'dibuat_pada';
+    const UPDATED_AT = 'diperbarui_pada';
+
     protected $table = 'produk_seri';
 
     protected $guarded = ['id'];

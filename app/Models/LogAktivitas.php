@@ -10,6 +10,9 @@ class LogAktivitas extends Model
 {
     use HasFactory;
 
+    const CREATED_AT = 'dibuat_pada';
+    const UPDATED_AT = 'diperbarui_pada';
+
     protected $table = 'log_aktivitas';
 
     public $timestamps = false; // Karena hanya ada kolom 'waktu' manual

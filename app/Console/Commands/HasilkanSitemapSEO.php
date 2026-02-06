@@ -40,7 +40,7 @@ class HasilkanSitemapSEO extends Command
         // 2. URL Produk Dinamis
         $produk = Produk::where('status', 'aktif')->get();
         foreach ($produk as $p) {
-            $xml .= $this->buatUrlTag($baseUrl.'/produk/'.$p->slug, $p->updated_at, 'weekly', '0.6');
+            $xml .= $this->buatUrlTag($baseUrl.'/produk/'.$p->slug, $p->diperbarui_pada, 'weekly', '0.6');
         }
 
         $xml .= '</urlset>';

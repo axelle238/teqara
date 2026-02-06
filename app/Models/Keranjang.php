@@ -10,6 +10,9 @@ class Keranjang extends Model
 {
     use HasFactory;
 
+    const CREATED_AT = 'dibuat_pada';
+    const UPDATED_AT = 'diperbarui_pada';
+
     protected $table = 'keranjang';
 
     protected $guarded = ['id'];

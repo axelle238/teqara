@@ -9,6 +9,9 @@ class DetailStockOpname extends Model
 {
     use HasFactory;
 
+    const CREATED_AT = 'dibuat_pada';
+    const UPDATED_AT = 'diperbarui_pada';
+
     protected $table = 'detail_stock_opname';
 
     protected $guarded = ['id'];

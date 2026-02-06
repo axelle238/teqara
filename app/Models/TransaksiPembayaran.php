@@ -11,7 +11,7 @@ class TransaksiPembayaran extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'payload_gateway' => 'array',
+        'muatan_gerbang' => 'array',
         'waktu_bayar' => 'datetime',
     ];
 

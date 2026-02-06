@@ -54,8 +54,8 @@ class LayananStok
                     'referensi_id' => $pesanan->nomor_faktur,
                     'keterangan' => 'Penjualan Faktur #'.$pesanan->nomor_faktur,
                     'oleh_pengguna_id' => $pesanan->pengguna_id,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'dibuat_pada' => now(),
+                    'diperbarui_pada' => now(),
                 ]);
             }
         });
@@ -74,7 +74,7 @@ class LayananStok
 
             DB::table('stok_gudang')->updateOrInsert(
                 ['produk_id' => $produkId, 'gudang_id' => $keGudangId],
-                ['jumlah' => DB::raw("jumlah + $jumlah"), 'updated_at' => now()]
+                ['jumlah' => DB::raw("jumlah + $jumlah"), 'diperbarui_pada' => now()]
             );
 
             DB::table('mutasi_stok')->insert([
@@ -83,8 +83,8 @@ class LayananStok
                 'jenis_mutasi' => 'pindah_gudang',
                 'keterangan' => "Transfer antar gudang: $keterangan",
                 'oleh_pengguna_id' => auth()->id(),
-                'created_at' => now(),
-                'updated_at' => now(),
+                'dibuat_pada' => now(),
+                'diperbarui_pada' => now(),
             ]);
         });
     }

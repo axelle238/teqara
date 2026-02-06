@@ -1,53 +1,32 @@
-# Laporan Analisis Konteks & Kepatuhan Sistem Teqara Enterprise
-
+# Laporan Analisis Konteks Sistem Teqara v16.0
 **Tanggal:** 6 Februari 2026
-**Versi Sistem:** v16.0 (Enterprise)
-**Status:** VALIDASI SIAP (Pre-Lock)
+**Peran:** System Analyst & Software Architect
 
-## 1. Ringkasan Eksekutif
-Berdasarkan analisis menyeluruh terhadap kode sumber, struktur direktori, dan konfigurasi rute, sistem **Teqara** saat ini telah memenuhi standar **Enterprise v16.0** dengan kepatuhan ketat terhadap mandat **100% Bahasa Indonesia** dan **Tanpa Modal**.
+## 1. Status Bahasa (Kepatuhan 100% Indonesia)
+*   **Folder & File:** 
+    *   `app/Livewire/Admin` -> WAJIB diubah ke `app/Livewire/Pengelola`.
+    *   `app/Livewire/Auth` -> WAJIB diubah ke `app/Livewire/Otentikasi`.
+*   **Database:**
+    *   Kolom `created_at` & `updated_at` masih ada di hampir seluruh tabel. Harus dimigrasi menjadi `dibuat_pada` & `diperbarui_pada`.
+    *   Tabel `sesi` (sessions) masih menggunakan kolom `payload`, `last_activity`.
+*   **Kode:** Beberapa komentar masih menggunakan istilah teknis Inggris.
 
-## 2. Analisis Kepatuhan Mandat
+## 2. Analisis Struktur "Hulu ke Hilir"
+*   **Hulu (Suplai):** Sudah ada tabel `pemasok`, `pembelian_stok`, `stok_gudang`.
+*   **Tengah (Transaksi):** Sudah ada `keranjang`, `pesanan`, `transaksi_pembayaran`.
+*   **Hilir (Logistik & Audit):** Sudah ada `log_aktivitas`, `klaim_garansi`, `ulasan`.
 
-### A. Bahasa & Terminologi
-- **Status:** 100% Patuh.
-- **Bukti:**
-  - Rute (`routes/web.php`) menggunakan slug Indonesia (`/admin/produk/katalog`).
-  - Menu Admin (`admin.blade.php`) menggunakan label naratif ("Statistik Total", "Logistik & Armada").
-  - Kode Controller/Livewire menggunakan variabel kontekstual (`$totalPendapatan`, `$karyawan`).
+## 3. Evaluasi Fitur Admin Dashboard
+*   **Dropdown Menu:** Implementasi di `layouts/admin.blade.php` perlu diperketat untuk memastikan alur navigasi dari Dashboard Pilar -> Fungsi Detail.
+*   **Pemisahan Modul:** 
+    *   Pilar 1 (Manajemen Toko) vs Pilar 10 (Pengaturan Sistem) sudah terpisah di rute, namun harus dipastikan tidak ada tumpang tindih fungsi di database.
+    *   Pilar 11 (Keamanan) harus berdiri sendiri dengan audit log yang lebih naratif.
 
-### B. Kebijakan "Tanpa Modal" (No Modal Policy)
-- **Status:** 100% Patuh.
-- **Implementasi:**
-  - Penggunaan komponen `x-ui.slide-over` (Panel Geser) menggantikan modal dialog standar.
-  - Dropdown menu menggunakan `x-show` dengan transisi halus.
-  - Notifikasi menggunakan Toast Non-blocking (`x-ui.notifikasi-toast`).
+## 4. Rencana Aksi Segera (Tahap 2 & 3)
+1.  **Refaktor Folder:** Mengubah seluruh nama folder dan namespace ke Bahasa Indonesia.
+2.  **Migrasi Database:** Rename kolom-kolom sistem (timestamps & internal Laravel columns).
+3.  **Pembersihan Modal:** Audit seluruh file `.blade.php` untuk memastikan tidak ada tag `<dialog>` atau class modal.
+4.  **Dokumentasi Hidup:** Inisialisasi `dokumentasi_sistem.json`.
 
-### C. Struktur 11 Pilar Utama
-Sistem navigasi telah terstruktur sesuai instruksi spesifik, dengan pemisahan tegas antara manajemen operasional dan pengaturan sistem.
-
-1. **Halaman Toko** (CMS Visual) - *Terimplementasi*
-2. **Produk & Gadget** (Inventaris) - *Terimplementasi*
-3. **Pesanan Unit** (Transaksi Hulu) - *Terimplementasi*
-4. **Transaksi Finansial** (Arus Kas) - *Terimplementasi*
-5. **Layanan CS** (Support) - *Terimplementasi*
-6. **Logistik & Armada** (Supply Chain) - *Terimplementasi*
-7. **Data Pelanggan** (CRM) - *Terimplementasi*
-8. **Pegawai & Peran** (HRD) - *Terimplementasi*
-9. **Laporan & Profit** (Business Intelligence) - *Terimplementasi*
-10. **Sistem Terpusat** (Core Settings) - *Terpisah & Terimplementasi*
-11. **Keamanan Pusat** (Security) - *Terpisah & Terimplementasi*
-
-## 3. Status Komponen & Logika
-- **Backend (Laravel 12):** Struktur Model dan Migrasi lengkap untuk mendukung seluruh pilar.
-- **Frontend (Livewire 4):** Komponen `BerandaUtama` telah mengimplementasikan logika agregasi data real-time dari seluruh modul.
-- **UI (Tailwind v4):** Desain "Vibrant Enterprise" dengan tipografi Plus Jakarta Sans dan skema warna gradien telah diterapkan.
-
-## 4. Rekomendasi Tindakan Selanjutnya
-Sesuai dengan strategi kerja "Hulu ke Hilir", sistem saat ini berada pada tahap **Finalisasi & Pengujian**.
-
-1. **Verifikasi Fungsional:** Memastikan logika "Hulu" (Stok/Produk) mengalir benar ke "Hilir" (Laporan).
-2. **Dokumentasi Hidup:** Memperbarui `dokumentasi_sistem.json` dengan status terbaru.
-3. **Penguncian Versi:** Melakukan tagging Git `kunci-analisis-06022026`.
-
-**Kesimpulan:** Sistem siap untuk tahap validasi akhir sebelum peluncuran produksi.
+---
+**Status:** SIAP UNTUK TAHAP 2 (RAPIRAN ARSITEKTUR)

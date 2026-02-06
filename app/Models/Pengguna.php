@@ -14,11 +14,19 @@ class Pengguna extends Authenticatable
 
     protected $table = 'pengguna';
 
+    const CREATED_AT = 'dibuat_pada';
+    const UPDATED_AT = 'diperbarui_pada';
+
     protected $fillable = [
         'nama', 'email', 'kata_sandi', 'peran', 'nomor_telepon', 'foto_profil',
     ];
 
-    protected $hidden = ['kata_sandi', 'remember_token'];
+    protected $hidden = ['kata_sandi', 'token_ingat'];
+
+    public function getRememberTokenName()
+    {
+        return 'token_ingat';
+    }
 
     protected function casts(): array
     {
@@ -36,7 +44,8 @@ class Pengguna extends Authenticatable
     // Relasi Wishlist (Many to Many via tabel daftar_keinginan)
     public function wishlist(): BelongsToMany
     {
-        return $this->belongsToMany(Produk::class, 'daftar_keinginan', 'pengguna_id', 'produk_id')->withTimestamps();
+        return $this->belongsToMany(Produk::class, 'daftar_keinginan', 'pengguna_id', 'produk_id')
+            ->withPivot(['dibuat_pada', 'diperbarui_pada']);
     }
 
     public function alamat(): HasMany

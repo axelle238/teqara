@@ -9,6 +9,9 @@ class ProdukPenjualanKilat extends Model
 {
     use HasFactory;
 
+    const CREATED_AT = 'dibuat_pada';
+    const UPDATED_AT = 'diperbarui_pada';
+
     protected $table = 'produk_penjualan_kilat';
 
     protected $guarded = ['id'];

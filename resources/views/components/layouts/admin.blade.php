@@ -84,9 +84,9 @@
         }">
             
             <!-- 1. Dashboard Statistik -->
-            <a href="{{ route('admin.beranda') }}" wire:navigate class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-bold transition-all group mb-4 {{ request()->routeIs('admin.beranda') ? 'nav-item-active' : 'hover:bg-white/10 hover:shadow-lg' }}">
+            <a href="{{ route('pengelola.beranda') }}" wire:navigate class="flex items-center gap-4 px-4 py-3.5 rounded-xl font-bold transition-all group mb-4 {{ request()->routeIs('pengelola.beranda') ? 'nav-item-active' : 'hover:bg-white/10 hover:shadow-lg' }}">
                 <div class="w-8 flex justify-center">
-                    <i class="fa-solid fa-gauge-high text-lg {{ request()->routeIs('admin.beranda') ? 'text-cyan-300' : 'text-indigo-200 group-hover:text-white' }}"></i>
+                    <i class="fa-solid fa-gauge-high text-lg {{ request()->routeIs('pengelola.beranda') ? 'text-cyan-300' : 'text-indigo-200 group-hover:text-white' }}"></i>
                 </div>
                 <span class="text-sm tracking-wide">Dashboard Statistik</span>
             </a>
@@ -106,13 +106,13 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'toko' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'toko'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.toko.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.toko.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Dashboard Toko
                     </a>
-                    <a href="{{ route('admin.toko.konten') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.toko.konten') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Konten & Banner
                     </a>
-                    <a href="{{ route('admin.toko.berita') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.toko.berita') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Berita & Artikel
                     </a>
                 </div>
@@ -128,34 +128,34 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'produk' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'produk'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.produk.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.produk.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Dashboard Produk
                     </a>
-                    <a href="{{ route('admin.produk.katalog') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.produk.katalog') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Katalog Produk
                     </a>
-                    <a href="{{ route('admin.produk.tambah') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.produk.tambah') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Tambah Baru
                     </a>
-                    <a href="{{ route('admin.kategori') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.kategori') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Kategori
                     </a>
-                    <a href="{{ route('admin.merek') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.merek') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Merek & Brand
                     </a>
-                    <a href="{{ route('admin.produk.seri') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.produk.seri') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Seri & Varian
                     </a>
-                    <a href="{{ route('admin.produk.stok') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.produk.stok') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Stok Gudang
                     </a>
-                    <a href="{{ route('admin.produk.pembelian.riwayat') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.produk.pembelian.riwayat') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Pembelian (PO)
                     </a>
-                    <a href="{{ route('admin.produk.so.riwayat') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.produk.so.riwayat') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Stock Opname
                     </a>
-                    <a href="{{ route('admin.produk.garansi') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.produk.garansi') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Garansi
                     </a>
                 </div>
@@ -171,10 +171,10 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'pesanan' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'pesanan'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.pesanan.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.pesanan.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Dashboard Pesanan
                     </a>
-                    <a href="{{ route('admin.pesanan.daftar') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.pesanan.daftar') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Daftar Pesanan
                     </a>
                 </div>
@@ -190,16 +190,16 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'transaksi' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'transaksi'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.transaksi.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.transaksi.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Dashboard Keuangan
                     </a>
-                    <a href="{{ route('admin.pesanan.verifikasi') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.pesanan.verifikasi') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Verifikasi Bayar
                     </a>
-                    <a href="{{ route('admin.produk.promo.flash-sale') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.produk.promo.flash-sale') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Flash Sale
                     </a>
-                    <a href="{{ route('admin.voucher') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.voucher') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Voucher
                     </a>
                 </div>
@@ -215,10 +215,10 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'cs' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'cs'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.cs.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.cs.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Dashboard Layanan
                     </a>
-                    <a href="{{ route('admin.cs.tiket') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.cs.tiket') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Tiket Bantuan
                     </a>
                 </div>
@@ -234,7 +234,7 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'logistik' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'logistik'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.logistik.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.logistik.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Dashboard Logistik
                     </a>
                 </div>
@@ -255,10 +255,10 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'vendor' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'vendor'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.vendor.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.vendor.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Dashboard Vendor
                     </a>
-                    <a href="{{ route('admin.vendor.daftar') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.vendor.daftar') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Daftar Pemasok
                     </a>
                 </div>
@@ -274,13 +274,13 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'pelanggan' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'pelanggan'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.pelanggan.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.pelanggan.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Dashboard CRM
                     </a>
-                    <a href="{{ route('admin.pelanggan.daftar') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.pelanggan.daftar') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Data Member
                     </a>
-                    <a href="{{ route('admin.pelanggan.ulasan') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.pelanggan.ulasan') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Ulasan
                     </a>
                 </div>
@@ -296,13 +296,13 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'pegawai' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'pegawai'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.pengguna.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.pengguna.beranda') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Dashboard SDM
                     </a>
-                    <a href="{{ route('admin.hrd.karyawan') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.hrd.karyawan') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Struktur Organisasi
                     </a>
-                    <a href="{{ route('admin.pengguna.hrd') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.pengguna.hrd') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Data Karyawan
                     </a>
                 </div>
@@ -323,7 +323,7 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'laporan' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'laporan'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.laporan.pusat') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.laporan.pusat') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Pusat Laporan
                     </a>
                 </div>
@@ -339,7 +339,7 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'sistem' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'sistem'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.pengaturan.sistem') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.pengaturan.sistem') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Identitas Toko
                     </a>
                 </div>
@@ -355,10 +355,10 @@
                     <i class="fa-solid fa-chevron-down text-xs transition-transform duration-300 text-indigo-300" :class="activeGroup === 'keamanan' ? 'rotate-180' : ''"></i>
                 </button>
                 <div x-show="activeGroup === 'keamanan'" x-collapse class="bg-black/10">
-                    <a href="{{ route('admin.pengaturan.keamanan') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.pengaturan.keamanan') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Keamanan Sistem
                     </a>
-                    <a href="{{ route('admin.pengaturan.log') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="{{ route('pengelola.pengaturan.log') }}" wire:navigate class="flex items-center gap-3 pl-14 pr-4 py-2.5 text-xs font-medium text-indigo-100 hover:text-white hover:bg-white/5 transition-colors">
                         <i class="fa-regular fa-circle text-[8px] opacity-70"></i> Jejak Audit (Log)
                     </a>
                 </div>

@@ -57,7 +57,7 @@ class BangunSitemapSEO extends Command
         foreach ($produk as $p) {
             $sitemap .= '  <url>'.PHP_EOL;
             $sitemap .= '    <loc>'.url('/produk/'.$p->slug).'</loc>'.PHP_EOL;
-            $sitemap .= '    <lastmod>'.$p->updated_at->toAtomString().'</lastmod>'.PHP_EOL;
+            $sitemap .= '    <lastmod>'.$p->diperbarui_pada->toAtomString().'</lastmod>'.PHP_EOL;
             $sitemap .= '    <changefreq>weekly</changefreq>'.PHP_EOL;
             $sitemap .= '    <priority>0.8</priority>'.PHP_EOL;
             $sitemap .= '  </url>'.PHP_EOL;
@@ -68,7 +68,7 @@ class BangunSitemapSEO extends Command
         foreach ($berita as $b) {
             $sitemap .= '  <url>'.PHP_EOL;
             $sitemap .= '    <loc>'.url('/berita/'.$b->slug).'</loc>'.PHP_EOL;
-            $sitemap .= '    <lastmod>'.$b->updated_at->toAtomString().'</lastmod>'.PHP_EOL;
+            $sitemap .= '    <lastmod>'.$b->diperbarui_pada->toAtomString().'</lastmod>'.PHP_EOL;
             $sitemap .= '    <changefreq>monthly</changefreq>'.PHP_EOL;
             $sitemap .= '    <priority>0.6</priority>'.PHP_EOL;
             $sitemap .= '  </url>'.PHP_EOL;
