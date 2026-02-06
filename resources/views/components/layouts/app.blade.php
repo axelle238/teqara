@@ -146,5 +146,6 @@
     <!-- Global Feedback Components -->
     <x-ui.notifikasi-toast />
     @livewireScripts
+    <livewire:komponen.keranjang-preview />
 </body>
 </html>

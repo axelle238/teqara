@@ -3,9 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Kategori;
-use App\Models\Pesanan;
 use App\Models\Produk;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 /**
@@ -16,9 +14,9 @@ class Beranda extends Component
 {
     public function render()
     {
-        // Ambil Konten Halaman Hero
-        $hero = \Illuminate\Support\Facades\Cache::remember('konten_hero', 60, function () {
-            return \App\Models\KontenHalaman::where('bagian', 'hero_section')->first();
+        // Ambil Semua Blok Konten CMS (Hero, Promo, Fitur)
+        $semuaKonten = \Illuminate\Support\Facades\Cache::remember('konten_halaman_all', 60, function () {
+            return \App\Models\KontenHalaman::orderBy('urutan')->get()->groupBy('bagian');
         });
 
         // Cache Kategori (60 Menit)
@@ -30,46 +28,25 @@ class Beranda extends Component
         $produkUnggulan = \Illuminate\Support\Facades\Cache::remember('beranda_produk_unggulan', 15, function () {
             return Produk::with(['kategori', 'gambar'])
                 ->where('status', 'aktif')
-                ->orderBy('rating_rata_rata', 'desc')
-                ->latest()
+                ->latest() // Menampilkan produk terbaru sebagai unggulan default
+                ->take(12)
+                ->get();
+        });
+
+        // Cache Produk Terlaris (Berdasarkan rating/best seller)
+        $produkTerlaris = \Illuminate\Support\Facades\Cache::remember('beranda_produk_terlaris', 60, function () {
+            return Produk::with(['kategori', 'gambar'])
+                ->where('status', 'aktif')
+                ->orderByDesc('rating_rata_rata')
                 ->take(8)
                 ->get();
         });
 
-        // Penjualan Kilat Aktif
-        $penjualanKilat = \Illuminate\Support\Facades\Cache::remember('penjualan_kilat_aktif', 60, function () {
-            return DB::table('penjualan_kilat')
-                ->where('aktif', true)
-                ->where('waktu_mulai', '<=', now())
-                ->where('waktu_selesai', '>=', now())
-                ->first();
-        });
-
-        // Statistik Beranda
-        $statistik = \Illuminate\Support\Facades\Cache::remember('beranda_statistik', 5, function () {
-            return [
-                'transaksi_sukses' => Pesanan::where('status_pembayaran', 'lunas')->count() + 1250,
-                'produk_aktif' => Produk::where('status', 'aktif')->count(),
-                'pelanggan_puas' => 850,
-            ];
-        });
-
-        // Berita & Informasi Terbaru
-        $beritaTerbaru = \Illuminate\Support\Facades\Cache::remember('beranda_berita', 30, function () {
-            return \App\Models\Berita::with('penulis')
-                ->where('status', 'publikasi')
-                ->latest()
-                ->take(3)
-                ->get();
-        });
-
-        return view('livewire\Beranda', [
-            'hero' => $hero,
+        return view('livewire.beranda', [
+            'konten' => $semuaKonten,
             'kategori' => $kategori,
             'produkUnggulan' => $produkUnggulan,
-            'penjualanKilat' => $penjualanKilat,
-            'statistik' => $statistik,
-            'beritaTerbaru' => $beritaTerbaru,
+            'produkTerlaris' => $produkTerlaris,
         ])->layout('components.layouts.app');
     }
 }

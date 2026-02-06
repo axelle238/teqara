@@ -29,6 +29,12 @@ class Katalog extends Component
     #[Url(as: 'stok')]
     public $filterStok = false;
 
+    #[Url(as: 'min')]
+    public $hargaMin = null;
+
+    #[Url(as: 'max')]
+    public $hargaMax = null;
+
     public function updated($property)
     {
         if ($property !== 'page') {
@@ -38,7 +44,7 @@ class Katalog extends Component
 
     public function resetFilter()
     {
-        $this->reset(['cari', 'filterKategori', 'filterMerek', 'urutkan', 'filterStok']);
+        $this->reset(['cari', 'filterKategori', 'filterMerek', 'urutkan', 'filterStok', 'hargaMin', 'hargaMax']);
         $this->resetPage();
     }
 
@@ -76,6 +82,14 @@ class Katalog extends Component
 
         if ($this->filterStok) {
             $query->where('stok', '>', 0);
+        }
+
+        if ($this->hargaMin) {
+            $query->where('harga_jual', '>=', $this->hargaMin);
+        }
+
+        if ($this->hargaMax) {
+            $query->where('harga_jual', '<=', $this->hargaMax);
         }
 
         switch ($this->urutkan) {
