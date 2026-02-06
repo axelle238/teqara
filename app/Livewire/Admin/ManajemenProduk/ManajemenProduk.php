@@ -86,7 +86,8 @@ class ManajemenProduk extends Component
         ];
 
         if ($this->gambar_baru) {
-            $data['gambar_utama'] = $this->gambar_baru->temporaryUrl();
+            $path = $this->gambar_baru->store('produk', 'public');
+            $data['gambar_utama'] = '/storage/' . $path;
         }
 
         Produk::create($data);
