@@ -6,14 +6,14 @@
             <p class="text-slate-500 text-sm">Kelola informasi, varian, dan media produk secara detail.</p>
         </div>
         <div class="flex gap-3">
-            <a href="/admin/produk/katalog" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Batal</a>
+            <a href="{{ route('admin.produk.katalog') }}" wire:navigate class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition">Batal</a>
             <button wire:click="simpan" class="px-6 py-2 bg-cyan-600 text-white rounded-xl text-sm font-bold hover:bg-cyan-700 shadow-lg shadow-cyan-600/30 transition">Simpan Produk</button>
         </div>
     </div>
 
     <!-- Tabs Navigation -->
     <div class="mb-6 border-b border-slate-200">
-        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+        <nav class="-mb-px flex space-x-8 overflow-x-auto custom-scrollbar" aria-label="Tabs">
             <button wire:click="$set('activeTab', 'info')" class="{{ $activeTab === 'info' ? 'border-cyan-500 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-bold text-sm transition">
                 Informasi Dasar
             </button>

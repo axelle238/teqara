@@ -13,17 +13,21 @@ use Livewire\WithPagination;
 /**
  * Class ManajemenSeri
  * Tujuan: Otoritas pelacakan identitas unit (IMEI/Serial Number) untuk akurasi inventaris tinggi.
+ * Arsitektur: 100% Full Page SPA (Tanpa Slide Over/Modal).
  */
 class ManajemenSeri extends Component
 {
     use WithPagination;
+
+    // State Halaman
+    public $tampilkanForm = false;
 
     // Filter State
     public $cari = '';
     public $filterStatus = ''; // tersedia, terjual, rusak, retur
     public $filterProduk = '';
 
-    // Form State (No Modal)
+    // Form State
     public $produkTerpilihId;
     public $inputSeriMassal; // Untuk input banyak seri sekaligus
 
@@ -34,10 +38,22 @@ class ManajemenSeri extends Component
         }
     }
 
+    /**
+     * Buka form registrasi seri (Halaman Penuh).
+     */
     public function bukaPanelRegistrasi($produkId = null)
     {
         $this->produkTerpilihId = $produkId;
-        $this->dispatch('open-slide-over', id: 'panel-registrasi-seri');
+        $this->tampilkanForm = true;
+    }
+
+    /**
+     * Kembali ke daftar seri.
+     */
+    public function batal()
+    {
+        $this->tampilkanForm = false;
+        $this->reset(['produkTerpilihId', 'inputSeriMassal']);
     }
 
     public function registrasiSeri()
@@ -50,7 +66,6 @@ class ManajemenSeri extends Component
             'inputSeriMassal.required' => 'Masukkan setidaknya satu nomor seri.',
         ]);
 
-        // Parsing seri (pisahkan berdasarkan baris atau koma)
         $daftarSeri = preg_split('/[
 ,]+/', $this->inputSeriMassal);
         $daftarSeri = array_map('trim', $daftarSeri);
@@ -82,8 +97,8 @@ class ManajemenSeri extends Component
             "Admin meregistrasi {$berhasil} nomor seri baru untuk unit {$produk->nama}. (Gagal: {$gagal})"
         );
 
-        $this->reset(['inputSeriMassal']);
-        $this->dispatch('close-slide-over', id: 'panel-registrasi-seri');
+        $this->tampilkanForm = false;
+        $this->reset(['inputSeriMassal', 'produkTerpilihId']);
         $this->dispatch('notifikasi', [
             'tipe' => 'sukses', 
             'pesan' => "Otorisasi berhasil: {$berhasil} unit terdaftar. Database stok disinkronkan."

@@ -9,7 +9,7 @@
             <h1 class="text-5xl font-black text-slate-900 tracking-tighter uppercase leading-none">MITRA <span class="text-cyan-600">PEMASOK</span></h1>
             <p class="text-slate-500 font-medium text-lg">Kelola basis data vendor, kontrak, dan informasi kontak pemasok utama.</p>
         </div>
-        <button wire:click="tambahPemasok" class="px-8 py-4 bg-cyan-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-cyan-700 transition-all shadow-xl shadow-cyan-500/20 flex items-center gap-3">
+        <button onclick="window.location.href='{{ route('admin.logistik.pemasok.tambah') }}'" class="px-8 py-4 bg-cyan-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-cyan-700 transition-all shadow-xl shadow-cyan-500/20 flex items-center gap-3">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
             Registrasi Vendor
         </button>
@@ -65,9 +65,9 @@
                             </span>
                         </td>
                         <td class="px-10 py-6 text-right">
-                            <button wire:click="edit({{ $p->id }})" class="px-6 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-sm">
+                            <a href="{{ route('admin.logistik.pemasok.edit', $p->id) }}" wire:navigate class="inline-block px-6 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-sm">
                                 Kelola Profil
-                            </button>
+                            </a>
                         </td>
                     </tr>
                     @empty
@@ -78,73 +78,5 @@
         </div>
         <div class="p-10 border-t border-slate-50">{{ $pemasok->links() }}</div>
     </div>
-
-    <!-- Panel Form -->
-    <x-ui.panel-geser id="form-pemasok" judul="PROFIL VENDOR">
-        <form wire:submit.prevent="simpan" class="space-y-8 p-2">
-            <div class="space-y-6">
-                <div class="flex items-center gap-3">
-                    <span class="w-8 h-1 bg-cyan-600 rounded-full"></span>
-                    <p class="text-[10px] font-black text-cyan-600 uppercase tracking-[0.3em]">Data Korporat</p>
-                </div>
-                
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Nama Perusahaan</label>
-                    <input wire:model="nama_perusahaan" type="text" class="w-full rounded-2xl border-none bg-slate-50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-4 focus:ring-cyan-500/10">
-                    @error('nama_perusahaan') <span class="text-rose-500 text-[10px] font-bold">{{ $message }}</span> @enderror
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Kode Vendor</label>
-                        <input wire:model="kode_pemasok" type="text" class="w-full rounded-2xl border-none bg-slate-50 px-6 py-4 text-sm font-black text-cyan-600 focus:ring-4 focus:ring-cyan-500/10 uppercase">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">NPWP</label>
-                        <input wire:model="npwp" type="text" class="w-full rounded-2xl border-none bg-slate-50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-4 focus:ring-cyan-500/10">
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Alamat Kantor</label>
-                    <textarea wire:model="alamat" rows="3" class="w-full rounded-2xl border-none bg-slate-50 px-6 py-4 text-sm font-medium text-slate-700 focus:ring-4 focus:ring-cyan-500/10"></textarea>
-                </div>
-            </div>
-
-            <div class="space-y-6 pt-6 border-t border-slate-100">
-                <div class="flex items-center gap-3">
-                    <span class="w-8 h-1 bg-indigo-600 rounded-full"></span>
-                    <p class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em]">Kontak & PIC</p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Penanggung Jawab</label>
-                        <input wire:model="penanggung_jawab" type="text" class="w-full rounded-2xl border-none bg-slate-50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-4 focus:ring-indigo-500/10">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Telepon</label>
-                        <input wire:model="telepon" type="text" class="w-full rounded-2xl border-none bg-slate-50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-4 focus:ring-indigo-500/10">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Email</label>
-                        <input wire:model="email" type="email" class="w-full rounded-2xl border-none bg-slate-50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-4 focus:ring-indigo-500/10">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Website</label>
-                        <input wire:model="website" type="text" class="w-full rounded-2xl border-none bg-slate-50 px-6 py-4 text-sm font-bold text-slate-900 focus:ring-4 focus:ring-indigo-500/10">
-                    </div>
-                </div>
-            </div>
-
-            <div class="pt-6">
-                <button type="submit" class="w-full py-5 bg-slate-900 text-white rounded-3xl font-black text-xs uppercase tracking-[0.2em] hover:bg-cyan-600 transition-all shadow-xl shadow-cyan-500/20">
-                    SIMPAN DATA VENDOR
-                </button>
-            </div>
-        </form>
-    </x-ui.panel-geser>
 </div>
+

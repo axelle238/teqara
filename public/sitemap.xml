@@ -2,26 +2,44 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>http://localhost:8000</loc>
-    <lastmod>2026-02-05</lastmod>
+    <lastmod>2026-02-06T15:45:51+00:00</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>http://localhost:8000/katalog</loc>
-    <lastmod>2026-02-05</lastmod>
+    <lastmod>2026-02-06T15:45:51+00:00</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.8</priority>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>http://localhost:8000/berita</loc>
+    <lastmod>2026-02-06T15:45:51+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>http://localhost:8000/bantuan</loc>
+    <lastmod>2026-02-06T15:45:51+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>http://localhost:8000/masuk</loc>
+    <lastmod>2026-02-06T15:45:51+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
   </url>
   <url>
     <loc>http://localhost:8000/produk/asus-rog-strix-g16-2024</loc>
-    <lastmod>2026-02-05</lastmod>
+    <lastmod>2026-02-05T16:28:51+00:00</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>http://localhost:8000/produk/iphone-15-pro-max</loc>
-    <lastmod>2026-02-05</lastmod>
+    <lastmod>2026-02-05T16:28:52+00:00</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.8</priority>
   </url>
 </urlset>

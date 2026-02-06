@@ -1,135 +1,164 @@
-<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+<div class="animate-in fade-in duration-500 pb-20">
     
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Jejak Audit Digital</h1>
-            <p class="text-slate-500 text-sm mt-1">Rekaman forensik aktivitas seluruh pengguna sistem.</p>
-        </div>
-        <div class="relative w-full sm:w-64">
-            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
-            <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari Aksi, Target, atau Pesan..." class="w-full pl-9 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all shadow-sm">
-        </div>
-    </div>
+    @if(!$tampilkanDetail)
+        <!-- TAMPILAN 1: PUSAT LOG AKTIVITAS (FULL PAGE LIST) -->
+        <div class="space-y-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50">
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                        <span class="text-[9px] font-black text-rose-600 uppercase tracking-widest">Keamanan & Audit</span>
+                    </div>
+                    <h1 class="text-3xl font-black text-slate-900 tracking-tight uppercase">Jejak Audit Digital</h1>
+                    <p class="text-slate-500 font-medium">Monitoring forensik seluruh aktivitas administratif dalam ekosistem Teqara.</p>
+                </div>
+            </div>
 
-    <!-- Timeline Table -->
-    <div class="bg-white border border-slate-100 rounded-[24px] shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
-                <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-black tracking-wider">
-                    <tr>
-                        <th class="px-6 py-4">Waktu Kejadian</th>
-                        <th class="px-6 py-4">Aktor</th>
-                        <th class="px-6 py-4">Aktivitas</th>
-                        <th class="px-6 py-4">Target Data</th>
-                        <th class="px-6 py-4 text-right">Opsi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    @forelse($logs as $log)
-                    <tr class="hover:bg-slate-50 transition-colors cursor-pointer group" wire:click="lihatDetail({{ $log->id }})">
-                        <td class="px-6 py-4 text-xs text-slate-500 font-mono">
-                            {{ $log->waktu->format('d/m/Y H:i:s') }}
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-xs font-bold text-indigo-600">
-                                    {{ substr($log->pengguna->nama ?? 'S', 0, 1) }}
-                                </div>
-                                <span class="font-bold text-slate-700 text-xs">{{ $log->pengguna->nama ?? 'Sistem Otomatis' }}</span>
+            <!-- Toolbar Search -->
+            <div class="bg-white p-4 rounded-[30px] border border-indigo-50 flex items-center px-6 gap-4 shadow-sm">
+                <i class="fa-solid fa-magnifying-glass text-slate-300"></i>
+                <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari aksi, target, atau pesan naratif..." class="flex-1 bg-transparent border-none text-sm font-bold text-slate-700 focus:ring-0 placeholder:text-slate-300">
+            </div>
+
+            <!-- Table Log -->
+            <div class="bg-white rounded-[45px] shadow-sm border border-indigo-50 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="bg-slate-50/50">
+                                <th class="px-10 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Waktu & Otoritas</th>
+                                <th class="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Kategori Aksi</th>
+                                <th class="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Pesan Naratif</th>
+                                <th class="px-10 py-6 text-right"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            @forelse($logs as $log)
+                            <tr class="group hover:bg-slate-50 transition-all">
+                                <td class="px-10 py-6 whitespace-nowrap">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 group-hover:bg-white group-hover:text-indigo-600 transition-colors">
+                                            {{ substr($log->pengguna->nama ?? 'S', 0, 1) }}
+                                        </div>
+                                        <div class="flex flex-col">
+                                            <span class="text-xs font-black text-slate-800 uppercase">{{ $log->pengguna->nama ?? 'Sistem' }}</span>
+                                            <span class="text-[9px] font-bold text-slate-400 uppercase">{{ $log->waktu->translatedFormat('d M Y • H:i') }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-6">
+                                    <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border bg-white border-slate-200 text-slate-500 group-hover:border-indigo-200 group-hover:text-indigo-600 transition-colors">
+                                        {{ str_replace('_', ' ', $log->aksi) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-6">
+                                    <p class="text-xs font-bold text-slate-500 leading-relaxed line-clamp-1 italic">"{{ $log->pesan_naratif }}"</p>
+                                </td>
+                                <td class="px-10 py-6 text-right">
+                                    <button wire:click="lihatDetail({{ $log->id }})" class="px-6 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all shadow-sm">ANALISIS DATA</button>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr><td colspan="4" class="px-10 py-20 text-center text-slate-400 font-bold text-xs uppercase tracking-widest">Belum ada rekaman aktivitas digital.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-10 border-t border-slate-50">{{ $logs->links() }}</div>
+            </div>
+        </div>
+    @else
+        <!-- TAMPILAN 2: ANALISIS FORENSIK (FULL PAGE FORM) -->
+        <div class="space-y-8 animate-in slide-in-from-right-8 duration-500">
+            <!-- Header Analisis -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50">
+                <div class="flex items-center gap-6">
+                    <button wire:click="kembali" class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all shadow-sm">
+                        <i class="fa-solid fa-arrow-left text-xl"></i>
+                    </button>
+                    <div class="space-y-1">
+                        <h1 class="text-3xl font-black text-slate-900 tracking-tight uppercase">Rincian Forensik Log</h1>
+                        <p class="text-slate-500 font-medium">Analisis metadata aktivitas digital ID: #{{ $logTerpilih->id }}</p>
+                    </div>
+                </div>
+                <div class="flex gap-3 text-xs font-black text-slate-400 uppercase tracking-widest">
+                    {{ $logTerpilih->waktu->translatedFormat('l, d F Y H:i:s') }} WIB
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                <!-- Narasi & Objek -->
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-10">
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Narasi Aktivitas</label>
+                            <div class="bg-slate-50 p-8 rounded-[35px] border border-slate-100">
+                                <p class="text-lg font-black text-slate-700 leading-relaxed italic">"{{ $logTerpilih->pesan_naratif }}"</p>
                             </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            @php
-                                $color = match(true) {
-                                    str_contains($log->aksi, 'hapus') => 'text-rose-600 bg-rose-50 border-rose-100',
-                                    str_contains($log->aksi, 'buat') || str_contains($log->aksi, 'create') => 'text-emerald-600 bg-emerald-50 border-emerald-100',
-                                    str_contains($log->aksi, 'login') => 'text-indigo-600 bg-indigo-50 border-indigo-100',
-                                    default => 'text-slate-600 bg-slate-50 border-slate-100'
-                                };
-                            @endphp
-                            <span class="inline-flex px-2 py-1 rounded border text-[10px] font-black uppercase tracking-widest {{ $color }}">
-                                {{ $log->aksi }}
-                            </span>
-                            <p class="text-xs text-slate-500 mt-1 truncate max-w-xs">{{ $log->pesan_naratif }}</p>
-                        </td>
-                        <td class="px-6 py-4 font-mono text-xs font-bold text-slate-600">
-                            {{ $log->target }}
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="text-slate-400 group-hover:text-indigo-600 transition-colors">
-                                <i class="fa-solid fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="px-6 py-12 text-center text-slate-400">
-                            Tidak ada aktivitas tercatat.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50">
-            {{ $logs->links() }}
-        </div>
-    </div>
+                        </div>
 
-    <!-- Detail Slide Over -->
-    <x-ui.panel-geser id="detail-log" judul="Detail Forensik">
-        @if($logTerpilih)
-        <div class="space-y-6">
-            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Aktor</p>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-500">
-                        {{ substr($logTerpilih->pengguna->nama ?? 'S', 0, 1) }}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-2">
+                                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Kategori Aksi</label>
+                                <div class="bg-white border-2 border-indigo-50 px-6 py-4 rounded-2xl text-sm font-black text-indigo-600 uppercase tracking-widest">{{ $logTerpilih->aksi }}</div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Target Objek</label>
+                                <div class="bg-white border-2 border-slate-50 px-6 py-4 rounded-2xl text-sm font-black text-slate-800 uppercase tracking-widest">{{ $logTerpilih->target }}</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 pt-8 border-t border-slate-50">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Metadata Teknis (Snapshot)</label>
+                            <div class="bg-slate-900 p-8 rounded-[35px] shadow-inner overflow-x-auto">
+                                <pre class="text-xs text-emerald-400 font-mono leading-relaxed">{{ json_encode($logTerpilih->meta_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <p class="font-bold text-slate-900">{{ $logTerpilih->pengguna->nama ?? 'Sistem Otomatis' }}</p>
-                        <p class="text-xs text-slate-500">{{ $logTerpilih->pengguna->email ?? 'System' }}</p>
+                </div>
+
+                <!-- Informasi Aktor -->
+                <div class="space-y-8">
+                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-8 text-center">
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Otoritas Eksekutor</label>
+                            <div class="relative inline-block">
+                                <div class="w-24 h-24 rounded-[35px] bg-indigo-600 flex items-center justify-center text-3xl font-black text-white shadow-2xl shadow-indigo-500/30">
+                                    {{ substr($logTerpilih->pengguna->nama ?? 'S', 0, 1) }}
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">{{ $logTerpilih->pengguna->nama ?? 'Sistem Otomatis' }}</h3>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{{ $logTerpilih->pengguna->peran ?? 'Sistem' }}</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-8 border-t border-slate-50 space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Jejak Koneksi</label>
+                            <div class="bg-slate-50 p-6 rounded-[35px] border border-slate-100 text-left space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-network-wired text-indigo-400 text-xs w-4 text-center"></i>
+                                    <span class="text-[10px] font-black text-slate-600 font-mono tracking-widest">{{ $logTerpilih->meta_data['ip_address'] ?? '0.0.0.0' }}</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <i class="fa-solid fa-laptop-code text-indigo-400 text-xs w-4 text-center"></i>
+                                    <span class="text-[10px] font-black text-slate-600 truncate">{{ $logTerpilih->meta_data['user_agent'] ?? 'Unknown Agent' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Integritas Data -->
+                    <div class="bg-rose-500 p-10 rounded-[50px] text-white shadow-2xl shadow-rose-500/30 space-y-4 relative overflow-hidden group">
+                        <i class="fa-solid fa-shield-virus text-4xl opacity-20 absolute -right-4 -top-4 group-hover:scale-150 transition-transform duration-1000"></i>
+                        <h4 class="text-lg font-black uppercase tracking-tight">Kepatuhan Audit</h4>
+                        <p class="text-xs font-bold text-rose-50 leading-relaxed opacity-90">
+                            "Rekaman log aktivitas bersifat permanen dan tidak dapat dimanipulasi untuk menjaga integritas data dan keamanan perusahaan."
+                        </p>
                     </div>
                 </div>
             </div>
-
-            <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Metadata</p>
-                <div class="bg-slate-900 text-slate-300 p-4 rounded-xl font-mono text-xs overflow-x-auto">
-                    <div class="grid grid-cols-[100px_1fr] gap-2 mb-2">
-                        <span class="text-slate-500">ID Log:</span>
-                        <span>#LOG-{{ str_pad($logTerpilih->id, 8, '0', STR_PAD_LEFT) }}</span>
-                    </div>
-                    <div class="grid grid-cols-[100px_1fr] gap-2 mb-2">
-                        <span class="text-slate-500">Timestamp:</span>
-                        <span>{{ $logTerpilih->waktu->format('Y-m-d H:i:s.u') }}</span>
-                    </div>
-                    <div class="grid grid-cols-[100px_1fr] gap-2 mb-2">
-                        <span class="text-slate-500">Aksi:</span>
-                        <span class="text-white font-bold">{{ $logTerpilih->aksi }}</span>
-                    </div>
-                    <div class="grid grid-cols-[100px_1fr] gap-2">
-                        <span class="text-slate-500">Target:</span>
-                        <span class="text-white font-bold">{{ $logTerpilih->target }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Pesan Naratif</p>
-                <div class="p-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-700 leading-relaxed">
-                    {{ $logTerpilih->pesan_naratif }}
-                </div>
-            </div>
-
-            @if($logTerpilih->meta_data)
-            <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Perubahan Data (JSON)</p>
-                <pre class="bg-slate-50 border border-slate-200 p-4 rounded-xl text-[10px] text-slate-600 overflow-x-auto font-mono leading-relaxed">{{ json_encode(json_decode($logTerpilih->meta_data), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre>
-            </div>
-            @endif
         </div>
-        @endif
-    </x-ui.panel-geser>
+    @endif
+
 </div>

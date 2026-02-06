@@ -10,27 +10,48 @@ use Livewire\WithPagination;
 /**
  * Class DaftarLog
  * Tujuan: Rekaman forensik aktivitas digital seluruh aktor sistem.
+ * Arsitektur: 100% Full Page SPA (Tanpa Slide Over/Modal).
  */
 class DaftarLog extends Component
 {
     use WithPagination;
 
+    // State Halaman
+    public $tampilkanDetail = false;
+
+    // Filter
     public $cari = '';
 
+    // Properti Model
     public $logTerpilih;
 
+    /**
+     * Reset pagination saat pencarian berubah.
+     */
     public function updatedCari()
     {
         $this->resetPage();
     }
 
+    /**
+     * Beralih ke tampilan detail aktivitas (Halaman Penuh).
+     */
     public function lihatDetail($id)
     {
-        $this->logTerpilih = LogAktivitas::with('pengguna')->find($id);
-        $this->dispatch('open-slide-over', id: 'detail-log');
+        $this->logTerpilih = LogAktivitas::with('pengguna')->findOrFail($id);
+        $this->tampilkanDetail = true;
     }
 
-    #[Title('Jejak Audit Digital - Admin Teqara')]
+    /**
+     * Kembali ke daftar log utama.
+     */
+    public function kembali()
+    {
+        $this->tampilkanDetail = false;
+        $this->reset(['logTerpilih']);
+    }
+
+    #[Title('Log Jejak Digital - Teqara')]
     public function render()
     {
         $logs = LogAktivitas::with('pengguna')

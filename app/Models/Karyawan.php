@@ -19,6 +19,13 @@ class Karyawan extends Model
 
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return [
+            'tanggal_bergabung' => 'date',
+        ];
+    }
+
     public function pengguna(): BelongsTo
     {
         return $this->belongsTo(Pengguna::class, 'pengguna_id');

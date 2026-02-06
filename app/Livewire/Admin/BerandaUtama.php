@@ -2,53 +2,89 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\Berita;
 use App\Models\DetailPesanan;
+use App\Models\Karyawan;
+use App\Models\KontenHalaman;
 use App\Models\LogAktivitas;
+use App\Models\Pemasok;
+use App\Models\Pengguna;
 use App\Models\Pesanan;
 use App\Models\Produk;
+use App\Models\TiketBantuan;
+use App\Models\Ulasan;
+use App\Models\Voucher;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 /**
  * Class BerandaUtama
- * Tujuan: Beranda pusat komando sistem dengan statistik agregat 11 pilar.
+ * Tujuan: Pusat Komando Enterprise untuk monitoring seluruh ekosistem Teqara secara real-time.
  */
 class BerandaUtama extends Component
 {
-    #[Title('Pusat Komando Enterprise - Admin Teqara')]
+    #[Title('Pusat Komando Enterprise - Teqara')]
     public function render()
     {
-        // 1. Metrik Utama (Kartu Atas)
-        $totalPendapatan = Pesanan::where('status_pembayaran', 'lunas')->sum('total_harga');
-        $totalPesanan = Pesanan::count();
-        $totalProduk = Produk::count();
-        $totalPelanggan = \App\Models\Pengguna::where('peran', 'pelanggan')->count();
-
-        // 2. Statistik Departemen (Hulu ke Hilir)
-        $statsManajemen = [
-            'stok_menipis' => Produk::where('stok', '<', 10)->count(),
-            'menunggu_bayar' => Pesanan::where('status_pembayaran', 'belum_dibayar')->count(),
-            'perlu_dikirim' => Pesanan::where('status_pesanan', 'diproses')->count(),
-            'total_karyawan' => \App\Models\Karyawan::count(),
-            'insiden_keamanan' => 0,
+        // 1. Pilar Halaman Toko
+        $statsToko = [
+            'total_konten' => KontenHalaman::count(),
+            'total_berita' => Berita::count(),
         ];
 
-        // 3. Analisis Pertumbuhan
-        $pendapatanBulanIni = Pesanan::where('status_pembayaran', 'lunas')
-            ->whereMonth('created_at', now()->month)
-            ->sum('total_harga');
+        // 2. Pilar Produk & Gadget
+        $statsProduk = [
+            'total_unit' => Produk::count(),
+            'stok_kritis' => Produk::where('stok', '<', 5)->count(),
+            'produk_aktif' => Produk::where('status', 'aktif')->count(),
+        ];
 
-        $pendapatanBulanLalu = Pesanan::where('status_pembayaran', 'lunas')
-            ->whereMonth('created_at', now()->subMonth()->month)
-            ->sum('total_harga');
+        // 3. Pilar Pesanan
+        $statsPesanan = [
+            'hari_ini' => Pesanan::whereDate('created_at', now())->count(),
+            'perlu_diproses' => Pesanan::where('status_pesanan', 'menunggu')->count(),
+        ];
 
-        $pertumbuhan = $pendapatanBulanLalu > 0
-            ? (($pendapatanBulanIni - $pendapatanBulanLalu) / $pendapatanBulanLalu) * 100
-            : 100;
+        // 4. Pilar Transaksi & Keuangan
+        $statsKeuangan = [
+            'pendapatan_hari_ini' => Pesanan::whereDate('created_at', now())->where('status_pembayaran', 'lunas')->sum('total_harga'),
+            'verifikasi_tertunda' => Pesanan::where('status_pembayaran', 'menunggu_verifikasi')->count(),
+            'voucher_aktif' => Voucher::where('status', 'aktif')->count(),
+        ];
 
-        // 4. Tren Penjualan Harian
-        $trenPenjualan = [];
+        // 5. Pilar Customer Service
+        $statsCS = [
+            'tiket_terbuka' => TiketBantuan::where('status', 'terbuka')->count(),
+            'ulasan_baru' => Ulasan::whereDate('created_at', '>=', now()->subDays(7))->count(),
+        ];
+
+        // 6. Pilar Logistik & Vendor
+        $statsLogistik = [
+            'pengiriman_aktif' => Pesanan::where('status_pesanan', 'dikirim')->count(),
+            'total_vendor' => Pemasok::count(),
+        ];
+
+        // 7. Pilar Pelanggan (CRM)
+        $statsPelanggan = [
+            'total_member' => Pengguna::where('peran', 'pelanggan')->count(),
+            'member_baru' => Pengguna::where('peran', 'pelanggan')->whereMonth('created_at', now()->month)->count(),
+        ];
+
+        // 8. Pilar Pegawai (HRD)
+        $statsHRD = [
+            'total_staf' => Karyawan::count(),
+            'staf_aktif' => Karyawan::where('status', 'aktif')->count(),
+        ];
+
+        // 9. Pilar Keamanan
+        $statsKeamanan = [
+            'log_hari_ini' => LogAktivitas::whereDate('waktu', now())->count(),
+            'aksi_kritis' => LogAktivitas::whereIn('aksi', ['delete', 'update_keamanan'])->count(),
+        ];
+
+        // 10. Grafik Tren Pendapatan (7 Hari Terakhir)
+        $grafikTren = [];
         $labelHari = [];
         for ($i = 6; $i >= 0; $i--) {
             $tanggal = now()->subDays($i);
@@ -56,54 +92,28 @@ class BerandaUtama extends Component
                 ->where('status_pembayaran', 'lunas')
                 ->sum('total_harga');
 
-            $trenPenjualan[] = $total;
+            $grafikTren[] = $total;
             $labelHari[] = $tanggal->translatedFormat('d M');
         }
 
-        // 5. Kategori Terlaris
-        $kategoriTerlaris = DetailPesanan::select('kategori.nama', DB::raw('SUM(detail_pesanan.subtotal) as total_pendapatan'))
-            ->join('produk', 'detail_pesanan.produk_id', '=', 'produk.id')
-            ->join('kategori', 'produk.kategori_id', '=', 'kategori.id')
-            ->join('pesanan', 'detail_pesanan.pesanan_id', '=', 'pesanan.id')
-            ->where('pesanan.status_pembayaran', 'lunas')
-            ->groupBy('kategori.id', 'kategori.nama')
-            ->orderByDesc('total_pendapatan')
-            ->take(5)
-            ->get();
-
-        // 6. Aktivitas & Pesanan Terbaru
-        $pesananTerbaru = Pesanan::with('pengguna')->latest()->take(5)->get();
-        $logTerbaru = LogAktivitas::with('pengguna')->latest('waktu')->take(5)->get();
-
-        $targetBulanIni = $pendapatanBulanLalu * 1.10; // Target tumbuh 10%
-        $persentaseTarget = $targetBulanIni > 0 ? ($pendapatanBulanIni / $targetBulanIni) * 100 : 0;
-
-        // 7. Efisiensi Sistem (Rasio Pesanan Sukses vs Batal)
-        $totalPesananSelesai = Pesanan::where('status_pesanan', 'selesai')->count();
-        $totalPesananBatal = Pesanan::where('status_pesanan', 'batal')->count();
-        $totalSemua = $totalPesananSelesai + $totalPesananBatal;
-        $rasioSukses = $totalSemua > 0 ? ($totalPesananSelesai / $totalSemua) * 100 : 100;
+        // 11. Aktivitas Terbaru (Narasi Manusiawi)
+        $aktivitasTerbaru = LogAktivitas::with('pengguna')->latest('waktu')->take(10)->get();
 
         return view('livewire.admin.beranda-utama', [
-            'metrik' => [
-                'pendapatan' => $totalPendapatan,
-                'pesanan' => $totalPesanan,
-                'produk' => $totalProduk,
-                'pelanggan' => $totalPelanggan,
-                'pertumbuhan' => $pertumbuhan,
-                'target_pencapaian' => $persentaseTarget,
-                'target_nominal' => $targetBulanIni,
-                'rasio_sukses' => $rasioSukses,
-            ],
-            'statsManajemen' => $statsManajemen,
+            'toko' => $statsToko,
+            'produk' => $statsProduk,
+            'pesanan' => $statsPesanan,
+            'keuangan' => $statsKeuangan,
+            'cs' => $statsCS,
+            'logistik' => $statsLogistik,
+            'pelanggan' => $statsPelanggan,
+            'hrd' => $statsHRD,
+            'keamanan' => $statsKeamanan,
             'grafik' => [
-                'tren_data' => $trenPenjualan,
-                'tren_label' => $labelHari,
-                'kategori_label' => $kategoriTerlaris->pluck('nama'),
-                'kategori_data' => $kategoriTerlaris->pluck('total_pendapatan'),
+                'data' => $grafikTren,
+                'label' => $labelHari,
             ],
-            'pesananTerbaru' => $pesananTerbaru,
-            'logTerbaru' => $logTerbaru,
+            'aktivitas' => $aktivitasTerbaru,
         ])->layout('components.layouts.admin');
     }
 }

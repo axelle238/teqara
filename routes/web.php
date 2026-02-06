@@ -100,12 +100,15 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     Route::prefix('logistik')->group(function () {
         Route::get('/beranda', \App\Livewire\Admin\ManajemenLogistik\BerandaLogistik::class)->name('admin.logistik.beranda');
         Route::get('/pemasok', \App\Livewire\Admin\ManajemenProduk\Pemasok\DaftarPemasok::class)->name('admin.logistik.pemasok');
+        Route::get('/pemasok/baru', \App\Livewire\Admin\ManajemenProduk\Pemasok\FormPemasok::class)->name('admin.logistik.pemasok.tambah');
+        Route::get('/pemasok/edit/{id}', \App\Livewire\Admin\ManajemenProduk\Pemasok\FormPemasok::class)->name('admin.logistik.pemasok.edit');
     });
 
     // Pilar 7: Manajemen Pelanggan (CRM)
     Route::prefix('pelanggan')->group(function () {
         Route::get('/beranda', \App\Livewire\Admin\ManajemenPelanggan\BerandaPelanggan::class)->name('admin.pelanggan.beranda');
         Route::get('/daftar', \App\Livewire\Admin\ManajemenPelanggan\DaftarMember::class)->name('admin.pelanggan.daftar');
+        Route::get('/ulasan', \App\Livewire\Admin\ManajemenPelanggan\ManajemenUlasan::class)->name('admin.pelanggan.ulasan');
     });
 
     // Pilar 8: Manajemen Pegawai & Peran (SDM)
@@ -134,5 +137,14 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
 
     // Data Master
     Route::get('/kategori', \App\Livewire\Admin\ManajemenProduk\DaftarKategori::class)->name('admin.kategori');
+    Route::get('/kategori/tambah', \App\Livewire\Admin\ManajemenProduk\Kategori\FormKategori::class)->name('admin.kategori.tambah');
+    Route::get('/kategori/edit/{id}', \App\Livewire\Admin\ManajemenProduk\Kategori\FormKategori::class)->name('admin.kategori.edit');
     Route::get('/merek', \App\Livewire\Admin\ManajemenProduk\DaftarMerek::class)->name('admin.merek');
+    Route::get('/merek/tambah', \App\Livewire\Admin\ManajemenProduk\Merek\FormMerek::class)->name('admin.merek.tambah');
+    Route::get('/merek/edit/{id}', \App\Livewire\Admin\ManajemenProduk\Merek\FormMerek::class)->name('admin.merek.edit');
+});
+
+// Rute Mitra B2B (Supplier)
+Route::middleware(['auth', \App\Http\Middleware\CekPeranMitra::class])->prefix('mitra')->group(function () {
+    Route::get('/beranda', \App\Livewire\Mitra\Beranda::class)->name('mitra.beranda');
 });

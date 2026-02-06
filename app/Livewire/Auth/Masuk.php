@@ -36,6 +36,10 @@ class Masuk extends Component
                 return redirect()->intended('/admin/beranda');
             }
 
+            if (auth()->user()->peran === 'pemasok') {
+                return redirect()->intended('/mitra/beranda');
+            }
+
             return redirect()->intended('/profil');
         }
 

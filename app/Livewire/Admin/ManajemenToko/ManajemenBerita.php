@@ -13,23 +13,25 @@ use Livewire\WithPagination;
 /**
  * Class ManajemenBerita
  * Tujuan: Manajemen konten berita dan artikel teknologi untuk pelanggan.
+ * Arsitektur: 100% Full Page SPA (Tanpa Slide Over/Modal).
  */
 class ManajemenBerita extends Component
 {
     use WithFileUploads, WithPagination;
 
+    // State Halaman
+    public $tampilkanForm = false;
+
+    // Properti Model
     public $berita_id;
-
     public $judul;
-
     public $ringkasan;
-
     public $konten;
-
     public $status = 'draft';
-
     public $gambar_baru;
+    public $gambar_lama;
 
+    // Filter
     public $cari = '';
 
     protected $rules = [
@@ -38,12 +40,51 @@ class ManajemenBerita extends Component
         'konten' => 'required',
     ];
 
+    protected $messages = [
+        'judul.required' => 'Judul artikel wajib diisi.',
+        'judul.min' => 'Judul minimal 10 karakter untuk optimasi SEO.',
+        'ringkasan.required' => 'Ringkasan singkat wajib diisi.',
+        'ringkasan.max' => 'Ringkasan maksimal 255 karakter.',
+        'konten.required' => 'Isi artikel tidak boleh kosong.',
+    ];
+
+    /**
+     * Beralih ke mode tambah artikel (Halaman Penuh).
+     */
     public function tambahBaru()
     {
-        $this->reset(['berita_id', 'judul', 'ringkasan', 'konten', 'status', 'gambar_baru']);
-        $this->dispatch('open-panel-form-berita');
+        $this->reset(['berita_id', 'judul', 'ringkasan', 'konten', 'status', 'gambar_baru', 'gambar_lama']);
+        $this->tampilkanForm = true;
     }
 
+    /**
+     * Beralih ke mode edit artikel (Halaman Penuh).
+     */
+    public function edit($id)
+    {
+        $berita = Berita::findOrFail($id);
+        $this->berita_id = $berita->id;
+        $this->judul = $berita->judul;
+        $this->ringkasan = $berita->ringkasan;
+        $this->konten = $berita->konten;
+        $this->status = $berita->status;
+        $this->gambar_lama = $berita->gambar_unggulan;
+
+        $this->tampilkanForm = true;
+    }
+
+    /**
+     * Membatalkan operasi dan kembali ke daftar artikel.
+     */
+    public function batal()
+    {
+        $this->tampilkanForm = false;
+        $this->reset(['berita_id', 'gambar_baru']);
+    }
+
+    /**
+     * Menyimpan data berita ke database.
+     */
     public function simpan()
     {
         $this->validate();
@@ -58,38 +99,41 @@ class ManajemenBerita extends Component
         ];
 
         if ($this->gambar_baru) {
-            $data['gambar_unggulan'] = $this->gambar_baru->temporaryUrl();
+            $path = $this->gambar_baru->store('berita', 'public');
+            $data['gambar_unggulan'] = '/storage/'.$path;
         }
 
         if ($this->berita_id) {
             $berita = Berita::find($this->berita_id);
             $berita->update($data);
-            $pesan = "Berita '{$this->judul}' berhasil diperbarui.";
+            $pesan = "Artikel '{$this->judul}' berhasil diperbarui.";
             $aksi = 'update_berita';
         } else {
             Berita::create($data);
-            $pesan = "Berita '{$this->judul}' berhasil dipublikasikan.";
+            $pesan = "Artikel '{$this->judul}' berhasil dipublikasikan.";
             $aksi = 'create_berita';
         }
 
-        LogHelper::catat($aksi, $this->judul, 'Admin '.auth()->user()->nama." {$pesan}", $data);
+        LogHelper::catat($aksi, $this->judul, $pesan, $data);
 
-        $this->dispatch('close-panel-form-berita');
+        $this->tampilkanForm = false;
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
+        $this->reset(['berita_id', 'gambar_baru']);
     }
 
-    public function edit($id)
+    /**
+     * Menghapus artikel.
+     */
+    public function hapus($id)
     {
         $berita = Berita::findOrFail($id);
-        $this->berita_id = $berita->id;
-        $this->judul = $berita->judul;
-        $this->ringkasan = $berita->ringkasan;
-        $this->konten = $berita->konten;
-        $this->status = $berita->status;
-        $this->dispatch('open-panel-form-berita');
+        $judul = $berita->judul;
+        $berita->delete();
+        LogHelper::catat('hapus_berita', $judul, "Artikel '{$judul}' telah dihapus.");
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Artikel berhasil dihapus.']);
     }
 
-    #[Title('Manajemen Berita & Info - Admin Teqara')]
+    #[Title('Manajemen Berita & Informasi - Teqara')]
     public function render()
     {
         return view('livewire.admin.manajemen-toko.manajemen-berita', [

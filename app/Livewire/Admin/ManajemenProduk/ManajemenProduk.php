@@ -15,49 +15,40 @@ use Livewire\WithPagination;
 /**
  * Class ManajemenProduk
  * Tujuan: Mengelola inventaris produk komputer dan gadget secara hulu ke hilir.
+ * Arsitektur: 100% Full Page SPA (Tanpa Slide Over/Modal).
  */
 class ManajemenProduk extends Component
 {
     use WithFileUploads, WithPagination;
 
+    // State Halaman
+    public $tampilkanForm = false;
+
     // Properti Form
     public $produk_id;
-
     public $kategori_id;
-
     public $merek_id;
-
     public $nama;
-
     public $kode_unit;
-
     public $harga_modal;
-
     public $harga_jual;
-
     public $stok;
-
-    public $berat_gram;
-
+    public $berat_gram = 1000;
     public $deskripsi_singkat;
-
     public $deskripsi_lengkap;
-
     public $status = 'aktif';
-
     public $gambar_baru;
+    public $gambar_lama;
 
     // Filter & Pencarian
     public $cari = '';
-
     public $filter_kategori = '';
-
     public $selectedProduk = [];
-
     public $selectAll = false;
 
-    // ... (rest of existing properties)
-
+    /**
+     * Sinkronisasi pilihan massal.
+     */
     public function updatedSelectAll($value)
     {
         if ($value) {
@@ -67,60 +58,47 @@ class ManajemenProduk extends Component
         }
     }
 
+    /**
+     * Penghapusan massal unit terpilih.
+     */
     public function bulkDelete()
     {
         $count = count($this->selectedProduk);
         if ($count > 0) {
             Produk::whereIn('id', $this->selectedProduk)->delete();
-            
-            LogHelper::catat(
-                'hapus_massal_produk',
-                "{$count} Produk",
-                "Admin menghapus {$count} produk sekaligus dari inventaris."
-            );
-
+            LogHelper::catat('hapus_massal_produk', "{$count} Produk", "Admin menghapus {$count} produk sekaligus dari inventaris.");
             $this->reset(['selectedProduk', 'selectAll']);
             $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "{$count} unit berhasil dihapus."]);
         }
     }
 
+    /**
+     * Pengarsipan massal unit terpilih.
+     */
     public function bulkArchive()
     {
         $count = count($this->selectedProduk);
         if ($count > 0) {
             Produk::whereIn('id', $this->selectedProduk)->update(['status' => 'arsip']);
-
-            LogHelper::catat(
-                'arsip_massal_produk',
-                "{$count} Produk",
-                "Admin mengarsipkan {$count} produk sekaligus."
-            );
-
+            LogHelper::catat('arsip_massal_produk', "{$count} Produk", "Admin mengarsipkan {$count} produk sekaligus.");
             $this->reset(['selectedProduk', 'selectAll']);
             $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "{$count} unit berhasil diarsipkan."]);
         }
     }
 
-    protected function rules()
-    {
-        return [
-            'nama' => 'required|min:5',
-            'kategori_id' => 'required|exists:kategori,id',
-            'merek_id' => 'required|exists:merek,id',
-            'kode_unit' => 'required|unique:produk,kode_unit,' . $this->produk_id,
-            'harga_modal' => 'required|numeric|min:0',
-            'harga_jual' => 'required|numeric|min:0',
-            'stok' => 'required|integer|min:0',
-        ];
-    }
-
+    /**
+     * Beralih ke mode tambah unit (Halaman Penuh).
+     */
     public function tambahBaru()
     {
-        $this->reset(['produk_id', 'kategori_id', 'merek_id', 'nama', 'kode_unit', 'harga_modal', 'harga_jual', 'stok', 'berat_gram', 'deskripsi_singkat', 'deskripsi_lengkap', 'gambar_baru']);
+        $this->reset(['produk_id', 'kategori_id', 'merek_id', 'nama', 'kode_unit', 'harga_modal', 'harga_jual', 'stok', 'berat_gram', 'deskripsi_singkat', 'deskripsi_lengkap', 'gambar_baru', 'gambar_lama']);
         $this->status = 'aktif';
-        $this->dispatch('open-panel-form-produk');
+        $this->tampilkanForm = true;
     }
 
+    /**
+     * Beralih ke mode edit unit (Halaman Penuh).
+     */
     public function edit($id)
     {
         $produk = Produk::findOrFail($id);
@@ -136,13 +114,38 @@ class ManajemenProduk extends Component
         $this->deskripsi_singkat = $produk->deskripsi_singkat;
         $this->deskripsi_lengkap = $produk->deskripsi_lengkap;
         $this->status = $produk->status;
+        $this->gambar_lama = $produk->gambar_utama;
 
-        $this->dispatch('open-panel-form-produk');
+        $this->tampilkanForm = true;
     }
 
+    /**
+     * Membatalkan operasi dan kembali ke katalog.
+     */
+    public function batal()
+    {
+        $this->tampilkanForm = false;
+        $this->reset(['produk_id', 'gambar_baru']);
+    }
+
+    /**
+     * Menyimpan data unit ke database.
+     */
     public function simpan()
     {
-        $this->validate();
+        $this->validate([
+            'nama' => 'required|min:5',
+            'kategori_id' => 'required|exists:kategori,id',
+            'merek_id' => 'required|exists:merek,id',
+            'kode_unit' => 'required|unique:produk,kode_unit,' . $this->produk_id,
+            'harga_modal' => 'required|numeric|min:0',
+            'harga_jual' => 'required|numeric|min:0',
+            'stok' => 'required|integer|min:0',
+        ], [
+            'nama.required' => 'Nama produk wajib diisi.',
+            'kode_unit.unique' => 'SKU sudah digunakan unit lain.',
+            'harga_jual.min' => 'Harga jual tidak boleh negatif.',
+        ]);
 
         $data = [
             'kategori_id' => $this->kategori_id,
@@ -164,67 +167,44 @@ class ManajemenProduk extends Component
         }
 
         if ($this->produk_id) {
-            // Mode Edit
             $produk = Produk::findOrFail($this->produk_id);
             $stokLama = $produk->stok;
             $produk->update($data);
 
-            // Log Perubahan Stok jika ada selisih
             if ($this->stok != $stokLama) {
                 $selisih = $this->stok - $stokLama;
-                $layananStok = new LayananStok;
-                $layananStok->tambahStok($produk, $selisih, "Penyesuaian stok manual via Admin (Edit)");
+                (new LayananStok)->tambahStok($produk, $selisih, "Penyesuaian stok manual via Editor Enterprise");
             }
 
-            LogHelper::catat(
-                'ubah_produk',
-                $this->nama,
-                "Admin mengubah data produk: {$this->nama} (ID: {$this->produk_id})",
-                ['sebelum' => $produk->getOriginal(), 'sesudah' => $data]
-            );
-
+            LogHelper::catat('ubah_produk', $this->nama, "Modifikasi parameter unit {$this->nama} berhasil disinkronkan.");
             $pesan = "Data unit {$this->nama} berhasil diperbarui!";
         } else {
-            // Mode Buat Baru
             $produk = Produk::create($data);
-
             if ($this->stok > 0) {
-                $layananStok = new LayananStok;
-                $layananStok->tambahStok($produk, $this->stok, 'Input stok awal produk baru');
+                (new LayananStok)->tambahStok($produk, $this->stok, 'Input stok awal registrasi unit');
             }
-
-            LogHelper::catat(
-                'buat_produk',
-                $this->nama,
-                "Admin menambahkan produk baru: {$this->nama} (kode_unit: {$this->kode_unit})",
-                $data
-            );
-
-            $pesan = "Unit baru {$this->nama} berhasil didaftarkan ke inventaris!";
+            LogHelper::catat('buat_produk', $this->nama, "Registrasi unit teknologi baru {$this->nama} ke dalam inventaris.");
+            $pesan = "Unit baru {$this->nama} berhasil didaftarkan!";
         }
 
-        $this->dispatch('close-panel-form-produk');
+        $this->tampilkanForm = false;
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
         $this->reset(['produk_id', 'gambar_baru']);
     }
 
+    /**
+     * Menghapus unit dari sistem.
+     */
     public function hapus($id)
     {
         $produk = Produk::findOrFail($id);
         $nama = $produk->nama;
         $produk->delete();
-
-        LogHelper::catat(
-            'hapus_produk',
-            $nama,
-            "Admin menghapus produk: {$nama} dari inventaris.",
-            ['id_terhapus' => $id]
-        );
-
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "Unit {$nama} telah dihapus dari sistem."]);
+        LogHelper::catat('hapus_produk', $nama, "Unit '{$nama}' telah dihapus dari inventaris sistem.");
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "Unit {$nama} telah dihapus."]);
     }
 
-    #[Title('Manajemen Produk - Teqara Admin')]
+    #[Title('Manajemen Inventaris - Teqara')]
     public function render()
     {
         $daftar_produk = Produk::query()

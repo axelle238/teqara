@@ -15,10 +15,14 @@ use Livewire\WithPagination;
 /**
  * Class ManajemenStok
  * Tujuan: Pusat kendali inventaris Enterprise dengan audit trail mendalam dan forecasting.
+ * Arsitektur: 100% Full Page SPA (Tanpa Slide Over/Modal).
  */
 class ManajemenStok extends Component
 {
     use WithPagination;
+
+    // State Halaman
+    public $tampilkanForm = false;
 
     // State Filter
     public $cari = '';
@@ -38,7 +42,8 @@ class ManajemenStok extends Component
     public function updated($property)
     {
         if (in_array($property, ['cari', 'filterKesehatan', 'tabAktif'])) {
-            $this->resetPage();
+            $this->resetPage('produk-page');
+            $this->resetPage('mutasi-page');
         }
     }
 
@@ -54,11 +59,23 @@ class ManajemenStok extends Component
         ];
     }
 
+    /**
+     * Buka form mutasi (Halaman Penuh).
+     */
     public function bukaMutasi($id, $aksi = 'penyesuaian')
     {
         $this->produkTerpilihId = $id;
         $this->jenisAksi = $aksi;
-        $this->dispatch('open-slide-over', id: 'panel-mutasi');
+        $this->tampilkanForm = true;
+    }
+
+    /**
+     * Kembali ke dashboard stok.
+     */
+    public function batal()
+    {
+        $this->tampilkanForm = false;
+        $this->reset(['produkTerpilihId', 'jumlahMutasi', 'keteranganMutasi', 'dariGudangId', 'keGudangId']);
     }
 
     public function eksekusiMutasi()
@@ -83,9 +100,6 @@ class ManajemenStok extends Component
                 );
 
                 if ($stokAsal->jumlah < $this->jumlahMutasi) {
-                    // Fallback: Jika data stok gudang belum sinkron, cek stok global (untuk fase transisi)
-                    // Namun idealnya strictly check warehouse stock.
-                    // Kita asumsikan sistem ini enforce stok gudang.
                     throw new \Exception("Stok di gudang asal tidak mencukupi (Tersedia: {$stokAsal->jumlah}).");
                 }
 
@@ -97,8 +111,6 @@ class ManajemenStok extends Component
                 $stokAsal->decrement('jumlah', $this->jumlahMutasi);
                 $stokTujuan->increment('jumlah', $this->jumlahMutasi);
                 
-                // Tidak ubah stok global produk, hanya lokasi.
-
                 MutasiStok::create([
                     'produk_id' => $produk->id,
                     'jumlah' => 0, // Net zero global change
@@ -108,24 +120,32 @@ class ManajemenStok extends Component
                     'waktu' => now(),
                 ]);
 
-                LogHelper::catat(
-                    'transfer_stok',
-                    $produk->nama,
-                    "Admin memindahkan {$this->jumlahMutasi} unit antar gudang."
-                );
+                LogHelper::catat('transfer_stok', $produk->nama, "Admin memindahkan {$this->jumlahMutasi} unit antar gudang.");
 
             } else {
                 // Logic Penyesuaian / Penerimaan Global
+                // Jika Penyesuaian (Pengurangan), cek stok dulu
                 if ($this->jenisAksi === 'penyesuaian' && $produk->stok < $this->jumlahMutasi) {
-                    throw new \Exception('Stok fisik global tidak mencukupi untuk pengurangan ini.');
+                    // Cek apakah ini stok opname (bisa negatif? biasanya tidak, stok fisik harusnya ada)
+                    // Asumsi sistem blokir negatif.
+                    // throw new \Exception('Stok fisik global tidak mencukupi untuk pengurangan ini.'); 
+                    // Revisi: Penyesuaian stok opname bisa set stok ke nilai absolut, tapi di sini kita pakai increment/decrement.
+                    // Jika pengurangan > stok, set stok jadi 0? Atau throw error?
+                    // Safe approach: throw error.
                 }
 
                 $jumlahFinal = $this->jenisAksi === 'penerimaan' ? $this->jumlahMutasi : -$this->jumlahMutasi;
+                
+                // Cegah stok negatif
+                if ($produk->stok + $jumlahFinal < 0) {
+                     throw new \Exception('Operasi dibatalkan: Stok akan menjadi negatif.');
+                }
+
                 $produk->increment('stok', $jumlahFinal);
 
-                // Update gudang utama (Default ID 1) jika ada, agar sinkron
+                // Update gudang utama (Default ID 1) agar sinkron
                 StokGudang::updateOrCreate(
-                    ['produk_id' => $produk->id, 'gudang_id' => 1], // Asumsi ID 1 adalah Gudang Pusat
+                    ['produk_id' => $produk->id, 'gudang_id' => 1], 
                     ['jumlah' => DB::raw("GREATEST(0, jumlah + $jumlahFinal)")]
                 );
 
@@ -146,8 +166,8 @@ class ManajemenStok extends Component
             }
         });
 
+        $this->tampilkanForm = false;
         $this->reset(['produkTerpilihId', 'jumlahMutasi', 'keteranganMutasi', 'dariGudangId', 'keGudangId']);
-        $this->dispatch('close-slide-over', id: 'panel-mutasi');
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Operasi logistik berhasil dijalankan.']);
     }
 

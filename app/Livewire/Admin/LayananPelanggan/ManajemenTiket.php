@@ -11,26 +11,51 @@ use Livewire\WithPagination;
 /**
  * Class ManajemenTiket
  * Tujuan: Manajemen tiket bantuan dan keluhan pelanggan.
+ * Arsitektur: 100% Full Page SPA (Tanpa Slide Over/Modal).
  */
 class ManajemenTiket extends Component
 {
     use WithPagination;
 
-    public $filterStatus = ''; // Default semua
+    // State Halaman
+    public $tampilkanDetail = false;
 
+    // Filter
+    public $filterStatus = '';
+
+    // Properti Model
     public $tiketTerpilih;
-
     public $pesanBaru;
 
+    /**
+     * Buka detail tiket dalam tampilan halaman penuh.
+     */
     public function bukaTiket($id)
     {
         $this->tiketTerpilih = TiketBantuan::with('pengguna')->findOrFail($id);
-        $this->dispatch('open-panel-detail-tiket');
+        $this->tampilkanDetail = true;
     }
 
+    /**
+     * Kembali ke daftar tiket utama.
+     */
+    public function kembali()
+    {
+        $this->tampilkanDetail = false;
+        $this->reset(['tiketTerpilih', 'pesanBaru']);
+    }
+
+    /**
+     * Mengirim balasan administratif ke tiket pelanggan.
+     */
     public function kirimBalasan()
     {
-        $this->validate(['pesanBaru' => 'required|min:2']);
+        $this->validate([
+            'pesanBaru' => 'required|min:2'
+        ], [
+            'pesanBaru.required' => 'Pesan balasan tidak boleh kosong.',
+            'pesanBaru.min' => 'Pesan terlalu singkat.',
+        ]);
 
         $riwayat = $this->tiketTerpilih->riwayat_pesan ?? [];
         $riwayat[] = [
@@ -42,27 +67,34 @@ class ManajemenTiket extends Component
 
         $this->tiketTerpilih->update([
             'riwayat_pesan' => $riwayat,
-            'status' => 'diproses', // Otomatis ubah ke diproses jika admin membalas
+            'status' => 'diproses',
         ]);
 
         $this->pesanBaru = '';
+        $this->tiketTerpilih->refresh();
 
-        LogHelper::catat('balas_tiket', "Tiket #{$this->tiketTerpilih->id}", 'Admin membalas tiket bantuan.');
+        LogHelper::catat('balas_tiket', "Tiket #{$this->tiketTerpilih->id}", 'Admin memberikan respon solusi pada tiket bantuan.');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Balasan terkirim secara real-time.']);
     }
 
+    /**
+     * Mengubah status resolusi tiket.
+     */
     public function ubahStatus($status)
     {
         if ($this->tiketTerpilih) {
             $this->tiketTerpilih->update(['status' => $status]);
-            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Status tiket diubah menjadi '.strtoupper($status)]);
+            $this->tiketTerpilih->refresh();
+            
+            $pesan = 'Status tiket diubah menjadi '.strtoupper($status);
+            LogHelper::catat('status_tiket', "Tiket #{$this->tiketTerpilih->id}", $pesan);
+            $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => $pesan]);
         }
     }
 
-    #[Title('Helpdesk & Tiket - Admin Teqara')]
+    #[Title('Pusat Bantuan Enterprise - Teqara')]
     public function render()
     {
-        // Ambil tiket dikelompokkan untuk Kanban View sederhana (atau list filter)
-        // Kita gunakan list filter dulu agar rapi
         $query = TiketBantuan::with('pengguna')->latest();
 
         if ($this->filterStatus) {

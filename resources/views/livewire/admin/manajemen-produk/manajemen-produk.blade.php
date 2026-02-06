@@ -1,282 +1,239 @@
-<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+<div class="animate-in fade-in duration-500 pb-20">
     
-    <!-- Header Page -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Inventaris Produk</h1>
-            <p class="text-slate-500 text-sm mt-1">Kelola data unit, harga, dan stok dari hulu rantai pasok.</p>
-        </div>
-        <button wire:click="tambahBaru" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all active:scale-95">
-            <i class="fa-solid fa-plus"></i> Tambah Unit Baru
-        </button>
-    </div>
-
-    <!-- Filter & Toolbar -->
-    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center">
-        <!-- Search & Filter -->
-        <div class="flex gap-2 w-full md:w-auto">
-            <div class="relative flex-1 md:w-64">
-                <i class="fa-solid fa-search absolute left-3 top-3 text-slate-400 text-xs"></i>
-                <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari SKU atau Nama Produk..." class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all">
-            </div>
-            <select wire:model.live="filter_kategori" class="bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-600 py-2.5 px-4 focus:ring-2 focus:ring-indigo-500 cursor-pointer">
-                <option value="">Semua Kategori</option>
-                @foreach($kategori as $kat)
-                    <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <!-- Bulk Actions -->
-        @if(count($selectedProduk) > 0)
-        <div class="flex items-center gap-2 animate-in fade-in zoom-in duration-200">
-            <span class="text-xs font-bold text-slate-500">{{ count($selectedProduk) }} terpilih</span>
-            <button wire:click="bulkArchive" class="px-3 py-2 bg-amber-100 text-amber-700 rounded-lg text-xs font-bold hover:bg-amber-200 transition-colors">
-                <i class="fa-solid fa-box-archive mr-1"></i> Arsipkan
-            </button>
-            <button wire:click="bulkDelete" wire:confirm="Yakin ingin menghapus permanen data terpilih?" class="px-3 py-2 bg-rose-100 text-rose-700 rounded-lg text-xs font-bold hover:bg-rose-200 transition-colors">
-                <i class="fa-solid fa-trash mr-1"></i> Hapus
-            </button>
-        </div>
-        @endif
-    </div>
-
-    <!-- Data Table (High Density) -->
-    <div class="bg-white border border-slate-100 rounded-[24px] shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
-                <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-black tracking-wider">
-                    <tr>
-                        <th class="px-6 py-4 w-10 text-center">
-                            <input type="checkbox" wire:model.live="selectAll" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
-                        </th>
-                        <th class="px-6 py-4">Unit Produk</th>
-                        <th class="px-6 py-4">Kategori & Merek</th>
-                        <th class="px-6 py-4 text-right">Harga Jual</th>
-                        <th class="px-6 py-4 text-center">Stok</th>
-                        <th class="px-6 py-4 text-center">Status</th>
-                        <th class="px-6 py-4 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    @forelse($produk as $p)
-                    <tr class="hover:bg-indigo-50/30 transition-colors group">
-                        <td class="px-6 py-4 text-center">
-                            <input type="checkbox" wire:model.live="selectedProduk" value="{{ $p->id }}" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
-                                    @if($p->gambar_utama)
-                                        <img src="{{ asset($p->gambar_utama) }}" class="w-full h-full object-cover">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center text-slate-300 text-xs">
-                                            <i class="fa-solid fa-image"></i>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div>
-                                    <div class="font-bold text-slate-900 hover:text-indigo-600 transition-colors cursor-pointer" wire:click="edit({{ $p->id }})">
-                                        {{ $p->nama }}
-                                    </div>
-                                    <div class="text-[10px] font-mono text-slate-400 mt-0.5 uppercase tracking-wide">
-                                        SKU: {{ $p->kode_unit }}
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span class="block text-xs font-bold text-slate-700">{{ $p->kategori->nama ?? '-' }}</span>
-                            <span class="block text-[10px] text-slate-400">{{ $p->merek->nama ?? '-' }}</span>
-                        </td>
-                        <td class="px-6 py-4 text-right font-mono font-bold text-slate-900">
-                            Rp {{ number_format($p->harga_jual, 0, ',', '.') }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            @if($p->stok <= 5)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 animate-pulse">
-                                    {{ $p->stok }}
-                                </span>
-                            @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700">
-                                    {{ $p->stok }}
-                                </span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            @if($p->status == 'aktif')
-                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-100 text-emerald-700">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Aktif
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-slate-100 text-slate-500">
-                                    Arsip
-                                </span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button wire:click="edit({{ $p->id }})" class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Edit Detail">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button wire:click="hapus({{ $p->id }})" wire:confirm="Yakin hapus produk ini?" class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus Permanen">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-slate-400">
-                            <div class="flex flex-col items-center">
-                                <i class="fa-solid fa-box-open text-4xl mb-4 text-slate-200"></i>
-                                <p class="font-medium">Data inventaris kosong atau tidak ditemukan.</p>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        
-        <!-- Pagination -->
-        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50">
-            {{ $produk->links() }}
-        </div>
-    </div>
-
-    <!-- Slide Over Panel Form Produk -->
-    <x-ui.panel-geser id="panel-form-produk" :judul="$produk_id ? 'Edit Unit Inventaris' : 'Registrasi Unit Baru'">
-        <form wire:submit="simpan" class="space-y-8 pb-20">
-            
-            <!-- Upload Foto -->
-            <div class="space-y-4">
-                <label class="block text-xs font-black text-slate-500 uppercase tracking-widest">Visualisasi Produk</label>
-                <div class="flex items-center gap-6">
-                    <div class="w-32 h-32 rounded-2xl bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center relative overflow-hidden group hover:border-indigo-500 transition-colors">
-                        @if($gambar_baru)
-                            <img src="{{ $gambar_baru->temporaryUrl() }}" class="w-full h-full object-cover">
-                        @elseif($produk_id && \App\Models\Produk::find($produk_id)->gambar_utama)
-                            <img src="{{ asset(\App\Models\Produk::find($produk_id)->gambar_utama) }}" class="w-full h-full object-cover">
-                        @else
-                            <i class="fa-solid fa-camera text-slate-300 text-2xl group-hover:text-indigo-500 transition-colors"></i>
-                        @endif
-                        
-                        <input type="file" wire:model="gambar_baru" class="absolute inset-0 opacity-0 cursor-pointer">
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-bold text-slate-900 mb-1">Unggah Gambar Utama</p>
-                        <p class="text-xs text-slate-500 mb-3">Format JPG/PNG, Maks. 2MB. Disarankan rasio 1:1.</p>
-                        <div wire:loading wire:target="gambar_baru" class="text-xs font-bold text-indigo-600 animate-pulse">Mengunggah...</div>
-                    </div>
+    @if(!$tampilkanForm)
+        <!-- TAMPILAN 1: KATALOG INVENTARIS (FULL PAGE LIST) -->
+        <div class="space-y-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50">
+                <div class="space-y-1">
+                    <h1 class="text-3xl font-black text-slate-900 tracking-tight">INVENTARIS TEKNOLOGI</h1>
+                    <p class="text-slate-500 font-medium">Kelola seluruh unit produk, parameter harga, dan siklus stok hulu-ke-hilir.</p>
                 </div>
+                <button wire:click="tambahBaru" class="flex items-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl text-sm font-black shadow-xl shadow-indigo-600/20 transition-all active:scale-95">
+                    <i class="fa-solid fa-box-archive text-lg"></i> REGISTRASI UNIT BARU
+                </button>
             </div>
 
-            <div class="h-px bg-slate-100"></div>
-
-            <!-- Informasi Dasar -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="col-span-2">
-                    <label class="block text-xs font-bold text-slate-700 mb-2">Nama Produk Lengkap</label>
-                    <input wire:model="nama" type="text" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 focus:border-indigo-500 font-bold" placeholder="Contoh: MacBook Pro M3 Max 14 Inch">
-                    @error('nama') <span class="text-xs text-rose-500 font-bold">{{ $message }}</span> @enderror
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-2">Kode Unit (SKU)</label>
-                    <input wire:model="kode_unit" type="text" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 focus:border-indigo-500 font-mono uppercase" placeholder="MBP-M3-001">
-                    @error('kode_unit') <span class="text-xs text-rose-500 font-bold">{{ $message }}</span> @enderror
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-2">Status Katalog</label>
-                    <select wire:model="status" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 focus:border-indigo-500 font-bold">
-                        <option value="aktif">Aktif (Publik)</option>
-                        <option value="arsip">Arsip (Sembunyi)</option>
-                        <option value="habis">Stok Habis</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-2">Kategori</label>
-                    <select wire:model="kategori_id" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">Pilih Kategori</option>
+            <!-- Toolbar & Filter -->
+            <div class="bg-white p-6 rounded-[35px] border border-indigo-50 flex flex-col md:flex-row gap-6 justify-between items-center shadow-sm">
+                <div class="flex gap-4 w-full md:w-auto">
+                    <div class="relative flex-1 md:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                        <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari Nama atau SKU..." class="w-full pl-12 pr-6 py-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300">
+                    </div>
+                    <select wire:model.live="filter_kategori" class="bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-600 focus:ring-4 focus:ring-indigo-500/10 cursor-pointer">
+                        <option value="">SEMUA KATEGORI</option>
                         @foreach($kategori as $kat)
                             <option value="{{ $kat->id }}">{{ $kat->nama }}</option>
                         @endforeach
                     </select>
-                    @error('kategori_id') <span class="text-xs text-rose-500 font-bold">{{ $message }}</span> @enderror
                 </div>
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-2">Merek (Brand)</label>
-                    <select wire:model="merek_id" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 focus:border-indigo-500">
-                        <option value="">Pilih Merek</option>
-                        @foreach($merek as $mrk)
-                            <option value="{{ $mrk->id }}">{{ $mrk->nama }}</option>
-                        @endforeach
-                    </select>
-                    @error('merek_id') <span class="text-xs text-rose-500 font-bold">{{ $message }}</span> @enderror
+                @if(count($selectedProduk) > 0)
+                <div class="flex items-center gap-3 animate-in zoom-in duration-300">
+                    <span class="text-xs font-black text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl">{{ count($selectedProduk) }} TERPILIH</span>
+                    <button wire:click="bulkArchive" class="px-6 py-3 bg-amber-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-amber-500/20">ARSIPKAN</button>
+                    <button wire:click="bulkDelete" wire:confirm="Hapus permanen unit terpilih?" class="px-6 py-3 bg-rose-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-rose-500/20">HAPUS</button>
                 </div>
+                @endif
             </div>
 
-            <div class="h-px bg-slate-100"></div>
-
-            <!-- Harga & Inventaris -->
-            <div class="space-y-4">
-                <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest">Valuasi & Fisik</h3>
-                
-                <div class="grid grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-2">Harga Modal (HPP)</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-2.5 text-xs font-bold text-slate-400">Rp</span>
-                            <input wire:model="harga_modal" type="number" class="w-full pl-8 rounded-xl border-slate-200 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <!-- Grid Produk -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+                @forelse($produk as $p)
+                <div class="group bg-white rounded-[45px] p-2 border border-slate-100 shadow-sm hover:shadow-2xl hover:border-indigo-200 transition-all duration-500 relative">
+                    <div class="absolute top-6 left-6 z-10">
+                        <input type="checkbox" wire:model.live="selectedProduk" value="{{ $p->id }}" class="w-6 h-6 rounded-lg border-2 border-white/50 text-indigo-600 focus:ring-indigo-500 bg-white/20 backdrop-blur-md">
+                    </div>
+                    
+                    <div class="aspect-square rounded-[38px] bg-slate-50 overflow-hidden relative mb-6">
+                        <img src="{{ $p->gambar_utama ?? 'https://via.placeholder.com/400?text=Produk' }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                            <span class="px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm text-[9px] font-black text-slate-800 uppercase tracking-widest shadow-sm">
+                                {{ $p->kategori->nama ?? 'Umum' }}
+                            </span>
+                            <div class="w-10 h-10 rounded-2xl bg-white/90 backdrop-blur-sm flex items-center justify-center text-slate-800 shadow-sm">
+                                <i class="fa-solid fa-barcode text-xs"></i>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-2">Harga Jual (Publik)</label>
-                        <div class="relative">
-                            <span class="absolute left-3 top-2.5 text-xs font-bold text-slate-400">Rp</span>
-                            <input wire:model="harga_jual" type="number" class="w-full pl-8 rounded-xl border-slate-200 text-sm focus:ring-indigo-500 focus:border-indigo-500 font-bold">
+
+                    <div class="px-6 pb-8 space-y-4">
+                        <div>
+                            <h3 class="font-black text-lg text-slate-800 leading-tight line-clamp-1 group-hover:text-indigo-600 transition-colors">{{ $p->nama }}</h3>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">{{ $p->kode_unit }}</p>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="space-y-1">
+                                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Harga Jual</p>
+                                <p class="text-xl font-black text-slate-900 tracking-tighter">Rp{{ number_format($p->harga_jual, 0, ',', '.') }}</p>
+                            </div>
+                            <div class="text-right space-y-1">
+                                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Stok</p>
+                                <p class="text-lg font-black {{ $p->stok < 5 ? 'text-rose-500' : 'text-emerald-500' }}">{{ $p->stok }}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3 pt-4 border-t border-slate-50">
+                            <button wire:click="edit({{ $p->id }})" class="flex-1 py-3 bg-indigo-50 text-indigo-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all shadow-sm">EDIT DETAIL</button>
+                            <button wire:click="hapus({{ $p->id }})" wire:confirm="Hapus unit ini?" class="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-2">Stok Fisik</label>
-                        <input wire:model="stok" type="number" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                @empty
+                <div class="col-span-full py-20 text-center bg-white rounded-[50px] border border-dashed border-slate-200">
+                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fa-solid fa-laptop-code text-3xl text-slate-300"></i>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Katalog Masih Kosong</h3>
+                    <p class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Belum ada unit teknologi yang terdaftar di sistem.</p>
+                </div>
+                @endforelse
+            </div>
+
+            <div class="pt-10">
+                {{ $produk->links() }}
+            </div>
+        </div>
+    @else
+        <!-- TAMPILAN 2: EDITOR INVENTARIS (FULL PAGE FORM) -->
+        <div class="space-y-8 animate-in slide-in-from-right-8 duration-500">
+            <!-- Header Editor -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50">
+                <div class="flex items-center gap-6">
+                    <button wire:click="batal" class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all shadow-sm">
+                        <i class="fa-solid fa-arrow-left text-xl"></i>
+                    </button>
+                    <div class="space-y-1">
+                        <h1 class="text-3xl font-black text-slate-900 tracking-tight uppercase">{{ $produk_id ? 'Sunting Detail Unit' : 'Registrasi Unit Baru' }}</h1>
+                        <p class="text-slate-500 font-medium uppercase tracking-widest text-[10px]">Data Master Inventaris Teqara</p>
                     </div>
                 </div>
-                @error('harga_jual') <span class="text-xs text-rose-500 font-bold">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="h-px bg-slate-100"></div>
-
-            <!-- Konten Detail -->
-            <div class="space-y-4">
-                <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest">Detail Konten</h3>
-                
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-2">Deskripsi Singkat (SEO Meta)</label>
-                    <textarea wire:model="deskripsi_singkat" rows="2" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ringkasan produk untuk tampilan kartu dan hasil pencarian Google..."></textarea>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-2">Spesifikasi Lengkap (HTML Support)</label>
-                    <textarea wire:model="deskripsi_lengkap" rows="6" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 focus:border-indigo-500 font-mono text-xs" placeholder="<ul><li>Spesifikasi 1</li>...</ul>"></textarea>
-                    <p class="text-[10px] text-slate-400 mt-1">*Mendukung format HTML dasar untuk layout spesifikasi.</p>
+                <div class="flex gap-4">
+                    <button wire:click="batal" class="px-8 py-4 bg-slate-50 text-slate-500 rounded-3xl text-sm font-black hover:bg-slate-100 transition-all">BATAL</button>
+                    <button wire:click="simpan" class="px-10 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-3xl text-sm font-black shadow-xl shadow-emerald-600/20 transition-all active:scale-95">SIMPAN DATA UNIT</button>
                 </div>
             </div>
 
-            <!-- Action Buttons (Sticky Bottom) -->
-            <div class="fixed bottom-0 right-0 w-full md:w-[480px] bg-white border-t border-slate-200 p-6 flex items-center justify-between gap-4 z-50">
-                <button type="button" @click="$dispatch('close-panel-form-produk')" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold text-sm hover:bg-slate-50 transition-colors w-full">
-                    Batal
-                </button>
-                <button type="submit" class="px-6 py-3 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 shadow-lg shadow-indigo-600/20 transition-all active:scale-95 w-full">
-                    <span wire:loading.remove>Simpan Data</span>
-                    <span wire:loading>Memproses...</span>
-                </button>
+            <!-- Form Content -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Kolom Kiri: Spesifikasi Unit -->
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-10">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-2">
+                                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Nama Produk Lengkap</label>
+                                <input wire:model="nama" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300" placeholder="Cth: MacBook Pro M3 Max 14-inch">
+                                @error('nama') <span class="text-[10px] font-black text-rose-500 uppercase tracking-widest block mt-2">{{ $message }}</span> @enderror
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Kode Unit (SKU)</label>
+                                <input wire:model="kode_unit" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-indigo-600 focus:ring-4 focus:ring-indigo-500/10 uppercase font-mono" placeholder="MBP-M3-001">
+                                @error('kode_unit') <span class="text-[10px] font-black text-rose-500 uppercase tracking-widest block mt-2">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-2">
+                                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Kategori Produk</label>
+                                <select wire:model="kategori_id" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10">
+                                    <option value="">PILIH KATEGORI</option>
+                                    @foreach($kategori as $kat)
+                                        <option value="{{ $kat->id }}">{{ strtoupper($kat->nama) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Merek / Brand</label>
+                                <select wire:model="merek_id" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10">
+                                    <option value="">PILIH MEREK</option>
+                                    @foreach($merek as $mrk)
+                                        <option value="{{ $mrk->id }}">{{ strtoupper($mrk->nama) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Narasi Produk (Ringkasan)</label>
+                            <textarea wire:model="deskripsi_singkat" rows="3" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-600 focus:ring-4 focus:ring-indigo-500/10" placeholder="Berikan gambaran singkat keunggulan produk ini..."></textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Spesifikasi & Deskripsi Lengkap</label>
+                            <textarea wire:model="deskripsi_lengkap" rows="8" class="w-full bg-slate-50 border-none rounded-3xl px-6 py-6 text-sm font-medium text-slate-700 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300 leading-relaxed" placeholder="Detail teknis, fitur, dan informasi garansi lengkap..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Finansial & Stok -->
+                <div class="space-y-8">
+                    <!-- Kartu Stok & Status -->
+                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-8">
+                        <div class="space-y-4 text-center">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Ketersediaan Fisik</label>
+                            <div class="flex items-center justify-center gap-6">
+                                <button type="button" @click="$wire.stok > 0 ? $wire.stok-- : 0" class="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all shadow-sm">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                                <input wire:model="stok" type="number" class="w-24 bg-transparent border-none text-center text-4xl font-black text-slate-800 focus:ring-0">
+                                <button type="button" @click="$wire.stok++" class="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 hover:bg-emerald-50 hover:text-emerald-500 transition-all shadow-sm">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Unit Tersedia</p>
+                        </div>
+
+                        <div class="space-y-4 pt-8 border-t border-slate-50">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Status Katalog</label>
+                            <select wire:model="status" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10">
+                                <option value="aktif">🟢 PUBLIKASI AKTIF</option>
+                                <option value="arsip">📁 ARSIP INTERNAL</option>
+                                <option value="habis">🔴 STOK HABIS</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Kartu Valuasi -->
+                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-8">
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Harga Jual Publik</label>
+                            <div class="relative">
+                                <span class="absolute left-6 top-1/2 -translate-y-1/2 font-black text-slate-300">Rp</span>
+                                <input wire:model="harga_jual" type="number" class="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-lg font-black text-emerald-600 focus:ring-4 focus:ring-indigo-500/10">
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Harga Modal (HPP)</label>
+                            <div class="relative">
+                                <span class="absolute left-6 top-1/2 -translate-y-1/2 font-black text-slate-300">Rp</span>
+                                <input wire:model="harga_modal" type="number" class="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-lg font-black text-rose-600 focus:ring-4 focus:ring-indigo-500/10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Media Utama -->
+                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-4">
+                        <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Visual Utama</label>
+                        <div class="relative aspect-square bg-slate-50 rounded-3xl border-4 border-dashed border-slate-100 flex items-center justify-center overflow-hidden group hover:border-indigo-200 transition-all">
+                            @if($gambar_baru)
+                                <img src="{{ $gambar_baru->temporaryUrl() }}" class="w-full h-full object-cover">
+                            @elseif($gambar_lama)
+                                <img src="{{ asset($gambar_lama) }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="text-center space-y-3">
+                                    <i class="fa-solid fa-camera-retro text-4xl text-slate-200 group-hover:text-indigo-400 transition-colors"></i>
+                                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Pilih Foto</p>
+                                </div>
+                            @endif
+                            <input type="file" wire:model="gambar_baru" class="absolute inset-0 opacity-0 cursor-pointer">
+                        </div>
+                    </div>
+                </div>
             </div>
-        </form>
-    </x-ui.panel-geser>
+        </div>
+    @endif
+
 </div>
