@@ -98,7 +98,7 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
     // Pilar 6: Manajemen Logistik & Pengiriman
     Route::prefix('logistik')->group(function () {
         Route::get('/beranda', \App\Livewire\Admin\ManajemenLogistik\BerandaLogistik::class)->name('admin.logistik.beranda');
-        Route::get('/pemasok', \App\Livewire\Admin\ManajemenLogistik\ManajemenPemasok::class)->name('admin.logistik.pemasok');
+        Route::get('/pemasok', \App\Livewire\Admin\ManajemenProduk\Pemasok\DaftarPemasok::class)->name('admin.logistik.pemasok');
     });
 
     // Pilar 7: Manajemen Pelanggan (CRM)
