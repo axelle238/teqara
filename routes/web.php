@@ -69,6 +69,7 @@ Route::middleware(['auth', \App\Http\Middleware\CekPeranAdmin::class])->prefix('
         Route::get('/pembelian', \App\Livewire\Admin\ManajemenProduk\Pembelian\RiwayatPembelian::class)->name('admin.produk.pembelian.riwayat');
         Route::get('/pembelian/baru', \App\Livewire\Admin\ManajemenProduk\Pembelian\FormPembelian::class)->name('admin.produk.pembelian.baru');
         Route::get('/pembelian/{id}', \App\Livewire\Admin\ManajemenProduk\Pembelian\FormPembelian::class)->name('admin.produk.pembelian.detail');
+        Route::get('/promo/flash-sale', \App\Livewire\Admin\ManajemenProduk\Promo\ManajemenFlashSale::class)->name('admin.produk.promo.flash-sale');
         Route::get('/stock-opname', \App\Livewire\Admin\ManajemenProduk\StockOpname\RiwayatStockOpname::class)->name('admin.produk.so.riwayat');
         Route::get('/stock-opname/{id}', \App\Livewire\Admin\ManajemenProduk\StockOpname\DetailStockOpnameComp::class)->name('admin.produk.so.detail');
     });

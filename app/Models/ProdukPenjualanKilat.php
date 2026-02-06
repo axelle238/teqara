@@ -4,12 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-/**
- * Class ProdukPenjualanKilat
- * Tujuan: Item unit yang terdaftar dalam program penjualan kilat.
- */
 class ProdukPenjualanKilat extends Model
 {
     use HasFactory;
@@ -18,12 +13,7 @@ class ProdukPenjualanKilat extends Model
 
     protected $guarded = ['id'];
 
-    public function penjualanKilat(): BelongsTo
-    {
-        return $this->belongsTo(PenjualanKilat::class, 'penjualan_kilat_id');
-    }
-
-    public function produk(): BelongsTo
+    public function produk()
     {
         return $this->belongsTo(Produk::class, 'produk_id');
     }
