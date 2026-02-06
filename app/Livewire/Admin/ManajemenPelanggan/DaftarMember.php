@@ -20,6 +20,8 @@ class DaftarMember extends Component
 
     public $filterPeran = '';
 
+    public $filterSegmen = '';
+
     public $memberTerpilih = null;
 
     public $statistikMember = [];
@@ -42,20 +44,18 @@ class DaftarMember extends Component
         $segmen = 'Bronze';
         if ($totalBelanja > 50000000) {
             $segmen = 'Platinum';
-        } // > 50 Juta
-        elseif ($totalBelanja > 10000000) {
+        } elseif ($totalBelanja > 10000000) {
             $segmen = 'Gold';
-        } // > 10 Juta
-        elseif ($totalBelanja > 2000000) {
+        } elseif ($totalBelanja > 2000000) {
             $segmen = 'Silver';
-        } // > 2 Juta
+        }
 
         $this->statistikMember = [
             'ltv' => $totalBelanja,
             'frekuensi' => $frekuensiBelanja,
             'aov' => $rataRataKeranjang,
             'segmen' => $segmen,
-            'terakhir_login' => now(), // Placeholder jika belum ada kolom last_login
+            'terakhir_login' => now(),
             'tiket_terbuka' => $this->memberTerpilih->tiketBantuan ? $this->memberTerpilih->tiketBantuan->where('status', '!=', 'selesai')->count() : 0,
         ];
 
@@ -83,6 +83,10 @@ class DaftarMember extends Component
     public function render()
     {
         $query = Pengguna::query()
+            ->withCount('pesanan')
+            ->withSum(['pesanan' => function ($q) {
+                $q->where('status_pembayaran', 'lunas');
+            }], 'total_harga')
             ->when($this->cari, function ($q) {
                 $q->where('nama', 'like', '%'.$this->cari.'%')
                     ->orWhere('email', 'like', '%'.$this->cari.'%');
@@ -90,6 +94,24 @@ class DaftarMember extends Component
             ->when($this->filterPeran, function ($q) {
                 $q->where('peran', $this->filterPeran);
             });
+
+        // Filter Segmentasi Cerdas
+        if ($this->filterSegmen) {
+            switch ($this->filterSegmen) {
+                case 'vip':
+                    $query->having('pesanan_sum_total_harga', '>', 50000000);
+                    break;
+                case 'loyal':
+                    $query->having('pesanan_sum_total_harga', '>', 10000000);
+                    break;
+                case 'new':
+                    $query->where('created_at', '>=', now()->subDays(30));
+                    break;
+                case 'passive':
+                    $query->doesntHave('pesanan');
+                    break;
+            }
+        }
 
         return view('livewire.admin.manajemen-pelanggan.daftar-member', [
             'daftarPengguna' => $query->latest()->paginate(10),

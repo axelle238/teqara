@@ -15,12 +15,22 @@
     </div>
 
     <!-- Filter Pills -->
-    <div class="flex gap-2 overflow-x-auto pb-2">
-        @foreach(['' => 'SEMUA', 'admin' => 'ADMINISTRATOR', 'pelanggan' => 'MEMBER', 'staf_gudang' => 'LOGISTIK'] as $val => $label)
-        <button wire:click="$set('filterPeran', '{{ $val }}')" class="px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition {{ $filterPeran === $val ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/30' : 'bg-white text-slate-500 hover:bg-rose-50 hover:text-rose-600' }}">
-            {{ $label }}
-        </button>
-        @endforeach
+    <div class="flex flex-wrap gap-2 pb-2">
+        <div class="flex items-center gap-2 pr-4 border-r border-slate-200">
+            @foreach(['' => 'SEMUA', 'admin' => 'ADMINISTRATOR', 'pelanggan' => 'MEMBER', 'staf_gudang' => 'LOGISTIK'] as $val => $label)
+            <button wire:click="$set('filterPeran', '{{ $val }}')" class="px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition {{ $filterPeran === $val ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/30' : 'bg-white text-slate-500 hover:bg-rose-50 hover:text-rose-600' }}">
+                {{ $label }}
+            </button>
+            @endforeach
+        </div>
+        <div class="flex items-center gap-2 pl-2">
+            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mr-2">Segmen:</span>
+            @foreach(['vip' => 'VIP', 'loyal' => 'SETIA', 'new' => 'BARU', 'passive' => 'PASIF'] as $val => $label)
+            <button wire:click="$set('filterSegmen', '{{ $filterSegmen === $val ? '' : $val }}')" class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition {{ $filterSegmen === $val ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'bg-white text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 border border-slate-100' }}">
+                {{ $label }}
+            </button>
+            @endforeach
+        </div>
     </div>
 
     <!-- Tabel Member -->

@@ -58,16 +58,28 @@
 
         <!-- Profitability KPI -->
         <div class="md:col-span-1 space-y-6">
-            <div class="bg-emerald-50 p-8 rounded-[40px] border border-emerald-100 flex flex-col justify-center h-1/2">
-                <p class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2">Laba Bersih (Net Profit)</p>
-                <h3 class="text-3xl font-black text-emerald-700 tracking-tighter">Rp {{ number_format($totalProfit, 0, ',', '.') }}</h3>
-            </div>
-            <div class="bg-white p-8 rounded-[40px] shadow-sm border border-slate-100 flex flex-col justify-center h-1/2">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Margin Keuntungan</p>
-                <div class="flex items-end gap-2">
-                    <h3 class="text-3xl font-black text-slate-900 tracking-tighter">{{ number_format($marginProfit, 1) }}%</h3>
-                    <span class="text-xs font-bold text-slate-400 mb-1">Net Margin</span>
+            <div class="grid grid-cols-2 gap-4 h-1/2">
+                <div class="bg-emerald-50 p-6 rounded-[32px] border border-emerald-100 flex flex-col justify-center">
+                    <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Laba Bersih</p>
+                    <h3 class="text-xl font-black text-emerald-700 tracking-tighter">Rp {{ number_format($totalProfit/1000000, 1) }}M</h3>
                 </div>
+                <div class="bg-white p-6 rounded-[32px] shadow-sm border border-slate-100 flex flex-col justify-center">
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Net Margin</p>
+                    <h3 class="text-xl font-black text-slate-900 tracking-tighter">{{ number_format($marginProfit, 1) }}%</h3>
+                </div>
+            </div>
+            
+            <!-- AI Projection Card -->
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 p-8 rounded-[40px] text-white shadow-xl relative overflow-hidden h-1/2 flex flex-col justify-center">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 mb-2">
+                        <svg class="w-4 h-4 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <p class="text-[9px] font-black text-purple-200 uppercase tracking-widest">Proyeksi AI (30 Hari)</p>
+                    </div>
+                    <h3 class="text-3xl font-black tracking-tighter">Rp {{ number_format($analitik['proyeksi'], 0, ',', '.') }}</h3>
+                    <p class="text-[10px] font-medium text-purple-100 mt-1">Berdasarkan rata-rata harian Rp {{ number_format($analitik['rata_rata_harian'], 0, ',', '.') }}</p>
+                </div>
+                <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
             </div>
         </div>
     </div>

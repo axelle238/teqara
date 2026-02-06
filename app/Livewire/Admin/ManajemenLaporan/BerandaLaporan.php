@@ -87,6 +87,20 @@ class BerandaLaporan extends Component
         }
         arsort($omzetPerKategori);
 
+        // Logika Forecasting Sederhana (Moving Average)
+        $hariDalamPeriode = Carbon::parse($this->tanggalMulai)->diffInDays(Carbon::parse($this->tanggalSelesai)) + 1;
+        $rataRataHarian = $hariDalamPeriode > 0 ? $totalOmzet / $hariDalamPeriode : 0;
+        $proyeksiBulanDepan = $rataRataHarian * 30; // Proyeksi 30 hari ke depan
+
+        // Tren Harian untuk Chart
+        $trenHarian = Pesanan::select(DB::raw('DATE(created_at) as tanggal'), DB::raw('SUM(total_harga) as omzet'))
+            ->whereBetween('created_at', $rentangTanggal)
+            ->where('status_pembayaran', 'lunas')
+            ->groupBy('tanggal')
+            ->orderBy('tanggal')
+            ->get()
+            ->mapWithKeys(fn ($item) => [$item->tanggal => $item->omzet]);
+
         return view('livewire.admin.manajemen-laporan.beranda-laporan', [
             'pesanan' => $query->latest()->paginate(15),
             'totalOmzet' => $totalOmzet,
@@ -96,6 +110,11 @@ class BerandaLaporan extends Component
             'totalPesanan' => $totalPesanan,
             'produkTerlaris' => $produkTerlaris,
             'omzetPerKategori' => $omzetPerKategori,
+            'analitik' => [
+                'proyeksi' => $proyeksiBulanDepan,
+                'rata_rata_harian' => $rataRataHarian,
+                'tren_chart' => $trenHarian,
+            ],
         ])->layout('components.layouts.admin');
     }
 
