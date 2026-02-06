@@ -71,7 +71,7 @@
                         <div class="grid grid-cols-2 gap-3">
                             @foreach($semuaMerek as $merk)
                             <button 
-                                wire:click="$toggle('filterMerek', '{{ $merk->slug }}')"
+                                wire:click="toggleMerek('{{ $merk->slug }}')"
                                 class="p-3 rounded-2xl border-2 text-[10px] font-black uppercase tracking-tighter transition-all {{ in_array($merk->slug, (array)$filterMerek) ? 'border-amber-500 bg-amber-50 text-amber-700 shadow-lg shadow-amber-500/10' : 'border-slate-50 bg-slate-50/50 text-slate-400 hover:border-amber-200' }}"
                             >
                                 {{ $merk->nama }}

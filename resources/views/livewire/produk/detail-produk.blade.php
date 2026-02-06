@@ -141,7 +141,7 @@
                         <div class="flex items-center gap-6 p-8 bg-white rounded-[32px] border border-indigo-50 shadow-sm group hover:border-indigo-300 transition-colors">
                             <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">⚙️</div>
                             <div>
-                                <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">{{ $spek->judul }}</p>
+                                <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">{{ $spek->label }}</p>
                                 <p class="text-lg font-black text-slate-900 tracking-tight">{{ $spek->nilai }}</p>
                             </div>
                         </div>

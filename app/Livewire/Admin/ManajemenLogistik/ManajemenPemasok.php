@@ -45,7 +45,7 @@ class ManajemenPemasok extends Component
     public function tambahBaru()
     {
         $this->reset(['pemasok_id', 'kode_pemasok', 'nama_perusahaan', 'penanggung_jawab', 'telepon', 'email', 'alamat', 'status']);
-        $this->dispatch('open-slide-over', id: 'form-pemasok');
+        $this->dispatch('open-panel-form-pemasok');
     }
 
     public function simpan()
@@ -87,7 +87,7 @@ class ManajemenPemasok extends Component
         }
 
         LogHelper::catat($aksi, $this->nama_perusahaan, $pesan);
-        $this->dispatch('close-slide-over', id: 'form-pemasok');
+        $this->dispatch('close-panel-form-pemasok');
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
     }
 
@@ -102,7 +102,7 @@ class ManajemenPemasok extends Component
         $this->email = $p->email;
         $this->alamat = $p->alamat;
         $this->status = $p->status;
-        $this->dispatch('open-slide-over', id: 'form-pemasok');
+        $this->dispatch('open-panel-form-pemasok');
     }
 
     #[Title('Manajemen Pemasok - Admin Teqara')]

@@ -42,6 +42,16 @@ class Katalog extends Component
         $this->resetPage();
     }
 
+    public function toggleMerek($slug)
+    {
+        if (in_array($slug, $this->filterMerek)) {
+            $this->filterMerek = array_diff($this->filterMerek, [$slug]);
+        } else {
+            $this->filterMerek[] = $slug;
+        }
+        $this->resetPage();
+    }
+
     public function render()
     {
         $query = Produk::query()->with(['kategori', 'merek', 'gambar']);

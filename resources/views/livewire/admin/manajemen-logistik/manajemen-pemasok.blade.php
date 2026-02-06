@@ -57,7 +57,7 @@
     </div>
 
     <!-- Panel Form -->
-    <x-ui.slide-over id="form-pemasok" title="Data Mitra Bisnis">
+    <x-ui.panel-geser id="form-pemasok" judul="Data Mitra Bisnis">
         <form wire:submit.prevent="simpan" class="space-y-6 p-2">
             <div>
                 <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Kode Vendor</label>
@@ -97,5 +97,5 @@
                 <button type="submit" class="w-full py-4 bg-cyan-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-cyan-700 transition">Simpan Data Mitra</button>
             </div>
         </form>
-    </x-ui.slide-over>
+    </x-ui.panel-geser>
 </div>
