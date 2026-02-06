@@ -84,10 +84,40 @@ class Profil extends Component
 
         $jumlahPesanan = Pesanan::where('pengguna_id', auth()->id())->count();
 
+        // Gamifikasi Logic
+        $poin = floor($totalBelanja / 10000); // 1 Poin tiap 10rb
+        
+        $level = 'Basic';
+        $nextLevel = 'Silver';
+        $targetNext = 2000000; // 2 Juta
+        
+        if ($totalBelanja >= 50000000) {
+            $level = 'Platinum';
+            $nextLevel = 'Max';
+            $targetNext = $totalBelanja;
+        } elseif ($totalBelanja >= 10000000) {
+            $level = 'Gold';
+            $nextLevel = 'Platinum';
+            $targetNext = 50000000;
+        } elseif ($totalBelanja >= 2000000) {
+            $level = 'Silver';
+            $nextLevel = 'Gold';
+            $targetNext = 10000000;
+        }
+
+        $progressLevel = $nextLevel === 'Max' ? 100 : ($totalBelanja / $targetNext) * 100;
+
         return view('livewire.pelanggan.profil', [
             'pesananTerakhir' => $pesananTerakhir,
             'totalBelanja' => $totalBelanja,
             'jumlahPesanan' => $jumlahPesanan,
+            'gamifikasi' => [
+                'poin' => $poin,
+                'level' => $level,
+                'next_level' => $nextLevel,
+                'progress' => $progressLevel,
+                'sisa_target' => $targetNext - $totalBelanja
+            ]
         ])->layout('components.layouts.app');
     }
 }
