@@ -38,13 +38,13 @@
                 </div>
                 <div class="divide-y divide-slate-50">
                     @forelse($spesifikasi as $s)
-                    <div class="px-8 py-6 flex items-center justify-between group hover:bg-slate-50/50 transition">
+                    <div class="px-8 py-6 flex items-center justify-between group hover:bg-indigo-50/30 transition-all duration-300">
                         <div class="flex-1">
-                            <p class="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">{{ $s->judul }}</p>
-                            <p class="text-lg font-bold text-slate-900 tracking-tight">{{ $s->nilai }}</p>
+                            <p class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em] mb-1">{{ $s->label }}</p>
+                            <p class="text-lg font-black text-slate-900 tracking-tighter">{{ $s->nilai }}</p>
                         </div>
-                        <button wire:click="hapus({{ $s->id }})" class="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        <button wire:click="hapus({{ $s->id }})" class="p-4 text-slate-300 hover:text-white hover:bg-rose-500 rounded-2xl transition-all opacity-0 group-hover:opacity-100 shadow-xl shadow-rose-500/20 transform group-hover:scale-110">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
                     </div>
                     @empty

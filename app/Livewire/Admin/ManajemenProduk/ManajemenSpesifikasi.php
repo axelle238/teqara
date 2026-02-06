@@ -41,7 +41,7 @@ class ManajemenSpesifikasi extends Component
 
         SpesifikasiProduk::create([
             'produk_id' => $this->produk->id,
-            'judul' => $this->inputJudul,
+            'label' => $this->inputJudul,
             'nilai' => $this->inputNilai,
         ]);
 

@@ -37,14 +37,14 @@
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-indigo-300 group-focus-within:text-indigo-600 transition-colors">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                             </div>
-                            <input wire:model="password" id="password" type="password" autocomplete="current-password" required class="block w-full pl-12 pr-4 py-4 bg-indigo-50/50 border-none rounded-2xl text-slate-900 placeholder-slate-300 focus:ring-2 focus:ring-indigo-500 font-bold transition-all" placeholder="••••••••">
+                            <input wire:model="kata_sandi" id="password" type="password" autocomplete="current-password" required class="block w-full pl-12 pr-4 py-4 bg-indigo-50/50 border-none rounded-2xl text-slate-900 placeholder-slate-300 focus:ring-2 focus:ring-indigo-500 font-bold transition-all" placeholder="••••••••">
                         </div>
-                        @error('password') <p class="mt-2 text-xs font-black text-rose-500 uppercase tracking-widest">{{ $message }}</p> @enderror
+                        @error('kata_sandi') <p class="mt-2 text-xs font-black text-rose-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="flex items-center justify-between px-1">
                         <div class="flex items-center">
-                            <input wire:model="ingatSaya" id="remember-me" type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-indigo-100 rounded-lg bg-indigo-50 transition-all">
+                            <input wire:model="ingat_saya" id="remember-me" type="checkbox" class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-indigo-100 rounded-lg bg-indigo-50 transition-all">
                             <label for="remember-me" class="ml-3 block text-xs font-black text-slate-500 uppercase tracking-widest cursor-pointer">Ingat Sesi</label>
                         </div>
                         <a href="#" class="text-xs font-black text-indigo-600 hover:text-indigo-700 transition uppercase tracking-widest">Lupa Sandi?</a>

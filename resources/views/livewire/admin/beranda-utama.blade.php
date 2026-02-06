@@ -168,7 +168,7 @@
             </div>
             
             <div class="mt-10 pt-8 border-t border-slate-50">
-                <a href="{{ route('admin.pengaturan_sistem.log') }}" wire:navigate class="block text-center py-4 bg-slate-50 hover:bg-indigo-600 hover:text-white rounded-3xl text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] transition-all">ANALISIS FORENSIK LENGKAP</a>
+                <a href="{{ route('admin.pengaturan.log') }}" wire:navigate class="block text-center py-4 bg-slate-50 hover:bg-indigo-600 hover:text-white rounded-3xl text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] transition-all">ANALISIS FORENSIK LENGKAP</a>
             </div>
         </div>
 
