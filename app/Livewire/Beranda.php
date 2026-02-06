@@ -18,7 +18,7 @@ class Beranda extends Component
     {
         // Ambil Konten Halaman Hero
         $hero = \Illuminate\Support\Facades\Cache::remember('konten_hero', 60, function () {
-            return DB::table('konten_halaman')->where('bagian', 'hero_section')->first();
+            return \App\Models\KontenHalaman::where('bagian', 'hero_section')->first();
         });
 
         // Cache Kategori (60 Menit)

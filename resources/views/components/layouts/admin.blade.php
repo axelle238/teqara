@@ -269,7 +269,7 @@
                         <svg :class="aktif === 'sistem' ? 'rotate-180 text-cyan-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div x-show="aktif === 'sistem'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-cyan-100 ml-9">
-                        <a href="{{ route('admin.pengaturan_sistem.sistem') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/sistem/identitas') ? 'text-cyan-700 bg-cyan-50' : 'text-slate-400 hover:text-cyan-600' }} rounded-xl transition uppercase tracking-widest">IDENTITAS & API</a>
+                        <a href="{{ route('admin.pengaturan.sistem') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/sistem/identitas') ? 'text-cyan-700 bg-cyan-50' : 'text-slate-400 hover:text-cyan-600' }} rounded-xl transition uppercase tracking-widest">IDENTITAS & API</a>
                         <a href="{{ route('admin.voucher') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/sistem/voucher') ? 'text-cyan-700 bg-cyan-50' : 'text-slate-400 hover:text-cyan-600' }} rounded-xl transition uppercase tracking-widest">VOUCHER PROMO</a>
                     </div>
                 </div>
@@ -285,9 +285,9 @@
                         </div>
                         <svg :class="aktif === 'keamanan' ? 'rotate-180 text-red-600' : 'text-slate-300'" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div x-show="aktif === 'keamanan'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-red-900 ml-9">
-                        <a href="{{ route('admin.pengaturan_sistem.keamanan') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/keamanan/radar') ? 'text-red-700 bg-red-50' : 'text-slate-400 hover:text-red-600' }} rounded-xl transition uppercase tracking-widest">RADAR AKSES</a>
-                        <a href="{{ route('admin.pengaturan_sistem.log') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/keamanan/log') ? 'text-red-700 bg-red-50' : 'text-slate-400 hover:text-red-600' }} rounded-xl transition uppercase tracking-widest">FORENSIK DIGITAL</a>
+                    <div x-show="aktif === 'keamanan'" x-cloak x-transition class="pl-12 space-y-1 py-2 border-l-2 border-red-100 ml-9">
+                        <a href="{{ route('admin.pengaturan.keamanan') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/keamanan/radar') ? 'text-red-700 bg-red-50' : 'text-slate-400 hover:text-red-600' }} rounded-xl transition uppercase tracking-widest">RADAR AKSES</a>
+                        <a href="{{ route('admin.pengaturan.log') }}" wire:navigate class="block px-4 py-2.5 text-[10px] font-bold {{ request()->is('admin/keamanan/log') ? 'text-red-700 bg-red-50' : 'text-slate-400 hover:text-red-600' }} rounded-xl transition uppercase tracking-widest">FORENSIK DIGITAL</a>
                     </div>
                 </div>
 
