@@ -2,57 +2,48 @@
 
 namespace App\Livewire\Pengelola\ManajemenKeamanan;
 
+use App\Models\LogAktivitas;
+use App\Models\LogApi;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class AnalisisLogSiem extends Component
 {
-    public $filterKategori = '';
-    public $search = '';
+    use WithPagination;
 
-    public function getLogsProperty()
+    public $filterTipe = 'semua';
+    public $search = '';
+    public $tingkatKeparahan = 'semua';
+
+    protected $queryString = ['filterTipe', 'search', 'tingkatKeparahan'];
+
+    public function updated($propertyName)
     {
-        return collect([
-            [
-                'waktu' => now()->subSeconds(45),
-                'sumber' => 'WAF-01',
-                'event' => 'SQL Injection Attempt',
-                'detail' => 'payload: UNION SELECT 1,2,3--',
-                'level' => 'kritis',
-                'ip' => '103.20.11.2'
-            ],
-            [
-                'waktu' => now()->subMinutes(2),
-                'sumber' => 'AUTH-SVC',
-                'event' => 'Brute Force Login',
-                'detail' => 'user: admin, attempts: 50/min',
-                'level' => 'tinggi',
-                'ip' => '45.11.22.33'
-            ],
-            [
-                'waktu' => now()->subMinutes(5),
-                'sumber' => 'APP-CORE',
-                'event' => 'Invalid CSRF Token',
-                'detail' => 'route: /checkout/process',
-                'level' => 'sedang',
-                'ip' => '192.168.1.50'
-            ],
-            [
-                'waktu' => now()->subMinutes(10),
-                'sumber' => 'SYS-MON',
-                'event' => 'High CPU Usage',
-                'detail' => 'cpu: 95%, proc: php-fpm',
-                'level' => 'rendah',
-                'ip' => 'localhost'
-            ],
-        ]);
+        $this->resetPage();
+    }
+
+    public function getLogs()
+    {
+        if ($this->filterTipe === 'api') {
+            return LogApi::latest('dibuat_pada')
+                ->when($this->search, fn($q) => $q->where('endpoint', 'like', "%{$this->search}%")->orWhere('ip_address', 'like', "%{$this->search}%"))
+                ->paginate(20);
+        }
+
+        return LogAktivitas::latest('waktu')
+            ->when($this->search, function($q) {
+                $q->where('aksi', 'like', "%{$this->search}%")
+                  ->orWhere('meta_data->alamat_ip', 'like', "%{$this->search}%");
+            })
+            ->paginate(20);
     }
 
     #[Title('SIEM - Analisis Log Terpusat - Teqara Security')]
     public function render()
     {
         return view('livewire.pengelola.manajemen-keamanan.analisis-log-siem', [
-            'logs' => $this->logs
+            'logs' => $this->getLogs()
         ])->layout('components.layouts.admin');
     }
 }

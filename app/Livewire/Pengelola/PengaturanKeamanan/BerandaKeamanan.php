@@ -64,7 +64,7 @@ class BerandaKeamanan extends Component
             ->count();
 
         $ipUnik = LogAktivitas::where('waktu', '>=', now()->subDay())
-            ->distinct('meta_data->ip_address') // Perlu penanganan khusus di SQLite/MySQL versi lama, tapi kita coba standar
+            ->distinct('meta_data->alamat_ip') 
             ->count();
 
         $logs = LogAktivitas::with('pengguna')

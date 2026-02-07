@@ -1,27 +1,3521 @@
 {
-    "nama_sistem": "TEQARA ENTERPRISE HUB v16.0",
-    "waktu_generate": "2026-02-07 10:15:42",
-    "status_pilar": {
-        "Pilar 1: Manajemen Halaman Toko": "Aktif (CMS Konten & Berita)",
-        "Pilar 2: Manajemen Produk & Gadget": "Aktif (Katalog, Stok, Kategori, Merek)",
-        "Pilar 3: Manajemen Pesanan": "Aktif (Antrian, Detail, Verifikasi)",
-        "Pilar 4: Manajemen Transaksi": "Aktif (Arus Kas, Verifikasi Bayar)",
-        "Pilar 5: Layanan Pelanggan": "Aktif (Tiket Bantuan, Moderasi Ulasan)",
-        "Pilar 6: Manajemen Logistik": "Aktif (Manifest Kirim, Pemasok)",
-        "Pilar 7: Manajemen Pelanggan": "Aktif (CRM, Member Basis)",
-        "Pilar 8: Manajemen Pegawai": "Aktif (Struktur, SDM, Peran)",
-        "Pilar 9: Manajemen Laporan": "Aktif (Analitik Profit)",
-        "Pilar 10: Pengaturan Sistem": "Aktif (Identitas, Voucher)",
-        "Pilar 11: Pengaturan Keamanan": "Aktif (Radar Akses, Log Forensik)"
+    "nama_sistem": "TEQARA Business Enterprise Store",
+    "versi": "12.0.0",
+    "tanggal_update": "2026-02-07 17:49:38",
+    "status_sistem": {
+        "lingkungan": "local",
+        "debug_mode": true,
+        "php_version": "8.2.12",
+        "laravel_version": "12.50.0"
     },
-    "statistik_database": {
-        "pengguna": "12 baris data",
-        "produk": "2 baris data",
-        "pesanan": "57 baris data",
-        "transaksi_pembayaran": "8 baris data",
-        "log_aktivitas": "83 baris data",
-        "konten_halaman": "6 baris data"
-    },
-    "titik_akhir_rute": 123,
-    "catatan_pengembang": "Sistem 100% Nasionalisasi Bahasa Indonesia, Tanpa Modal, Vibrant UI."
+    "modul_aktif": [
+        {
+            "nama": "LayananPelanggan",
+            "kode": "LayananPelanggan",
+            "jumlah_komponen": 3
+        },
+        {
+            "nama": "Log",
+            "kode": "Log",
+            "jumlah_komponen": 1
+        },
+        {
+            "nama": "Manajemen Api",
+            "kode": "ManajemenApi",
+            "jumlah_komponen": 8
+        },
+        {
+            "nama": "Manajemen Keamanan",
+            "kode": "ManajemenKeamanan",
+            "jumlah_komponen": 16
+        },
+        {
+            "nama": "Manajemen Laporan",
+            "kode": "ManajemenLaporan",
+            "jumlah_komponen": 1
+        },
+        {
+            "nama": "Manajemen Logistik",
+            "kode": "ManajemenLogistik",
+            "jumlah_komponen": 1
+        },
+        {
+            "nama": "Manajemen Pegawai",
+            "kode": "ManajemenPegawai",
+            "jumlah_komponen": 3
+        },
+        {
+            "nama": "Manajemen Pelanggan",
+            "kode": "ManajemenPelanggan",
+            "jumlah_komponen": 3
+        },
+        {
+            "nama": "Manajemen Pesanan",
+            "kode": "ManajemenPesanan",
+            "jumlah_komponen": 4
+        },
+        {
+            "nama": "Manajemen Produk",
+            "kode": "ManajemenProduk",
+            "jumlah_komponen": 9
+        },
+        {
+            "nama": "Manajemen Sistem",
+            "kode": "ManajemenSistem",
+            "jumlah_komponen": 2
+        },
+        {
+            "nama": "Manajemen Toko",
+            "kode": "ManajemenToko",
+            "jumlah_komponen": 3
+        },
+        {
+            "nama": "Manajemen Transaksi",
+            "kode": "ManajemenTransaksi",
+            "jumlah_komponen": 1
+        },
+        {
+            "nama": "Manajemen Vendor",
+            "kode": "ManajemenVendor",
+            "jumlah_komponen": 4
+        },
+        {
+            "nama": "PengaturanKeamanan",
+            "kode": "PengaturanKeamanan",
+            "jumlah_komponen": 1
+        },
+        {
+            "nama": "PengaturanSistem",
+            "kode": "PengaturanSistem",
+            "jumlah_komponen": 2
+        }
+    ],
+    "daftar_endpoint": [
+        {
+            "nama": "pengelola.beranda",
+            "uri": "pengelola/beranda",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.notifikasi.index",
+            "uri": "pengelola/notifikasi",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.katalog",
+            "uri": "pengelola/produk",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.tambah",
+            "uri": "pengelola/produk/tambah",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.edit",
+            "uri": "pengelola/produk/edit/{id}",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.stok",
+            "uri": "pengelola/produk/stok",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.gudang",
+            "uri": "pengelola/produk/gudang",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.seri",
+            "uri": "pengelola/produk/seri",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.garansi",
+            "uri": "pengelola/produk/garansi",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.pembelian.riwayat",
+            "uri": "pengelola/produk/pembelian",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.pembelian.baru",
+            "uri": "pengelola/produk/pembelian/baru",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.pembelian.edit",
+            "uri": "pengelola/produk/pembelian/edit/{id}",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.pembelian.detail",
+            "uri": "pengelola/produk/pembelian/detail/{id}",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.so.riwayat",
+            "uri": "pengelola/produk/stock-opname",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.promo.flash-sale",
+            "uri": "pengelola/produk/flash-sale",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.kategori",
+            "uri": "pengelola/kategori",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.kategori.tambah",
+            "uri": "pengelola/kategori/tambah",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.kategori.edit",
+            "uri": "pengelola/kategori/edit/{id}",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.merek",
+            "uri": "pengelola/merek",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.merek.tambah",
+            "uri": "pengelola/merek/tambah",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.merek.edit",
+            "uri": "pengelola/merek/edit/{id}",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.vendor.daftar",
+            "uri": "pengelola/vendor",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.vendor.tambah",
+            "uri": "pengelola/vendor/tambah",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.vendor.edit",
+            "uri": "pengelola/vendor/edit/{id}",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.vendor.penawaran",
+            "uri": "pengelola/vendor/penawaran",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.pesanan.daftar",
+            "uri": "pengelola/pesanan",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.pesanan.detail",
+            "uri": "pengelola/pesanan/detail/{pesanan}",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.pesanan.verifikasi",
+            "uri": "pengelola/pesanan/verifikasi",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.transaksi.beranda",
+            "uri": "pengelola/transaksi",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.logistik.beranda",
+            "uri": "pengelola/logistik",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.pelanggan.daftar",
+            "uri": "pengelola/pelanggan",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.pelanggan.ulasan",
+            "uri": "pengelola/pelanggan/ulasan",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.cs.tiket",
+            "uri": "pengelola/layanan/tiket",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.cs.tiket.detail",
+            "uri": "pengelola/layanan/tiket/{id}",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.cs.beranda",
+            "uri": "pengelola/layanan",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.pusat",
+            "uri": "pengelola/api",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.kunci",
+            "uri": "pengelola/api/kunci",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.log",
+            "uri": "pengelola/api/log",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.dokumentasi",
+            "uri": "pengelola/api/dokumentasi",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.pembayaran",
+            "uri": "pengelola/api/pembayaran",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.logistik",
+            "uri": "pengelola/api/logistik",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.email",
+            "uri": "pengelola/api/email",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.whatsapp",
+            "uri": "pengelola/api/whatsapp",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.dashboard",
+            "uri": "pengelola/keamanan",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.firewall",
+            "uri": "pengelola/keamanan/firewall",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.sesi",
+            "uri": "pengelola/keamanan/sesi",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.backup",
+            "uri": "pengelola/keamanan/backup",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.pemindai",
+            "uri": "pengelola/keamanan/scanner",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.ancaman",
+            "uri": "pengelola/keamanan/ancaman",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.integritas",
+            "uri": "pengelola/keamanan/integritas",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.honeypot",
+            "uri": "pengelola/keamanan/honeypot",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.dlp",
+            "uri": "pengelola/keamanan/dlp",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.siem",
+            "uri": "pengelola/keamanan/siem",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.zerotrust",
+            "uri": "pengelola/keamanan/zerotrust",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.pam",
+            "uri": "pengelola/keamanan/pam",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.irp",
+            "uri": "pengelola/keamanan/irp",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.edr",
+            "uri": "pengelola/keamanan/edr",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.sistem.pusat",
+            "uri": "pengelola/sistem",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.sistem.kesehatan",
+            "uri": "pengelola/sistem/kesehatan",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.voucher",
+            "uri": "pengelola/sistem/voucher",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.pengaturan.log",
+            "uri": "pengelola/sistem/log",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.pengguna.hrd",
+            "uri": "pengelola/hrd/karyawan",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.hrd.struktur",
+            "uri": "pengelola/hrd/struktur",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.laporan.pusat",
+            "uri": "pengelola/laporan",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.toko.berita",
+            "uri": "pengelola/cms/berita",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.toko.konten",
+            "uri": "pengelola/cms/konten",
+            "metode": "GET"
+        }
+    ],
+    "struktur_database": [
+        {
+            "tabel": "absensi",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "karyawan_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "tanggal",
+                    "tipe": "date",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "jam_masuk",
+                    "tipe": "time",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "jam_keluar",
+                    "tipe": "time",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "catatan",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "alamat_pengiriman",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "label_alamat",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "penerima",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "telepon",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "alamat_lengkap",
+                    "tipe": "text",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "provinsi_id",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kota_id",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kota",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kode_pos",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "is_utama",
+                    "tipe": "tinyint(1)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "aturan_firewalls",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "alamat_ip",
+                    "tipe": "varchar(45)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "user_agent",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "negara",
+                    "tipe": "varchar(2)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tipe_aturan",
+                    "tipe": "varchar(20)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "alasan",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "level_ancaman",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "aktif",
+                    "tipe": "tinyint(1)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_oleh",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "kadaluarsa_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "berita",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "judul",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "slug",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "ringkasan",
+                    "tipe": "text",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "konten",
+                    "tipe": "longtext",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "gambar_unggulan",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "penulis_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('draft','publikasi')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "jumlah_baca",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "daftar_keinginan",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "departemen",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nama",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kode",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "deskripsi",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "detail_pembelian",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pembelian_stok_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "jumlah_pesan",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "jumlah_diterima",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "harga_beli_satuan",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "subtotal",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "detail_pembelian_b2b",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pembelian_stok_b2b_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "jumlah_pesan",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "jumlah_diterima",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "harga_satuan_beli",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "subtotal",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "detail_pesanan",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pesanan_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "varian_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "harga_saat_ini",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "jumlah",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "subtotal",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "detail_stock_opname",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "stock_opname_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "stok_sistem",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "stok_fisik",
+                    "tipe": "int(11)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "selisih",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "alasan",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "gambar_produk",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "url",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "is_utama",
+                    "tipe": "tinyint(1)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "urutan",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "gudang",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nama",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "lokasi",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "aktif",
+                    "tipe": "tinyint(1)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "insiden_keamanans",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "jenis_insiden",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tingkat_keparahan",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "alamat_ip",
+                    "tipe": "varchar(45)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "deskripsi",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "meta_data",
+                    "tipe": "longtext",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "item_penawaran",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "penawaran_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "jumlah",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "harga_tawar_satuan",
+                    "tipe": "decimal(15,2)",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "item_proyeks",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "created_at",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "updated_at",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "jabatan",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nama",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "departemen_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "gaji_pokok",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "karyawan",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nama_lengkap",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "foto",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "jabatan_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "nip",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "email",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "telepon",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "alamat",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tanggal_bergabung",
+                    "tipe": "date",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status_kerja",
+                    "tipe": "enum('kontrak','tetap','magang')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('aktif','nonaktif','cuti')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "kategori",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nama",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "slug",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "ikon",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "keranjang",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "varian_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "jumlah",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "klaim_garansi",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "kode_klaim",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "produk_seri_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "pelanggan_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "jenis_klaim",
+                    "tipe": "enum('perbaikan','tukar_unit','refund','pengecekan')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('menunggu_unit','cek_fisik','proses_servis','siap_ambil','selesai','ditolak')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "keluhan",
+                    "tipe": "text",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "solusi",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "catatan_teknisi",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tgl_masuk",
+                    "tipe": "datetime",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tgl_selesai",
+                    "tipe": "datetime",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "kontak_pemasok",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pemasok_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "nama",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "jabatan",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "telepon",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "email",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "konten_halaman",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "bagian",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "judul",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "deskripsi",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "gambar",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tautan_tujuan",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "teks_tombol",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "aktif",
+                    "tipe": "tinyint(1)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "urutan",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "kunci_apis",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "nama_token",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "token",
+                    "tipe": "varchar(64)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "hak_akses",
+                    "tipe": "longtext",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('aktif','nonaktif')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "terakhir_dipakai",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "kunci_cache",
+            "kolom": [
+                {
+                    "nama": "kunci",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pemilik",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kedaluwarsa",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "log_aktivitas",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "aksi",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "target",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "pesan_naratif",
+                    "tipe": "text",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "meta_data",
+                    "tipe": "longtext",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "waktu",
+                    "tipe": "timestamp",
+                    "null": "NO",
+                    "kunci": "MUL"
+                }
+            ]
+        },
+        {
+            "tabel": "log_apis",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "kunci_api_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "endpoint",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "metode",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "ip_address",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "payload",
+                    "tipe": "longtext",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "respons_kode",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "waktu_eksekusi",
+                    "tipe": "double",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "merek",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nama",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "slug",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "logo",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "migrations",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "int(10) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "migration",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "batch",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "mutasi_stok",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "jumlah",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "jenis_mutasi",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "referensi_id",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "keterangan",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "oleh_pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "notifikasi",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "judul",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "pesan",
+                    "tipe": "text",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tipe",
+                    "tipe": "varchar(20)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tautan",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "data_tambahan",
+                    "tipe": "longtext",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibaca_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "pemasok",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "kode_pemasok",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "nama_perusahaan",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "penanggung_jawab",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "telepon",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "email",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "npwp",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "website",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "alamat",
+                    "tipe": "text",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "catatan",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('aktif','nonaktif','blacklist')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "pembelian_stok",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nomor_po",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "pemasok_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "gudang_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "tanggal_pesan",
+                    "tipe": "date",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tanggal_terima",
+                    "tipe": "date",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "total_biaya",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('dipesan','diterima','batal')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "catatan",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_oleh",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "pembelian_stok_b2b",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nomor_po",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "pemasok_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "gudang_tujuan_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "total_biaya",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('draft','dikirim','diproses_supplier','dikirim_supplier','diterima','batal')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "catatan",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tanggal_pesan",
+                    "tipe": "timestamp",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tanggal_diterima",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_oleh",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "penawaran_harga",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "total_pengajuan",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('pending','dibalas','disetujui','ditolak','kadaluarsa')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "pesan_pelanggan",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "pesan_admin",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "berlaku_sampai",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "pengaturan_sistem",
+            "kolom": [
+                {
+                    "nama": "kunci",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nilai",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tipe",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "pengguna",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nama",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "email",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "poin_loyalitas",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "level_member",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kata_sandi",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "peran",
+                    "tipe": "enum('admin','staf_gudang','kasir','pelanggan','pemasok')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "nomor_telepon",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "foto_profil",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "email_diverifikasi_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "token_ingat",
+                    "tipe": "varchar(100)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "penjualan_kilat",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "judul",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "waktu_mulai",
+                    "tipe": "datetime",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "waktu_selesai",
+                    "tipe": "datetime",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "banner_url",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "aktif",
+                    "tipe": "tinyint(1)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "penyimpanan_cache",
+            "kolom": [
+                {
+                    "nama": "kunci",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nilai",
+                    "tipe": "mediumtext",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kedaluwarsa",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "pesanan",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nomor_faktur",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "total_harga",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "potongan_diskon",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kode_voucher",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status_pembayaran",
+                    "tipe": "enum('belum_dibayar','menunggu_verifikasi','lunas','gagal')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status_pesanan",
+                    "tipe": "enum('menunggu','diproses','dikirim','selesai','batal')",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "alasan_pembatalan",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "alamat_pengiriman",
+                    "tipe": "text",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "bukti_bayar",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "resi_pengiriman",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "waktu_pembatalan",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "produk",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "kategori_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "tipe_produk",
+                    "tipe": "enum('fisik','digital','bundle')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "merek_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "nama",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "slug",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "kode_unit",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "deskripsi_singkat",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "deskripsi_lengkap",
+                    "tipe": "longtext",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "harga_modal",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "berat_gram",
+                    "tipe": "decimal(10,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dimensi_kemasan",
+                    "tipe": "longtext",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "harga_jual",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "harga_grosir",
+                    "tipe": "longtext",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "stok",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "stok_ditahan",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "memiliki_varian",
+                    "tipe": "tinyint(1)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('aktif','arsip','habis')",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "rating_rata_rata",
+                    "tipe": "decimal(3,2)",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "produk_bundling",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "parent_produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "child_produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "jumlah",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "produk_penjualan_kilat",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "penjualan_kilat_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "harga_diskon",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kuota_stok",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "terjual",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "produk_seri",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "nomor_seri",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('tersedia','terjual','rusak','retur')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "detail_pesanan_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "proyeks",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "created_at",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "updated_at",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "riwayat_poin",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "jumlah",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "sumber",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "referensi_id",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "keterangan",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "sesi",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "alamat_ip",
+                    "tipe": "varchar(45)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "agen_pengguna",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "muatan",
+                    "tipe": "longtext",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "aktivitas_terakhir",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": "MUL"
+                }
+            ]
+        },
+        {
+            "tabel": "spesifikasi_produk",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "judul",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "nilai",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "stock_opname",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "kode_so",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "gudang_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "petugas_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('draft','proses','selesai','batal')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tgl_mulai",
+                    "tipe": "date",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tgl_selesai",
+                    "tipe": "date",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "catatan",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "stok_gudang",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "gudang_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "jumlah",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "tiket_bantuan",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "judul",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kategori",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "prioritas",
+                    "tipe": "enum('rendah','sedang','tinggi')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status",
+                    "tipe": "enum('terbuka','diproses','selesai','ditutup')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "riwayat_pesan",
+                    "tipe": "longtext",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "tim_members",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "created_at",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "updated_at",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "token_reset_sandi",
+            "kolom": [
+                {
+                    "nama": "email",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "token",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "transaksi_pembayaran",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pesanan_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "kode_pembayaran",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "metode_pembayaran",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "provider",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "jumlah_bayar",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "status",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "waktu_bayar",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "payload_gateway",
+                    "tipe": "longtext",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "ulasan",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "pengguna_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "pesanan_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "rating",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "komentar",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "foto_ulasan",
+                    "tipe": "longtext",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "varian_produk",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "produk_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "nama_varian",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "sku",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "harga_tambahan",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "stok",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "voucher",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "kode",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "deskripsi",
+                    "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tipe_diskon",
+                    "tipe": "enum('persen','nominal')",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "nilai_diskon",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "min_pembelian",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "maks_potongan",
+                    "tipe": "decimal(15,2)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kuota",
+                    "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "berlaku_mulai",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "berlaku_sampai",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        }
+    ]
 }

@@ -127,6 +127,13 @@ class Beranda extends Component
             ->take(3)
             ->get();
 
+        // 6. Payment Methods Active (Real-time from Admin)
+        $paymentConfig = \App\Models\PengaturanSistem::whereIn('kunci', [
+            'payment_midtrans_mode', 
+            'payment_midtrans_id',
+            'payment_xendit_secret' // Check if Xendit is "active" by presence of key
+        ])->pluck('nilai', 'kunci');
+
         return view('livewire.beranda', [
             'hero' => $hero,
             'kategori' => $kategori,
@@ -135,6 +142,7 @@ class Beranda extends Component
             'beritaTerbaru' => $beritaTerbaru,
             'promoBanners' => $promoBanners ?? collect([]),
             'fiturUnggulan' => $fiturUnggulan ?? collect([]),
+            'paymentConfig' => $paymentConfig,
         ])->layout('components.layouts.app');
     }
 }

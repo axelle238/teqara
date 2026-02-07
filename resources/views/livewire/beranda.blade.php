@@ -369,6 +369,87 @@
         </div>
     </section>
 
+    <!-- Dynamic Payment Partners (Real-time Integration) -->
+    <section class="py-12 border-t border-slate-100 bg-white">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Official Payment Partners</p>
+            <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70 hover:opacity-100 transition-opacity">
+                <!-- Midtrans (Always show if configured) -->
+                @if(isset($paymentConfig['payment_midtrans_id']) && !empty($paymentConfig['payment_midtrans_id']))
+                    <div class="group flex flex-col items-center gap-2">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Midtrans.png/1200px-Midtrans.png" class="h-8 grayscale group-hover:grayscale-0 transition-all">
+                        @if(($paymentConfig['payment_midtrans_mode'] ?? 'sandbox') === 'sandbox')
+                            <span class="text-[8px] font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded uppercase">Sandbox Mode</span>
+                        @endif
+                    </div>
+                @endif
+
+                <!-- Xendit (Only if configured) -->
+                @if(isset($paymentConfig['payment_xendit_secret']) && !empty($paymentConfig['payment_xendit_secret']))
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Xendit_logo.png" class="h-8 grayscale hover:grayscale-0 transition-all">
+                @endif
+
+                <!-- Bank Logos (Static for visual completeness) -->
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/2560px-Bank_Central_Asia.svg.png" class="h-8 grayscale hover:grayscale-0 transition-all">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Logo_Bank_Mandiri_North_Europe_Ltd.svg/2560px-Logo_Bank_Mandiri_North_Europe_Ltd.svg.png" class="h-8 grayscale hover:grayscale-0 transition-all">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/BANK_BRI_logo.svg/2560px-BANK_BRI_logo.svg.png" class="h-8 grayscale hover:grayscale-0 transition-all">
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile App Banner -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-16">
+        <div class="relative bg-[#0f172a] rounded-[3rem] overflow-hidden p-12 flex flex-col md:flex-row items-center gap-12">
+            <!-- Background FX -->
+            <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10"></div>
+            <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/30 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+
+            <div class="flex-1 relative z-10 space-y-6">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-500/20 border border-indigo-500/30 rounded-full text-indigo-300 text-xs font-black uppercase tracking-widest">
+                    <i class="fa-solid fa-mobile-screen"></i> Mobile First
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black text-white tracking-tight leading-none">
+                    Belanja Lebih Cepat<br>
+                    <span class="text-indigo-500">Dalam Genggaman.</span>
+                </h2>
+                <p class="text-slate-400 text-lg max-w-md">Download aplikasi Teqara Enterprise sekarang. Nikmati promo eksklusif aplikasi dan notifikasi pesanan real-time.</p>
+                <div class="flex gap-4 pt-4">
+                    <button class="bg-white text-slate-900 px-6 py-3 rounded-xl flex items-center gap-3 font-bold hover:bg-indigo-50 transition-colors">
+                        <i class="fa-brands fa-apple text-2xl"></i>
+                        <div class="text-left leading-none">
+                            <span class="text-[9px] uppercase tracking-wider block">Download on the</span>
+                            <span class="text-sm font-black">App Store</span>
+                        </div>
+                    </button>
+                    <button class="bg-transparent border border-slate-700 text-white px-6 py-3 rounded-xl flex items-center gap-3 font-bold hover:bg-white/5 transition-colors">
+                        <i class="fa-brands fa-google-play text-2xl"></i>
+                        <div class="text-left leading-none">
+                            <span class="text-[9px] uppercase tracking-wider block">Get it on</span>
+                            <span class="text-sm font-black">Google Play</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex-1 relative h-64 md:h-96 w-full flex items-center justify-center">
+                <!-- Phone Mockup CSS -->
+                <div class="relative w-48 h-96 bg-slate-900 rounded-[3rem] border-8 border-slate-800 shadow-2xl rotate-12 hover:rotate-6 transition-transform duration-500">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-slate-800 rounded-b-xl z-20"></div>
+                    <div class="w-full h-full bg-indigo-600 rounded-[2.5rem] overflow-hidden relative">
+                        <div class="p-4 pt-12 space-y-4">
+                            <div class="h-8 w-24 bg-white/20 rounded-lg"></div>
+                            <div class="h-32 w-full bg-white/10 rounded-2xl"></div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="h-24 bg-white/10 rounded-xl"></div>
+                                <div class="h-24 bg-white/10 rounded-xl"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Newsletter CTA -->
     <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="relative rounded-[2.5rem] bg-indigo-600 overflow-hidden px-8 py-16 sm:px-16 text-center shadow-2xl shadow-indigo-500/30">

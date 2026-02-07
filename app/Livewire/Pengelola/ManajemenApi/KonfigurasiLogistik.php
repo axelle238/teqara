@@ -80,17 +80,33 @@ class KonfigurasiLogistik extends Component
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Konfigurasi DHL disimpan.']);
     }
 
+    public $testing_rajaongkir = false;
+    public $test_result_rajaongkir = null;
+
+    public function testRajaOngkir(\App\Services\LayananIntegrasi $integrasi)
+    {
+        $this->testing_rajaongkir = true;
+        $this->test_result_rajaongkir = null;
+
+        $hasil = $integrasi->tesKoneksiRajaOngkir($this->rajaongkir_key, $this->rajaongkir_type);
+
+        $this->testing_rajaongkir = false;
+        
+        if ($hasil['sukses']) {
+            $this->test_result_rajaongkir = ['status' => 'success', 'pesan' => $hasil['pesan']];
+            $this->dispatch('notifikasi', tipe: 'sukses', pesan: 'Koneksi RajaOngkir Terverifikasi!');
+            // Jika sukses, load province ulang
+            $this->loadProvinces();
+        } else {
+            $this->test_result_rajaongkir = ['status' => 'error', 'pesan' => $hasil['pesan']];
+            $this->dispatch('notifikasi', tipe: 'error', pesan: 'Koneksi Gagal: ' . $hasil['pesan']);
+        }
+    }
+
     public function cekStatusServer()
     {
-        if (empty($this->rajaongkir_key)) {
-            $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'API Key RajaOngkir belum diisi.']);
-            return;
-        }
-
-        // Simulasi request ke RajaOngkir API (karena di server lokal tanpa koneksi keluar yang diizinkan kadang fail)
-        // Idealnya: Http::withHeaders(['key' => $this->rajaongkir_key])->get('https://api.rajaongkir.com/starter/province');
-        
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Server RajaOngkir (' . ucfirst($this->rajaongkir_type) . ') Terhubung!']);
+        // Deprecated in favor of testRajaOngkir
+        $this->testRajaOngkir(new \App\Services\LayananIntegrasi());
     }
 
     #[Title('API Kurir & Logistik - Teqara Admin')]
