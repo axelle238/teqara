@@ -12,8 +12,7 @@ class PencegahanKebocoran extends Component
 
     public $aturanDlp = [
         ['nama' => 'Kartu Kredit', 'pola' => '(?:\d[ -]*?){13,16}', 'aksi' => 'blokir', 'status' => 'aktif'],
-        ['nama' => 'Email List Dump', 'pola' => '(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(
-|,|;)){5,}', 'aksi' => 'blokir', 'status' => 'aktif'],
+        ['nama' => 'Email List Dump', 'pola' => '(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(\n|,|;)){5,}', 'aksi' => 'blokir', 'status' => 'aktif'],
         ['nama' => 'KTP / NIK', 'pola' => '\d{16}', 'aksi' => 'log', 'status' => 'aktif'],
         ['nama' => 'Source Code PHP', 'pola' => '<\?php', 'aksi' => 'blokir', 'status' => 'nonaktif'],
     ];
