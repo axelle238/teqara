@@ -7,10 +7,78 @@
             <p class="text-slate-500 font-medium">Jaringan pemasok dan vendor teknologi terverifikasi.</p>
         </div>
         
-        <a href="{{ route('pengelola.vendor.tambah') }}" wire:navigate class="flex items-center gap-3 px-6 py-3 bg-yellow-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-yellow-600 transition-all shadow-lg shadow-yellow-500/20 active:scale-95">
-            <i class="fa-solid fa-handshake"></i> Tambah Mitra
-        </a>
+        @if(!$tampilkanForm)
+        <button wire:click="tambahBaru" class="flex items-center gap-3 px-6 py-3 bg-yellow-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-yellow-600 transition-all shadow-lg shadow-yellow-500/20 active:scale-95">
+            <i class="fa-solid fa-plus"></i> Tambah Mitra
+        </button>
+        @endif
     </div>
+
+    @if($tampilkanForm)
+    <!-- INLINE FORM -->
+    <div class="bg-white rounded-[40px] p-8 md:p-10 border border-indigo-50 shadow-xl shadow-indigo-500/5 animate-in slide-in-from-top-4 duration-500 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-yellow-50 rounded-full blur-3xl -mr-20 -mt-20 opacity-50"></div>
+        
+        <div class="relative z-10">
+            <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-8">{{ $pemasokId ? 'Sunting Data Mitra' : 'Registrasi Mitra Baru' }}</h2>
+            
+            <form wire:submit.prevent="simpan" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Nama Perusahaan</label>
+                        <input wire:model.live="nama_perusahaan" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 focus:ring-4 focus:ring-yellow-500/10 transition-all" placeholder="Cth: PT. Teknologi Indonesia">
+                        @error('nama_perusahaan') <span class="text-[10px] font-bold text-rose-500 mt-1 block px-1">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Kode Vendor</label>
+                            <input wire:model="kode_pemasok" type="text" class="w-full bg-slate-100 border-none rounded-2xl px-6 py-4 text-sm font-mono text-slate-500 focus:ring-4 focus:ring-yellow-500/10 transition-all uppercase">
+                            @error('kode_pemasok') <span class="text-[10px] font-bold text-rose-500 mt-1 block px-1">{{ $message }}</span> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Status Kemitraan</label>
+                            <select wire:model="status" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 focus:ring-4 focus:ring-yellow-500/10 transition-all cursor-pointer">
+                                <option value="aktif">AKTIF</option>
+                                <option value="nonaktif">NONAKTIF</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Alamat Kantor</label>
+                        <textarea wire:model="alamat" rows="3" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-medium text-slate-600 focus:ring-4 focus:ring-yellow-500/10 transition-all resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Person in Charge (PIC)</label>
+                        <input wire:model="penanggung_jawab" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 focus:ring-4 focus:ring-yellow-500/10 transition-all" placeholder="Nama lengkap penanggung jawab">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Nomor Telepon</label>
+                            <input wire:model="telepon" type="tel" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 focus:ring-4 focus:ring-yellow-500/10 transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Alamat Email</label>
+                            <input wire:model="email" type="email" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-700 focus:ring-4 focus:ring-yellow-500/10 transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2 flex justify-end gap-4 mt-4">
+                    <button type="button" wire:click="batal" class="px-8 py-4 bg-slate-50 text-slate-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-100 transition-all">Batal</button>
+                    <button type="submit" class="px-10 py-4 bg-yellow-500 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-yellow-600/20 hover:bg-yellow-600 transition-all active:scale-95">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan Mitra
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
 
     <!-- Filter Bar -->
     <div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
@@ -69,10 +137,10 @@
                         </td>
                         <td class="px-8 py-5 text-right">
                             <div class="flex justify-end gap-2">
-                                <a href="{{ route('pengelola.vendor.edit', $p->id) }}" wire:navigate class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-indigo-600 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
+                                <button wire:click="edit({{ $p->id }})" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-indigo-600 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all shadow-sm">
                                     <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                                <button wire:confirm="Hapus mitra ini? Data terkait mungkin akan hilang." wire:click="hapus({{ $p->id }})" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-rose-500 flex items-center justify-center hover:bg-rose-600 hover:text-white transition-all shadow-sm">
+                                </button>
+                                <button wire:confirm="Hapus mitra ini? Data terkait mungkin akan hilang." wire:click="hapus({{ $p->id }})" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-rose-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>

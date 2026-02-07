@@ -92,7 +92,7 @@
                         <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest {{ $statusColor }}">{{ $t->status }}</span>
                     </div>
                     
-                    <a href="{{ route('tiket.detail', $t->id) }}" class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-200 hover:shadow-md transition-all">
+                    <a href="{{ route('pengelola.cs.tiket.detail', $t->id) }}" class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-200 hover:shadow-md transition-all">
                         <i class="fa-solid fa-chevron-right"></i>
                     </a>
                 </div>

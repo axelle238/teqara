@@ -1,7 +1,7 @@
 {
     "nama_sistem": "TEQARA Business Enterprise Store",
     "versi": "12.0.0",
-    "tanggal_update": "2026-02-07 20:06:29",
+    "tanggal_update": "2026-02-07 20:14:43",
     "status_sistem": {
         "lingkungan": "local",
         "debug_mode": true,
@@ -162,6 +162,11 @@
             "metode": "GET"
         },
         {
+            "nama": "pengelola.produk.so.detail",
+            "uri": "pengelola/produk/stock-opname/{id}",
+            "metode": "GET"
+        },
+        {
             "nama": "pengelola.produk.promo.flash-sale",
             "uri": "pengelola/produk/flash-sale",
             "metode": "GET"
@@ -269,6 +274,21 @@
         {
             "nama": "pengelola.produk.pembelian.riwayat",
             "uri": "pengelola/vendor/pembelian",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.pembelian.baru",
+            "uri": "pengelola/vendor/pembelian/baru",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.pembelian.detail",
+            "uri": "pengelola/vendor/pembelian/{id}",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.pembelian.edit",
+            "uri": "pengelola/vendor/pembelian/edit/{id}",
             "metode": "GET"
         },
         {

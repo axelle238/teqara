@@ -87,8 +87,7 @@
                     <span class="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500">Mitra Vendor</span>
                 </div>
                 @foreach($hasil['vendor'] as $v)
-                <a href="{{ route('pengelola.vendor.edit', $v->id) }}" wire:navigate class="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 group">
-                    <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600">
+                                                <a href="{{ route('pengelola.vendor.daftar') }}" wire:navigate class="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0 group">                    <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600">
                         <i class="fa-solid fa-handshake"></i>
                     </div>
                     <div>
