@@ -182,6 +182,53 @@ class Checkout extends Component
 
     // ... (kode voucher tetap sama, tidak perlu diubah di sini karena pakai tool replace)
 
+    public function terapkanVoucher()
+    {
+        $this->validate(['kodeVoucherInput' => 'required']);
+
+        $voucher = Voucher::where('kode', strtoupper($this->kodeVoucherInput))
+            ->where('aktif', true)
+            ->where('kuota', '>', 0)
+            ->where('berlaku_dari', '<=', now())
+            ->where('berlaku_sampai', '>=', now())
+            ->first();
+
+        if (! $voucher) {
+            $this->addError('kodeVoucherInput', 'Voucher tidak valid atau sudah kadaluarsa.');
+            return;
+        }
+
+        if ($this->subtotal < $voucher->minimal_belanja) {
+            $this->addError('kodeVoucherInput', 'Minimal belanja untuk voucher ini adalah Rp ' . number_format($voucher->minimal_belanja, 0, ',', '.'));
+            return;
+        }
+
+        $this->voucherTerpakai = $voucher;
+        
+        if ($voucher->tipe == 'persen') {
+            $potongan = ($this->subtotal * $voucher->nilai) / 100;
+            $this->nilaiPotonganVoucher = min($potongan, $voucher->maksimal_potongan ?? $potongan);
+        } else {
+            $this->nilaiPotonganVoucher = $voucher->nilai;
+        }
+
+        // Audit Trail Naratif
+        \App\Helpers\LogHelper::catat(
+            'Penggunaan Voucher',
+            $voucher->kode,
+            "Pelanggan '" . auth()->user()->nama . "' menerapkan kode promo '{$voucher->kode}' dan mendapatkan potongan sebesar Rp " . number_format($this->nilaiPotonganVoucher, 0, ',', '.') . "."
+        );
+
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Voucher berhasil diterapkan!']);
+    }
+
+    public function hapusVoucher()
+    {
+        $this->voucherTerpakai = null;
+        $this->nilaiPotonganVoucher = 0;
+        $this->kodeVoucherInput = '';
+    }
+
     public function getTotalBayarProperty()
     {
         $total = $this->subtotal + $this->biayaPengiriman + $this->biayaAsuransi - $this->nilaiPotonganVoucher - $this->nilaiPotonganPoin;
@@ -222,7 +269,7 @@ class Checkout extends Component
                 'total_harga' => $this->totalBayar,
                 'potongan_diskon' => $this->nilaiPotonganVoucher + $this->nilaiPotonganPoin,
                 'kode_voucher' => $this->voucherTerpakai ? $this->voucherTerpakai->kode : null,
-                'biaya_pengiriman' => $this->biayaPengiriman + $this->biayaAsuransi, // Include insurance in shipping cost for simplicity
+                'biaya_pengiriman' => $this->biayaPengiriman, // Tetap gunakan biaya kurir murni
                 'metode_pengiriman' => $this->metodePengiriman,
                 'status_pembayaran' => 'belum_dibayar',
                 'status_pesanan' => 'menunggu',
@@ -235,8 +282,8 @@ class Checkout extends Component
                 DetailPesanan::create([
                     'pesanan_id' => $pesanan->id,
                     'produk_id' => $item->produk_id,
-                    'varian_id' => $item->varian_id, // Penting untuk tracking varian
-                    'harga_saat_ini' => $item->harga_satuan, // Snapshot harga saat transaksi terjadi
+                    'varian_id' => $item->varian_id,
+                    'harga_saat_ini' => $item->harga_satuan,
                     'jumlah' => $item->jumlah,
                     'subtotal' => $item->subtotal,
                 ]);
@@ -253,46 +300,34 @@ class Checkout extends Component
             // 5. Deduksi Poin Loyalitas
             if ($this->gunakanPoin && $this->poinDiterapkan > 0) {
                 $user = auth()->user();
-                if ($user->poin_loyalitas >= $this->poinDiterapkan) {
-                    $user->decrement('poin_loyalitas', $this->poinDiterapkan);
-                    \App\Models\RiwayatPoin::create([
-                        'pengguna_id' => $user->id,
-                        'jumlah' => -$this->poinDiterapkan,
-                        'sumber' => 'pembelian',
-                        'referensi_id' => $nomorInvoice,
-                        'keterangan' => 'Redeem poin untuk Order #' . $nomorInvoice,
-                    ]);
-                }
+                $user->decrement('poin_loyalitas', $this->poinDiterapkan);
+                \App\Models\RiwayatPoin::create([
+                    'pengguna_id' => $user->id,
+                    'jumlah' => -$this->poinDiterapkan,
+                    'sumber' => 'pembelian',
+                    'referensi_id' => $nomorInvoice,
+                    'keterangan' => "Redeem {$this->poinDiterapkan} poin untuk Pesanan #{$nomorInvoice}",
+                ]);
             }
 
-            // 6. Catat Log Audit
-            LogAktivitas::create([
-                'pengguna_id' => auth()->id(),
-                'aksi' => 'buat_pesanan',
-                'target' => $nomorInvoice,
-                'pesan_naratif' => "Pesanan {$nomorInvoice} dibuat. Total: Rp " . number_format($this->totalBayar, 0, ',', '.'),
-                'waktu' => now(),
-            ]);
+            // 6. Audit Trail Naratif yang Sangat Detail
+            \App\Helpers\LogHelper::catat(
+                'Checkout Pesanan',
+                $nomorInvoice,
+                "Pesanan baru '{$nomorInvoice}' berhasil dibuat oleh '" . auth()->user()->nama . "' dengan total pembayaran Rp " . number_format($this->totalBayar, 0, ',', '.') . " melalui metode pengiriman '{$this->metodePengiriman}'."
+            );
 
             // 7. Bersihkan Keranjang
             Keranjang::where('pengguna_id', auth()->id())->delete();
 
             DB::commit();
 
-            $this->dispatch('keranjang-diperbarui'); // Update badge navbar
-            
-            // Redirect ke halaman pembayaran
+            $this->dispatch('keranjang-diperbarui');
             return redirect()->to('/pesanan/bayar/'.$nomorInvoice);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            LogAktivitas::create([
-                'pengguna_id' => auth()->id(),
-                'aksi' => 'gagal_pesanan',
-                'target' => 'Checkout',
-                'pesan_naratif' => 'Gagal checkout: ' . $e->getMessage(),
-                'waktu' => now(),
-            ]);
+            \App\Helpers\LogHelper::catat('Gagal Checkout', $nomorInvoice ?? 'N/A', "Terjadi kegagalan saat proses pembuatan pesanan: " . $e->getMessage());
             $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Gagal memproses pesanan: '.$e->getMessage()]);
         }
     }

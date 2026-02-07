@@ -163,124 +163,129 @@
 
             <!-- Right Column: Ringkasan & Pembayaran -->
             <div class="lg:col-span-5 mt-8 lg:mt-0 space-y-8">
-                <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-emerald-500/5 p-8 sticky top-32 relative overflow-hidden">
-                    <h2 class="text-lg font-black text-slate-900 uppercase tracking-tight mb-6">Rincian Pembayaran</h2>
+                <div class="bg-white rounded-[3rem] border border-slate-100 shadow-xl shadow-emerald-500/5 p-8 lg:p-10 sticky top-32 relative overflow-hidden group">
+                    <!-- Tech Background Decor -->
+                    <div class="absolute -top-20 -right-20 w-64 h-64 bg-emerald-50 rounded-full blur-3xl opacity-40 group-hover:opacity-100 transition-opacity"></div>
+                    
+                    <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-8 relative z-10 flex items-center justify-between">
+                        Ringkasan Pesanan
+                        <i class="fa-solid fa-receipt text-emerald-500 opacity-20"></i>
+                    </h2>
 
-                    <!-- Item List (Compact) -->
-                    <ul class="mb-6 space-y-4 max-h-60 overflow-y-auto pr-2 scrollbar-thin">
-                        @foreach($this->items as $item)
-                        <li class="flex items-start gap-4 p-3 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                            <div class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-white p-1 flex items-center justify-center">
-                                <img src="{{ $item->produk->gambar_utama_url }}" class="h-full w-full object-contain mix-blend-multiply">
-                            </div>
-                            <div class="flex-1">
-                                <h3 class="text-xs font-bold text-slate-900 line-clamp-1 uppercase">{{ $item->produk->nama }}</h3>
-                                <p class="text-[10px] text-slate-500 font-bold">{{ $item->varian ? $item->varian->nama_varian : 'Standar' }}</p>
-                                <div class="flex justify-between mt-1">
-                                    <span class="text-[10px] text-slate-400 font-mono">x{{ $item->jumlah }} • {{ $item->produk->berat_gram ?? 500 }}g</span>
-                                    <span class="text-xs font-black text-slate-900">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                    <!-- Item List (Compact Scrollable) -->
+                    <div class="relative z-10 mb-8">
+                        <ul class="space-y-4 max-h-[280px] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-slate-200">
+                            @foreach($this->items as $item)
+                            <li class="flex items-center gap-4 p-4 rounded-2xl bg-slate-50/50 border border-slate-100 group/item hover:bg-white hover:shadow-md transition-all">
+                                <div class="h-14 w-14 flex-shrink-0 overflow-hidden rounded-xl border border-white bg-white p-1 shadow-sm">
+                                    <img src="{{ $item->produk->gambar_utama_url }}" class="h-full w-full object-contain mix-blend-multiply group-hover/item:scale-110 transition-transform">
                                 </div>
-                            </div>
-                        </li>
-                        @endforeach
-                    </ul>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-xs font-black text-slate-900 truncate uppercase">{{ $item->produk->nama }}</h3>
+                                    <p class="text-[9px] text-slate-400 font-bold uppercase mt-0.5 tracking-wider">{{ $item->varian ? $item->varian->nama_varian : 'Unit Standar' }}</p>
+                                    <div class="flex justify-between items-end mt-2">
+                                        <span class="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">x{{ $item->jumlah }}</span>
+                                        <span class="text-xs font-black text-slate-900">Rp{{ number_format($item->subtotal, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
 
-                    <div class="h-px bg-slate-100 my-6"></div>
+                    <div class="h-px bg-gradient-to-r from-transparent via-slate-100 to-transparent my-8"></div>
 
-                    <!-- Voucher & Poin -->
-                    <div class="space-y-4 mb-6">
-                        <!-- Voucher -->
-                        <div class="flex gap-2">
-                            <input wire:model="kodeVoucherInput" type="text" placeholder="KODE VOUCHER" class="flex-1 rounded-xl border-slate-200 text-xs py-3 px-4 uppercase font-black focus:ring-emerald-500 bg-slate-50">
+                    <!-- Voucher & Loyalty Hub -->
+                    <div class="space-y-5 mb-8 relative z-10">
+                        <!-- Smart Voucher -->
+                        <div class="relative">
+                            <input wire:model="kodeVoucherInput" type="text" placeholder="KUNCI KODE PROMO" class="w-full rounded-2xl border-2 border-slate-100 text-xs py-4 px-6 uppercase font-black focus:ring-emerald-500 focus:border-emerald-500 bg-slate-50 transition-all placeholder:text-slate-300">
                             @if($voucherTerpakai)
-                                <button wire:click="hapusVoucher" class="bg-rose-100 text-rose-600 px-4 rounded-xl font-bold text-xs hover:bg-rose-200 uppercase tracking-wider">Hapus</button>
+                                <button wire:click="hapusVoucher" class="absolute right-3 top-1/2 -translate-y-1/2 bg-rose-100 text-rose-600 px-4 py-2 rounded-xl font-black text-[10px] hover:bg-rose-600 hover:text-white transition-all uppercase">Batal</button>
                             @else
-                                <button wire:click="terapkanVoucher" class="bg-slate-900 text-white px-4 rounded-xl font-bold text-xs hover:bg-emerald-600 uppercase tracking-wider transition-colors">Pakai</button>
+                                <button wire:click="terapkanVoucher" class="absolute right-3 top-1/2 -translate-y-1/2 bg-slate-900 text-white px-5 py-2 rounded-xl font-black text-[10px] hover:bg-emerald-600 transition-all uppercase tracking-widest">Gunakan</button>
                             @endif
                         </div>
-                        @error('kodeVoucherInput') <span class="text-xs text-rose-500 font-bold block">{{ $message }}</span> @enderror
+                        @error('kodeVoucherInput') <span class="text-[10px] text-rose-500 font-black uppercase tracking-widest px-2">{{ $message }}</span> @enderror
                         @if($voucherTerpakai)
-                            <div class="bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl text-[10px] font-black flex items-center gap-2 uppercase tracking-wide border border-emerald-100">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                Voucher diterapkan!
+                            <div class="bg-emerald-500 text-white px-5 py-3 rounded-2xl text-[10px] font-black flex items-center justify-between uppercase tracking-widest shadow-lg shadow-emerald-500/20 animate-in zoom-in duration-300">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-ticket"></i>
+                                    Voucher '{{ $voucherTerpakai->kode }}' Aktif
+                                </div>
+                                <span>-Rp{{ number_format($nilaiPotonganVoucher, 0, ',', '.') }}</span>
                             </div>
                         @endif
 
-                        <!-- Poin -->
+                        <!-- Loyalty Points -->
                         @auth
-                        <div class="flex items-center justify-between bg-amber-50 p-4 rounded-2xl border border-amber-100">
-                            <div>
-                                <p class="text-[10px] font-black text-amber-800 uppercase tracking-widest flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                    Tukar Poin
-                                </p>
-                                <p class="text-[10px] text-amber-600 font-medium mt-1">Saldo: {{ auth()->user()->poin_loyalitas ?? 0 }} Poin</p>
+                        <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-5 rounded-3xl border border-amber-100 relative group/poin overflow-hidden transition-all hover:shadow-inner">
+                            <div class="flex items-center justify-between relative z-10">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/30">
+                                        <i class="fa-solid fa-coins"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-amber-800 uppercase tracking-widest">Redeem Poin Teqara</p>
+                                        <p class="text-[9px] text-amber-600 font-bold mt-0.5 uppercase tracking-tighter">Saldo: {{ number_format(auth()->user()->poin_loyalitas ?? 0) }} XP</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" wire:click="togglePoin" wire:model="gunakanPoin" class="sr-only peer">
+                                    <div class="w-12 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                                </label>
                             </div>
-                            <label class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" wire:click="togglePoin" wire:model="gunakanPoin" class="sr-only peer">
-                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500 shadow-inner"></div>
-                            </label>
                         </div>
                         @endauth
                     </div>
 
-                    <!-- Totals -->
-                    <dl class="space-y-3 text-sm">
-                        <div class="flex justify-between">
-                            <dt class="font-bold text-slate-500 text-xs uppercase tracking-wide">Total Berat</dt>
-                            <dd class="font-bold text-slate-700">{{ number_format($this->totalBerat / 1000, 2, ',', '.') }} kg</dd>
+                    <!-- Financial Breakdown -->
+                    <div class="space-y-4 bg-slate-50/80 p-6 rounded-[2.5rem] border border-slate-100 relative z-10">
+                        <div class="flex justify-between text-xs font-bold">
+                            <span class="text-slate-400 uppercase tracking-widest">Total Belanja</span>
+                            <span class="text-slate-900">Rp{{ number_format($this->subtotal, 0, ',', '.') }}</span>
                         </div>
-                        <div class="flex justify-between">
-                            <dt class="font-bold text-slate-500 text-xs uppercase tracking-wide">Subtotal Produk</dt>
-                            <dd class="font-bold text-slate-900">Rp {{ number_format($this->subtotal, 0, ',', '.') }}</dd>
-                        </div>
-                        <div class="flex justify-between">
-                            <dt class="font-bold text-slate-500 text-xs uppercase tracking-wide">Biaya Pengiriman</dt>
-                            <dd class="font-bold text-slate-900">Rp {{ number_format($this->biayaPengiriman, 0, ',', '.') }}</dd>
+                        <div class="flex justify-between text-xs font-bold">
+                            <span class="text-slate-400 uppercase tracking-widest">Ongkos Kirim ({{ ceil($this->totalBerat / 1000) }}kg)</span>
+                            <span class="text-slate-900">Rp{{ number_format($this->biayaPengiriman, 0, ',', '.') }}</span>
                         </div>
                         @if($this->biayaAsuransi > 0)
-                        <div class="flex justify-between">
-                            <dt class="font-bold text-emerald-600 text-xs uppercase tracking-wide">Biaya Asuransi</dt>
-                            <dd class="font-bold text-emerald-600">Rp {{ number_format($this->biayaAsuransi, 0, ',', '.') }}</dd>
+                        <div class="flex justify-between text-xs font-bold text-emerald-600">
+                            <span class="uppercase tracking-widest">Proteksi Asuransi</span>
+                            <span>Rp{{ number_format($this->biayaAsuransi, 0, ',', '.') }}</span>
                         </div>
                         @endif
-                        @if($nilaiPotonganVoucher > 0)
-                        <div class="flex justify-between text-emerald-600">
-                            <dt class="font-black text-xs uppercase tracking-wide">Diskon Voucher</dt>
-                            <dd class="font-black">- Rp {{ number_format($nilaiPotonganVoucher, 0, ',', '.') }}</dd>
-                        </div>
-                        @endif
-                        @if($nilaiPotonganPoin > 0)
-                        <div class="flex justify-between text-amber-600">
-                            <dt class="font-black text-xs uppercase tracking-wide">Potongan Poin</dt>
-                            <dd class="font-black">- Rp {{ number_format($nilaiPotonganPoin, 0, ',', '.') }}</dd>
+                        @if($nilaiPotonganVoucher > 0 || $nilaiPotonganPoin > 0)
+                        <div class="flex justify-between text-xs font-black text-rose-500">
+                            <span class="uppercase tracking-widest">Total Penghematan</span>
+                            <span>-Rp{{ number_format($nilaiPotonganVoucher + $nilaiPotonganPoin, 0, ',', '.') }}</span>
                         </div>
                         @endif
                         
-                        <div class="bg-slate-50 p-4 rounded-2xl flex justify-between items-center mt-6 border border-slate-100">
-                            <dt class="text-xs font-black text-slate-500 uppercase tracking-widest">Total Bayar</dt>
-                            <dd class="text-2xl font-black text-emerald-600 tracking-tighter">Rp {{ number_format($this->totalBayar, 0, ',', '.') }}</dd>
+                        <div class="h-px bg-slate-200 my-2"></div>
+                        
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-sm font-black text-slate-900 uppercase tracking-tighter">Total Bayar</span>
+                            <span class="text-3xl font-black text-indigo-600 tracking-tighter">Rp{{ number_format($this->totalBayar, 0, ',', '.') }}</span>
                         </div>
-                    </dl>
+                    </div>
 
-                    <div class="mt-8">
-                        <button wire:click="buatPesanan" wire:loading.attr="disabled" class="w-full flex items-center justify-center rounded-2xl bg-slate-900 px-6 py-5 text-xs font-black text-white shadow-xl shadow-slate-900/20 hover:bg-emerald-600 hover:shadow-emerald-600/30 transition-all uppercase tracking-[0.2em] disabled:opacity-70 disabled:cursor-wait group relative overflow-hidden">
-                            <span class="relative z-10 flex items-center gap-3">
-                                <span wire:loading.remove>Konfirmasi Pesanan</span>
-                                <svg wire:loading.remove class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                                
-                                <span wire:loading class="flex items-center gap-2">
-                                    <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Memproses Transaksi...
-                                </span>
+                    <div class="mt-10 relative z-10">
+                        <button wire:click="buatPesanan" wire:loading.attr="disabled" class="w-full flex items-center justify-center rounded-[1.5rem] bg-[#0f172a] px-8 py-6 text-xs font-black text-white shadow-2xl shadow-indigo-900/20 hover:bg-indigo-600 hover:-translate-y-1 transition-all uppercase tracking-[0.3em] disabled:opacity-70 disabled:cursor-wait group">
+                            <span wire:loading.remove class="flex items-center gap-3">
+                                PROSES PESANAN SEKARANG
+                                <i class="fa-solid fa-arrow-right-long group-hover:translate-x-2 transition-transform"></i>
+                            </span>
+                            <span wire:loading class="flex items-center gap-3 italic">
+                                <svg class="animate-spin h-5 w-5 text-indigo-400" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                Sinkronisasi Enkripsi...
                             </span>
                         </button>
-                        <p class="text-center text-[10px] text-slate-400 mt-4 font-medium">
-                            Enkripsi SSL 256-bit. Data Anda aman bersama kami.
-                        </p>
+                        <div class="flex items-center justify-center gap-4 mt-6 opacity-40 grayscale group-hover:opacity-100 transition-opacity">
+                            <i class="fa-brands fa-cc-visa text-2xl"></i>
+                            <i class="fa-brands fa-cc-mastercard text-2xl"></i>
+                            <i class="fa-solid fa-shield-halved text-lg"></i>
+                        </div>
                     </div>
                 </div>
             </div>

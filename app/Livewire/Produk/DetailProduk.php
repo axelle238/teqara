@@ -24,6 +24,8 @@ class DetailProduk extends Component
 
     public $isInWishlist = false;
 
+    public $estimasiOngkir = [];
+
     public function mount($slug)
     {
         $this->produk = Produk::where('slug', $slug)
@@ -36,9 +38,25 @@ class DetailProduk extends Component
         $this->stokAktif = $this->produk->stok;
         $this->gambarAktif = $this->produk->gambar_utama_url;
 
-        // Cek Wishlist
+        // Audit Trail: Catat Kunjungan Produk
         if (auth()->check()) {
             $this->isInWishlist = auth()->user()->wishlist()->where('produk_id', $this->produk->id)->exists();
+            
+            \App\Helpers\LogHelper::catat(
+                'Lihat Produk',
+                $this->produk->nama,
+                "Pelanggan '" . auth()->user()->nama . "' sedang melihat detail unit teknologi '" . $this->produk->nama . "' dengan harga Rp " . number_format($this->produk->harga_jual, 0, ',', '.') . "."
+            );
+
+            // Enterprise: Hitung Estimasi Ongkir Otomatis (Jika ada alamat utama)
+            $alamatUtama = \App\Models\AlamatPengiriman::where('pengguna_id', auth()->id())->where('is_utama', true)->first();
+            if ($alamatUtama) {
+                try {
+                    $this->estimasiOngkir = (new \App\Services\LayananLogistik())->hitungBiaya($alamatUtama->kota_id, $this->produk->berat_gram ?: 1000);
+                } catch (\Exception $e) {
+                    $this->estimasiOngkir = [];
+                }
+            }
         }
 
         // Auto-select varian pertama jika ada

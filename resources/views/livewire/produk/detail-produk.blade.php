@@ -249,6 +249,27 @@
                         </div>
                     </div>
 
+                    <!-- Shipping Estimator (Enterprise) -->
+                    @if(count($this->estimasiOngkir) > 0)
+                    <div class="mt-8 p-6 bg-slate-50 rounded-3xl border border-slate-200">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i class="fa-solid fa-truck-ramp-box text-indigo-600"></i>
+                            <h3 class="text-[10px] font-black text-slate-900 uppercase tracking-widest">Estimasi Pengiriman Ke Anda</h3>
+                        </div>
+                        <div class="space-y-3">
+                            @foreach(array_slice($this->estimasiOngkir, 0, 2) as $ongkir)
+                            <div class="flex justify-between items-center bg-white p-3 rounded-xl shadow-sm border border-slate-100">
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] font-black text-slate-900 uppercase">{{ $ongkir['nama'] }}</span>
+                                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">Estimasi: {{ $ongkir['estimasi'] }} Hari</span>
+                                </div>
+                                <span class="text-xs font-black text-indigo-600">Rp{{ number_format($ongkir['nominal'], 0, ',', '.') }}</span>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
                     <!-- Action Buttons -->
                     <div class="mt-8 flex flex-col gap-3 relative z-10">
                         <div class="flex gap-3">
