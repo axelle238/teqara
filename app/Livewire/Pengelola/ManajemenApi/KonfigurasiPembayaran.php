@@ -2,83 +2,57 @@
 
 namespace App\Livewire\Pengelola\ManajemenApi;
 
-use App\Helpers\LogHelper;
-use App\Models\PengaturanSistem;
 use App\Services\LayananIntegrasi;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 class KonfigurasiPembayaran extends Component
 {
-    // Midtrans
-    public $midtrans_id;
-    public $midtrans_client;
-    public $midtrans_server;
-    public $midtrans_mode = 'sandbox';
-    public $midtrans_status = false; // Connect status
+    public $midtrans_server_key;
+    public $midtrans_client_key;
+    public $midtrans_is_production = false;
+    public $channels = [];
 
-    // Xendit
-    public $xendit_secret;
-    public $xendit_public;
-    public $xendit_mode = 'development';
-
-    // UI States
-    public $testing_midtrans = false;
-    public $test_result_midtrans = null;
-
-    public function mount()
+    public function mount(LayananIntegrasi $layanan)
     {
-        $settings = PengaturanSistem::where('kunci', 'like', 'payment_%')->pluck('nilai', 'kunci');
-
-        $this->midtrans_id = $settings['payment_midtrans_id'] ?? config('services.midtrans.merchant_id');
-        $this->midtrans_client = $settings['payment_midtrans_client'] ?? config('services.midtrans.client_key');
-        $this->midtrans_server = $settings['payment_midtrans_server'] ?? config('services.midtrans.server_key');
-        $this->midtrans_mode = $settings['payment_midtrans_mode'] ?? 'sandbox';
+        $config = $layanan->ambilKonfigurasi('pembayaran');
         
-        $this->xendit_secret = $settings['payment_xendit_secret'] ?? '';
-        $this->xendit_public = $settings['payment_xendit_public'] ?? '';
-        $this->xendit_mode = $settings['payment_xendit_mode'] ?? 'development';
+        $this->midtrans_server_key = $config['api_pembayaran_midtrans_server_key'] ?? '';
+        $this->midtrans_client_key = $config['api_pembayaran_midtrans_client_key'] ?? '';
+        $this->midtrans_is_production = filter_var($config['api_pembayaran_midtrans_production'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        
+        // Channel Aktif (Disimpan sebagai JSON string)
+        $this->channels = json_decode($config['api_pembayaran_channels'] ?? '[]', true) ?: [
+            'gopay' => true, 'shopeepay' => true, 'bca_va' => true, 'bni_va' => true, 'bri_va' => true, 'qris' => true
+        ];
     }
 
-    public function simpanMidtrans()
+    public function simpan(LayananIntegrasi $layanan)
     {
         $this->validate([
-            'midtrans_id' => 'required|string',
-            'midtrans_client' => 'required|string',
-            'midtrans_server' => 'required|string',
+            'midtrans_server_key' => 'required',
+            'midtrans_client_key' => 'required',
         ]);
 
-        PengaturanSistem::updateOrCreate(['kunci' => 'payment_midtrans_id'], ['nilai' => $this->midtrans_id]);
-        PengaturanSistem::updateOrCreate(['kunci' => 'payment_midtrans_client'], ['nilai' => $this->midtrans_client]);
-        PengaturanSistem::updateOrCreate(['kunci' => 'payment_midtrans_server'], ['nilai' => $this->midtrans_server]);
-        PengaturanSistem::updateOrCreate(['kunci' => 'payment_midtrans_mode'], ['nilai' => $this->midtrans_mode]);
+        $layanan->simpanKonfigurasi([
+            'api_pembayaran_midtrans_server_key' => $this->midtrans_server_key,
+            'api_pembayaran_midtrans_client_key' => $this->midtrans_client_key,
+            'api_pembayaran_midtrans_production' => $this->midtrans_is_production,
+            'api_pembayaran_channels' => json_encode($this->channels),
+        ], 'pembayaran');
 
-        LogHelper::catat('update_api_payment', 'Midtrans', 'Memperbarui kredensial Midtrans.');
-        $this->dispatch('notifikasi', tipe: 'sukses', pesan: 'Konfigurasi Midtrans berhasil disimpan & disinkronisasi ke Storefront.');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Konfigurasi pembayaran berhasil diperbarui.']);
     }
 
-    public function testMidtrans(LayananIntegrasi $integrasi)
+    public function toggleChannel($key)
     {
-        $this->testing_midtrans = true;
-        $this->test_result_midtrans = null;
-
-        $hasil = $integrasi->tesKoneksiMidtrans($this->midtrans_server, $this->midtrans_mode);
-
-        $this->testing_midtrans = false;
-        
-        if ($hasil['sukses']) {
-            $this->test_result_midtrans = ['status' => 'success', 'pesan' => $hasil['pesan']];
-            $this->dispatch('notifikasi', tipe: 'sukses', pesan: 'Koneksi Terverifikasi!');
-        } else {
-            $this->test_result_midtrans = ['status' => 'error', 'pesan' => $hasil['pesan']];
-            $this->dispatch('notifikasi', tipe: 'error', pesan: 'Koneksi Gagal: ' . $hasil['pesan']);
-        }
+        $this->channels[$key] = !($this->channels[$key] ?? false);
     }
 
-    #[Title('API Gerbang Pembayaran - Teqara Admin')]
+    #[Title('Konfigurasi Pembayaran - API Gateway')]
     public function render()
     {
         return view('livewire.pengelola.manajemen-api.konfigurasi-pembayaran')
-            ->layout('components.layouts.admin', ['header' => 'Integrasi Pembayaran Enterprise']);
+            ->layout('components.layouts.admin', ['header' => 'Payment Gateway']);
     }
 }
