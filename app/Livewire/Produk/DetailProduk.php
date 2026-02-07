@@ -30,7 +30,7 @@ class DetailProduk extends Component
     {
         $this->produk = Produk::where('slug', $slug)
             ->where('status', 'aktif')
-            ->with(['kategori', 'merek', 'varian', 'gambar', 'spesifikasi', 'ulasan', 'stokGudang.gudang'])
+            ->with(['kategori', 'merek', 'varian', 'gambar', 'spesifikasi', 'ulasan', 'stokGudang.gudang', 'bundlingItems.child'])
             ->firstOrFail();
 
         // Inisialisasi State
@@ -38,14 +38,19 @@ class DetailProduk extends Component
         $this->stokAktif = $this->produk->stok;
         $this->gambarAktif = $this->produk->gambar_utama_url;
 
-        // Audit Trail: Catat Kunjungan Produk
+        // Audit Trail: Catat Kunjungan Produk (Detail Naratif)
         if (auth()->check()) {
             $this->isInWishlist = auth()->user()->wishlist()->where('produk_id', $this->produk->id)->exists();
             
             \App\Helpers\LogHelper::catat(
-                'Lihat Produk',
+                'Lihat Detail Unit',
                 $this->produk->nama,
-                "Pelanggan '" . auth()->user()->nama . "' sedang melihat detail unit teknologi '" . $this->produk->nama . "' dengan harga Rp " . number_format($this->produk->harga_jual, 0, ',', '.') . "."
+                "Pelanggan '" . auth()->user()->nama . "' menganalisis spesifikasi unit '" . $this->produk->nama . "'. Sistem mencatat minat beli pada kategori " . ($this->produk->kategori->nama ?? 'N/A') . ".",
+                [
+                    'id_produk' => $this->produk->id,
+                    'sku' => $this->produk->kode_unit,
+                    'harga_saat_melihat' => $this->produk->harga_jual
+                ]
             );
 
             // Enterprise: Hitung Estimasi Ongkir Otomatis (Jika ada alamat utama)
@@ -65,7 +70,7 @@ class DetailProduk extends Component
             $this->pilihVarian($varianPertama->id);
         }
 
-        // Enterprise: Track Recently Viewed
+        // Enterprise: Track Recently Viewed (Session Based)
         $recent = session()->get('produk_terakhir_dilihat', []);
         if(($key = array_search($this->produk->id, $recent)) !== false) {
             unset($recent[$key]);

@@ -60,6 +60,28 @@
                     @endforeach
                 </div>
                 
+                <!-- Bundling Items (Enterprise) -->
+                @if($produk->bundlingItems->count() > 0)
+                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-8 mb-4">
+                    <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-indigo-600"></i> Paket Bundling Hemat
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @foreach($produk->bundlingItems as $bundle)
+                        <div class="flex items-center gap-4 p-3 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-200 transition-colors">
+                            <div class="w-12 h-12 rounded-xl bg-white p-1 flex items-center justify-center">
+                                <img src="{{ $bundle->child->gambar_utama_url }}" class="h-full w-full object-contain">
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-black text-indigo-600 uppercase">{{ $bundle->child->nama }}</p>
+                                <p class="text-[9px] text-slate-400 font-bold uppercase">Jumlah: {{ $bundle->jumlah }} Unit</p>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
                 <!-- Desktop Description Tabs -->
                 <div class="hidden lg:block bg-white rounded-[2rem] border border-slate-100 shadow-sm p-8 mt-4" x-data="{ tab: 'deskripsi' }">
                     <div class="flex items-center gap-8 border-b border-slate-100 mb-8 overflow-x-auto">
