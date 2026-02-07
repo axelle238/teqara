@@ -55,10 +55,10 @@ class BerandaUtama extends Component
             'tiket_terbuka' => TiketBantuan::whereIn('status', ['baru', 'terbuka'])->count(),
             
             // 8. MANAJEMEN LOGISTIK
-            'pengiriman_berjalan' => PesananLogistik::whereIn('status_pengiriman', ['dikemas', 'dikirim'])->count(),
+            'pengiriman_berjalan' => 0, // Tabel pesanan_logistik belum diimplementasikan
             
             // 9. MANAJEMEN KEAMANAN SIBER
-            'insiden_keamanan' => InsidenKeamanan::where('status', 'terdeteksi')->count(),
+            'insiden_keamanan' => InsidenKeamanan::count(),
             'skor_risiko' => $this->hitungSkorRisikoSistem(),
             
             // 10. MANAJEMEN HALAMAN TOKO (CMS)
@@ -75,8 +75,8 @@ class BerandaUtama extends Component
      */
     private function hitungSkorRisikoSistem(): int
     {
-        $insidenKritis = InsidenKeamanan::where('tingkat_ancaman', 'kritis')->where('status', 'terdeteksi')->count();
-        $insidenTinggi = InsidenKeamanan::where('tingkat_ancaman', 'tinggi')->where('status', 'terdeteksi')->count();
+        $insidenKritis = InsidenKeamanan::where('tingkat_keparahan', 'kritis')->count();
+        $insidenTinggi = InsidenKeamanan::where('tingkat_keparahan', 'tinggi')->count();
         
         $skor = ($insidenKritis * 20) + ($insidenTinggi * 10);
         return min(100, $skor);

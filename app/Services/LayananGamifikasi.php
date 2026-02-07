@@ -35,14 +35,14 @@ class LayananGamifikasi
     private function cekKenaikanLevel(Pengguna $pengguna)
     {
         $poin = $pengguna->poin_loyalitas;
-        $levelBaru = 'Classic';
+        $levelBaru = 'Klasik';
 
         if ($poin >= 10000) {
-            $levelBaru = 'Platinum';
+            $levelBaru = 'Platina';
         } elseif ($poin >= 5000) {
-            $levelBaru = 'Gold';
+            $levelBaru = 'Emas';
         } elseif ($poin >= 1000) {
-            $levelBaru = 'Silver';
+            $levelBaru = 'Perak';
         }
 
         if ($pengguna->level_member !== $levelBaru) {

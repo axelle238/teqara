@@ -28,7 +28,7 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Dashboard / Status -->
+        <!-- Dasbor / Status -->
         <div class="lg:col-span-4 space-y-6">
             <!-- Score Radial -->
             <div class="bg-[#0f172a] rounded-3xl p-10 border border-slate-800 shadow-xl flex flex-col items-center justify-center text-center relative overflow-hidden">

@@ -7,89 +7,94 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 
 /**
- * Class LayananLogistik
- * Tujuan: Integrasi RajaOngkir untuk perhitungan biaya pengiriman otomatis.
+ * Layanan Logistik
+ * 
+ * Bertanggung jawab untuk integrasi RajaOngkir guna perhitungan biaya pengiriman otomatis
+ * dan pengelolaan data wilayah (Provinsi & Kota).
  */
 class LayananLogistik
 {
-    protected $apiKey;
-    protected $baseUrl;
-    protected $type;
+    protected $kunciApi;
+    protected $urlDasar;
+    protected $tipe;
 
+    /**
+     * Inisialisasi layanan dengan konfigurasi dari database.
+     */
     public function __construct()
     {
-        $settings = PengaturanSistem::where('kunci', 'like', 'logistic_rajaongkir_%')->pluck('nilai', 'kunci');
-        $this->apiKey = $settings['logistic_rajaongkir_key'] ?? config('services.rajaongkir.key');
-        $this->type = $settings['logistic_rajaongkir_type'] ?? 'starter';
-        $this->baseUrl = "https://api.rajaongkir.com/{$this->type}";
+        $pengaturan = PengaturanSistem::where('kunci', 'like', 'logistic_rajaongkir_%')->pluck('nilai', 'kunci');
+        $this->kunciApi = $pengaturan['logistic_rajaongkir_key'] ?? config('services.rajaongkir.key');
+        $this->tipe = $pengaturan['logistic_rajaongkir_type'] ?? 'starter';
+        $this->urlDasar = "https://api.rajaongkir.com/{$this->tipe}";
     }
 
     /**
-     * Ambil daftar provinsi.
+     * Mengambil daftar provinsi dari API RajaOngkir.
      */
-    public function getProvinces()
+    public function ambilProvinsi()
     {
         return Cache::remember('rajaongkir_provinces', 86400, function () {
-            $response = Http::withHeaders(['key' => $this->apiKey])
-                ->get("{$this->baseUrl}/province");
+            $respons = Http::withHeaders(['key' => $this->kunciApi])
+                ->get("{$this->urlDasar}/province");
 
-            return $response->json()['rajaongkir']['results'] ?? [];
+            return $respons->json()['rajaongkir']['results'] ?? [];
         });
     }
 
     /**
-     * Ambil daftar kota berdasarkan provinsi.
+     * Mengambil daftar kota berdasarkan ID provinsi.
      */
-    public function getCities($provinceId = null)
+    public function ambilKota($idProvinsi = null)
     {
-        $cacheKey = "rajaongkir_cities_" . ($provinceId ?? 'all');
-        return Cache::remember($cacheKey, 86400, function () use ($provinceId) {
-            $url = "{$this->baseUrl}/city";
-            $params = $provinceId ? ['province' => $provinceId] : [];
+        $kunciCache = "rajaongkir_cities_" . ($idProvinsi ?? 'semua');
+        return Cache::remember($kunciCache, 86400, function () use ($idProvinsi) {
+            $url = "{$this->urlDasar}/city";
+            $parameter = $idProvinsi ? ['province' => $idProvinsi] : [];
             
-            $response = Http::withHeaders(['key' => $this->apiKey])
-                ->get($url, $params);
+            $respons = Http::withHeaders(['key' => $this->kunciApi])
+                ->get($url, $parameter);
 
-            return $response->json()['rajaongkir']['results'] ?? [];
+            return $respons->json()['rajaongkir']['results'] ?? [];
         });
     }
 
     /**
-     * Hitung biaya pengiriman.
+     * Menghitung estimasi biaya pengiriman.
      */
-    public function hitungBiaya($destinationCityId, $weightGram, $courier = 'jne')
+    public function hitungBiaya($idKotaTujuan, $beratGram, $kurir = 'jne')
     {
-        $originCityId = PengaturanSistem::where('kunci', 'logistic_rajaongkir_origin_id')->value('nilai') ?? '153'; // Default Jakarta Selatan if not set
+        $idKotaAsal = PengaturanSistem::where('kunci', 'logistic_rajaongkir_origin_id')->value('nilai') ?? '153'; // Default Jakarta Selatan
 
-        if (empty($this->apiKey)) {
+        if (empty($this->kunciApi)) {
             return [];
         }
 
-        $response = Http::withHeaders(['key' => $this->apiKey])
+        $respons = Http::withHeaders(['key' => $this->kunciApi])
             ->asForm()
-            ->post("{$this->baseUrl}/cost", [
-                'origin' => $originCityId,
-                'destination' => $destinationCityId,
-                'weight' => $weightGram,
-                'courier' => $courier,
+            ->post("{$this->urlDasar}/cost", [
+                'origin' => $idKotaAsal,
+                'destination' => $idKotaTujuan,
+                'weight' => $beratGram,
+                'courier' => $kurir,
             ]);
 
-        $results = $response->json()['rajaongkir']['results'] ?? [];
+        $hasil = $respons->json()['rajaongkir']['results'] ?? [];
         
-        $formatted = [];
-        foreach ($results as $res) {
-            foreach ($res['costs'] as $cost) {
-                $formatted[] = [
-                    'code' => $res['code'],
-                    'name' => $res['name'] . ' (' . $cost['service'] . ')',
-                    'service' => $cost['service'],
-                    'cost' => $cost['cost'][0]['value'],
-                    'etd' => $cost['cost'][0]['etd'],
-                    'description' => $cost['description']
+        $terformat = [];
+        foreach ($hasil as $h) {
+            foreach ($h['costs'] as $biaya) {
+                $terformat[] = [
+                    'kode' => $h['code'],
+                    'nama' => $h['name'] . ' (' . $biaya['service'] . ')',
+                    'layanan' => $biaya['service'],
+                    'nominal' => $biaya['cost'][0]['value'],
+                    'estimasi' => $biaya['cost'][0]['etd'],
+                    'deskripsi' => $biaya['description']
                 ];
             }
         }
 
-        return $formatted;
+        return $terformat;
     }
 }

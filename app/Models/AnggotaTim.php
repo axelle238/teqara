@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ItemProyek extends Model
+/**
+ * Model Anggota Tim
+ * 
+ * Merepresentasikan anggota tim dalam proyek atau organisasi.
+ */
+class AnggotaTim extends Model
 {
     use HasFactory;
 
-    protected $table = 'item_proyek';
+    protected $table = 'anggota_tim';
 
     const CREATED_AT = 'dibuat_pada';
     const UPDATED_AT = 'diperbarui_pada';
 
     protected $guarded = ['id'];
-
-    public function produk()
-    {
-        return $this->belongsTo(Produk::class, 'produk_id');
-    }
 }

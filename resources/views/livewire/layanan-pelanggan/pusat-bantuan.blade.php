@@ -33,7 +33,7 @@
                 <div class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 group-hover:bg-emerald-600 transition-all">🎫</div>
                 <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-2">Tiket Support</h3>
                 <p class="text-slate-500 text-sm font-medium leading-relaxed mb-8">Ajukan pertanyaan teknis atau komplain melalui sistem tiket terpadu.</p>
-                <a href="{{ route('customer.dashboard') }}" class="text-xs font-black text-indigo-600 uppercase tracking-widest hover:underline">Buka Tiket →</a>
+                <a href="{{ route('customer.Dasbor') }}" class="text-xs font-black text-indigo-600 uppercase tracking-widest hover:underline">Buka Tiket →</a>
             </div>
 
             <div class="bg-white rounded-[2.5rem] p-10 border border-white shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:-translate-y-2 transition-all group">
@@ -54,7 +54,7 @@
             <div class="space-y-6" x-data="{ active: null }">
                 @php
                     $faqs = [
-                        ['q' => 'Bagaimana cara melacak pesanan saya?', 'a' => 'Anda dapat melacak pesanan melalui menu "Pesanan Saya" di Dashboard Pelanggan. Nomor resi akan diperbarui secara real-time setelah barang dikirim.'],
+                        ['q' => 'Bagaimana cara melacak pesanan saya?', 'a' => 'Anda dapat melacak pesanan melalui menu "Pesanan Saya" di Dasbor Pelanggan. Nomor resi akan diperbarui secara real-time setelah barang dikirim.'],
                         ['q' => 'Apakah produk Teqara bergaransi?', 'a' => 'Ya, semua unit komputer dan gadget yang kami jual memiliki garansi resmi distributor minimal 12 bulan.'],
                         ['q' => 'Bagaimana kebijakan pengembalian barang?', 'a' => 'Pengembalian dapat dilakukan maksimal 7 hari setelah barang diterima jika terdapat cacat pabrik atau ketidaksesuaian spesifikasi.'],
                         ['q' => 'Apakah bisa melakukan pembayaran via cicilan?', 'a' => 'Kami mendukung cicilan 0% hingga 12 bulan menggunakan kartu kredit atau penyedia kredit digital yang terintegrasi di sistem kami.'],

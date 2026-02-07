@@ -61,7 +61,7 @@
                         <i class="fa-solid fa-bars-staggered text-lg"></i>
                     </button>
                     <div class="hidden sm:flex flex-col">
-                        <h2 class="text-sm font-black text-slate-800 uppercase tracking-wide leading-none">{{ $header ?? 'Dashboard' }}</h2>
+                        <h2 class="text-sm font-black text-slate-800 uppercase tracking-wide leading-none">{{ $header ?? 'Dasbor' }}</h2>
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mt-1">Enterprise Panel</span>
                     </div>
                 </div>

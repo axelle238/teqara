@@ -59,7 +59,7 @@ class LayananKeamanan
         foreach ($bruteForceIps as $log) {
             if (!$log->ip) continue;
             $ancaman[] = [
-                'tipe' => 'Brute Force Attempt',
+                'tipe' => 'Percobaan Brute Force',
                 'ip' => $log->ip,
                 'level' => 'tinggi',
                 'rekomendasi' => 'Blokir IP secara permanen'
@@ -77,8 +77,8 @@ class LayananKeamanan
 
         foreach ($apiAnomalies as $log) {
             $ancaman[] = [
-                'tipe' => 'Potential SQL Injection',
-                'ip' => $log->ip_address,
+                'tipe' => 'Potensi SQL Injection',
+                'ip' => $log->alamat_ip,
                 'level' => 'kritis',
                 'rekomendasi' => 'Tinjau payload dan blokir IP'
             ];

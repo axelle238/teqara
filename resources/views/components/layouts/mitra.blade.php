@@ -37,7 +37,7 @@
             
             <a href="{{ route('mitra.beranda') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium {{ request()->routeIs('mitra.beranda') ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/50' : 'text-slate-400 hover:bg-white/5 hover:text-white' }} transition-all group">
                 <i class="fa-solid fa-chart-pie w-5 text-center group-hover:scale-110 transition-transform"></i>
-                Dashboard Mitra
+                Dasbor Mitra
             </a>
 
             <div class="pt-4 pb-2">
@@ -95,7 +95,7 @@
                 <nav class="hidden md:flex items-center text-sm font-medium text-slate-500">
                     <span>Mitra Portal</span>
                     <i class="fa-solid fa-chevron-right text-[10px] mx-2 text-slate-300"></i>
-                    <span class="text-slate-900">{{ $title ?? 'Dashboard' }}</span>
+                    <span class="text-slate-900">{{ $title ?? 'Dasbor' }}</span>
                 </nav>
             </div>
         </header>

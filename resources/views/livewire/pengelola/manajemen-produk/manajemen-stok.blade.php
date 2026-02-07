@@ -1,7 +1,7 @@
 <div class="animate-in fade-in duration-500 pb-20">
     
     @if(!$tampilkanForm)
-        <!-- TAMPILAN 1: DASHBOARD MONITORING STOK (FULL PAGE LIST) -->
+        <!-- TAMPILAN 1: Dasbor MONITORING STOK (FULL PAGE LIST) -->
         <div class="space-y-8">
             <div class="flex flex-col md:flex-row justify-between items-start sm:items-center gap-6 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50">
                 <div class="space-y-1">

@@ -11,17 +11,22 @@ use Midtrans\Config;
 use Midtrans\Snap;
 
 /**
- * Class LayananGerbangPembayaran
- * Tujuan: Integrasi dan pemrosesan pembayaran via gerbang pembayaran (Gateway) digital.
+ * Layanan Gerbang Pembayaran
+ * 
+ * Bertanggung jawab untuk integrasi dan pemrosesan pembayaran via gerbang pembayaran (Gateway) digital.
+ * Mendukung Midtrans dan metode pembayaran manual.
  */
 class LayananGerbangPembayaran
 {
+    /**
+     * Mengatur konfigurasi Midtrans berdasarkan pengaturan sistem.
+     */
     protected function konfigurasiMidtrans()
     {
-        $settings = PengaturanSistem::pluck('nilai', 'kunci');
+        $pengaturan = PengaturanSistem::pluck('nilai', 'kunci');
         
-        Config::$serverKey = $settings['payment_midtrans_server'] ?? config('services.midtrans.server_key');
-        Config::$isProduction = ($settings['payment_midtrans_mode'] ?? 'sandbox') === 'production';
+        Config::$serverKey = $pengaturan['payment_midtrans_server'] ?? config('services.midtrans.server_key');
+        Config::$isProduction = ($pengaturan['payment_midtrans_mode'] ?? 'sandbox') === 'production';
         Config::$isSanitized = true;
         Config::$is3ds = true;
     }
@@ -33,16 +38,16 @@ class LayananGerbangPembayaran
     {
         $kodePembayaran = (string) Str::uuid();
         $muatanGerbang = ['mock' => true, 'deskripsi' => 'Simulasi Gateway Teqara'];
-        $snapToken = null;
+        $tokenSnap = null;
 
         // Integrasi Midtrans
         if ($provider == 'midtrans') {
             $this->konfigurasiMidtrans();
 
-            // Item Details
-            $items = [];
+            // Detail Item
+            $item = [];
             foreach ($pesanan->detailPesanan as $detail) {
-                $items[] = [
+                $item[] = [
                     'id' => $detail->produk_id,
                     'price' => (int) $detail->harga_saat_ini,
                     'quantity' => $detail->jumlah,
@@ -52,7 +57,7 @@ class LayananGerbangPembayaran
 
             // Tambah Ongkir
             if ($pesanan->biaya_pengiriman > 0) {
-                $items[] = [
+                $item[] = [
                     'id' => 'SHIPPING',
                     'price' => (int) $pesanan->biaya_pengiriman,
                     'quantity' => 1,
@@ -60,15 +65,11 @@ class LayananGerbangPembayaran
                 ];
             }
 
-            // Potongan (Diskon) - Midtrans tidak support item negatif langsung, 
-            // jadi kita sesuaikan total atau kirim total_harga langsung sebagai gross_amount
-            // Untuk keamanan dan simplisitas, kita gunakan gross_amount saja jika ada diskon kompleks
-            
-            $orderId = $pesanan->nomor_faktur . '-' . rand(100,999); // Unik setiap attempt
+            $idPesanan = $pesanan->nomor_faktur . '-' . rand(100, 999); // Unik setiap percobaan
 
-            $params = [
+            $parameter = [
                 'transaction_details' => [
-                    'order_id' => $orderId,
+                    'order_id' => $idPesanan,
                     'gross_amount' => (int) $pesanan->total_harga,
                 ],
                 'customer_details' => [
@@ -76,22 +77,21 @@ class LayananGerbangPembayaran
                     'email' => $pesanan->pengguna->email,
                     'phone' => $pesanan->pengguna->nomor_telepon,
                 ],
-                // 'item_details' => $items, // Opsional: aktifkan jika total hitungan item == gross_amount
             ];
 
             try {
-                $snapToken = Snap::getSnapToken($params);
-                $kodePembayaran = $orderId; // Simpan Order ID Midtrans, bukan UUID
-                $baseUrl = Config::$isProduction ? 'https://app.midtrans.com' : 'https://app.sandbox.midtrans.com';
-                $muatanGerbang = ['token' => $snapToken, 'redirect_url' => "$baseUrl/snap/v2/vtweb/$snapToken"];
+                $tokenSnap = Snap::getSnapToken($parameter);
+                $kodePembayaran = $idPesanan; // Simpan Order ID Midtrans
+                $urlDasar = Config::$isProduction ? 'https://app.midtrans.com' : 'https://app.sandbox.midtrans.com';
+                $muatanGerbang = ['token' => $tokenSnap, 'redirect_url' => "$urlDasar/snap/v2/vtweb/$tokenSnap"];
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error('Midtrans Error: ' . $e->getMessage());
-                // Fallback ke manual jika API error
+                // Kembali ke manual jika API error
                 $provider = 'manual'; 
             }
         } 
         
-        // Logika Fallback / Manual
+        // Logika Alternatif / Manual
         if ($metode == 'bank_transfer' || $metode == 'manual') {
             $kodePembayaran = '8800'.rand(1000000000, 9999999999);
         } elseif ($metode == 'qris' && $provider != 'midtrans') {
@@ -143,7 +143,7 @@ class LayananGerbangPembayaran
                 'pengguna_id' => $pesanan->pengguna_id,
                 'aksi' => 'pembayaran_sukses',
                 'target' => $pesanan->nomor_faktur,
-                'pesan_naratif' => "Otoritas pembayaran faktur #{$pesanan->nomor_faktur} berhasil diverifikasi via {$transaksi->provider}.",
+                'pesan_naratif' => "Otorisasi pembayaran faktur #{$pesanan->nomor_faktur} berhasil diverifikasi via {$transaksi->provider}.",
                 'waktu' => now(),
             ]);
         } else {

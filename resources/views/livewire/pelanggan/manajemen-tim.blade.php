@@ -114,7 +114,7 @@
                         </tr>
 
                         <!-- Team Members -->
-                        @foreach($this->timSaya as $member)
+                        @foreach($this->anggotaTimSaya as $member)
                         <tr class="hover:bg-slate-50 transition-colors group">
                             <td class="px-8 py-6">
                                 <div class="flex items-center gap-4">
@@ -150,7 +150,7 @@
                 </table>
             </div>
             
-            @if($this->timSaya->count() == 0)
+            @if($this->anggotaTimSaya->count() == 0)
             <div class="py-24 text-center">
                 <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl opacity-50">👥</div>
                 <h3 class="text-slate-900 font-black mb-1">Tim Masih Solo</h3>

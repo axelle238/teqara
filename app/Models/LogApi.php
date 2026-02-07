@@ -10,7 +10,7 @@ class LogApi extends Model
 {
     use HasFactory;
 
-    protected $table = 'log_apis';
+    protected $table = 'log_api';
 
     const CREATED_AT = 'dibuat_pada';
     const UPDATED_AT = null;
@@ -19,7 +19,7 @@ class LogApi extends Model
         'kunci_api_id',
         'endpoint',
         'metode',
-        'ip_address',
+        'alamat_ip',
         'payload',
         'respons_kode',
         'waktu_eksekusi',

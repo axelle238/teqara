@@ -9,7 +9,7 @@ class AturanFirewall extends Model
 {
     use HasFactory;
 
-    protected $table = 'aturan_firewalls';
+    protected $table = 'aturan_firewall';
 
     const CREATED_AT = 'dibuat_pada';
     const UPDATED_AT = 'diperbarui_pada';

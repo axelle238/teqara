@@ -24,7 +24,7 @@ class ApiHelper
                 'kunci_api_id' => $kunciApiId,
                 'endpoint' => $endpoint,
                 'metode' => $metode,
-                'ip_address' => $ip,
+                'alamat_ip' => $ip,
                 'payload' => $payload,
                 'respons_kode' => $statusKode,
                 'waktu_eksekusi' => $durasi,

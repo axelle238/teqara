@@ -44,7 +44,7 @@
             @if($tabAktif === 'pengenalan')
             <div class="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
                 <h2 class="text-3xl font-black text-slate-900 tracking-tight">Selamat Datang di Teqara API</h2>
-                <p class="text-slate-600 leading-relaxed font-medium">API Teqara memungkinkan developer untuk mengakses data katalog, mengelola pesanan, dan mengintegrasikan sistem inventaris dengan aplikasi eksternal (Mobile, ERP, atau Dashboard Kustom).</p>
+                <p class="text-slate-600 leading-relaxed font-medium">API Teqara memungkinkan developer untuk mengakses data katalog, mengelola pesanan, dan mengintegrasikan sistem inventaris dengan aplikasi eksternal (Mobile, ERP, atau Dasbor Kustom).</p>
                 <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
                     <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Base URL</h4>
                     <code class="text-indigo-600 font-black font-mono bg-white px-4 py-2 rounded-xl border border-indigo-100">https://api.teqara.com/v16</code>

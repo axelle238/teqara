@@ -10,7 +10,7 @@ class InsidenKeamanan extends Model
 {
     use HasFactory;
 
-    protected $table = 'insiden_keamanans';
+    protected $table = 'insiden_keamanan';
 
     const CREATED_AT = 'dibuat_pada';
     const UPDATED_AT = null;

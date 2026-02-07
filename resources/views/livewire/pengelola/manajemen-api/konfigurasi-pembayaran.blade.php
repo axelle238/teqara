@@ -14,8 +14,8 @@
             </div>
         </div>
         <div class="flex gap-3">
-             <a href="https://dashboard.midtrans.com" target="_blank" class="px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-50 hover:text-indigo-600 transition-all shadow-sm">
-                <i class="fa-solid fa-external-link-alt mr-2"></i> Midtrans Dashboard
+             <a href="https://Dasbor.midtrans.com" target="_blank" class="px-5 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-slate-50 hover:text-indigo-600 transition-all shadow-sm">
+                <i class="fa-solid fa-external-link-alt mr-2"></i> Midtrans Dasbor
             </a>
             <button wire:click="testMidtrans" wire:loading.attr="disabled" class="group relative px-6 py-3 bg-indigo-600 text-white rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/30 overflow-hidden">
                 <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>

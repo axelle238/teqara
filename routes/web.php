@@ -82,18 +82,26 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/privasi', \App\Livewire\Pelanggan\PusatPrivasi::class)->name('customer.privacy');
 });
 
-// --- RUTE ADMIN / PENGELOLA (Enterprise) ---
+    // --- RUTE ADMIN / PENGELOLA (Enterprise) ---
 // Middleware: auth + cek role admin/staf
 Route::middleware(['auth'])->prefix('pengelola')->group(function () {
     
-    // Dashboard
+    // Dashboard Utama (Ringkasan Seluruh Sistem)
     Route::get('/beranda', \App\Livewire\Pengelola\BerandaUtama::class)->name('pengelola.beranda');
 
-    // Notifikasi Terpusat
+    // Notifikasi Terpusat Pengelola
     Route::get('/notifikasi', \App\Livewire\Pengelola\PusatNotifikasi::class)->name('pengelola.notifikasi.index');
 
-    // Manajemen Produk (Inventory)
+    // 1. Manajemen Halaman Toko
+    Route::prefix('cms')->group(function () {
+        Route::get('/beranda', \App\Livewire\Pengelola\ManajemenToko\BerandaToko::class)->name('pengelola.toko.beranda');
+        Route::get('/berita', \App\Livewire\Pengelola\ManajemenToko\ManajemenBerita::class)->name('pengelola.toko.berita');
+        Route::get('/konten', \App\Livewire\Pengelola\ManajemenToko\ManajemenKonten::class)->name('pengelola.toko.konten');
+    });
+
+    // 2. Manajemen Produk & Gadget
     Route::prefix('produk')->group(function () {
+        Route::get('/beranda', \App\Livewire\Pengelola\ManajemenProduk\BerandaProduk::class)->name('pengelola.produk.beranda');
         Route::get('/', \App\Livewire\Pengelola\ManajemenProduk\ManajemenProduk::class)->name('pengelola.produk.katalog');
         Route::get('/tambah', \App\Livewire\Pengelola\ManajemenProduk\FormProduk::class)->name('pengelola.produk.tambah');
         Route::get('/edit/{id}', \App\Livewire\Pengelola\ManajemenProduk\FormProduk::class)->name('pengelola.produk.edit');
@@ -101,119 +109,110 @@ Route::middleware(['auth'])->prefix('pengelola')->group(function () {
         Route::get('/gudang', \App\Livewire\Pengelola\ManajemenProduk\Gudang\DaftarGudang::class)->name('pengelola.produk.gudang');
         Route::get('/seri', \App\Livewire\Pengelola\ManajemenProduk\ManajemenSeri::class)->name('pengelola.produk.seri');
         Route::get('/garansi', \App\Livewire\Pengelola\ManajemenProduk\Garansi\ManajemenKlaim::class)->name('pengelola.produk.garansi');
-        
-        // Pengadaan
-        Route::get('/pembelian', \App\Livewire\Pengelola\ManajemenProduk\Pembelian\RiwayatPembelian::class)->name('pengelola.produk.pembelian.riwayat');
-        Route::get('/pembelian/baru', \App\Livewire\Pengelola\ManajemenProduk\Pembelian\FormPembelian::class)->name('pengelola.produk.pembelian.baru');
-        Route::get('/pembelian/edit/{id}', \App\Livewire\Pengelola\ManajemenProduk\Pembelian\FormPembelian::class)->name('pengelola.produk.pembelian.edit');
-        Route::get('/pembelian/detail/{id}', \App\Livewire\Pengelola\ManajemenProduk\Pembelian\FormPembelian::class)->name('pengelola.produk.pembelian.detail');
         Route::get('/stock-opname', \App\Livewire\Pengelola\ManajemenProduk\StockOpname\RiwayatStockOpname::class)->name('pengelola.produk.so.riwayat');
-        
-        // Promo
         Route::get('/flash-sale', \App\Livewire\Pengelola\ManajemenProduk\Promo\ManajemenFlashSale::class)->name('pengelola.produk.promo.flash-sale');
+        
+        // Fitur Tambahan Enterprise
+        Route::get('/label', \App\Livewire\Pengelola\ManajemenProduk\Label\CetakLabel::class)->name('pengelola.produk.label');
+        Route::get('/spesifikasi', \App\Livewire\Pengelola\ManajemenProduk\ManajemenSpesifikasi::class)->name('pengelola.produk.spesifikasi');
+        Route::get('/analitik', \App\Livewire\Pengelola\ManajemenProduk\Laporan\AnalitikProduk::class)->name('pengelola.produk.analitik');
     });
 
-    // Data Master
+    // Data Master Produk
     Route::get('/kategori', \App\Livewire\Pengelola\ManajemenProduk\DaftarKategori::class)->name('pengelola.kategori');
-    Route::get('/kategori/tambah', \App\Livewire\Pengelola\ManajemenProduk\Kategori\FormKategori::class)->name('pengelola.kategori.tambah');
-    Route::get('/kategori/edit/{id}', \App\Livewire\Pengelola\ManajemenProduk\Kategori\FormKategori::class)->name('pengelola.kategori.edit');
     Route::get('/merek', \App\Livewire\Pengelola\ManajemenProduk\DaftarMerek::class)->name('pengelola.merek');
-    Route::get('/merek/tambah', \App\Livewire\Pengelola\ManajemenProduk\Merek\FormMerek::class)->name('pengelola.merek.tambah');
-    Route::get('/merek/edit/{id}', \App\Livewire\Pengelola\ManajemenProduk\Merek\FormMerek::class)->name('pengelola.merek.edit');
-    
-    // B2B & VENDOR
-    Route::prefix('vendor')->group(function () {
-        Route::get('/', \App\Livewire\Pengelola\ManajemenVendor\DaftarPemasok::class)->name('pengelola.vendor.daftar');
-        Route::get('/tambah', \App\Livewire\Pengelola\ManajemenVendor\FormPemasok::class)->name('pengelola.vendor.tambah');
-        Route::get('/edit/{id}', \App\Livewire\Pengelola\ManajemenVendor\FormPemasok::class)->name('pengelola.vendor.edit');
-        Route::get('/penawaran', \App\Livewire\Pengelola\ManajemenVendor\ManajemenPenawaran::class)->name('pengelola.vendor.penawaran');
-    });
 
-    // Manajemen Pesanan
+    // 3. Manajemen Pesanan
     Route::prefix('pesanan')->group(function () {
+        Route::get('/beranda', \App\Livewire\Pengelola\ManajemenPesanan\BerandaPesanan::class)->name('pengelola.pesanan.beranda');
         Route::get('/', \App\Livewire\Pengelola\ManajemenPesanan\DaftarPesanan::class)->name('pengelola.pesanan.daftar');
         Route::get('/detail/{pesanan}', \App\Livewire\Pengelola\ManajemenPesanan\DetailPesanan::class)->name('pengelola.pesanan.detail');
         Route::get('/verifikasi', \App\Livewire\Pengelola\ManajemenPesanan\VerifikasiPembayaran::class)->name('pengelola.pesanan.verifikasi'); 
     });
 
-    // Keuangan
+    // 4. Manajemen Transaksi
     Route::prefix('transaksi')->group(function () {
-        Route::get('/', \App\Livewire\Pengelola\ManajemenTransaksi\BerandaTransaksi::class)->name('pengelola.transaksi.beranda');
+        Route::get('/beranda', \App\Livewire\Pengelola\ManajemenTransaksi\BerandaTransaksi::class)->name('pengelola.transaksi.beranda');
     });
 
-    // Logistik
+    // 5. Manajemen Customer Service
+    Route::prefix('layanan')->group(function () {
+        Route::get('/beranda', \App\Livewire\Pengelola\LayananPelanggan\BerandaLayanan::class)->name('pengelola.cs.beranda');
+        Route::get('/tiket', \App\Livewire\Pengelola\LayananPelanggan\ManajemenTiket::class)->name('pengelola.cs.tiket');
+        Route::get('/tiket/{id}', \App\Livewire\Pengelola\LayananPelanggan\DetailTiketAdmin::class)->name('pengelola.cs.tiket.detail');
+    });
+
+    // 6. Manajemen Logistik Pengiriman
     Route::prefix('logistik')->group(function () {
-        Route::get('/', \App\Livewire\Pengelola\ManajemenLogistik\BerandaLogistik::class)->name('pengelola.logistik.beranda');
+        Route::get('/beranda', \App\Livewire\Pengelola\ManajemenLogistik\BerandaLogistik::class)->name('pengelola.logistik.beranda');
     });
 
-    // CRM & Pelanggan
+    // 7. Manajemen Pelanggan
     Route::prefix('pelanggan')->group(function () {
+        Route::get('/beranda', \App\Livewire\Pengelola\ManajemenPelanggan\BerandaPelanggan::class)->name('pengelola.pelanggan.beranda');
         Route::get('/', \App\Livewire\Pengelola\ManajemenPelanggan\DaftarMember::class)->name('pengelola.pelanggan.daftar');
         Route::get('/ulasan', \App\Livewire\Pengelola\ManajemenPelanggan\ManajemenUlasan::class)->name('pengelola.pelanggan.ulasan');
     });
 
-    // Layanan (CS)
-    Route::prefix('layanan')->group(function () {
-        Route::get('/tiket', \App\Livewire\Pengelola\LayananPelanggan\ManajemenTiket::class)->name('pengelola.cs.tiket');
-        Route::get('/tiket/{id}', \App\Livewire\Pengelola\LayananPelanggan\DetailTiketAdmin::class)->name('pengelola.cs.tiket.detail');
-        Route::get('/', \App\Livewire\Pengelola\LayananPelanggan\ManajemenTiket::class)->name('pengelola.cs.beranda'); 
+    // 8. Manajemen Vendor
+    Route::prefix('vendor')->group(function () {
+        Route::get('/beranda', \App\Livewire\Pengelola\ManajemenVendor\BerandaVendor::class)->name('pengelola.vendor.beranda');
+        Route::get('/', \App\Livewire\Pengelola\ManajemenVendor\DaftarPemasok::class)->name('pengelola.vendor.daftar');
+        Route::get('/penawaran', \App\Livewire\Pengelola\ManajemenVendor\ManajemenPenawaran::class)->name('pengelola.vendor.penawaran');
+        // Purchase Order (Pindah ke sini dari produk untuk relevansi vendor)
+        Route::get('/pembelian', \App\Livewire\Pengelola\ManajemenProduk\Pembelian\RiwayatPembelian::class)->name('pengelola.produk.pembelian.riwayat');
     });
 
-    // Manajemen API
-    Route::prefix('api')->group(function () {
-        Route::get('/', \App\Livewire\Pengelola\ManajemenApi\PusatIntegrasi::class)->name('pengelola.api.pusat');
-        Route::get('/kunci', \App\Livewire\Pengelola\ManajemenApi\DaftarKunciApi::class)->name('pengelola.api.kunci');
-        Route::get('/log', \App\Livewire\Pengelola\ManajemenApi\LogAksesApi::class)->name('pengelola.api.log');
-        Route::get('/dokumentasi', \App\Livewire\Pengelola\ManajemenApi\DokumentasiApi::class)->name('pengelola.api.dokumentasi');
-        
-        // Konfigurasi Integrasi
-        Route::get('/pembayaran', \App\Livewire\Pengelola\ManajemenApi\KonfigurasiPembayaran::class)->name('pengelola.api.pembayaran');
-        Route::get('/logistik', \App\Livewire\Pengelola\ManajemenApi\KonfigurasiLogistik::class)->name('pengelola.api.logistik');
-        Route::get('/email', \App\Livewire\Pengelola\ManajemenApi\KonfigurasiEmail::class)->name('pengelola.api.email');
-        Route::get('/whatsapp', \App\Livewire\Pengelola\ManajemenApi\KonfigurasiWhatsapp::class)->name('pengelola.api.whatsapp');
-    });
-    
-    // PUSAT KEAMANAN (Security Operations)
-    Route::prefix('keamanan')->group(function () {
-        Route::get('/', \App\Livewire\Pengelola\ManajemenKeamanan\DashboardKeamanan::class)->name('pengelola.keamanan.dashboard');
-        Route::get('/firewall', \App\Livewire\Pengelola\ManajemenKeamanan\AturanFirewallLivewire::class)->name('pengelola.keamanan.firewall');
-        Route::get('/sesi', \App\Livewire\Pengelola\ManajemenKeamanan\MonitorSesi::class)->name('pengelola.keamanan.sesi');
-        Route::get('/backup', \App\Livewire\Pengelola\ManajemenKeamanan\CadanganData::class)->name('pengelola.keamanan.backup');
-        Route::get('/scanner', \App\Livewire\Pengelola\ManajemenKeamanan\PemindaiSistem::class)->name('pengelola.keamanan.pemindai');
-        
-        // NEW FEATURES
-        Route::get('/ancaman', \App\Livewire\Pengelola\ManajemenKeamanan\IntelAncaman::class)->name('pengelola.keamanan.ancaman');
-        Route::get('/integritas', \App\Livewire\Pengelola\ManajemenKeamanan\IntegritasFile::class)->name('pengelola.keamanan.integritas');
-        Route::get('/honeypot', \App\Livewire\Pengelola\ManajemenKeamanan\HoneypotLog::class)->name('pengelola.keamanan.honeypot');
-        Route::get('/dlp', \App\Livewire\Pengelola\ManajemenKeamanan\PencegahanKebocoran::class)->name('pengelola.keamanan.dlp');
-        Route::get('/siem', \App\Livewire\Pengelola\ManajemenKeamanan\AnalisisLogSiem::class)->name('pengelola.keamanan.siem');
-        Route::get('/zerotrust', \App\Livewire\Pengelola\ManajemenKeamanan\ZeroTrustAkses::class)->name('pengelola.keamanan.zerotrust');
-        Route::get('/pam', \App\Livewire\Pengelola\ManajemenKeamanan\ManajemenAksesPrivilege::class)->name('pengelola.keamanan.pam');
-        Route::get('/irp', \App\Livewire\Pengelola\ManajemenKeamanan\ResponInsiden::class)->name('pengelola.keamanan.irp');
-        Route::get('/edr', \App\Livewire\Pengelola\ManajemenKeamanan\DeteksiEndpoint::class)->name('pengelola.keamanan.edr');
-    });
-
-    // PUSAT KONTROL SISTEM
-    Route::prefix('sistem')->group(function () {
-        Route::get('/', \App\Livewire\Pengelola\ManajemenSistem\PusatPengaturan::class)->name('pengelola.sistem.pusat');
-        Route::get('/kesehatan', \App\Livewire\Pengelola\ManajemenSistem\StatusKesehatan::class)->name('pengelola.sistem.kesehatan');
-        // Route::get('/voucher', ... ) -> moved or kept for legacy if needed, but sidebar points here now
-        Route::get('/voucher', \App\Livewire\Pengelola\PengaturanSistem\ManajemenVoucher::class)->name('pengelola.voucher');
-        Route::get('/log', \App\Livewire\Pengelola\Log\DaftarLog::class)->name('pengelola.pengaturan.log');
-    });
-
-    // HRD (Pegawai)
+    // 9. Manajemen Pegawai & Peran
     Route::prefix('hrd')->group(function () {
+        Route::get('/beranda', \App\Livewire\Pengelola\ManajemenPegawai\BerandaPegawai::class)->name('pengelola.hrd.beranda');
         Route::get('/karyawan', \App\Livewire\Pengelola\ManajemenPegawai\ManajemenKaryawan::class)->name('pengelola.pengguna.hrd');
         Route::get('/struktur', \App\Livewire\Pengelola\ManajemenPegawai\ManajemenStruktur::class)->name('pengelola.hrd.struktur');
     });
 
-    // Laporan
-    Route::get('/laporan', \App\Livewire\Pengelola\ManajemenLaporan\BerandaLaporan::class)->name('pengelola.laporan.pusat');
+    // 10. Manajemen Laporan & Analitik
+    Route::prefix('laporan')->group(function () {
+        Route::get('/beranda', \App\Livewire\Pengelola\ManajemenLaporan\BerandaLaporan::class)->name('pengelola.laporan.beranda');
+        Route::get('/', \App\Livewire\Pengelola\ManajemenLaporan\BerandaLaporan::class)->name('pengelola.laporan.pusat');
+        Route::get('/log', \App\Livewire\Pengelola\Log\DaftarLog::class)->name('pengelola.pengaturan.log');
+    });
 
-    // CMS & Konten
-    Route::prefix('cms')->group(function () {
-        Route::get('/berita', \App\Livewire\Pengelola\ManajemenToko\ManajemenBerita::class)->name('pengelola.toko.berita');
-        Route::get('/konten', \App\Livewire\Pengelola\ManajemenToko\ManajemenKonten::class)->name('pengelola.toko.konten');
+    // 11. Pengaturan Sistem Terpusat
+    Route::prefix('sistem')->group(function () {
+        Route::get('/beranda', \App\Livewire\Pengelola\PengaturanSistem\BerandaSistem::class)->name('pengelola.sistem.beranda');
+        Route::get('/pusat', \App\Livewire\Pengelola\ManajemenSistem\PusatPengaturan::class)->name('pengelola.sistem.pusat');
+        Route::get('/kesehatan', \App\Livewire\Pengelola\ManajemenSistem\StatusKesehatan::class)->name('pengelola.sistem.kesehatan');
+        Route::get('/voucher', \App\Livewire\Pengelola\PengaturanSistem\ManajemenVoucher::class)->name('pengelola.voucher');
+        
+        // Integrasi API (Bagian dari Sistem Terpusat)
+        Route::get('/api-hub', \App\Livewire\Pengelola\ManajemenApi\PusatIntegrasi::class)->name('pengelola.api.pusat');
+        Route::get('/pembayaran', \App\Livewire\Pengelola\ManajemenApi\KonfigurasiPembayaran::class)->name('pengelola.api.pembayaran');
+        Route::get('/logistik', \App\Livewire\Pengelola\ManajemenApi\KonfigurasiLogistik::class)->name('pengelola.api.logistik');
+        Route::get('/whatsapp', \App\Livewire\Pengelola\ManajemenApi\KonfigurasiWhatsapp::class)->name('pengelola.api.whatsapp');
+        Route::get('/email', \App\Livewire\Pengelola\ManajemenApi\KonfigurasiEmail::class)->name('pengelola.api.email');
+        Route::get('/kunci-api', \App\Livewire\Pengelola\ManajemenApi\DaftarKunciApi::class)->name('pengelola.api.kunci');
+        Route::get('/log-api', \App\Livewire\Pengelola\ManajemenApi\LogAksesApi::class)->name('pengelola.api.log');
+        Route::get('/dokumentasi-api', \App\Livewire\Pengelola\ManajemenApi\DokumentasiApi::class)->name('pengelola.api.dokumentasi');
+    });
+    
+    // 12. Pengaturan Keamanan Terpusat (Cyber Security SOC)
+    Route::prefix('keamanan')->group(function () {
+        Route::get('/beranda', \App\Livewire\Pengelola\PengaturanKeamanan\BerandaKeamanan::class)->name('pengelola.keamanan.beranda');
+        Route::get('/soc', \App\Livewire\Pengelola\ManajemenKeamanan\DasborKeamanan::class)->name('pengelola.keamanan.dashboard');
+        Route::get('/firewall', \App\Livewire\Pengelola\ManajemenKeamanan\AturanFirewallLivewire::class)->name('pengelola.keamanan.firewall');
+        Route::get('/scanner', \App\Livewire\Pengelola\ManajemenKeamanan\PemindaiSistem::class)->name('pengelola.keamanan.pemindai');
+        Route::get('/siem', \App\Livewire\Pengelola\ManajemenKeamanan\AnalisisLogSiem::class)->name('pengelola.keamanan.siem');
+        Route::get('/integritas', \App\Livewire\Pengelola\ManajemenKeamanan\IntegritasFile::class)->name('pengelola.keamanan.integritas');
+        Route::get('/ueba', \App\Livewire\Pengelola\ManajemenKeamanan\AnalisisPerilakuUser::class)->name('pengelola.keamanan.ueba');
+        Route::get('/forensik', \App\Livewire\Pengelola\ManajemenKeamanan\ForensikDigital::class)->name('pengelola.keamanan.forensik');
+        Route::get('/honeypot', \App\Livewire\Pengelola\ManajemenKeamanan\HoneypotLog::class)->name('pengelola.keamanan.honeypot');
+        Route::get('/ancaman', \App\Livewire\Pengelola\ManajemenKeamanan\IntelAncaman::class)->name('pengelola.keamanan.ancaman');
+        Route::get('/pam', \App\Livewire\Pengelola\ManajemenKeamanan\ManajemenAksesPrivilege::class)->name('pengelola.keamanan.pam');
+        Route::get('/sesi', \App\Livewire\Pengelola\ManajemenKeamanan\MonitorSesi::class)->name('pengelola.keamanan.sesi');
+        Route::get('/dlp', \App\Livewire\Pengelola\ManajemenKeamanan\PencegahanKebocoran::class)->name('pengelola.keamanan.dlp');
+        Route::get('/irp', \App\Livewire\Pengelola\ManajemenKeamanan\ResponInsiden::class)->name('pengelola.keamanan.irp');
+        Route::get('/zerotrust', \App\Livewire\Pengelola\ManajemenKeamanan\ZeroTrustAkses::class)->name('pengelola.keamanan.zerotrust');
+        Route::get('/edr', \App\Livewire\Pengelola\ManajemenKeamanan\DeteksiEndpoint::class)->name('pengelola.keamanan.edr');
+        Route::get('/cadangan', \App\Livewire\Pengelola\ManajemenKeamanan\CadanganData::class)->name('pengelola.keamanan.cadangan');
     });
 });

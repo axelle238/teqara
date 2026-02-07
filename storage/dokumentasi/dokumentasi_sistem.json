@@ -1,7 +1,7 @@
 {
     "nama_sistem": "TEQARA Business Enterprise Store",
     "versi": "12.0.0",
-    "tanggal_update": "2026-02-07 17:49:38",
+    "tanggal_update": "2026-02-07 18:29:35",
     "status_sistem": {
         "lingkungan": "local",
         "debug_mode": true,
@@ -102,6 +102,26 @@
             "metode": "GET"
         },
         {
+            "nama": "pengelola.toko.beranda",
+            "uri": "pengelola/cms/beranda",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.toko.berita",
+            "uri": "pengelola/cms/berita",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.toko.konten",
+            "uri": "pengelola/cms/konten",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.beranda",
+            "uri": "pengelola/produk/beranda",
+            "metode": "GET"
+        },
+        {
             "nama": "pengelola.produk.katalog",
             "uri": "pengelola/produk",
             "metode": "GET"
@@ -137,26 +157,6 @@
             "metode": "GET"
         },
         {
-            "nama": "pengelola.produk.pembelian.riwayat",
-            "uri": "pengelola/produk/pembelian",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.produk.pembelian.baru",
-            "uri": "pengelola/produk/pembelian/baru",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.produk.pembelian.edit",
-            "uri": "pengelola/produk/pembelian/edit/{id}",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.produk.pembelian.detail",
-            "uri": "pengelola/produk/pembelian/detail/{id}",
-            "metode": "GET"
-        },
-        {
             "nama": "pengelola.produk.so.riwayat",
             "uri": "pengelola/produk/stock-opname",
             "metode": "GET"
@@ -167,18 +167,23 @@
             "metode": "GET"
         },
         {
+            "nama": "pengelola.produk.label",
+            "uri": "pengelola/produk/label",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.spesifikasi",
+            "uri": "pengelola/produk/spesifikasi",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.produk.analitik",
+            "uri": "pengelola/produk/analitik",
+            "metode": "GET"
+        },
+        {
             "nama": "pengelola.kategori",
             "uri": "pengelola/kategori",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.kategori.tambah",
-            "uri": "pengelola/kategori/tambah",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.kategori.edit",
-            "uri": "pengelola/kategori/edit/{id}",
             "metode": "GET"
         },
         {
@@ -187,33 +192,8 @@
             "metode": "GET"
         },
         {
-            "nama": "pengelola.merek.tambah",
-            "uri": "pengelola/merek/tambah",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.merek.edit",
-            "uri": "pengelola/merek/edit/{id}",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.vendor.daftar",
-            "uri": "pengelola/vendor",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.vendor.tambah",
-            "uri": "pengelola/vendor/tambah",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.vendor.edit",
-            "uri": "pengelola/vendor/edit/{id}",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.vendor.penawaran",
-            "uri": "pengelola/vendor/penawaran",
+            "nama": "pengelola.pesanan.beranda",
+            "uri": "pengelola/pesanan/beranda",
             "metode": "GET"
         },
         {
@@ -233,22 +213,12 @@
         },
         {
             "nama": "pengelola.transaksi.beranda",
-            "uri": "pengelola/transaksi",
+            "uri": "pengelola/transaksi/beranda",
             "metode": "GET"
         },
         {
-            "nama": "pengelola.logistik.beranda",
-            "uri": "pengelola/logistik",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.pelanggan.daftar",
-            "uri": "pengelola/pelanggan",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.pelanggan.ulasan",
-            "uri": "pengelola/pelanggan/ulasan",
+            "nama": "pengelola.cs.beranda",
+            "uri": "pengelola/layanan/beranda",
             "metode": "GET"
         },
         {
@@ -262,138 +232,48 @@
             "metode": "GET"
         },
         {
-            "nama": "pengelola.cs.beranda",
-            "uri": "pengelola/layanan",
+            "nama": "pengelola.logistik.beranda",
+            "uri": "pengelola/logistik/beranda",
             "metode": "GET"
         },
         {
-            "nama": "pengelola.api.pusat",
-            "uri": "pengelola/api",
+            "nama": "pengelola.pelanggan.beranda",
+            "uri": "pengelola/pelanggan/beranda",
             "metode": "GET"
         },
         {
-            "nama": "pengelola.api.kunci",
-            "uri": "pengelola/api/kunci",
+            "nama": "pengelola.pelanggan.daftar",
+            "uri": "pengelola/pelanggan",
             "metode": "GET"
         },
         {
-            "nama": "pengelola.api.log",
-            "uri": "pengelola/api/log",
+            "nama": "pengelola.pelanggan.ulasan",
+            "uri": "pengelola/pelanggan/ulasan",
             "metode": "GET"
         },
         {
-            "nama": "pengelola.api.dokumentasi",
-            "uri": "pengelola/api/dokumentasi",
+            "nama": "pengelola.vendor.beranda",
+            "uri": "pengelola/vendor/beranda",
             "metode": "GET"
         },
         {
-            "nama": "pengelola.api.pembayaran",
-            "uri": "pengelola/api/pembayaran",
+            "nama": "pengelola.vendor.daftar",
+            "uri": "pengelola/vendor",
             "metode": "GET"
         },
         {
-            "nama": "pengelola.api.logistik",
-            "uri": "pengelola/api/logistik",
+            "nama": "pengelola.vendor.penawaran",
+            "uri": "pengelola/vendor/penawaran",
             "metode": "GET"
         },
         {
-            "nama": "pengelola.api.email",
-            "uri": "pengelola/api/email",
+            "nama": "pengelola.produk.pembelian.riwayat",
+            "uri": "pengelola/vendor/pembelian",
             "metode": "GET"
         },
         {
-            "nama": "pengelola.api.whatsapp",
-            "uri": "pengelola/api/whatsapp",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.dashboard",
-            "uri": "pengelola/keamanan",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.firewall",
-            "uri": "pengelola/keamanan/firewall",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.sesi",
-            "uri": "pengelola/keamanan/sesi",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.backup",
-            "uri": "pengelola/keamanan/backup",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.pemindai",
-            "uri": "pengelola/keamanan/scanner",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.ancaman",
-            "uri": "pengelola/keamanan/ancaman",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.integritas",
-            "uri": "pengelola/keamanan/integritas",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.honeypot",
-            "uri": "pengelola/keamanan/honeypot",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.dlp",
-            "uri": "pengelola/keamanan/dlp",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.siem",
-            "uri": "pengelola/keamanan/siem",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.zerotrust",
-            "uri": "pengelola/keamanan/zerotrust",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.pam",
-            "uri": "pengelola/keamanan/pam",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.irp",
-            "uri": "pengelola/keamanan/irp",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.keamanan.edr",
-            "uri": "pengelola/keamanan/edr",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.sistem.pusat",
-            "uri": "pengelola/sistem",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.sistem.kesehatan",
-            "uri": "pengelola/sistem/kesehatan",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.voucher",
-            "uri": "pengelola/sistem/voucher",
-            "metode": "GET"
-        },
-        {
-            "nama": "pengelola.pengaturan.log",
-            "uri": "pengelola/sistem/log",
+            "nama": "pengelola.hrd.beranda",
+            "uri": "pengelola/hrd/beranda",
             "metode": "GET"
         },
         {
@@ -407,18 +287,163 @@
             "metode": "GET"
         },
         {
+            "nama": "pengelola.laporan.beranda",
+            "uri": "pengelola/laporan/beranda",
+            "metode": "GET"
+        },
+        {
             "nama": "pengelola.laporan.pusat",
             "uri": "pengelola/laporan",
             "metode": "GET"
         },
         {
-            "nama": "pengelola.toko.berita",
-            "uri": "pengelola/cms/berita",
+            "nama": "pengelola.pengaturan.log",
+            "uri": "pengelola/laporan/log",
             "metode": "GET"
         },
         {
-            "nama": "pengelola.toko.konten",
-            "uri": "pengelola/cms/konten",
+            "nama": "pengelola.sistem.beranda",
+            "uri": "pengelola/sistem/beranda",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.sistem.pusat",
+            "uri": "pengelola/sistem/pusat",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.sistem.kesehatan",
+            "uri": "pengelola/sistem/kesehatan",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.voucher",
+            "uri": "pengelola/sistem/voucher",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.pusat",
+            "uri": "pengelola/sistem/api-hub",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.pembayaran",
+            "uri": "pengelola/sistem/pembayaran",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.logistik",
+            "uri": "pengelola/sistem/logistik",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.whatsapp",
+            "uri": "pengelola/sistem/whatsapp",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.email",
+            "uri": "pengelola/sistem/email",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.kunci",
+            "uri": "pengelola/sistem/kunci-api",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.log",
+            "uri": "pengelola/sistem/log-api",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.api.dokumentasi",
+            "uri": "pengelola/sistem/dokumentasi-api",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.beranda",
+            "uri": "pengelola/keamanan/beranda",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.dashboard",
+            "uri": "pengelola/keamanan/soc",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.firewall",
+            "uri": "pengelola/keamanan/firewall",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.pemindai",
+            "uri": "pengelola/keamanan/scanner",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.siem",
+            "uri": "pengelola/keamanan/siem",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.integritas",
+            "uri": "pengelola/keamanan/integritas",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.ueba",
+            "uri": "pengelola/keamanan/ueba",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.forensik",
+            "uri": "pengelola/keamanan/forensik",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.honeypot",
+            "uri": "pengelola/keamanan/honeypot",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.ancaman",
+            "uri": "pengelola/keamanan/ancaman",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.pam",
+            "uri": "pengelola/keamanan/pam",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.sesi",
+            "uri": "pengelola/keamanan/sesi",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.dlp",
+            "uri": "pengelola/keamanan/dlp",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.irp",
+            "uri": "pengelola/keamanan/irp",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.zerotrust",
+            "uri": "pengelola/keamanan/zerotrust",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.edr",
+            "uri": "pengelola/keamanan/edr",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.keamanan.cadangan",
+            "uri": "pengelola/keamanan/cadangan",
             "metode": "GET"
         }
     ],
@@ -566,7 +591,30 @@
             ]
         },
         {
-            "tabel": "aturan_firewalls",
+            "tabel": "anggota_tim",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "aturan_firewall",
             "kolom": [
                 {
                     "nama": "id",
@@ -581,7 +629,7 @@
                     "kunci": ""
                 },
                 {
-                    "nama": "user_agent",
+                    "nama": "agen_pengguna",
                     "tipe": "varchar(255)",
                     "null": "YES",
                     "kunci": ""
@@ -1114,7 +1162,7 @@
             ]
         },
         {
-            "tabel": "insiden_keamanans",
+            "tabel": "insiden_keamanan",
             "kolom": [
                 {
                     "nama": "id",
@@ -1202,7 +1250,7 @@
             ]
         },
         {
-            "tabel": "item_proyeks",
+            "tabel": "item_proyek",
             "kolom": [
                 {
                     "nama": "id",
@@ -1211,13 +1259,13 @@
                     "kunci": "PRI"
                 },
                 {
-                    "nama": "created_at",
+                    "nama": "dibuat_pada",
                     "tipe": "timestamp",
                     "null": "YES",
                     "kunci": ""
                 },
                 {
-                    "nama": "updated_at",
+                    "nama": "diperbarui_pada",
                     "tipe": "timestamp",
                     "null": "YES",
                     "kunci": ""
@@ -1650,7 +1698,7 @@
             ]
         },
         {
-            "tabel": "kunci_apis",
+            "tabel": "kunci_api",
             "kolom": [
                 {
                     "nama": "id",
@@ -1779,7 +1827,7 @@
             ]
         },
         {
-            "tabel": "log_apis",
+            "tabel": "log_api",
             "kolom": [
                 {
                     "nama": "id",
@@ -1806,7 +1854,7 @@
                     "kunci": ""
                 },
                 {
-                    "nama": "ip_address",
+                    "nama": "alamat_ip",
                     "tipe": "varchar(255)",
                     "null": "NO",
                     "kunci": ""
@@ -2889,7 +2937,7 @@
             ]
         },
         {
-            "tabel": "proyeks",
+            "tabel": "proyek",
             "kolom": [
                 {
                     "nama": "id",
@@ -2898,13 +2946,13 @@
                     "kunci": "PRI"
                 },
                 {
-                    "nama": "created_at",
+                    "nama": "dibuat_pada",
                     "tipe": "timestamp",
                     "null": "YES",
                     "kunci": ""
                 },
                 {
-                    "nama": "updated_at",
+                    "nama": "diperbarui_pada",
                     "tipe": "timestamp",
                     "null": "YES",
                     "kunci": ""
@@ -3205,29 +3253,6 @@
                 },
                 {
                     "nama": "diperbarui_pada",
-                    "tipe": "timestamp",
-                    "null": "YES",
-                    "kunci": ""
-                }
-            ]
-        },
-        {
-            "tabel": "tim_members",
-            "kolom": [
-                {
-                    "nama": "id",
-                    "tipe": "bigint(20) unsigned",
-                    "null": "NO",
-                    "kunci": "PRI"
-                },
-                {
-                    "nama": "created_at",
-                    "tipe": "timestamp",
-                    "null": "YES",
-                    "kunci": ""
-                },
-                {
-                    "nama": "updated_at",
                     "tipe": "timestamp",
                     "null": "YES",
                     "kunci": ""

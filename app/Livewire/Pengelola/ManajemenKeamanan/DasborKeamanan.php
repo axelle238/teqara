@@ -8,7 +8,12 @@ use App\Services\LayananKeamanan;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-class DashboardKeamanan extends Component
+/**
+ * Komponen Dasbor Keamanan
+ * 
+ * Pusat monitoring keamanan siber, ancaman real-time, dan audit forensik.
+ */
+class DasborKeamanan extends Component
 {
     public $ringkasan = [];
     public $skorRisiko = 100;
@@ -60,9 +65,9 @@ class DashboardKeamanan extends Component
         $insidenTerbaru = InsidenKeamanan::with('pengguna')->latest('dibuat_pada')->take(10)->get();
         $aturanAktif = AturanFirewall::latest('dibuat_pada')->take(5)->get();
 
-        return view('livewire.pengelola.manajemen-keamanan.dashboard-keamanan', [
+        return view('livewire.pengelola.manajemen-keamanan.dasbor-keamanan', [
             'insidenTerbaru' => $insidenTerbaru,
             'aturanAktif' => $aturanAktif
-        ])->layout('components.layouts.admin', ['header' => 'Security Operation Center (SOC)']);
+        ])->layout('components.layouts.admin', ['header' => 'Pusat Operasi Keamanan (SOC)']);
     }
 }

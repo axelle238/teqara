@@ -4,7 +4,7 @@
         <div>
             <h1 class="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
                 <i class="fa-solid fa-chart-pie text-indigo-600"></i>
-                Dashboard Eksekutif
+                Dasbor Eksekutif
             </h1>
             <p class="text-slate-500 font-medium mt-1">Pantau seluruh pilar bisnis Teqara dalam satu kendali terpusat.</p>
         </div>
@@ -242,7 +242,7 @@
                 <div class="relative z-10">
                     <h4 class="text-sm font-black uppercase tracking-widest text-indigo-400 mb-4">Aksi Cepat</h4>
                     <div class="grid grid-cols-2 gap-3">
-                        <a href="{{ route('pengelola.produk.form') }}" wire:navigate class="bg-white/10 hover:bg-white/20 border border-white/10 p-3 rounded-2xl flex flex-col items-center gap-2 transition-all">
+                        <a href="{{ route('pengelola.produk.tambah') }}" wire:navigate class="bg-white/10 hover:bg-white/20 border border-white/10 p-3 rounded-2xl flex flex-col items-center gap-2 transition-all">
                             <i class="fa-solid fa-plus text-indigo-400"></i>
                             <span class="text-[9px] font-black uppercase tracking-widest">Tambah Produk</span>
                         </a>

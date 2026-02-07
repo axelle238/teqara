@@ -8,34 +8,40 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Middleware Firewall Keamanan
+ * 
+ * Melindungi sistem dari akses terlarang (IP/User Agent terblokir)
+ * dan deteksi dasar serangan injeksi SQL.
+ */
 class FirewallKeamanan
 {
     /**
-     * Handle an incoming request.
+     * Tangani permintaan yang masuk.
      */
     public function handle(Request $request, Closure $next): Response
     {
         $ip = $request->ip();
-        $userAgent = $request->userAgent();
+        $agenPengguna = $request->userAgent();
 
-        // 1. Cek Blokir IP
+        // 1. Cek Blokir IP atau Agen Pengguna
         $terblokir = AturanFirewall::where('aktif', true)
             ->where('tipe_aturan', 'blokir')
-            ->where(function ($query) use ($ip, $userAgent) {
+            ->where(function ($query) use ($ip, $agenPengguna) {
                 $query->where('alamat_ip', $ip)
-                      ->orWhere('user_agent', 'like', "%$userAgent%");
+                      ->orWhere('agen_pengguna', 'like', "%$agenPengguna%");
             })
             ->first();
 
         if ($terblokir) {
             // Catat insiden akses terblokir (throttled)
-            if (rand(1, 10) === 1) { // Jangan catat setiap request agar tidak flooding
+            if (rand(1, 10) === 1) { // Sampling agar tidak memenuhi log
                 InsidenKeamanan::create([
-                    'jenis_insiden' => 'Blocked Access Attempt',
+                    'jenis_insiden' => 'Percobaan Akses Terblokir',
                     'tingkat_keparahan' => 'rendah',
                     'alamat_ip' => $ip,
                     'deskripsi' => "IP terblokir mencoba mengakses {$request->fullUrl()}",
-                    'meta_data' => ['rule_id' => $terblokir->id, 'reason' => $terblokir->alasan]
+                    'meta_data' => ['id_aturan' => $terblokir->id, 'alasan' => $terblokir->alasan]
                 ]);
             }
 
@@ -44,29 +50,29 @@ class FirewallKeamanan
             ], 403);
         }
 
-        // 2. Deteksi SQL Injection Sederhana (Pattern Matching)
+        // 2. Deteksi SQL Injection Sederhana (Pencocokan Pola)
         $input = json_encode($request->all());
-        $patterns = ["'--", "union select", "information_schema", "drop table"];
-        foreach ($patterns as $pattern) {
-            if (stripos($input, $pattern) !== false) {
-                // Auto Block IP
+        $pola = ["'--", "union select", "information_schema", "drop table"];
+        foreach ($pola as $p) {
+            if (stripos($input, $p) !== false) {
+                // Blokir IP Otomatis
                 AturanFirewall::create([
                     'alamat_ip' => $ip,
                     'tipe_aturan' => 'blokir',
-                    'alasan' => 'Auto-Block: SQL Injection Pattern Detected',
+                    'alasan' => 'Blokir Otomatis: Pola SQL Injection Terdeteksi',
                     'aktif' => true,
                     'level_ancaman' => 'kritis'
                 ]);
 
                 InsidenKeamanan::create([
-                    'jenis_insiden' => 'SQL Injection Attack',
+                    'jenis_insiden' => 'Serangan SQL Injection',
                     'tingkat_keparahan' => 'kritis',
                     'alamat_ip' => $ip,
                     'deskripsi' => "Serangan SQLi terdeteksi pada URL: {$request->fullUrl()}",
-                    'meta_data' => ['input' => $input, 'pattern' => $pattern]
+                    'meta_data' => ['input' => $input, 'pola' => $p]
                 ]);
 
-                return response()->json(['error' => 'Security Threat Detected. IP Blocked.'], 403);
+                return response()->json(['error' => 'Ancaman Keamanan Terdeteksi. IP Diblokir.'], 403);
             }
         }
 

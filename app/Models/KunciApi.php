@@ -10,7 +10,7 @@ class KunciApi extends Model
 {
     use HasFactory;
 
-    protected $table = 'kunci_apis';
+    protected $table = 'kunci_api';
 
     const CREATED_AT = 'dibuat_pada';
     const UPDATED_AT = 'diperbarui_pada';

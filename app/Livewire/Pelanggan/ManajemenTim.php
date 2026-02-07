@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Pelanggan;
 
-use App\Models\TimMember;
+use App\Models\AnggotaTim;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -13,20 +13,20 @@ class ManajemenTim extends Component
     public $email;
     public $peran = 'staf'; // admin, keuangan, staf
 
-    public function getTimSayaProperty()
+    public function getAnggotaTimSayaProperty()
     {
-        return TimMember::where('pemilik_id', auth()->id())->latest()->get();
+        return AnggotaTim::where('pemilik_id', auth()->id())->latest()->get();
     }
 
     public function tambahAnggota()
     {
         $this->validate([
             'nama' => 'required|min:3',
-            'email' => 'required|email|unique:tim_members,email',
+            'email' => 'required|email|unique:anggota_tim,email',
             'peran' => 'required'
         ]);
 
-        TimMember::create([
+        AnggotaTim::create([
             'pemilik_id' => auth()->id(),
             'nama' => $this->nama,
             'email' => $this->email,
@@ -40,7 +40,7 @@ class ManajemenTim extends Component
 
     public function hapus($id)
     {
-        TimMember::where('id', $id)->where('pemilik_id', auth()->id())->delete();
+        AnggotaTim::where('id', $id)->where('pemilik_id', auth()->id())->delete();
         $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Akses anggota dicabut.']);
     }
 
