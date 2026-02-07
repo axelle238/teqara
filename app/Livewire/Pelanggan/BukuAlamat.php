@@ -35,7 +35,7 @@ class BukuAlamat extends Component
     public function loadProvinces()
     {
         try {
-            $this->provinces = (new \App\Services\LayananLogistik())->getProvinces();
+            $this->provinces = (new \App\Services\LayananLogistik())->ambilProvinsi();
         } catch (\Exception $e) {
             $this->provinces = [];
         }
@@ -44,7 +44,7 @@ class BukuAlamat extends Component
     public function updatedProvinsiId($value)
     {
         if ($value) {
-            $this->cities = (new \App\Services\LayananLogistik())->getCities($value);
+            $this->cities = (new \App\Services\LayananLogistik())->ambilKota($value);
         } else {
             $this->cities = [];
         }
@@ -98,7 +98,7 @@ class BukuAlamat extends Component
         $this->editMode = true;
 
         if ($this->provinsi_id) {
-            $this->cities = (new \App\Services\LayananLogistik())->getCities($this->provinsi_id);
+            $this->cities = (new \App\Services\LayananLogistik())->ambilKota($this->provinsi_id);
         }
     }
 
