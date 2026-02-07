@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Produk;
 use App\Services\LayananDokumentasi;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 /**
@@ -41,6 +42,10 @@ class ProdukObserver
     {
         // Update dokumentasi sistem otomatis
         $this->layanan->perbaruiDokumentasi();
+
+        Cache::forget('beranda_produk_unggulan');
+        Cache::forget('beranda_produk_terlaris');
+        Cache::forget('beranda_kategori'); // Karena count berubah
     }
 
     /**
@@ -49,5 +54,9 @@ class ProdukObserver
     public function deleted(Produk $produk): void
     {
         $this->layanan->perbaruiDokumentasi();
+
+        Cache::forget('beranda_produk_unggulan');
+        Cache::forget('beranda_produk_terlaris');
+        Cache::forget('beranda_kategori');
     }
 }

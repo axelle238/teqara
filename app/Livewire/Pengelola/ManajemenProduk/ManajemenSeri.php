@@ -139,7 +139,7 @@ class ManajemenSeri extends Component
             ->when($this->cari, fn($q) => $q->where('nomor_seri', 'like', '%'.$this->cari.'%'))
             ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
             ->when($this->filterProduk, fn($q) => $q->where('produk_id', $this->filterProduk))
-            ->latest();
+            ->latest('dibuat_pada');
 
         // Statistik Dashboard
         $statistik = [

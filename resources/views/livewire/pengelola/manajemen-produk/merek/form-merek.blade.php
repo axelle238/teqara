@@ -1,53 +1,38 @@
-<div class="max-w-3xl mx-auto pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
+<div class="max-w-2xl mx-auto space-y-8 animate-in slide-in-from-bottom-8 duration-500 pb-20">
     
-    <!-- Header -->
-    <div class="mb-8 flex items-center justify-between">
+    <!-- Header Form -->
+    <div class="flex items-center gap-4 mb-8">
+        <a href="{{ route('pengelola.merek') }}" wire:navigate class="w-12 h-12 bg-white rounded-2xl border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-600 transition-all shadow-sm">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
         <div>
-            <h1 class="text-2xl font-black text-slate-900 tracking-tight">{{ $merekId ? 'Edit Merek' : 'Merek Baru' }}</h1>
-            <p class="text-slate-500 font-medium text-sm mt-1">Manajemen brand produk yang tersedia di toko.</p>
-        </div>
-        <div class="flex gap-3">
-            <a href="{{ route('pengelola.merek') }}" wire:navigate class="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50 transition-all">
-                Batal
-            </a>
-            <button wire:click="simpan" class="px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-all flex items-center gap-2">
-                <i class="fa-solid fa-save"></i> Simpan
-            </button>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight uppercase">{{ $merekId ? 'Edit Brand' : 'Brand Baru' }}</h1>
+            <p class="text-slate-500 font-medium text-sm">Kelola identitas merek produk.</p>
         </div>
     </div>
 
-    <div class="bg-white p-8 rounded-[24px] shadow-sm border border-slate-100">
-        <div class="space-y-6">
-            <!-- Upload Logo -->
-            <div class="flex items-center gap-6">
-                <div class="w-24 h-24 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center relative overflow-hidden group hover:border-emerald-500 transition-colors">
-                    @if($logo_baru)
-                        <img src="{{ $logo_baru->temporaryUrl() }}" class="w-full h-full object-contain p-2">
-                    @elseif($logo_lama)
-                        <img src="{{ asset('storage/'.$logo_lama) }}" class="w-full h-full object-contain p-2">
-                    @else
-                        <i class="fa-solid fa-copyright text-slate-300 text-2xl group-hover:text-emerald-500"></i>
-                    @endif
-                    <input type="file" wire:model="logo_baru" class="absolute inset-0 opacity-0 cursor-pointer">
-                </div>
-                <div>
-                    <h3 class="font-bold text-slate-900 text-sm">Logo Brand</h3>
-                    <p class="text-xs text-slate-500 mt-1">Format PNG Transparan, Maksimal 1MB.</p>
-                    <div wire:loading wire:target="logo_baru" class="text-xs text-emerald-600 font-bold mt-2 animate-pulse">Mengunggah...</div>
-                </div>
+    <!-- Form Card -->
+    <div class="bg-white rounded-[40px] p-10 border border-slate-100 shadow-xl relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-[100px] -mr-10 -mt-10 z-0"></div>
+        
+        <form wire:submit.prevent="simpan" class="relative z-10 space-y-8">
+            <div class="space-y-2">
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em] px-1">Nama Brand</label>
+                <input wire:model.live="nama" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-lg font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300 transition-all" placeholder="Cth: Apple, Samsung">
+                @error('nama') <span class="text-rose-500 text-xs font-bold px-1">{{ $message }}</span> @enderror
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">Nama Brand</label>
-                    <input wire:model.live="nama" type="text" class="w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-emerald-500 focus:ring-emerald-500 font-bold text-sm" placeholder="Contoh: Asus">
-                    @error('nama') <span class="text-xs text-rose-500 font-bold mt-1">{{ $message }}</span> @enderror
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">Slug URL</label>
-                    <input wire:model="slug" type="text" class="w-full rounded-xl border-slate-200 bg-slate-100 text-slate-500 font-mono text-xs" readonly>
-                </div>
+            <div class="space-y-2">
+                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em] px-1">Slug URL</label>
+                <input wire:model="slug" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-mono text-indigo-600 focus:ring-4 focus:ring-indigo-500/10" readonly>
+                @error('slug') <span class="text-rose-500 text-xs font-bold px-1">{{ $message }}</span> @enderror
             </div>
-        </div>
+
+            <div class="pt-8 flex justify-end">
+                <button type="submit" class="px-10 py-4 bg-indigo-600 text-white rounded-3xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 shadow-lg shadow-indigo-600/20 transition-all active:scale-95 flex items-center gap-3">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Data
+                </button>
+            </div>
+        </form>
     </div>
 </div>

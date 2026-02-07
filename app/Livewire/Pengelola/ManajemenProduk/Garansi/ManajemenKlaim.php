@@ -15,6 +15,8 @@ class ManajemenKlaim extends Component
 
     public $filterStatus = 'all';
     public $cari = '';
+    public $tampilkanForm = false;
+    public $mode = 'buat'; // buat, proses
 
     // Form State
     public $klaimId;
@@ -42,7 +44,14 @@ class ManajemenKlaim extends Component
     public function buatKlaimBaru()
     {
         $this->reset(['klaimId', 'inputSeri', 'jenis_klaim', 'keluhan', 'hasilPencarianSeri']);
-        $this->dispatch('open-slide-over', id: 'form-klaim');
+        $this->mode = 'buat';
+        $this->tampilkanForm = true;
+    }
+
+    public function batal()
+    {
+        $this->tampilkanForm = false;
+        $this->reset(['klaimId', 'inputSeri', 'hasilPencarianSeri']);
     }
 
     public function simpanKlaim()
@@ -68,12 +77,9 @@ class ManajemenKlaim extends Component
             'tgl_masuk' => now(),
         ]);
 
-        // Update status unit jadi rusak/retur jika perlu, tapi biasanya nanti setelah cek fisik
-        // Kita biarkan status seri tetap dulu sampai unit diterima teknisi.
-
         LogHelper::catat('buat_rma', $kode, "Klaim garansi baru dibuka untuk unit SN: {$this->inputSeri}");
 
-        $this->dispatch('close-slide-over', id: 'form-klaim');
+        $this->tampilkanForm = false;
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Tiket RMA berhasil dibuat.']);
     }
 
@@ -86,7 +92,8 @@ class ManajemenKlaim extends Component
         $this->catatan_teknisi = $k->catatan_teknisi;
         $this->inputSeri = $k->seri->nomor_seri; // For display
         
-        $this->dispatch('open-slide-over', id: 'proses-klaim');
+        $this->mode = 'proses';
+        $this->tampilkanForm = true;
     }
 
     public function updateStatusKlaim()
@@ -104,11 +111,10 @@ class ManajemenKlaim extends Component
         if ($this->status_proses === 'selesai') {
             if ($k->jenis_klaim === 'tukar_unit') {
                 $k->seri->update(['status' => 'retur']); // Unit lama jadi retur
-                // Idealnya pilih unit baru pengganti (out of scope for basic RMA, but good for enterprise)
             }
         }
 
-        $this->dispatch('close-slide-over', id: 'proses-klaim');
+        $this->tampilkanForm = false;
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Status RMA diperbarui.']);
     }
 
@@ -118,7 +124,7 @@ class ManajemenKlaim extends Component
         $klaim = KlaimGaransi::with(['seri.produk', 'pelanggan'])
             ->when($this->filterStatus !== 'all', fn($q) => $q->where('status', $this->filterStatus))
             ->when($this->cari, fn($q) => $q->where('kode_klaim', 'like', '%'.$this->cari.'%'))
-            ->latest()
+            ->latest('dibuat_pada')
             ->paginate(10);
 
         return view('livewire.pengelola.manajemen-produk.garansi.manajemen-klaim', [

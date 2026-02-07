@@ -2,133 +2,103 @@
 
 namespace App\Livewire\Pengelola\ManajemenLaporan;
 
-use App\Models\DetailPesanan;
 use App\Models\Pesanan;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\Models\Produk;
+use App\Models\Pengguna;
 use Livewire\Attributes\Title;
 use Livewire\Component;
-use Livewire\WithPagination;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class BerandaLaporan
- * Tujuan: Manajemen laporan keuangan, profit, dan analitik performa bisnis.
+ * Tujuan: Pusat analitik bisnis enterprise (Business Intelligence).
+ * Arsitektur: Full Page Dashboard dengan visualisasi data interaktif.
  */
 class BerandaLaporan extends Component
 {
-    use WithPagination;
+    public $periode = 'bulan_ini'; // hari_ini, minggu_ini, bulan_ini, tahun_ini
 
-    public $tanggalMulai;
-
-    public $tanggalSelesai;
-
-    public $statusFilter = 'lunas';
+    // Data Grafik
+    public $chartPendapatan = [];
+    public $chartPesanan = [];
+    public $topProduk = [];
+    public $topKategori = [];
 
     public function mount()
     {
-        $this->tanggalMulai = Carbon::now()->startOfMonth()->format('Y-m-d');
-        $this->tanggalSelesai = Carbon::now()->endOfMonth()->format('Y-m-d');
+        $this->generateLaporan();
     }
 
-    public function updated()
+    public function updatedPeriode()
     {
-        $this->resetPage();
+        $this->generateLaporan();
     }
 
-    #[Title('Analitik & Laporan Penjualan - Admin Teqara')]
-    public function render()
+    private function getRange()
     {
-        $rentangTanggal = [
-            $this->tanggalMulai.' 00:00:00',
-            $this->tanggalSelesai.' 23:59:59',
-        ];
+        return match($this->periode) {
+            'hari_ini' => [now()->startOfDay(), now()->endOfDay()],
+            'minggu_ini' => [now()->startOfWeek(), now()->endOfWeek()],
+            'tahun_ini' => [now()->startOfYear(), now()->endOfYear()],
+            default => [now()->startOfMonth(), now()->endOfMonth()], // bulan_ini
+        };
+    }
 
-        $query = Pesanan::query()
-            ->with(['pengguna', 'detailPesanan.produk'])
-            ->whereBetween('dibuat_pada', $rentangTanggal);
+    public function generateLaporan()
+    {
+        [$start, $end] = $this->getRange();
 
-        if ($this->statusFilter) {
-            $query->where('status_pembayaran', $this->statusFilter);
-        }
-
-        $pesananData = $query->get();
-
-        // Hitung Finansial Detail
-        $totalOmzet = 0;
-        $totalModal = 0;
-
-        foreach ($pesananData as $p) {
-            $totalOmzet += $p->total_harga;
-            foreach ($p->detailPesanan as $d) {
-                // Asumsi harga modal statis dari master produk saat ini (ideal snapshot di detail_pesanan, tapi kita pakai master dulu)
-                $totalModal += ($d->produk->harga_modal * $d->jumlah);
-            }
-        }
-
-        $totalProfit = $totalOmzet - $totalModal;
-        $marginProfit = $totalOmzet > 0 ? ($totalProfit / $totalOmzet) * 100 : 0;
-        $totalPesanan = $pesananData->count();
-
-        $produkTerlaris = DetailPesanan::query()
-            ->select('produk_id', DB::raw('SUM(jumlah) as total_terjual'), DB::raw('SUM(subtotal) as total_omzet'))
-            ->whereIn('pesanan_id', $pesananData->pluck('id'))
-            ->groupBy('produk_id')
-            ->with('produk')
-            ->orderByDesc('total_terjual')
-            ->take(5)
-            ->get();
-
-        $omzetPerKategori = [];
-        foreach ($pesananData as $p) {
-            foreach ($p->detailPesanan as $d) {
-                $namaKat = $d->produk->kategori->nama ?? 'Tanpa Kategori';
-                $omzetPerKategori[$namaKat] = ($omzetPerKategori[$namaKat] ?? 0) + $d->subtotal;
-            }
-        }
-        arsort($omzetPerKategori);
-
-        // Logika Forecasting Sederhana (Moving Average)
-        $hariDalamPeriode = Carbon::parse($this->tanggalMulai)->diffInDays(Carbon::parse($this->tanggalSelesai)) + 1;
-        $rataRataHarian = $hariDalamPeriode > 0 ? $totalOmzet / $hariDalamPeriode : 0;
-        $proyeksiBulanDepan = $rataRataHarian * 30; // Proyeksi 30 hari ke depan
-
-        // Tren Harian untuk Chart
-        $trenHarian = Pesanan::select(DB::raw('DATE(dibuat_pada) as tanggal'), DB::raw('SUM(total_harga) as omzet'))
-            ->whereBetween('dibuat_pada', $rentangTanggal)
+        // 1. Grafik Pendapatan & Pesanan Harian
+        $dataHarian = Pesanan::select(
+                DB::raw('DATE(dibuat_pada) as tanggal'), 
+                DB::raw('SUM(total_harga) as total_omzet'),
+                DB::raw('COUNT(*) as jumlah_transaksi')
+            )
+            ->whereBetween('dibuat_pada', [$start, $end])
             ->where('status_pembayaran', 'lunas')
             ->groupBy('tanggal')
             ->orderBy('tanggal')
-            ->get()
-            ->mapWithKeys(fn ($item) => [$item->tanggal => $item->omzet]);
+            ->get();
 
-        return view('livewire.pengelola.manajemen-laporan.beranda-laporan', [
-            'pesanan' => $query->latest()->paginate(15),
-            'totalOmzet' => $totalOmzet,
-            'totalModal' => $totalModal,
-            'totalProfit' => $totalProfit,
-            'marginProfit' => $marginProfit,
-            'totalPesanan' => $totalPesanan,
-            'produkTerlaris' => $produkTerlaris,
-            'omzetPerKategori' => $omzetPerKategori,
-            'analitik' => [
-                'proyeksi' => $proyeksiBulanDepan,
-                'rata_rata_harian' => $rataRataHarian,
-                'tren_chart' => $trenHarian,
-            ],
-        ])->layout('components.layouts.admin');
+        $this->chartPendapatan = [
+            'labels' => $dataHarian->pluck('tanggal')->map(fn($d) => \Carbon\Carbon::parse($d)->format('d M'))->toArray(),
+            'data' => $dataHarian->pluck('total_omzet')->toArray()
+        ];
+
+        $this->chartPesanan = [
+            'labels' => $dataHarian->pluck('tanggal')->map(fn($d) => \Carbon\Carbon::parse($d)->format('d M'))->toArray(),
+            'data' => $dataHarian->pluck('jumlah_transaksi')->toArray()
+        ];
+
+        // 2. Top Produk Terlaris
+        $this->topProduk = DB::table('detail_pesanan')
+            ->join('pesanan', 'detail_pesanan.pesanan_id', '=', 'pesanan.id')
+            ->join('produk', 'detail_pesanan.produk_id', '=', 'produk.id')
+            ->whereBetween('pesanan.dibuat_pada', [$start, $end])
+            ->where('pesanan.status_pembayaran', 'lunas')
+            ->select('produk.nama', DB::raw('SUM(detail_pesanan.jumlah) as total_terjual'), DB::raw('SUM(detail_pesanan.subtotal) as total_revenue'))
+            ->groupBy('produk.id', 'produk.nama')
+            ->orderByDesc('total_terjual')
+            ->limit(5)
+            ->get();
+
+        // 3. Kategori Terpopuler
+        $this->topKategori = DB::table('detail_pesanan')
+            ->join('pesanan', 'detail_pesanan.pesanan_id', '=', 'pesanan.id')
+            ->join('produk', 'detail_pesanan.produk_id', '=', 'produk.id')
+            ->join('kategori', 'produk.kategori_id', '=', 'kategori.id')
+            ->whereBetween('pesanan.dibuat_pada', [$start, $end])
+            ->select('kategori.nama', DB::raw('COUNT(*) as frekuensi'))
+            ->groupBy('kategori.id', 'kategori.nama')
+            ->orderByDesc('frekuensi')
+            ->limit(5)
+            ->get();
     }
 
-    public function eksporExcel()
+    #[Title('Analitik Bisnis - Teqara Admin')]
+    public function render()
     {
-        $this->dispatch('notifikasi', [
-            'tipe' => 'info',
-            'pesan' => 'Sedang menyiapkan data laporan untuk diunduh (XLSX)...',
-        ]);
-
-        \App\Helpers\LogHelper::catat(
-            'ekspor_laporan',
-            "Laporan {$this->tanggalMulai} s/d {$this->tanggalSelesai}",
-            "Admin melakukan ekspor data laporan penjualan periode {$this->tanggalMulai} hingga {$this->tanggalSelesai}."
-        );
+        return view('livewire.pengelola.manajemen-laporan.beranda-laporan')
+            ->layout('components.layouts.admin', ['header' => 'Intelijen Bisnis']);
     }
 }

@@ -1,6 +1,44 @@
 <div class="space-y-16 pb-16">
 
-    <!-- Hero Section -->
+    <!-- Personalized Welcome (Logged In Only) -->
+    @auth
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
+        <div class="relative overflow-hidden rounded-[3rem] bg-gradient-to-r from-indigo-600 to-purple-600 shadow-2xl shadow-indigo-500/20 p-8 sm:p-12 text-white">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="flex items-center gap-6">
+                    <div class="w-20 h-20 rounded-[2rem] bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl font-black shadow-inner border border-white/20">
+                        {{ substr(auth()->user()->nama, 0, 1) }}
+                    </div>
+                    <div>
+                        <p class="text-indigo-200 text-xs font-black uppercase tracking-[0.2em] mb-1">Selamat Datang Kembali</p>
+                        <h2 class="text-3xl font-black tracking-tight leading-none">{{ auth()->user()->nama }}</h2>
+                        <div class="flex items-center gap-4 mt-3">
+                            <span class="px-3 py-1 rounded-full bg-white/10 border border-white/10 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                {{ auth()->user()->level_member ?? 'Classic' }} Member
+                            </span>
+                            <span class="text-xs font-bold text-indigo-100">{{ number_format(auth()->user()->poin_loyalitas ?? 0) }} Poin</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4">
+                    <a href="{{ route('customer.dashboard') }}" class="px-8 py-4 bg-white text-indigo-600 rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
+                        Ke Dashboard Saya
+                    </a>
+                    <a href="{{ route('pesanan.riwayat') }}" class="px-8 py-4 bg-indigo-800/50 border border-indigo-400/30 text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo-800 transition-all backdrop-blur-sm">
+                        Lacak Pesanan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    @endauth
+
+    <!-- Hero Section (Logged Out or General) -->
+    @guest
     <section class="relative pt-8 pb-4 overflow-hidden">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="relative rounded-[2.5rem] bg-slate-900 overflow-hidden shadow-2xl shadow-indigo-500/30">
@@ -47,11 +85,27 @@
             </div>
         </div>
     </section>
+    @endguest
 
     <!-- USP Section -->
     <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <!-- USP 1 -->
+            @forelse($fiturUnggulan as $fitur)
+            <div class="flex items-start gap-6 p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
+                <div class="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-3xl group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 overflow-hidden">
+                    @if($fitur->gambar)
+                        <img src="{{ asset($fitur->gambar) }}" class="w-full h-full object-cover">
+                    @else
+                        🛡️
+                    @endif
+                </div>
+                <div>
+                    <h3 class="font-black text-lg text-slate-900 mb-2">{{ $fitur->judul }}</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">{{ $fitur->deskripsi }}</p>
+                </div>
+            </div>
+            @empty
+            <!-- Fallback Static USP 1 -->
             <div class="flex items-start gap-6 p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group">
                 <div class="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-3xl group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
                     🛡️
@@ -81,8 +135,35 @@
                     <p class="text-sm text-slate-500 leading-relaxed">Nikmati kemudahan pembayaran dengan cicilan ringan tanpa bunga.</p>
                 </div>
             </div>
+            @endforelse
         </div>
     </section>
+
+    <!-- Dynamic Promo Banners -->
+    @if($promoBanners->count() > 0)
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($promoBanners as $banner)
+            <div class="relative rounded-[2rem] overflow-hidden aspect-[21/9] group shadow-lg shadow-indigo-500/10 hover:shadow-xl transition-all duration-500">
+                @if($banner->gambar)
+                    <img src="{{ asset($banner->gambar) }}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                @else
+                    <div class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+                @endif
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-900/40 to-transparent p-8 flex flex-col justify-center items-start">
+                    <h3 class="text-xl md:text-2xl font-black text-white uppercase leading-none mb-2 max-w-[80%]">{{ $banner->judul }}</h3>
+                    <p class="text-xs text-indigo-200 font-medium mb-4 line-clamp-2 max-w-[70%]">{{ $banner->deskripsi }}</p>
+                    @if($banner->tautan_tujuan)
+                    <a href="{{ $banner->tautan_tujuan }}" class="px-5 py-2 bg-white text-indigo-900 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-colors backdrop-blur-sm">
+                        {{ $banner->teks_tombol ?? 'Cek Sekarang' }}
+                    </a>
+                    @endif
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </section>
+    @endif
 
     <!-- Kategori Populer -->
     <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -170,7 +251,7 @@
         <div class="flex items-center justify-between mb-10">
             <div>
                 <h2 class="text-3xl font-black text-slate-900 tracking-tight">Pilihan Editor</h2>
-                <div class="h-1.5 w-24 bg-gradient-to-r from-fuchsia-500 to-pink-400 rounded-full mt-2"></div>
+                <div class="h-1.5 w-24 bg-gradient-to-r from-fuchsia-600 to-purple-500 rounded-full mt-2"></div>
             </div>
             <!-- Filter Sederhana -->
             <div class="hidden sm:flex gap-2">
@@ -230,7 +311,7 @@
 
                         <div class="mt-auto flex items-center justify-between">
                             <div>
-                                <p class="text-xl font-black text-slate-900">{{ $produk->harga_rupiah }}</p>
+                                <p class="text-xl font-black text-slate-900">Rp {{ number_format($produk->harga_jual, 0, ',', '.') }}</p>
                                 {{-- Jika ada diskon --}}
                                 {{-- <p class="text-xs text-slate-400 line-through">Rp 15.000.000</p> --}}
                             </div>
@@ -268,7 +349,7 @@
                                 <div class="w-full h-full flex items-center justify-center text-4xl bg-indigo-50 text-indigo-200">📰</div>
                             @endif
                             <div class="absolute bottom-3 left-3 px-3 py-1 bg-white/90 backdrop-blur rounded-lg text-[10px] font-black uppercase tracking-widest text-indigo-600">
-                                {{ $berita->created_at->format('d M Y') }}
+                                {{ $berita->dibuat_pada->format('d M Y') }}
                             </div>
                         </div>
                         <h3 class="text-lg font-bold text-slate-900 mb-2 leading-tight group-hover:text-indigo-600 transition-colors">

@@ -60,7 +60,7 @@
                 <div class="mt-12 text-center">
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">
                         Belum Memiliki Otoritas? 
-                        <a href="/register" wire:navigate class="text-indigo-600 hover:underline ml-1">Daftar Akun</a>
+                        <a href="/daftar" wire:navigate class="text-indigo-600 hover:underline ml-1">Daftar Akun</a>
                     </p>
                 </div>
             </div>

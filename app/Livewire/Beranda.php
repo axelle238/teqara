@@ -18,16 +18,22 @@ class Beranda extends Component
             return redirect()->route('login');
         }
 
-        $produk = Produk::find($produkId);
+        $produk = Produk::with('varian')->find($produkId);
 
         if (!$produk || $produk->stok < 1) {
-            $this->dispatch('notifikasi', tipe: 'error', pesan: 'Produk tidak tersedia.');
+            $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Produk tidak tersedia atau stok habis.']);
             return;
+        }
+
+        $varianId = null;
+        if ($produk->memiliki_varian && $produk->varian->count() > 0) {
+            $varianId = $produk->varian->first()->id;
         }
 
         // Cek Keranjang Existing
         $keranjang = \App\Models\Keranjang::where('pengguna_id', auth()->id())
             ->where('produk_id', $produkId)
+            ->where('varian_id', $varianId)
             ->first();
 
         if ($keranjang) {
@@ -36,73 +42,99 @@ class Beranda extends Component
             \App\Models\Keranjang::create([
                 'pengguna_id' => auth()->id(),
                 'produk_id' => $produkId,
+                'varian_id' => $varianId,
                 'jumlah' => 1
             ]);
         }
 
-        $this->dispatch('keranjang-diperbarui'); // Update badge navbar
-        $this->dispatch('notifikasi', tipe: 'sukses', pesan: 'Produk berhasil ditambahkan ke keranjang!');
+        $this->dispatch('keranjang-diperbarui'); 
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Produk berhasil ditambahkan ke keranjang!']);
     }
 
     public function render()
     {
-        // Ambil Semua Blok Konten CMS (Hero, Promo, Fitur)
-        $semuaKonten = \Illuminate\Support\Facades\Cache::remember('konten_halaman_all', 60, function () {
-            return \App\Models\KontenHalaman::orderBy('urutan')->get()->groupBy('bagian');
-        });
+        // 1. Ambil Konten Hero dari DB (Pengaturan Sistem / Konten Halaman)
+        // Fallback data jika belum ada di database
+        $hero = (object) [
+            'judul_kecil' => 'Enterprise Ready',
+            'judul_utama' => 'Solusi Teknologi Terdepan Untuk Bisnis Anda',
+            'deskripsi' => 'Dapatkan perangkat keras dan lunak kelas enterprise dengan harga kompetitif dan dukungan purna jual terpercaya.',
+            'url_cta' => '/katalog',
+            'teks_cta' => 'MULAI BELANJA',
+            'gambar' => null // null means use placeholder
+        ];
 
-        // Ekstrak Hero secara eksplisit untuk view
-        $hero = isset($semuaKonten['hero_section']) ? $semuaKonten['hero_section']->first() : null;
+        // Coba ambil real data jika ada module CMS
+        try {
+            // Hero Section
+            $heroDb = \App\Models\KontenHalaman::where('bagian', 'hero_section')->where('aktif', true)->orderBy('urutan')->first();
+            if ($heroDb) {
+                $hero = (object) [
+                    'judul_kecil' => 'Featured Highlight',
+                    'judul_utama' => $heroDb->judul,
+                    'deskripsi' => $heroDb->deskripsi,
+                    'url_cta' => $heroDb->tautan_tujuan ?? '/katalog',
+                    'teks_cta' => $heroDb->teks_tombol ?? 'Lihat Detail',
+                    'gambar' => $heroDb->gambar
+                ];
+            }
 
-        // Cache Kategori (60 Menit)
-        $kategori = \Illuminate\Support\Facades\Cache::remember('beranda_kategori', 60, function () {
-            return Kategori::withCount('produk')->get();
-        });
-
-        // Cache Produk Unggulan (15 Menit)
-        $produkUnggulan = \Illuminate\Support\Facades\Cache::remember('beranda_produk_unggulan', 15, function () {
-            return Produk::with(['kategori', 'gambar'])
-                ->where('status', 'aktif')
-                ->latest() // Menampilkan produk terbaru sebagai unggulan default
-                ->take(12)
-                ->get();
-        });
-
-        // Cache Produk Terlaris (Berdasarkan rating/best seller)
-        $produkTerlaris = \Illuminate\Support\Facades\Cache::remember('beranda_produk_terlaris', 60, function () {
-            return Produk::with(['kategori', 'gambar'])
-                ->where('status', 'aktif')
-                ->orderByDesc('rating_rata_rata')
-                ->take(8)
-                ->get();
-        });
-
-        // Penjualan Kilat Aktif
-        $penjualanKilat = \Illuminate\Support\Facades\Cache::remember('penjualan_kilat_aktif', 60, function () {
-            return \Illuminate\Support\Facades\DB::table('penjualan_kilat')
+            // Promo Banners (Multiple)
+            $promoBanners = \App\Models\KontenHalaman::where('bagian', 'promo_banner')
                 ->where('aktif', true)
-                ->where('waktu_mulai', '<=', now())
-                ->where('waktu_selesai', '>=', now())
-                ->first();
-        });
-
-        // Berita & Informasi Terbaru
-        $beritaTerbaru = \Illuminate\Support\Facades\Cache::remember('beranda_berita', 30, function () {
-            return \App\Models\Berita::with('penulis')
-                ->where('status', 'publikasi')
-                ->latest()
+                ->orderBy('urutan')
                 ->take(3)
                 ->get();
+
+            // Fitur Unggulan / USP
+            $fiturUnggulan = \App\Models\KontenHalaman::where('bagian', 'fitur_unggulan')
+                ->where('aktif', true)
+                ->orderBy('urutan')
+                ->take(3)
+                ->get();
+
+        } catch (\Exception $e) {
+            // Fallback to default if table/model issue
+            $promoBanners = collect([]);
+            $fiturUnggulan = collect([]);
+        }
+
+        // 2. Kategori dengan Ikon
+        $kategori = \Illuminate\Support\Facades\Cache::remember('beranda_kategori_v2', 60, function () {
+            return Kategori::withCount('produk')
+                ->orderBy('nama')
+                ->take(6)
+                ->get();
         });
 
+        // 3. Produk Unggulan (Pilihan Editor / Terbaru)
+        $produkUnggulan = Produk::with(['kategori', 'gambar'])
+            ->where('status', 'aktif')
+            ->latest()
+            ->take(8)
+            ->get();
+
+        // 4. Flash Sale Aktif
+        $penjualanKilat = \Illuminate\Support\Facades\DB::table('penjualan_kilat')
+            ->where('aktif', true)
+            ->where('waktu_mulai', '<=', now())
+            ->where('waktu_selesai', '>=', now())
+            ->first();
+
+        // 5. Berita Terbaru
+        $beritaTerbaru = \App\Models\Berita::where('status', 'publikasi')
+            ->latest('dibuat_pada')
+            ->take(3)
+            ->get();
+
         return view('livewire.beranda', [
-            'konten' => $semuaKonten,
             'hero' => $hero,
             'kategori' => $kategori,
             'produkUnggulan' => $produkUnggulan,
-            'produkTerlaris' => $produkTerlaris,
             'penjualanKilat' => $penjualanKilat,
             'beritaTerbaru' => $beritaTerbaru,
+            'promoBanners' => $promoBanners ?? collect([]),
+            'fiturUnggulan' => $fiturUnggulan ?? collect([]),
         ])->layout('components.layouts.app');
     }
 }

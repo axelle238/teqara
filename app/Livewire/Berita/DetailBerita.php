@@ -18,6 +18,7 @@ class DetailBerita extends Component
             ->firstOrFail();
             
         // Increment views counter (optional logic for future)
+        // $this->berita->increment('views');
     }
 
     #[Title('Baca Artikel')]

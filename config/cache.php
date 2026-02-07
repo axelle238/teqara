@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('CACHE_STORE', 'database'),
+    'default' => 'basis_data',
 
     /*
     |--------------------------------------------------------------------------
@@ -33,6 +33,14 @@ return [
     */
 
     'stores' => [
+
+        'basis_data' => [
+            'driver' => 'basis_data',
+            'connection' => env('DB_CACHE_CONNECTION'),
+            'table' => env('DB_CACHE_TABLE', 'penyimpanan_cache'),
+            'lock_connection' => env('DB_CACHE_LOCK_CONNECTION'),
+            'lock_table' => env('DB_CACHE_LOCK_TABLE', 'kunci_cache'),
+        ],
 
         'array' => [
             'driver' => 'array',

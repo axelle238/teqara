@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             CmsSeeder::class,
             ProdukSeeder::class,
             TransaksiSeeder::class,
+            B2BSeeder::class,
             HrdSeeder::class,
         ]);
     }

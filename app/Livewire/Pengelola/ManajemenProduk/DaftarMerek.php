@@ -32,7 +32,7 @@ class DaftarMerek extends Component
     public function render()
     {
         return view('livewire.pengelola.manajemen-produk.merek.daftar-merek', [
-            'merek' => Merek::withCount('produk')->latest()->get()
+            'merek' => Merek::withCount('produk')->latest('dibuat_pada')->get()
         ])->layout('components.layouts.admin');
     }
 }

@@ -20,7 +20,7 @@ class BerandaLayanan extends Component
             'total_tiket' => TiketBantuan::count(),
             'tiket_terbuka' => TiketBantuan::where('status', 'terbuka')->count(),
             'total_ulasan' => Ulasan::count(),
-            'ulasan_terbaru' => Ulasan::with(['pengguna', 'produk'])->latest()->take(5)->get(),
+            'ulasan_terbaru' => Ulasan::with(['pengguna', 'produk'])->latest('dibuat_pada')->take(5)->get(),
         ])->layout('components.layouts.admin');
     }
 }

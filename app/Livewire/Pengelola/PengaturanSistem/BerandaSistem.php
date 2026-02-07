@@ -6,96 +6,68 @@ use App\Helpers\LogHelper;
 use App\Models\PengaturanSistem;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 /**
  * Class BerandaSistem
- * Tujuan: Dashboard pilar Pengaturan Sistem Terpusat.
+ * Tujuan: Pusat konfigurasi global aplikasi (Identitas Toko, SEO, Kontak).
  */
 class BerandaSistem extends Component
 {
-    // Identitas
+    use WithFileUploads;
+
     public $nama_toko;
-
+    public $deskripsi_toko;
     public $email_kontak;
-
-    public $nomor_wa;
-
+    public $nomor_telepon;
     public $alamat_toko;
-
-    // SEO & Metadata
-    public $meta_deskripsi;
-
-    public $kata_kunci;
-
-    // Operasional
-    public $jam_buka;
-
-    public $jam_tutup;
-
-    public $mata_uang = 'IDR';
-
-    // Integrasi API (Simulasi Masking)
-    public $api_payment_gateway;
-
-    public $api_kurir;
+    public $logo;
+    public $logo_lama;
 
     public function mount()
     {
-        $settings = PengaturanSistem::pluck('nilai', 'kunci');
-
-        $this->nama_toko = $settings['nama_toko'] ?? 'Teqara Enterprise';
+        $settings = PengaturanSistem::pluck('nilai', 'kunci')->toArray();
+        
+        $this->nama_toko = $settings['nama_toko'] ?? 'Teqara';
+        $this->deskripsi_toko = $settings['deskripsi_toko'] ?? '';
         $this->email_kontak = $settings['email_kontak'] ?? '';
-        $this->nomor_wa = $settings['nomor_wa'] ?? '';
+        $this->nomor_telepon = $settings['nomor_telepon'] ?? '';
         $this->alamat_toko = $settings['alamat_toko'] ?? '';
-
-        $this->meta_deskripsi = $settings['meta_deskripsi'] ?? 'Pusat belanja komputer dan gadget terlengkap.';
-        $this->kata_kunci = $settings['kata_kunci'] ?? 'komputer, gadget, laptop, teqara';
-
-        $this->jam_buka = $settings['jam_buka'] ?? '09:00';
-        $this->jam_tutup = $settings['jam_tutup'] ?? '21:00';
-
-        $this->api_payment_gateway = $settings['api_payment_gateway'] ?? '';
-        $this->api_kurir = $settings['api_kurir'] ?? '';
+        $this->logo_lama = $settings['logo_toko'] ?? null;
     }
 
     public function simpan()
     {
         $this->validate([
-            'nama_toko' => 'required|string|max:255',
+            'nama_toko' => 'required|min:3',
             'email_kontak' => 'required|email',
-            'jam_buka' => 'required',
-            'jam_tutup' => 'required',
         ]);
 
         $data = [
             'nama_toko' => $this->nama_toko,
+            'deskripsi_toko' => $this->deskripsi_toko,
             'email_kontak' => $this->email_kontak,
-            'nomor_wa' => $this->nomor_wa,
+            'nomor_telepon' => $this->nomor_telepon,
             'alamat_toko' => $this->alamat_toko,
-            'meta_deskripsi' => $this->meta_deskripsi,
-            'kata_kunci' => $this->kata_kunci,
-            'jam_buka' => $this->jam_buka,
-            'jam_tutup' => $this->jam_tutup,
-            'api_payment_gateway' => $this->api_payment_gateway,
-            'api_kurir' => $this->api_kurir,
         ];
 
-        foreach ($data as $key => $value) {
-            PengaturanSistem::updateOrCreate(
-                ['kunci' => $key],
-                ['nilai' => $value, 'tipe' => 'text']
-            );
+        if ($this->logo) {
+            $path = $this->logo->store('sistem', 'public');
+            $data['logo_toko'] = '/storage/' . $path;
         }
 
-        LogHelper::catat('perbarui_pengaturan', 'Sistem', 'Admin memperbarui konfigurasi infrastruktur global.', $data);
+        foreach ($data as $key => $value) {
+            PengaturanSistem::updateOrCreate(['kunci' => $key], ['nilai' => $value]);
+        }
 
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Konfigurasi sistem berhasil diperbarui.']);
+        LogHelper::catat('update_pengaturan', 'Sistem', 'Admin memperbarui konfigurasi toko.');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Pengaturan sistem berhasil disimpan.']);
     }
 
-    #[Title('Pengaturan Sistem - Admin Teqara')]
+    #[Title('Konfigurasi Global - Teqara Admin')]
     public function render()
     {
         return view('livewire.pengelola.pengaturan-sistem.beranda-sistem')
-            ->layout('components.layouts.admin');
+            ->layout('components.layouts.admin', ['header' => 'Pengaturan Sistem']);
     }
 }

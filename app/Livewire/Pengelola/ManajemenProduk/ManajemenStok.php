@@ -189,7 +189,7 @@ class ManajemenStok extends Component
         }
 
         // 2. Query Jurnal Mutasi
-        $queryMutasi = MutasiStok::with(['produk', 'pengguna'])->latest();
+        $queryMutasi = MutasiStok::with(['produk', 'pengguna'])->latest('dibuat_pada');
 
         return view('livewire.pengelola.manajemen-produk.manajemen-stok', [
             'stokGlobal' => $queryProduk->paginate(10, pageName: 'produk-page'),

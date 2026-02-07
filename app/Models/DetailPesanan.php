@@ -26,4 +26,9 @@ class DetailPesanan extends Model
     {
         return $this->belongsTo(Produk::class, 'produk_id');
     }
+
+    public function varian(): BelongsTo
+    {
+        return $this->belongsTo(VarianProduk::class, 'varian_id');
+    }
 }

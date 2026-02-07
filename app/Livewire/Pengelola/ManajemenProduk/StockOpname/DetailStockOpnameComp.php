@@ -4,32 +4,37 @@ namespace App\Livewire\Pengelola\ManajemenProduk\StockOpname;
 
 use App\Helpers\LogHelper;
 use App\Models\DetailStockOpname;
-use App\Models\MutasiStok;
 use App\Models\Produk;
 use App\Models\StockOpname;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 class DetailStockOpnameComp extends Component
 {
-    public StockOpname $so;
-    public $detail = [];
+    public $soId;
+    public $so;
     public $cariProduk = '';
     public $hasilPencarian = [];
-
-    // State Input
-    public $inputFisik = []; // Array [produk_id => jumlah]
+    
+    // Input
+    public $inputFisik = [];
+    public $catatanItem = [];
 
     public function mount($id)
     {
-        $this->so = StockOpname::with('detail.produk')->findOrFail($id);
-        $this->muatDetail();
+        $this->soId = $id;
+        $this->loadSo();
     }
 
-    public function muatDetail()
+    public function loadSo()
     {
-        $this->detail = $this->so->detail()->with('produk')->get();
+        $this->so = StockOpname::with(['detail.produk', 'petugas'])->findOrFail($this->soId);
+        
+        // Init input
+        foreach ($this->so->detail as $d) {
+            $this->inputFisik[$d->id] = $d->stok_fisik;
+            $this->catatanItem[$d->id] = $d->catatan;
+        }
     }
 
     public function updatedCariProduk()
@@ -37,93 +42,85 @@ class DetailStockOpnameComp extends Component
         if (strlen($this->cariProduk) > 2) {
             $this->hasilPencarian = Produk::where('nama', 'like', '%'.$this->cariProduk.'%')
                 ->orWhere('kode_unit', 'like', '%'.$this->cariProduk.'%')
-                ->take(5)
-                ->get();
+                ->take(5)->get();
         } else {
             $this->hasilPencarian = [];
         }
     }
 
-    public function tambahItem($produkId)
+    public function tambahProduk($produkId)
     {
         $produk = Produk::find($produkId);
         
-        // Cek jika sudah ada
+        // Cek duplikasi di detail
         $exist = DetailStockOpname::where('stock_opname_id', $this->so->id)
             ->where('produk_id', $produkId)
             ->first();
 
         if (!$exist) {
-            DetailStockOpname::create([
+            $detail = DetailStockOpname::create([
                 'stock_opname_id' => $this->so->id,
-                'produk_id' => $produk->id,
+                'produk_id' => $produkId,
                 'stok_sistem' => $produk->stok,
-                'stok_fisik' => 0, // Default 0 sebelum dihitung
-                'selisih' => 0 - $produk->stok,
+                'stok_fisik' => 0, // Default 0
+                'selisih' => -$produk->stok, // Awalnya selisih full minus
             ]);
             
-            // Ubah status jadi proses jika masih draft
-            if ($this->so->status === 'draft') {
-                $this->so->update(['status' => 'proses']);
-            }
+            $this->inputFisik[$detail->id] = 0;
         }
 
         $this->reset(['cariProduk', 'hasilPencarian']);
-        $this->muatDetail();
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Item ditambahkan ke daftar hitung.']);
+        $this->loadSo();
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Produk ditambahkan ke list audit.']);
     }
 
-    public function updateFisik($detailId, $jumlah)
+    public function simpanProgress()
     {
-        $det = DetailStockOpname::find($detailId);
-        if ($det) {
-            $selisih = $jumlah - $det->stok_sistem;
-            $det->update([
-                'stok_fisik' => $jumlah,
-                'selisih' => $selisih,
-            ]);
-            $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Hasil hitung disimpan.']);
-        }
-    }
-
-    public function finalisasi()
-    {
-        if ($this->so->status === 'selesai') return;
-
-        DB::transaction(function () {
-            // 1. Eksekusi Penyesuaian Stok
-            foreach ($this->so->detail as $item) {
-                if ($item->selisih != 0) {
-                    $item->produk->increment('stok', $item->selisih);
-                    
-                    MutasiStok::create([
-                        'produk_id' => $item->produk_id,
-                        'jumlah' => $item->selisih,
-                        'jenis_mutasi' => 'stock_opname',
-                        'keterangan' => "Penyesuaian SO #{$this->so->kode_so}",
-                        'pengguna_id' => auth()->id(),
-                        'waktu' => now(),
-                    ]);
-                }
+        foreach ($this->inputFisik as $detailId => $fisik) {
+            $detail = DetailStockOpname::find($detailId);
+            if ($detail) {
+                $selisih = $fisik - $detail->stok_sistem;
+                $detail->update([
+                    'stok_fisik' => $fisik,
+                    'selisih' => $selisih,
+                    'catatan' => $this->catatanItem[$detailId] ?? null
+                ]);
             }
-
-            // 2. Update Status SO
-            $this->so->update([
-                'status' => 'selesai',
-                'tgl_selesai' => now(),
-            ]);
-
-            LogHelper::catat('finalisasi_so', $this->so->kode_so, "Stock Opname {$this->so->kode_so} selesai. Stok disesuaikan otomatis.");
-        });
-
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Stock Opname Final! Inventaris telah diperbarui.']);
-        $this->muatDetail(); // Refresh UI
+        }
+        
+        $this->loadSo();
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Progress audit tersimpan.']);
     }
 
-    #[Title('Detail Stock Opname - Admin Teqara')]
+    public function selesaiAudit()
+    {
+        $this->simpanProgress();
+        
+        // Finalisasi: Update stok master sesuai fisik
+        // (Opsional: tergantung kebijakan, apakah auto-adjust atau perlu approval manager)
+        // Di sini kita auto-adjust untuk simplifikasi enterprise flow
+        
+        foreach ($this->so->detail as $detail) {
+            if ($detail->selisih != 0) {
+                (new \App\Services\LayananStok)->sesuaikanStok(
+                    $detail->produk, 
+                    $detail->stok_fisik, 
+                    "Hasil Stock Opname #{$this->so->kode_so}"
+                );
+            }
+        }
+
+        $this->so->update(['status' => 'selesai', 'tgl_selesai' => now()]);
+        
+        LogHelper::catat('selesai_so', $this->so->kode_so, "Audit stok selesai. Stok inventaris telah disesuaikan.");
+        
+        return redirect()->route('pengelola.produk.so.riwayat');
+    }
+
+    #[Title('Lembar Kerja Audit Stok - Teqara')]
     public function render()
     {
-        return view('livewire.pengelola.manajemen-produk.stock-opname.detail-stock-opname')
+        return view('livewire.pengelola.manajemen-produk.stock-opname.detail-stock-opname-comp')
             ->layout('components.layouts.admin');
     }
 }

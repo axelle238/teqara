@@ -20,25 +20,38 @@
         
         <div class="divide-y divide-slate-50">
             @forelse($notifikasi as $n)
-            <div class="p-8 hover:bg-indigo-50/10 transition-colors group flex gap-6 items-start">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm {{ in_array($n->aksi, ['stok_kritis', 'system_lock']) ? 'bg-rose-100 text-rose-600' : 'bg-indigo-50 text-indigo-600' }}">
-                    @if(in_array($n->aksi, ['stok_kritis', 'system_lock']))
-                        <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.268 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    @else
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    @endif
+            <div class="p-8 hover:bg-indigo-50/10 transition-colors group flex gap-6 items-start {{ $n->dibaca_pada ? 'opacity-60' : 'bg-indigo-50/5' }}">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm 
+                    {{ $n->tipe === 'bahaya' ? 'bg-rose-100 text-rose-600' : 
+                      ($n->tipe === 'peringatan' ? 'bg-amber-100 text-amber-600' : 
+                      ($n->tipe === 'sukses' ? 'bg-emerald-100 text-emerald-600' : 'bg-indigo-100 text-indigo-600')) }}">
+                    <i class="fa-solid 
+                        {{ $n->tipe === 'bahaya' ? 'fa-triangle-exclamation animate-pulse' : 
+                          ($n->tipe === 'peringatan' ? 'fa-circle-exclamation' : 
+                          ($n->tipe === 'sukses' ? 'fa-circle-check' : 'fa-info-circle')) }} text-xl"></i>
                 </div>
                 <div class="flex-1">
                     <div class="flex justify-between items-start mb-1">
-                        <h4 class="text-sm font-black text-slate-900 uppercase tracking-tight">{{ str_replace('_', ' ', $n->aksi) }}</h4>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ $n->waktu->diffForHumans() }}</span>
+                        <div class="flex items-center gap-3">
+                            <h4 class="text-sm font-black text-slate-900 uppercase tracking-tight">{{ $n->judul }}</h4>
+                            @if(!$n->dibaca_pada)
+                            <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                            @endif
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ $n->dibuat_pada->diffForHumans() }}</span>
                     </div>
-                    <p class="text-sm text-slate-600 leading-relaxed">{{ $n->pesan_naratif }}</p>
-                    <p class="text-[10px] text-slate-400 mt-2 font-mono">Target: {{ $n->target }}</p>
+                    <p class="text-sm text-slate-600 leading-relaxed">{{ $n->pesan }}</p>
+                    @if($n->tautan)
+                    <a href="{{ $n->tautan }}" wire:navigate class="inline-flex items-center gap-2 mt-3 text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-700 transition-colors">
+                        Lihat Detail <i class="fa-solid fa-arrow-right-long"></i>
+                    </a>
+                    @endif
                 </div>
-                <button wire:click="markAsRead({{ $n->id }})" class="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-indigo-600 transition-all">
+                @if(!$n->dibaca_pada)
+                <button wire:click="markAsRead({{ $n->id }})" class="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-indigo-600 transition-all" title="Tandai sudah dibaca">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 </button>
+                @endif
             </div>
             @empty
             <div class="py-32 text-center">

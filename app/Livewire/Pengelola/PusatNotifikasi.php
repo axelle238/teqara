@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Pengelola;
 
-use App\Models\LogAktivitas;
+use App\Models\Notifikasi;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -19,31 +19,30 @@ class PusatNotifikasi extends Component
 
     public function markAsRead($id)
     {
-        // Simulasi mark as read (karena tabel notifikasi belum ada, kita pakai log aktivitas sebagai proxy)
-        // Di sistem nyata, ini akan update tabel 'notifications'
-        $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Notifikasi ditandai dibaca.']);
+        $notif = Notifikasi::find($id);
+        if ($notif) {
+            $notif->update(['dibaca_pada' => now()]);
+            $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Notifikasi ditandai dibaca.']);
+        }
     }
 
     public function hapusSemua()
     {
-        // Simulasi hapus
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Inbox dibersihkan.']);
+        Notifikasi::untukSaya()->delete();
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Inbox berhasil dibersihkan.']);
     }
 
     #[Title('Inbox Notifikasi - Admin Teqara')]
     public function render()
     {
-        // Menggunakan LogAktivitas sebagai sumber data notifikasi sementara
-        // Filter log penting saja (bukan sekedar login)
-        $query = LogAktivitas::whereIn('aksi', ['buat_pesanan', 'stok_kritis', 'tiket_baru', 'system_lock', 'hapus_massal_produk'])
-            ->latest('waktu');
+        $query = Notifikasi::untukSaya()->latest('dibuat_pada');
 
         if ($this->filterTipe === 'penting') {
-            $query->whereIn('aksi', ['stok_kritis', 'system_lock']);
+            $query->whereIn('tipe', ['peringatan', 'bahaya']);
         }
 
         return view('livewire.pengelola.pusat-notifikasi', [
-            'notifikasi' => $query->paginate(10),
-        ])->layout('components.layouts.admin');
+            'notifikasi' => $query->paginate(15),
+        ])->layout('components.layouts.admin', ['header' => 'Pusat Notifikasi']);
     }
 }

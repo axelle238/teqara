@@ -33,7 +33,7 @@ class BerandaPegawai extends Component
             ->groupBy('departemen.nama')
             ->map(fn ($group) => $group->count());
 
-        $karyawanTerbaru = Karyawan::with(['pengguna', 'jabatan.departemen'])->latest()->take(5)->get();
+        $karyawanTerbaru = Karyawan::with(['pengguna', 'jabatan.departemen'])->latest('dibuat_pada')->take(5)->get();
 
         return view('livewire.pengelola.manajemen-pegawai.beranda-pegawai', [
             'statistik' => [

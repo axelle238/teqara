@@ -1,181 +1,161 @@
-<div class="animate-in fade-in duration-500">
+<div class="animate-in fade-in zoom-in duration-500 pb-20">
     
     @if(!$tampilkanForm)
-        <!-- TAMPILAN 1: DAFTAR KONTEN (FULL PAGE LIST) -->
+        <!-- LIST VIEW -->
         <div class="space-y-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50">
-                <div class="space-y-1">
-                    <h1 class="text-3xl font-black text-slate-900 tracking-tight">KONTEN VISUAL TOKO</h1>
-                    <p class="text-slate-500 font-medium">Kelola elemen pemasaran dan navigasi visual halaman publik.</p>
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <h1 class="text-3xl font-black text-slate-900 tracking-tight uppercase">Visual <span class="text-rose-600">Editor</span></h1>
+                    <p class="text-slate-500 font-medium">Kelola banner, slider, dan konten visual halaman depan.</p>
                 </div>
-                <button wire:click="tambahBlok" class="flex items-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl text-sm font-black shadow-xl shadow-indigo-600/20 transition-all active:scale-95">
-                    <i class="fa-solid fa-plus text-lg"></i> TAMBAH BLOK BARU
+                <button wire:click="tambahBaru" class="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-600 transition-all shadow-lg shadow-slate-900/20 active:scale-95">
+                    <i class="fa-solid fa-plus"></i> Konten Baru
                 </button>
             </div>
 
-            <!-- Grid Konten -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-                @forelse($daftarKonten as $konten)
-                <div class="group bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden hover:shadow-2xl hover:border-indigo-200 transition-all duration-500">
-                    <div class="relative h-56 bg-slate-100 overflow-hidden">
-                        <img src="{{ $konten->gambar ?? 'https://via.placeholder.com/800x400?text=Tanpa+Gambar' }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent"></div>
-                        <div class="absolute bottom-6 left-6 right-6 text-white space-y-2">
-                            <span class="inline-block px-3 py-1 rounded-full bg-indigo-500 text-[9px] font-black uppercase tracking-[0.2em] border border-white/20">
-                                {{ str_replace('_', ' ', $konten->bagian) }}
-                            </span>
-                            <h3 class="font-black text-xl leading-tight truncate">{{ $konten->judul }}</h3>
+            <!-- Tab Filter -->
+            <div class="flex overflow-x-auto pb-2 gap-2 scrollbar-hide">
+                @php
+                    $tabs = [
+                        'hero_section' => ['label' => 'Hero Banner', 'icon' => 'fa-images'],
+                        'promo_banner' => ['label' => 'Promo Strip', 'icon' => 'fa-rectangle-ad'],
+                        'fitur_unggulan' => ['label' => 'Fitur Utama', 'icon' => 'fa-star'],
+                    ];
+                @endphp
+                @foreach($tabs as $key => $t)
+                <button wire:click="gantiTab('{{ $key }}')" 
+                    class="flex items-center gap-3 px-6 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all whitespace-nowrap border {{ $filterBagian === $key ? 'bg-white border-rose-200 text-rose-600 shadow-md shadow-rose-100' : 'bg-slate-50 border-transparent text-slate-500 hover:bg-white hover:border-slate-200' }}">
+                    <i class="fa-solid {{ $t['icon'] }}"></i> {{ $t['label'] }}
+                </button>
+                @endforeach
+            </div>
+
+            <!-- Content Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                @forelse($daftar_konten as $k)
+                <div class="group bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-rose-100 transition-all duration-300 relative overflow-hidden flex flex-col h-full">
+                    
+                    <!-- Status Indicator -->
+                    <div class="absolute top-4 left-4 z-10">
+                        <button wire:click="toggleStatus({{ $k->id }})" class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest backdrop-blur-md shadow-sm border transition-all {{ $k->aktif ? 'bg-emerald-500/90 text-white border-emerald-400' : 'bg-slate-800/90 text-slate-300 border-slate-700' }}">
+                            {{ $k->aktif ? 'AKTIF' : 'NONAKTIF' }}
+                        </button>
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div class="relative aspect-[16/9] bg-slate-100 overflow-hidden">
+                        @if($k->gambar)
+                            <img src="{{ asset($k->gambar) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                <i class="fa-regular fa-image text-4xl"></i>
+                            </div>
+                        @endif
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-60"></div>
+                        <div class="absolute bottom-4 left-4 text-white">
+                            <span class="text-[10px] font-bold opacity-80 uppercase tracking-widest">Urutan: {{ $k->urutan }}</span>
                         </div>
                     </div>
 
-                    <div class="p-8 space-y-6">
-                        <p class="text-slate-500 text-sm font-medium leading-relaxed line-clamp-2 h-10">{{ $konten->deskripsi }}</p>
+                    <!-- Details -->
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h4 class="font-black text-slate-900 text-lg leading-tight mb-2 line-clamp-2">{{ $k->judul }}</h4>
+                        <p class="text-xs text-slate-500 font-medium line-clamp-2 mb-4">{{ $k->deskripsi ?? 'Tidak ada deskripsi.' }}</p>
                         
-                        <div class="flex items-center justify-between pt-6 border-t border-slate-50">
-                            <div class="flex gap-3">
-                                <button wire:click="editBlok({{ $konten->id }})" class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white flex items-center justify-center transition-all shadow-sm">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button wire:click="hapusBlok({{ $konten->id }})" wire:confirm="Hapus blok konten ini selamanya?" class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white flex items-center justify-center transition-all shadow-sm">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                            <div class="flex flex-col items-end">
-                                <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Urutan</span>
-                                <span class="text-lg font-black text-slate-800">{{ $konten->urutan }}</span>
-                            </div>
+                        <div class="mt-auto flex gap-2 pt-4 border-t border-slate-50">
+                            <button wire:click="edit({{ $k->id }})" class="flex-1 py-2.5 bg-slate-50 text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all">
+                                Edit
+                            </button>
+                            <button wire:click="hapus({{ $k->id }})" wire:confirm="Hapus konten visual ini?" class="w-10 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-rose-600 hover:border-rose-200 transition-all">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
                 @empty
-                <div class="col-span-full py-20 text-center bg-white rounded-[50px] border border-dashed border-slate-200">
-                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fa-solid fa-box-open text-3xl text-slate-300"></i>
+                <div class="col-span-full py-20 text-center bg-white rounded-[40px] border border-dashed border-slate-200">
+                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-slate-300">
+                        <i class="fa-solid fa-layer-group"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Belum Ada Konten</h3>
-                    <p class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Mulai dengan menambahkan blok visual pertama Anda.</p>
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">Bagian Kosong</h3>
+                    <p class="text-slate-400 font-medium text-sm mt-2">Belum ada konten visual di bagian ini.</p>
                 </div>
                 @endforelse
             </div>
         </div>
     @else
-        <!-- TAMPILAN 2: FORMULIR EDITOR (FULL PAGE FORM) -->
-        <div class="space-y-8 animate-in slide-in-from-right-8 duration-500">
-            <!-- Header Editor -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50">
-                <div class="flex items-center gap-6">
-                    <button wire:click="batal" class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all shadow-sm">
-                        <i class="fa-solid fa-arrow-left text-xl"></i>
+        <!-- FORM EDITOR -->
+        <div class="animate-in slide-in-from-right-8 duration-500">
+            <div class="flex items-center justify-between mb-8 bg-white p-6 rounded-[30px] border border-slate-100 shadow-sm sticky top-24 z-30">
+                <div class="flex items-center gap-4">
+                    <button wire:click="batal" class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 hover:text-indigo-600 transition-colors">
+                        <i class="fa-solid fa-arrow-left"></i>
                     </button>
-                    <div class="space-y-1">
-                        <h1 class="text-3xl font-black text-slate-900 tracking-tight uppercase">{{ $blokTerpilihId ? 'Ubah Konfigurasi Blok' : 'Registrasi Blok Baru' }}</h1>
-                        <p class="text-slate-500 font-medium">Sesuaikan parameter visual dan interaksi elemen toko Anda.</p>
-                    </div>
+                    <h2 class="text-lg font-black text-slate-900 uppercase tracking-wide">{{ $kontenId ? 'Edit Visual' : 'Visual Baru' }}</h2>
                 </div>
-                <div class="flex gap-4">
-                    <button wire:click="batal" class="px-8 py-4 bg-slate-50 text-slate-500 rounded-3xl text-sm font-black hover:bg-slate-100 transition-all">BATAL</button>
-                    <button wire:click="simpanBlok" class="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl text-sm font-black shadow-xl shadow-indigo-600/20 transition-all active:scale-95">SIMPAN PERUBAHAN</button>
-                </div>
+                <button wire:click="simpan" class="px-8 py-3 bg-emerald-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-500/20">
+                    Simpan
+                </button>
             </div>
 
-            <!-- Form Content -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Kolom Kiri: Input Data -->
-                <div class="lg:col-span-2 space-y-8">
-                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-10">
-                        <!-- Tipe Bagian -->
-                        <div class="space-y-4">
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Klasifikasi Penempatan</label>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <label class="cursor-pointer">
-                                    <input type="radio" wire:model="bagian" value="hero_section" class="peer sr-only">
-                                    <div class="p-6 rounded-3xl border-2 border-slate-50 text-center transition-all peer-checked:bg-indigo-50 peer-checked:border-indigo-500 hover:bg-slate-50">
-                                        <i class="fa-solid fa-display text-2xl mb-3 text-slate-300 peer-checked:text-indigo-600 transition-colors"></i>
-                                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 peer-checked:text-indigo-700">Hero Utama</p>
-                                    </div>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="radio" wire:model="bagian" value="promo_banner" class="peer sr-only">
-                                    <div class="p-6 rounded-3xl border-2 border-slate-50 text-center transition-all peer-checked:bg-fuchsia-50 peer-checked:border-fuchsia-500 hover:bg-slate-50">
-                                        <i class="fa-solid fa-ticket-simple text-2xl mb-3 text-slate-300 peer-checked:text-fuchsia-600 transition-colors"></i>
-                                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 peer-checked:text-fuchsia-700">Banner Promo</p>
-                                    </div>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="radio" wire:model="bagian" value="fitur_unggulan" class="peer sr-only">
-                                    <div class="p-6 rounded-3xl border-2 border-slate-50 text-center transition-all peer-checked:bg-cyan-50 peer-checked:border-cyan-500 hover:bg-slate-50">
-                                        <i class="fa-solid fa-gem text-2xl mb-3 text-slate-300 peer-checked:text-cyan-600 transition-colors"></i>
-                                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 peer-checked:text-cyan-700">Fitur Layanan</p>
-                                    </div>
-                                </label>
-                            </div>
+                <!-- Preview & Upload -->
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-[30px] border border-slate-200 shadow-sm">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Preview Gambar</label>
+                        <div class="relative aspect-video bg-slate-100 rounded-2xl overflow-hidden border-2 border-dashed border-slate-300 hover:border-indigo-400 transition-colors cursor-pointer group">
+                            @if($gambar)
+                                <img src="{{ $gambar->temporaryUrl() }}" class="w-full h-full object-cover">
+                            @elseif($gambar_lama)
+                                <img src="{{ asset($gambar_lama) }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
+                                    <i class="fa-solid fa-cloud-arrow-up text-3xl mb-2"></i>
+                                    <span class="text-[10px] font-bold uppercase">Klik Upload</span>
+                                </div>
+                            @endif
+                            <input type="file" wire:model="gambar" class="absolute inset-0 opacity-0 cursor-pointer">
                         </div>
+                        <p class="text-[10px] text-slate-400 mt-2 text-center">Rekomen: 1920x600px (JPG/PNG)</p>
+                    </div>
 
-                        <!-- Judul & Deskripsi -->
-                        <div class="space-y-6">
-                            <div class="space-y-2">
-                                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Judul Narasi</label>
-                                <input wire:model="judul" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300" placeholder="Masukkan judul yang memikat...">
-                                @error('judul') <span class="text-[10px] font-black text-rose-500 uppercase tracking-widest">{{ $message }}</span> @enderror
-                            </div>
-                            <div class="space-y-2">
-                                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Deskripsi Penjelas</label>
-                                <textarea wire:model="deskripsi" rows="4" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-600 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300" placeholder="Berikan informasi lebih detail mengenai blok ini..."></textarea>
-                            </div>
+                    <div class="bg-white p-6 rounded-[30px] border border-slate-200 shadow-sm space-y-4">
+                        <div class="flex justify-between items-center">
+                            <label class="text-xs font-bold text-slate-700">Status Aktif</label>
+                            <button wire:click="$toggle('aktif')" class="w-12 h-6 rounded-full transition-colors relative {{ $aktif ? 'bg-emerald-500' : 'bg-slate-200' }}">
+                                <span class="absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform {{ $aktif ? 'translate-x-6' : '' }}"></span>
+                            </button>
                         </div>
-
-                        <!-- Aksi Tombol -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="space-y-2">
-                                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Label Tombol</label>
-                                <input wire:model="teks_tombol" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-indigo-500/10" placeholder="Cth: Belanja Sekarang">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">URL Navigasi</label>
-                                <input wire:model="tautan_tujuan" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-indigo-500/10" placeholder="Cth: /katalog">
-                            </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Urutan Tampil</label>
+                            <input type="number" wire:model="urutan" class="w-full bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500">
                         </div>
                     </div>
                 </div>
 
-                <!-- Kolom Kanan: Media & Preview -->
-                <div class="space-y-8">
-                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-8">
-                        <div class="space-y-4">
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Aset Visual Utama</label>
-                            <div class="relative aspect-video bg-slate-50 rounded-3xl border-4 border-dashed border-slate-100 flex items-center justify-center overflow-hidden group hover:border-indigo-200 transition-all">
-                                @if($gambar_baru)
-                                    <img src="{{ $gambar_baru->temporaryUrl() }}" class="w-full h-full object-cover">
-                                @elseif($gambar_lama)
-                                    <img src="{{ asset($gambar_lama) }}" class="w-full h-full object-cover">
-                                @else
-                                    <div class="text-center space-y-3">
-                                        <i class="fa-solid fa-cloud-arrow-up text-4xl text-slate-200 group-hover:text-indigo-400 transition-colors"></i>
-                                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Pilih Gambar</p>
-                                    </div>
-                                @endif
-                                <input type="file" wire:model="gambar_baru" class="absolute inset-0 opacity-0 cursor-pointer">
-                            </div>
-                            @error('gambar_baru') <span class="text-[10px] font-black text-rose-500 uppercase tracking-widest">{{ $message }}</span> @enderror
-                            <p class="text-[10px] font-bold text-slate-400 leading-relaxed italic text-center">*Gunakan format 16:9 untuk hasil terbaik di Hero Utama.</p>
-                        </div>
-
-                        <div class="space-y-4 pt-8 border-t border-slate-50">
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Prioritas Tampilan</label>
-                            <div class="flex items-center gap-6">
-                                <input wire:model="urutan" type="number" class="w-24 bg-slate-50 border-none rounded-2xl px-6 py-4 text-center text-lg font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10">
-                                <p class="text-[10px] font-bold text-slate-400 uppercase leading-snug tracking-widest">Nilai lebih kecil akan tampil paling awal.</p>
-                            </div>
-                        </div>
+                <!-- Text Content -->
+                <div class="lg:col-span-2 bg-white p-8 rounded-[40px] border border-slate-200 shadow-sm space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Judul Utama</label>
+                        <input type="text" wire:model="judul" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-xl font-bold text-slate-900 placeholder-slate-300 focus:ring-4 focus:ring-indigo-500/10" placeholder="Headline yang menarik...">
+                        @error('judul') <span class="text-rose-500 text-xs font-bold">{{ $message }}</span> @enderror
                     </div>
 
-                    <!-- Card Informatif -->
-                    <div class="bg-indigo-600 p-10 rounded-[50px] text-white shadow-2xl shadow-indigo-500/30 space-y-4 relative overflow-hidden group">
-                        <i class="fa-solid fa-circle-info text-4xl opacity-20 absolute -right-4 -top-4 group-hover:scale-150 transition-transform duration-1000"></i>
-                        <h4 class="text-lg font-black uppercase tracking-tight">Kiat Enterprise</h4>
-                        <p class="text-xs font-bold text-indigo-100 leading-relaxed italic opacity-80">
-                            "Konten visual yang konsisten dan berkualitas tinggi meningkatkan kepercayaan pelanggan hingga 40%. Pastikan setiap gambar memiliki pencahayaan yang optimal."
-                        </p>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Deskripsi / Sub-judul</label>
+                        <textarea wire:model="deskripsi" rows="4" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-medium text-slate-600 placeholder-slate-300 focus:ring-4 focus:ring-indigo-500/10 resize-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Teks Tombol (CTA)</label>
+                            <input type="text" wire:model="teks_tombol" class="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500" placeholder="Contoh: Beli Sekarang">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Link Tujuan</label>
+                            <input type="text" wire:model="tautan_tujuan" class="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 text-sm font-mono text-indigo-600 focus:ring-2 focus:ring-indigo-500" placeholder="https://...">
+                        </div>
                     </div>
                 </div>
             </div>

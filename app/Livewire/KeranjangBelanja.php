@@ -21,7 +21,7 @@ class KeranjangBelanja extends Component
     {
         $item = Keranjang::where('id', $id)
             ->where('pengguna_id', auth()->id())
-            ->with('varian')
+            ->with(['produk', 'varian'])
             ->first();
 
         if (!$item) return;
@@ -30,7 +30,7 @@ class KeranjangBelanja extends Component
 
         if ($item->jumlah < $stokTersedia) {
             $item->increment('jumlah');
-            $this->dispatch('update-keranjang');
+            $this->dispatch('keranjang-diperbarui');
         } else {
             $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Mencapai batas stok tersedia.']);
         }
@@ -44,7 +44,7 @@ class KeranjangBelanja extends Component
 
         if ($item && $item->jumlah > 1) {
             $item->decrement('jumlah');
-            $this->dispatch('update-keranjang');
+            $this->dispatch('keranjang-diperbarui');
         }
     }
 
@@ -54,18 +54,18 @@ class KeranjangBelanja extends Component
             ->where('pengguna_id', auth()->id())
             ->delete();
 
-        $this->dispatch('update-keranjang');
+        $this->dispatch('keranjang-diperbarui');
         $this->dispatch('notifikasi', [
             'tipe' => 'info',
-            'pesan' => 'Unit dihapus dari antrian belanja.',
+            'pesan' => 'Unit dihapus dari keranjang.',
         ]);
     }
 
     public function bersihkanKeranjang()
     {
         Keranjang::where('pengguna_id', auth()->id())->delete();
-        $this->dispatch('update-keranjang');
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Seluruh antrian belanja telah dibersihkan.']);
+        $this->dispatch('keranjang-diperbarui');
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Keranjang dikosongkan.']);
     }
 
     public function getTotalHargaProperty()

@@ -152,7 +152,7 @@ class ManajemenVoucher extends Component
     public function render()
     {
         return view('livewire.pengelola.pengaturan-sistem.manajemen-voucher', [
-            'vouchers' => Voucher::where('kode', 'like', '%'.$this->cari.'%')->latest()->paginate(10),
+            'vouchers' => Voucher::where('kode', 'like', '%'.$this->cari.'%')->latest('dibuat_pada')->paginate(10),
         ])->layout('components.layouts.admin');
     }
 }

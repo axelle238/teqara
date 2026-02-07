@@ -1,5 +1,6 @@
-<button 
-    wire:click="$dispatch('open-slide-over', { id: 'keranjang-preview' })" 
+<a 
+    href="{{ route('keranjang') }}" 
+    wire:navigate
     class="relative p-2 text-slate-500 hover:bg-slate-100 hover:text-indigo-600 rounded-xl transition-all group"
 >
     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -11,4 +12,4 @@
             {{ $jumlahItem > 99 ? '99+' : $jumlahItem }}
         </span>
     @endif
-</button>
+</a>

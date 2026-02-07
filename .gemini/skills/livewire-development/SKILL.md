@@ -9,7 +9,10 @@ description: >-
 
 # Livewire Development
 
+
+
 ## When to Apply
+
 
 Activate this skill when:
 
@@ -18,27 +21,37 @@ Activate this skill when:
 - Implementing islands or async actions
 - Writing Livewire component tests
 
+
 ## Documentation
+
 
 Use `search-docs` for detailed Livewire 4 patterns and documentation.
 
+
 ## Basic Usage
+
+
 
 ### Creating Components
 
+
 <code-snippet name="Component Creation Commands" lang="bash">
+
 
 # Single-file component (default in v4)
 
 {{ $assist->artisanCommand('make:livewire create-post') }}
 
+
 # Multi-file component
 
 {{ $assist->artisanCommand('make:livewire create-post --mfc') }}
 
+
 # Class-based component (v3 style)
 
 {{ $assist->artisanCommand('make:livewire create-post --class') }}
+
 
 # With namespace
 
@@ -46,11 +59,17 @@ Use `search-docs` for detailed Livewire 4 patterns and documentation.
 
 </code-snippet>
 
+
+
+
 ### Converting Between Formats
+
 
 Use `php artisan livewire:convert create-post` to convert between single-file, multi-file, and class-based formats.
 
+
 ### Component Format Reference
+
 
 | Format | Flag | Structure |
 |--------|------|-----------|
@@ -59,7 +78,9 @@ Use `php artisan livewire:convert create-post` to convert between single-file, m
 | Class-based | `--class` | Traditional v3 style class |
 | View-based | ⚡ prefix | Blade-only with functional state |
 
+
 ### Single-File Component Example
+
 
 <code-snippet name="Single-File Component Example" lang="php">
 
@@ -82,9 +103,15 @@ new class extends Component {
 
 </code-snippet>
 
+
+
+
 ## Livewire 4 Specifics
 
+
+
 ### Key Changes From Livewire 3
+
 
 These things changed in Livewire 4, but may not have been updated in this application. Verify this application's setup to ensure you follow existing conventions.
 
@@ -93,7 +120,9 @@ These things changed in Livewire 4, but may not have been updated in this applic
 - Component tags must be properly closed; `wire:transition` now uses View Transitions API (modifiers removed).
 - JavaScript: `$wire.$js('name', fn)` → `$wire.$js.name = fn`; `commit`/`request` hooks → `interceptMessage()`/`interceptRequest()`.
 
+
 ### New Features
+
 
 - Component formats: single-file (SFC), multi-file (MFC), view-based components.
 - Islands (`@island`) for isolated updates; async actions (`wire:click.async`, `#[Async]`) for parallel execution.
@@ -106,7 +135,9 @@ These things changed in Livewire 4, but may not have been updated in this applic
 | Deferred | `defer` attribute | Load after page render |
 | Bundled | `lazy.bundle` | Load multiple together |
 
+
 ### New Directives
+
 
 - `wire:sort`, `wire:intersect`, `wire:ref`, `.renderless`, `.preserve-scroll` are available for use.
 - `data-loading` attribute automatically added to elements triggering network requests.
@@ -119,25 +150,33 @@ These things changed in Livewire 4, but may not have been updated in this applic
 | `.renderless` | Component without rendering |
 | `.preserve-scroll` | Preserve scroll position |
 
+
 ## Best Practices
+
 
 - Always use `wire:key` in loops
 - Use `wire:loading` for loading states
 - Use `wire:model.live` for instant updates (default is debounced)
 - Validate and authorize in actions (treat like HTTP requests)
 
+
 ## Configuration
+
 
 - `smart_wire_keys` defaults to `true`; new configs: `component_locations`, `component_namespaces`, `make_command`, `csp_safe`.
 
+
 ## Alpine & JavaScript
+
 
 - `wire:transition` uses browser View Transitions API; `$errors` and `$intercept` magic properties available.
 - Non-blocking `wire:poll` and parallel `wire:model.live` updates improve performance.
 
 For interceptors and hooks, see [reference/javascript-hooks.md](reference/javascript-hooks.md).
 
+
 ## Testing
+
 
 <code-snippet name="Testing Example" lang="php">
 
@@ -148,13 +187,19 @@ Livewire::test(Counter::class)
 
 </code-snippet>
 
+
+
+
 ## Verification
+
 
 1. Browser console: Check for JS errors
 2. Network tab: Verify Livewire requests return 200
 3. Ensure `wire:key` on all `@foreach` loops
 
+
 ## Common Pitfalls
+
 
 - Missing `wire:key` in loops → unexpected re-rendering
 - Expecting `wire:model` real-time → use `wire:model.live`

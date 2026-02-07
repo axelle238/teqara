@@ -62,4 +62,9 @@ class Pengguna extends Authenticatable
     {
         return $this->hasMany(TiketBantuan::class, 'pengguna_id');
     }
+
+    public function kunciApi(): HasMany
+    {
+        return $this->hasMany(KunciApi::class, 'pengguna_id');
+    }
 }

@@ -1,179 +1,155 @@
-<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+<div class="animate-in fade-in duration-500 pb-20">
     
-    <!-- Header & Stats -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Sirkulasi Pesanan</h1>
-            <p class="text-slate-500 text-sm mt-1">Pusat kendali transaksi dan pemenuhan order pelanggan.</p>
+    <!-- Header Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+        @php
+            $stats = [
+                ['label' => 'Semua Order', 'val' => $this->statistik['total'], 'color' => 'slate', 'icon' => 'fa-list'],
+                ['label' => 'Menunggu', 'val' => $this->statistik['menunggu'], 'color' => 'amber', 'icon' => 'fa-clock'],
+                ['label' => 'Diproses', 'val' => $this->statistik['diproses'], 'color' => 'indigo', 'icon' => 'fa-boxes-packing'],
+                ['label' => 'Dikirim', 'val' => $this->statistik['dikirim'], 'color' => 'blue', 'icon' => 'fa-truck-fast'],
+                ['label' => 'Selesai', 'val' => $this->statistik['selesai'], 'color' => 'emerald', 'icon' => 'fa-check-circle'],
+            ];
+        @endphp
+
+        @foreach($stats as $s)
+        <button wire:click="setStatus('{{ strtolower(str_replace(' ', '', $s['label'] == 'Semua Order' ? 'semua' : $s['label'])) }}')" 
+                class="relative bg-white p-6 rounded-[30px] border border-slate-100 shadow-sm hover:shadow-lg transition-all text-left group overflow-hidden {{ $filterStatus == strtolower(str_replace(' ', '', $s['label'] == 'Semua Order' ? 'semua' : $s['label'])) ? 'ring-2 ring-'.$s['color'].'-500 bg-'.$s['color'].'-50' : '' }}">
+            <div class="relative z-10">
+                <i class="fa-solid {{ $s['icon'] }} text-2xl text-{{ $s['color'] }}-500 mb-3 group-hover:scale-110 transition-transform"></i>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $s['label'] }}</p>
+                <h3 class="text-3xl font-black text-slate-900 mt-1">{{ $s['val'] }}</h3>
+            </div>
+            <!-- Decor -->
+            <div class="absolute -right-4 -bottom-4 text-8xl text-slate-50 opacity-50 group-hover:opacity-100 transition-opacity">
+                <i class="fa-solid {{ $s['icon'] }}"></i>
+            </div>
+        </button>
+        @endforeach
+    </div>
+
+    <!-- Toolbar -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8 bg-white p-4 rounded-[30px] shadow-sm border border-slate-100">
+        <div class="relative w-full md:w-96">
+            <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari Invoice atau Pelanggan..." class="w-full pl-12 pr-4 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500">
+            <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
         </div>
+        
         <div class="flex gap-2">
-            <button class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl text-sm font-bold shadow-sm hover:bg-slate-50 transition-colors">
-                <i class="fa-solid fa-file-export mr-2"></i> Ekspor Laporan
+            <button class="px-6 py-3 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50">
+                <i class="fa-solid fa-filter mr-2"></i> Filter
+            </button>
+            <button class="px-6 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 shadow-lg shadow-indigo-500/20">
+                <i class="fa-solid fa-file-export mr-2"></i> Ekspor
             </button>
         </div>
     </div>
 
-    <!-- Smart Tabs Filters -->
-    <div class="border-b border-slate-200 overflow-x-auto">
-        <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-            @php
-                $tabs = [
-                    'semua' => ['label' => 'Semua Order', 'icon' => 'fa-list'],
-                    'menunggu' => ['label' => 'Perlu Verifikasi', 'icon' => 'fa-clock'],
-                    'diproses' => ['label' => 'Sedang Dikemas', 'icon' => 'fa-box-open'],
-                    'dikirim' => ['label' => 'Dalam Pengiriman', 'icon' => 'fa-truck-fast'],
-                    'selesai' => ['label' => 'Selesai', 'icon' => 'fa-check-circle'],
-                    'batal' => ['label' => 'Dibatalkan', 'icon' => 'fa-ban'],
-                ];
-            @endphp
+    <!-- Order List -->
+    <div class="space-y-6">
+        @forelse($pesanan as $p)
+        <div class="bg-white rounded-[40px] p-2 shadow-sm border border-slate-100 hover:shadow-xl hover:border-indigo-100 transition-all duration-300 group">
+            <div class="flex flex-col lg:flex-row gap-6 p-6">
+                <!-- Info Utama -->
+                <div class="flex-1 space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-black tracking-widest font-mono">
+                            #{{ $p->nomor_faktur }}
+                        </div>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wide">
+                            {{ $p->dibuat_pada->format('d M Y • H:i') }}
+                        </span>
+                        
+                        @php
+                            $badgeColor = match($p->status_pesanan) {
+                                'menunggu' => 'amber',
+                                'diproses' => 'indigo',
+                                'dikirim' => 'blue',
+                                'selesai' => 'emerald',
+                                'dibatalkan' => 'rose',
+                                default => 'slate'
+                            };
+                        @endphp
+                        <span class="px-3 py-1 bg-{{ $badgeColor }}-100 text-{{ $badgeColor }}-700 rounded-lg text-[10px] font-black uppercase tracking-widest border border-{{ $badgeColor }}-200">
+                            {{ $p->status_pesanan }}
+                        </span>
+                    </div>
 
-            @foreach($tabs as $key => $tab)
-                <button 
-                    wire:click="$set('status_pesanan', '{{ $key }}')"
-                    class="{{ $status_pesanan === $key ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700' }} 
-                           whitespace-nowrap border-b-2 py-4 px-1 text-sm font-bold flex items-center gap-2 transition-colors"
-                >
-                    <i class="fa-solid {{ $tab['icon'] }}"></i>
-                    {{ $tab['label'] }}
-                    <span class="ml-2 py-0.5 px-2.5 rounded-full text-xs {{ $status_pesanan === $key ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-600' }}">
-                        {{ $stats[$key] }}
-                    </span>
-                </button>
-            @endforeach
-        </nav>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500">
+                            {{ substr($p->pengguna->nama, 0, 1) }}
+                        </div>
+                        <div>
+                            <h4 class="font-black text-slate-900 text-lg">{{ $p->pengguna->nama }}</h4>
+                            <p class="text-xs text-slate-500 font-medium">{{ $p->alamat_pengiriman }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Item Preview -->
+                    <div class="flex items-center gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide">
+                        @foreach($p->detailPesanan->take(4) as $item)
+                        <div class="w-16 h-16 rounded-xl bg-slate-50 border border-slate-100 p-2 flex-shrink-0" title="{{ $item->produk->nama }}">
+                            <img src="{{ $item->produk->gambar_utama_url }}" class="w-full h-full object-contain mix-blend-multiply">
+                        </div>
+                        @endforeach
+                        @if($p->detailPesanan->count() > 4)
+                        <div class="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500">
+                            +{{ $p->detailPesanan->count() - 4 }}
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Finansial & Aksi -->
+                <div class="lg:w-80 flex flex-col justify-between border-l border-slate-100 pl-0 lg:pl-8 pt-6 lg:pt-0">
+                    <div class="text-right mb-6">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Transaksi</p>
+                        <h3 class="text-2xl font-black text-indigo-600 tracking-tighter">Rp {{ number_format($p->total_harga, 0, ',', '.') }}</h3>
+                        <p class="text-xs font-bold text-slate-500 mt-1 uppercase">{{ $p->metode_pembayaran }}</p>
+                    </div>
+
+                    <!-- Action Panel (Dynamic based on Status) -->
+                    <div class="bg-slate-50 rounded-2xl p-4 space-y-3">
+                        @if($p->status_pesanan == 'menunggu')
+                            <button wire:click="prosesPesanan({{ $p->id }})" class="w-full py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20">
+                                Proses Pesanan
+                            </button>
+                            <button wire:click="batalkanPesanan({{ $p->id }})" wire:confirm="Yakin batalkan pesanan ini?" class="w-full py-3 bg-white border border-rose-200 text-rose-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-rose-50 transition-all">
+                                Batalkan
+                            </button>
+                        @elseif($p->status_pesanan == 'diproses')
+                            <div class="flex gap-2">
+                                <input wire:model="inputResi.{{ $p->id }}" type="text" placeholder="Input No. Resi" class="flex-1 bg-white border-none rounded-xl text-xs font-bold shadow-sm focus:ring-2 focus:ring-indigo-500">
+                                <button wire:click="kirimPesanan({{ $p->id }})" class="px-4 bg-indigo-600 text-white rounded-xl text-xs hover:bg-indigo-700">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        @elseif($p->status_pesanan == 'dikirim')
+                            <div class="text-center py-2 bg-white rounded-xl border border-dashed border-indigo-200">
+                                <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Resi Pengiriman</p>
+                                <p class="text-sm font-black text-slate-800 font-mono select-all">{{ $p->resi_pengiriman }}</p>
+                            </div>
+                        @endif
+                        
+                        <a href="{{ route('pengelola.pesanan.detail', $p->id) }}" class="block w-full py-3 text-center text-slate-500 text-xs font-black uppercase tracking-widest hover:text-indigo-600 hover:underline">
+                            Lihat Detail Lengkap
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @empty
+        <div class="py-20 text-center bg-white rounded-[40px] border border-dashed border-slate-200">
+            <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl text-slate-300">
+                <i class="fa-solid fa-clipboard-list"></i>
+            </div>
+            <h3 class="text-xl font-black text-slate-900 uppercase">Belum Ada Pesanan</h3>
+            <p class="text-slate-500 font-medium text-sm mt-2">Filter saat ini tidak menampilkan hasil apapun.</p>
+        </div>
+        @endforelse
     </div>
 
-    <!-- Advanced Toolbar -->
-    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center">
-        <!-- Search -->
-        <div class="relative flex-1 w-full md:max-w-md">
-            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
-            <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari No. Faktur, Nama Pelanggan..." class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-500 transition-all">
-        </div>
-
-        <!-- Filter Pembayaran -->
-        <select wire:model.live="status_pembayaran" class="bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-600 py-2.5 px-4 focus:ring-2 focus:ring-indigo-500 cursor-pointer">
-            <option value="">Semua Status Bayar</option>
-            <option value="lunas">Lunas</option>
-            <option value="belum_dibayar">Belum Dibayar</option>
-            <option value="menunggu_verifikasi">Menunggu Verifikasi</option>
-        </select>
-
-        <!-- Bulk Actions -->
-        @if(count($selectedPesanan) > 0)
-        <div class="flex items-center gap-2 animate-in fade-in zoom-in duration-200">
-            <span class="text-xs font-bold text-slate-500">{{ count($selectedPesanan) }} terpilih</span>
-            <button wire:click="bulkProcess" wire:confirm="Proses pesanan terpilih ke tahap pengemasan?" class="px-3 py-2 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold hover:bg-indigo-200 transition-colors">
-                <i class="fa-solid fa-boxes-packing mr-1"></i> Proses Masal
-            </button>
-        </div>
-        @endif
-    </div>
-
-    <!-- Enterprise Order Table -->
-    <div class="bg-white border border-slate-100 rounded-[24px] shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
-                <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-black tracking-wider">
-                    <tr>
-                        <th class="px-6 py-4 w-10 text-center">
-                            <input type="checkbox" wire:model.live="selectAll" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
-                        </th>
-                        <th class="px-6 py-4">Faktur & Waktu</th>
-                        <th class="px-6 py-4">Pelanggan</th>
-                        <th class="px-6 py-4">Total & Item</th>
-                        <th class="px-6 py-4 text-center">Pembayaran</th>
-                        <th class="px-6 py-4 text-center">Status Order</th>
-                        <th class="px-6 py-4 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    @forelse($pesanan as $p)
-                    <tr class="hover:bg-indigo-50/30 transition-colors group">
-                        <td class="px-6 py-4 text-center">
-                            <input type="checkbox" wire:model.live="selectedPesanan" value="{{ $p->id }}" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex flex-col">
-                                <a href="{{ route('pengelola.pesanan.detail', $p->id) }}" wire:navigate class="text-sm font-bold text-indigo-600 hover:text-indigo-800 font-mono">
-                                    {{ $p->nomor_faktur }}
-                                </a>
-                                <span class="text-[10px] text-slate-400 font-medium mt-1">
-                                    {{ $p->created_at->format('d M Y, H:i') }}
-                                </span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 uppercase">
-                                    {{ substr($p->pengguna->nama ?? 'Guest', 0, 2) }}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-slate-900 text-xs">{{ $p->pengguna->nama ?? 'Guest' }}</p>
-                                    <p class="text-[10px] text-slate-400">{{ $p->pengguna->email ?? '-' }}</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <p class="font-black text-slate-900">Rp {{ number_format($p->total_harga, 0, ',', '.') }}</p>
-                            <p class="text-[10px] text-slate-500 mt-0.5">{{ $p->detailPesanan->sum('jumlah') }} Barang</p>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            @php
-                                $bayarClass = match($p->status_pembayaran) {
-                                    'lunas' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
-                                    'menunggu_verifikasi' => 'bg-amber-100 text-amber-700 border-amber-200 animate-pulse',
-                                    'gagal' => 'bg-rose-100 text-rose-700 border-rose-200',
-                                    default => 'bg-slate-100 text-slate-600 border-slate-200'
-                                };
-                                $bayarLabel = match($p->status_pembayaran) {
-                                    'lunas' => 'Lunas',
-                                    'menunggu_verifikasi' => 'Cek Bukti',
-                                    'gagal' => 'Gagal',
-                                    default => 'Belum Bayar'
-                                };
-                            @endphp
-                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border {{ $bayarClass }}">
-                                {{ $bayarLabel }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            @php
-                                $statusClass = match($p->status_pesanan) {
-                                    'menunggu' => 'bg-slate-100 text-slate-600',
-                                    'diproses' => 'bg-indigo-100 text-indigo-700',
-                                    'dikirim' => 'bg-cyan-100 text-cyan-700',
-                                    'selesai' => 'bg-emerald-100 text-emerald-700',
-                                    'batal' => 'bg-rose-50 text-rose-400 line-through',
-                                    default => 'bg-slate-100 text-slate-600'
-                                };
-                            @endphp
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold {{ $statusClass }}">
-                                @if($p->status_pesanan == 'diproses') <i class="fa-solid fa-circle-notch fa-spin text-[10px]"></i> @endif
-                                {{ ucfirst($p->status_pesanan) }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <a href="{{ route('pengelola.pesanan.detail', $p->id) }}" wire:navigate class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-600 hover:shadow-md transition-all" title="Kelola Pesanan">
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-slate-400">
-                            <div class="flex flex-col items-center">
-                                <i class="fa-solid fa-clipboard-list text-4xl mb-4 text-slate-200"></i>
-                                <p class="font-medium">Tidak ada pesanan ditemukan pada filter ini.</p>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50">
-            {{ $pesanan->links() }}
-        </div>
+    <div class="mt-10">
+        {{ $pesanan->links() }}
     </div>
 </div>

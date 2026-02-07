@@ -49,8 +49,7 @@
                     <tr class="group hover:bg-slate-50 transition-all">
                         <td class="px-10 py-6">
                             <p class="text-sm font-black text-slate-900 font-mono">{{ $r->no_faktur }}</p>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{ $r->created_at->format('d M Y') }}</p>
-                        </td>
+                                                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{ $r->dibuat_pada->format('d M Y') }}</p>                        </td>
                         <td class="px-6 py-6">
                             <span class="text-xs font-bold text-slate-700 uppercase">{{ $r->pemasok->nama_perusahaan ?? 'Umum' }}</span>
                         </td>

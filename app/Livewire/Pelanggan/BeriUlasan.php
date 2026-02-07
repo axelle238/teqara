@@ -14,13 +14,9 @@ class BeriUlasan extends Component
     use WithFileUploads;
 
     public $produk;
-
     public $pesanan;
-
     public $rating = 5;
-
     public $komentar;
-
     public $foto = [];
 
     public function mount($pesananId, $produkId)
@@ -32,15 +28,14 @@ class BeriUlasan extends Component
 
         $this->produk = Produk::findOrFail($produkId);
 
-        // Cek apakah sudah pernah mengulas di pesanan ini
+        // Check if reviewed
         $sudahUlas = Ulasan::where('pesanan_id', $this->pesanan->id)
             ->where('produk_id', $this->produk->id)
             ->exists();
 
         if ($sudahUlas) {
-            session()->flash('pesan', 'Anda sudah mengulas produk ini.');
-
-            return redirect()->to('/pesanan/riwayat');
+            $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Anda sudah mengulas produk ini.']);
+            return redirect()->route('pesanan.riwayat');
         }
     }
 
@@ -49,13 +44,13 @@ class BeriUlasan extends Component
         $this->validate([
             'rating' => 'required|integer|min:1|max:5',
             'komentar' => 'required|min:10',
-            'foto.*' => 'image|max:2048', // Max 2MB per foto
+            'foto.*' => 'image|max:2048', 
         ]);
 
         $urls = [];
         foreach ($this->foto as $f) {
-            // Di production: $f->store('ulasan', 'public');
-            $urls[] = $f->temporaryUrl();
+            $path = $f->store('ulasan', 'public');
+            $urls[] = '/storage/' . $path;
         }
 
         Ulasan::create([
@@ -64,16 +59,29 @@ class BeriUlasan extends Component
             'pesanan_id' => $this->pesanan->id,
             'rating' => $this->rating,
             'komentar' => $this->komentar,
-            'foto_ulasan' => $urls,
+            'foto_ulasan' => $urls, // Cast to array in model
+            'status' => 'aktif',
         ]);
 
-        // Update Rating Produk
+        // Update Product Rating
         $rataRata = Ulasan::where('produk_id', $this->produk->id)->avg('rating');
         $this->produk->update(['rating_rata_rata' => $rataRata]);
 
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Terima kasih atas ulasan Anda!']);
+        // Gamification Reward
+        $poin = 50; // Base reward
+        if (count($urls) > 0) $poin += 50; // Bonus for photo
+        if (strlen($this->komentar) > 100) $poin += 25; // Bonus for detailed review
 
-        return redirect()->to('/produk/'.$this->produk->slug);
+        auth()->user()->increment('poin_loyalitas', $poin);
+        \App\Models\RiwayatPoin::create([
+            'pengguna_id' => auth()->id(),
+            'jumlah' => $poin,
+            'keterangan' => 'Reward Ulasan Produk: ' . $this->produk->nama,
+            'referensi_id' => $this->pesanan->nomor_faktur
+        ]);
+
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "Ulasan terkirim! +{$poin} Poin ditambahkan."]);
+        return redirect()->route('pesanan.riwayat');
     }
 
     #[Title('Tulis Ulasan - Teqara')]

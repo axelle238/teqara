@@ -1,131 +1,104 @@
-<div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+<div class="animate-in fade-in slide-in-from-bottom-8 duration-500 pb-20">
     
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-            <h1 class="text-2xl font-black text-slate-900 tracking-tight uppercase">Konfigurasi Sistem</h1>
-            <p class="text-slate-500 text-sm mt-1">Pengaturan global infrastruktur dan parameter bisnis.</p>
-        </div>
-        <button wire:click="simpan" class="flex items-center gap-2 px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all active:scale-95">
-            <i class="fa-solid fa-save"></i> Simpan Perubahan
-        </button>
-    </div>
-
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        <!-- Left Panel: Navigation/Status -->
-        <div class="space-y-6">
-            <div class="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600 text-xl">
-                        <i class="fa-solid fa-server"></i>
+        <!-- Left: Branding Preview (Dummy) -->
+        <div class="lg:col-span-1 space-y-8">
+            <div class="bg-indigo-900 rounded-[40px] p-8 text-center text-white shadow-2xl shadow-indigo-900/30 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                
+                <div class="relative z-10">
+                    <div class="w-24 h-24 mx-auto bg-white rounded-3xl flex items-center justify-center shadow-lg mb-6 p-4">
+                        @if($logo)
+                            <img src="{{ $logo->temporaryUrl() }}" class="w-full h-full object-contain">
+                        @elseif($logo_lama)
+                            <img src="{{ asset($logo_lama) }}" class="w-full h-full object-contain">
+                        @else
+                            <span class="text-4xl font-black text-indigo-900">T</span>
+                        @endif
                     </div>
-                    <div>
-                        <h3 class="font-bold text-slate-900">Status Sistem</h3>
-                        <p class="text-xs text-slate-500">v16.0 Enterprise</p>
-                    </div>
-                </div>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-600">Environment</span>
-                        <span class="font-mono font-bold text-slate-900">Production</span>
-                    </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-600">Database</span>
-                        <span class="font-bold text-emerald-600">Terhubung</span>
-                    </div>
-                    <div class="flex justify-between items-center text-sm">
-                        <span class="text-slate-600">Storage</span>
-                        <span class="font-bold text-emerald-600">Optimal</span>
-                    </div>
+                    <h2 class="text-2xl font-black tracking-tight">{{ $nama_toko }}</h2>
+                    <p class="text-indigo-200 text-xs font-medium mt-2">{{ $email_kontak }}</p>
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-indigo-600 to-violet-600 p-6 rounded-[24px] text-white shadow-lg relative overflow-hidden">
-                <i class="fa-solid fa-gears absolute -right-6 -bottom-6 text-9xl text-white/10"></i>
-                <h3 class="font-bold text-lg mb-2 relative z-10">Mode Pemeliharaan</h3>
-                <p class="text-xs text-white/80 mb-6 relative z-10 leading-relaxed">
-                    Aktifkan jika ingin menutup akses publik sementara untuk maintenance.
-                </p>
-                <div class="flex items-center justify-between bg-white/10 p-3 rounded-xl backdrop-blur relative z-10">
-                    <span class="text-xs font-bold uppercase tracking-widest">Maintenance</span>
-                    <div class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" class="sr-only peer">
-                        <div class="w-9 h-5 bg-black/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-400"></div>
-                    </div>
-                </div>
+            <div class="bg-white rounded-[30px] p-8 border border-slate-200 shadow-sm">
+                <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs mb-4">Panduan Konfigurasi</h3>
+                <ul class="space-y-3 text-sm text-slate-500">
+                    <li class="flex items-start gap-3">
+                        <i class="fa-solid fa-check-circle text-emerald-500 mt-1"></i>
+                        <span>Nama toko akan muncul di Invoice dan Header website.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fa-solid fa-check-circle text-emerald-500 mt-1"></i>
+                        <span>Email kontak digunakan untuk notifikasi sistem dan footer.</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <i class="fa-solid fa-check-circle text-emerald-500 mt-1"></i>
+                        <span>Logo sebaiknya berformat PNG transparan (512x512px).</span>
+                    </li>
+                </ul>
             </div>
         </div>
 
-        <!-- Right Panel: Forms -->
-        <div class="lg:col-span-2 space-y-8">
-            
-            <!-- Identitas Toko -->
-            <div class="bg-white p-8 rounded-[24px] border border-slate-100 shadow-sm">
-                <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs mb-6 flex items-center gap-2">
-                    <i class="fa-solid fa-store text-indigo-500"></i> Identitas Bisnis
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-2">
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Nama Toko</label>
-                        <input wire:model="nama_toko" type="text" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 font-bold">
+        <!-- Right: Form -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-[40px] p-10 border border-slate-200 shadow-sm">
+                <div class="flex items-center gap-4 mb-8 border-b border-slate-100 pb-6">
+                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                        <i class="fa-solid fa-sliders text-xl"></i>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Email Kontak</label>
-                        <input wire:model="email_kontak" type="email" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">WhatsApp Admin</label>
-                        <input wire:model="nomor_wa" type="text" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500">
-                    </div>
-                    <div class="col-span-2">
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Alamat Fisik</label>
-                        <textarea wire:model="alamat_toko" rows="2" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500"></textarea>
+                        <h3 class="text-xl font-black text-slate-900">Identitas Toko</h3>
+                        <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Informasi dasar perusahaan</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- SEO & Metadata -->
-            <div class="bg-white p-8 rounded-[24px] border border-slate-100 shadow-sm">
-                <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs mb-6 flex items-center gap-2">
-                    <i class="fa-solid fa-globe text-cyan-500"></i> SEO & Pencarian
-                </h3>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Meta Deskripsi (Global)</label>
-                        <textarea wire:model="meta_deskripsi" rows="2" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500"></textarea>
-                        <p class="text-[10px] text-slate-400 mt-1 text-right">Maksimal 160 karakter disarankan.</p>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Kata Kunci Utama</label>
-                        <input wire:model="kata_kunci" type="text" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500" placeholder="komputer, gadget, teqara...">
-                    </div>
-                </div>
-            </div>
+                <form wire:submit.prevent="simpan" class="space-y-8">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Nama Toko / Brand</label>
+                            <input wire:model="nama_toko" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-indigo-500/10">
+                            @error('nama_toko') <span class="text-rose-500 text-xs font-bold px-1">{{ $message }}</span> @enderror
+                        </div>
 
-            <!-- Integrasi API -->
-            <div class="bg-white p-8 rounded-[24px] border border-slate-100 shadow-sm">
-                <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs mb-6 flex items-center gap-2">
-                    <i class="fa-solid fa-plug text-fuchsia-500"></i> Integrasi API (Sensitif)
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">Payment Gateway Key</label>
-                        <div class="relative">
-                            <input wire:model="api_payment_gateway" type="password" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 pr-10 font-mono">
-                            <i class="fa-solid fa-key absolute right-3 top-3 text-slate-400 text-xs"></i>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Email Resmi</label>
+                            <input wire:model="email_kontak" type="email" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-indigo-500/10">
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-widest mb-2">API Kurir (RajaOngkir)</label>
-                        <div class="relative">
-                            <input wire:model="api_kurir" type="password" class="w-full rounded-xl border-slate-200 text-sm focus:ring-indigo-500 pr-10 font-mono">
-                            <i class="fa-solid fa-truck absolute right-3 top-3 text-slate-400 text-xs"></i>
+
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Deskripsi Singkat (SEO)</label>
+                        <textarea wire:model="deskripsi_toko" rows="3" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-medium text-slate-600 focus:ring-4 focus:ring-indigo-500/10 resize-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Nomor Telepon / CS</label>
+                            <input wire:model="nomor_telepon" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-800 focus:ring-4 focus:ring-indigo-500/10">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Upload Logo Baru</label>
+                            <input wire:model="logo" type="file" class="w-full bg-slate-50 border-none rounded-2xl px-4 py-3 text-xs font-bold text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-white file:text-indigo-600 hover:file:bg-indigo-50">
                         </div>
                     </div>
-                </div>
-            </div>
 
+                    <div class="space-y-2">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Alamat Fisik</label>
+                        <textarea wire:model="alamat_toko" rows="3" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-medium text-slate-600 focus:ring-4 focus:ring-indigo-500/10 resize-none"></textarea>
+                    </div>
+
+                    <div class="pt-6 border-t border-slate-100 flex justify-end">
+                        <button type="submit" class="px-10 py-4 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-xl shadow-slate-900/20 active:scale-95">
+                            Simpan Perubahan
+                        </button>
+                    </div>
+
+                </form>
+            </div>
         </div>
+
     </div>
 </div>

@@ -41,7 +41,7 @@ class AnalitikProduk extends Component
         $topMargin = DetailPesanan::select('detail_pesanan.produk_id', 
                 DB::raw('SUM((detail_pesanan.harga_saat_ini - produk.harga_modal) * detail_pesanan.jumlah) as total_margin'))
             ->join('produk', 'detail_pesanan.produk_id', '=', 'produk.id')
-            ->where('detail_pesanan.created_at', '>=', $this->waktuMulai)
+            ->where('detail_pesanan.dibuat_pada', '>=', $this->waktuMulai)
             ->groupBy('detail_pesanan.produk_id')
             ->orderByDesc('total_margin')
             ->with('produk')

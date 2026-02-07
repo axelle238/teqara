@@ -63,8 +63,7 @@
                     <tr class="group hover:bg-slate-50 transition-all">
                         <td class="px-10 py-6">
                             <p class="text-sm font-black text-slate-900 font-mono">{{ $r->kode_so }}</p>
-                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{{ $r->created_at->translatedFormat('d F Y') }}</p>
-                        </td>
+                                                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{{ $r->dibuat_pada->translatedFormat('d F Y') }}</p>                        </td>
                         <td class="px-6 py-6">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-xs font-black">

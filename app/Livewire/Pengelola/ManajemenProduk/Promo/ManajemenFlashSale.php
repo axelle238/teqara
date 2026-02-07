@@ -16,6 +16,7 @@ class ManajemenFlashSale extends Component
     use WithPagination, WithFileUploads;
 
     public $filterStatus = 'all';
+    public $tampilkanForm = false;
 
     // Form State
     public $campaignId;
@@ -33,7 +34,13 @@ class ManajemenFlashSale extends Component
         $this->reset(['campaignId', 'nama_campaign', 'mulai', 'selesai', 'banner', 'items']);
         $this->mulai = now()->format('Y-m-d\TH:i');
         $this->selesai = now()->addDays(1)->format('Y-m-d\TH:i');
-        $this->dispatch('open-slide-over', id: 'form-flash-sale');
+        $this->tampilkanForm = true;
+    }
+
+    public function batal()
+    {
+        $this->tampilkanForm = false;
+        $this->reset(['campaignId', 'items', 'banner', 'cariProduk', 'hasilPencarian']);
     }
 
     public function updatedCariProduk()
@@ -116,7 +123,7 @@ class ManajemenFlashSale extends Component
 
         LogHelper::catat('buat_flash_sale', $this->nama_campaign, "Campaign Flash Sale '{$this->nama_campaign}' berhasil dibuat/diupdate.");
 
-        $this->dispatch('close-slide-over', id: 'form-flash-sale');
+        $this->tampilkanForm = false;
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Flash Sale berhasil dijadwalkan.']);
     }
 
@@ -140,7 +147,7 @@ class ManajemenFlashSale extends Component
             ];
         }
 
-        $this->dispatch('open-slide-over', id: 'form-flash-sale');
+        $this->tampilkanForm = true;
     }
 
     #[Title('Manajemen Flash Sale - Teqara Admin')]
@@ -148,7 +155,7 @@ class ManajemenFlashSale extends Component
     {
         $campaigns = PenjualanKilat::withCount('detailProduk')
             ->when($this->filterStatus === 'aktif', fn($q) => $q->where('aktif', true)->where('selesai', '>', now()))
-            ->latest()
+            ->latest('dibuat_pada')
             ->paginate(10);
 
         return view('livewire.pengelola.manajemen-produk.promo.manajemen-flash-sale', [

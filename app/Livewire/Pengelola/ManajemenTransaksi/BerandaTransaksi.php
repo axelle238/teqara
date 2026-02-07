@@ -9,7 +9,7 @@ use Livewire\WithPagination;
 
 /**
  * Class BerandaTransaksi
- * Tujuan: Pusat kontrol finansial (Financial Control Tower).
+ * Tujuan: Monitoring arus kas masuk (Cash Flow) dari seluruh channel pembayaran.
  */
 class BerandaTransaksi extends Component
 {
@@ -18,39 +18,42 @@ class BerandaTransaksi extends Component
     public $filterMetode = '';
     public $cari = '';
 
-    #[Title('Manajemen Transaksi Finansial - Admin Teqara')]
+    public function getRingkasanProperty()
+    {
+        // Hitung total berdasarkan status
+        return [
+            'total_masuk' => TransaksiPembayaran::where('status', 'sukses')->sum('jumlah_bayar'),
+            'transaksi_sukses' => TransaksiPembayaran::where('status', 'sukses')->count(),
+            'transaksi_pending' => TransaksiPembayaran::where('status', 'menunggu')->count(),
+            'rata_rata' => TransaksiPembayaran::where('status', 'sukses')->avg('jumlah_bayar') ?? 0,
+        ];
+    }
+
+    public function verifikasiManual($id)
+    {
+        $trx = TransaksiPembayaran::findOrFail($id);
+        if ($trx->status == 'menunggu') {
+            $trx->update(['status' => 'sukses']);
+            $trx->pesanan->update([
+                'status_pembayaran' => 'lunas',
+                'status_pesanan' => 'diproses' // Auto process if paid
+            ]);
+            
+            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Pembayaran diverifikasi manual.']);
+        }
+    }
+
+    #[Title('Manajemen Keuangan - Teqara Admin')]
     public function render()
     {
-        $query = TransaksiPembayaran::query()
-            ->with('pesanan.pengguna')
-            ->latest();
-
-        if ($this->filterMetode) {
-            $query->where('metode_pembayaran', $this->filterMetode);
-        }
-
-        if ($this->cari) {
-            $query->where('kode_pembayaran', 'like', '%'.$this->cari.'%');
-        }
-
-        // Statistik Finansial
-        $totalMasuk = TransaksiPembayaran::where('status', 'success')->sum('jumlah_bayar');
-        $transaksiSukses = TransaksiPembayaran::where('status', 'success')->count();
-        $transaksiPending = TransaksiPembayaran::where('status', 'pending')->count();
-        
-        // Data Grafik Metode Pembayaran
-        $metodeStats = TransaksiPembayaran::selectRaw('provider, count(*) as total')
-            ->groupBy('provider')
-            ->get();
+        $transaksi = TransaksiPembayaran::with(['pesanan.pengguna'])
+            ->when($this->filterMetode, fn($q) => $q->where('metode_pembayaran', $this->filterMetode))
+            ->when($this->cari, fn($q) => $q->where('kode_pembayaran', 'like', '%'.$this->cari.'%'))
+            ->latest('dibuat_pada')
+            ->paginate(15);
 
         return view('livewire.pengelola.manajemen-transaksi.beranda-transaksi', [
-            'transaksi' => $query->paginate(15),
-            'stats' => [
-                'total_masuk' => $totalMasuk,
-                'sukses' => $transaksiSukses,
-                'pending' => $transaksiPending,
-                'metode' => $metodeStats
-            ]
-        ])->layout('components.layouts.admin');
+            'transaksi' => $transaksi
+        ])->layout('components.layouts.admin', ['header' => 'Pusat Keuangan']);
     }
 }

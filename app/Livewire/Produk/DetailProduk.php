@@ -22,10 +22,13 @@ class DetailProduk extends Component
 
     public $gambarAktif;
 
+    public $isInWishlist = false;
+
     public function mount($slug)
     {
         $this->produk = Produk::where('slug', $slug)
-            ->with(['kategori', 'merek', 'varian', 'gambar', 'spesifikasi', 'ulasan'])
+            ->where('status', 'aktif')
+            ->with(['kategori', 'merek', 'varian', 'gambar', 'spesifikasi', 'ulasan', 'stokGudang.gudang'])
             ->firstOrFail();
 
         // Inisialisasi State
@@ -33,11 +36,64 @@ class DetailProduk extends Component
         $this->stokAktif = $this->produk->stok;
         $this->gambarAktif = $this->produk->gambar_utama_url;
 
+        // Cek Wishlist
+        if (auth()->check()) {
+            $this->isInWishlist = auth()->user()->wishlist()->where('produk_id', $this->produk->id)->exists();
+        }
+
         // Auto-select varian pertama jika ada
         if ($this->produk->memiliki_varian && $this->produk->varian->count() > 0) {
             $varianPertama = $this->produk->varian->first();
             $this->pilihVarian($varianPertama->id);
         }
+
+        // Enterprise: Track Recently Viewed
+        $recent = session()->get('produk_terakhir_dilihat', []);
+        if(($key = array_search($this->produk->id, $recent)) !== false) {
+            unset($recent[$key]);
+        }
+        array_unshift($recent, $this->produk->id);
+        session()->put('produk_terakhir_dilihat', array_slice($recent, 0, 12));
+    }
+
+    public function toggleWishlist()
+    {
+        if (!auth()->check()) {
+            $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Silakan login untuk menyimpan wishlist.']);
+            return;
+        }
+
+        if ($this->isInWishlist) {
+            auth()->user()->wishlist()->detach($this->produk->id);
+            $this->isInWishlist = false;
+            $pesan = 'Produk dihapus dari wishlist.';
+        } else {
+            auth()->user()->wishlist()->attach($this->produk->id);
+            $this->isInWishlist = true;
+            $pesan = 'Produk ditambahkan ke wishlist!';
+        }
+
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
+    }
+
+    public function tambahBandingkan()
+    {
+        $bandingkan = session()->get('bandingkan_produk', []);
+        
+        if (in_array($this->produk->id, $bandingkan)) {
+            $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Produk sudah ada di perbandingan.']);
+            return;
+        }
+
+        if (count($bandingkan) >= 4) {
+            $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Maksimal 4 produk untuk dibandingkan.']);
+            return;
+        }
+
+        $bandingkan[] = $this->produk->id;
+        session()->put('bandingkan_produk', $bandingkan);
+        
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Produk ditambahkan ke perbandingan.']);
     }
 
     public function pilihVarian($varianId)
@@ -126,7 +182,7 @@ class DetailProduk extends Component
         // Logic Keranjang Enterprise
         $item = \App\Models\Keranjang::where('pengguna_id', auth()->id())
             ->where('produk_id', $this->produk->id)
-            // Idealnya tambah where 'varian_id'
+            ->where('varian_id', $this->varianTerpilihId)
             ->first();
 
         if ($item) {
@@ -135,8 +191,8 @@ class DetailProduk extends Component
             \App\Models\Keranjang::create([
                 'pengguna_id' => auth()->id(),
                 'produk_id' => $this->produk->id,
+                'varian_id' => $this->varianTerpilihId,
                 'jumlah' => $this->jumlah,
-                // 'varian_id' => $this->varianTerpilihId
             ]);
         }
 
@@ -147,8 +203,8 @@ class DetailProduk extends Component
     {
         if ($this->prosesMasukKeranjang()) {
             $this->dispatch('update-keranjang');
-            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Produk masuk keranjang!']);
-            $this->dispatch('open-slide-over', id: 'keranjang-preview');
+            // Ganti slide-over dengan notifikasi toast standar
+            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Produk berhasil ditambahkan ke keranjang!']);
         }
     }
 

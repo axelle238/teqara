@@ -33,14 +33,14 @@ class Masuk extends Component
             session()->regenerate();
 
             if (auth()->user()->peran === 'admin') {
-                return redirect()->intended('/admin/beranda');
+                return redirect()->intended(route('pengelola.beranda'));
             }
 
             if (auth()->user()->peran === 'pemasok') {
-                return redirect()->intended('/mitra/beranda');
+                return redirect()->intended(route('mitra.beranda'));
             }
 
-            return redirect()->intended('/profil');
+            return redirect()->intended(route('beranda'));
         }
 
         $this->addError('email', 'Kombinasi otoritas tidak valid.');

@@ -32,7 +32,7 @@ class DaftarKategori extends Component
     public function render()
     {
         return view('livewire.pengelola.manajemen-produk.kategori.daftar-kategori', [
-            'kategori' => Kategori::withCount('produk')->latest()->get()
+            'kategori' => Kategori::withCount('produk')->latest('dibuat_pada')->get()
         ])->layout('components.layouts.admin');
     }
 }

@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class PesananLogistik extends Model
 {
-    //
+    const CREATED_AT = 'dibuat_pada';
+    const UPDATED_AT = 'diperbarui_pada';
+
+    protected $table = 'pesanan_logistik';
+
+    protected $guarded = ['id'];
 }

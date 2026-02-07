@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
     <style>
         [x-cloak] { display: none !important; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -109,6 +108,5 @@
 
     <!-- Global Components -->
     <x-ui.notifikasi-toast />
-    @livewireScripts
 </body>
 </html>

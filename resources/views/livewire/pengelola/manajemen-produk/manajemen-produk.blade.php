@@ -101,7 +101,7 @@
         <!-- TAMPILAN 2: EDITOR INVENTARIS (FULL PAGE FORM) -->
         <div class="space-y-8 animate-in slide-in-from-right-8 duration-500">
             <!-- Header Editor -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50 sticky top-24 z-30">
                 <div class="flex items-center gap-6">
                     <button wire:click="batal" class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all shadow-sm">
                         <i class="fa-solid fa-arrow-left text-xl"></i>
@@ -113,7 +113,9 @@
                 </div>
                 <div class="flex gap-4">
                     <button wire:click="batal" class="px-8 py-4 bg-slate-50 text-slate-500 rounded-3xl text-sm font-black hover:bg-slate-100 transition-all">BATAL</button>
-                    <button wire:click="simpan" class="px-10 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-3xl text-sm font-black shadow-xl shadow-emerald-600/20 transition-all active:scale-95">SIMPAN DATA UNIT</button>
+                    <button wire:click="simpan" class="px-10 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-3xl text-sm font-black shadow-xl shadow-emerald-600/20 transition-all active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i> SIMPAN DATA
+                    </button>
                 </div>
             </div>
 
@@ -121,7 +123,10 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Kolom Kiri: Spesifikasi Unit -->
                 <div class="lg:col-span-2 space-y-8">
+                    <!-- Basic Info -->
                     <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-10">
+                        <h3 class="text-lg font-black text-slate-900 uppercase tracking-widest border-b border-slate-100 pb-4">Informasi Dasar</h3>
+                        
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-2">
                                 <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Nama Produk Lengkap</label>
@@ -138,7 +143,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div class="space-y-2">
                                 <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Kategori Produk</label>
-                                <select wire:model="kategori_id" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10">
+                                <select wire:model="kategori_id" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10 cursor-pointer">
                                     <option value="">PILIH KATEGORI</option>
                                     @foreach($kategori as $kat)
                                         <option value="{{ $kat->id }}">{{ strtoupper($kat->nama) }}</option>
@@ -147,7 +152,7 @@
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Merek / Brand</label>
-                                <select wire:model="merek_id" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10">
+                                <select wire:model="merek_id" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10 cursor-pointer">
                                     <option value="">PILIH MEREK</option>
                                     @foreach($merek as $mrk)
                                         <option value="{{ $mrk->id }}">{{ strtoupper($mrk->nama) }}</option>
@@ -162,14 +167,118 @@
                         </div>
 
                         <div class="space-y-2">
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Spesifikasi & Deskripsi Lengkap</label>
-                            <textarea wire:model="deskripsi_lengkap" rows="8" class="w-full bg-slate-50 border-none rounded-3xl px-6 py-6 text-sm font-medium text-slate-700 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300 leading-relaxed" placeholder="Detail teknis, fitur, dan informasi garansi lengkap..."></textarea>
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Deskripsi Lengkap</label>
+                            <textarea wire:model="deskripsi_lengkap" rows="6" class="w-full bg-slate-50 border-none rounded-3xl px-6 py-6 text-sm font-medium text-slate-700 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300 leading-relaxed" placeholder="Detail teknis, fitur, dan informasi garansi lengkap..."></textarea>
                         </div>
+                    </div>
+
+                    <!-- Spesifikasi Teknis (Enterprise Feature) -->
+                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-6">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                            <h3 class="text-lg font-black text-slate-900 uppercase tracking-widest">Spesifikasi Teknis</h3>
+                            <button type="button" wire:click="tambahBarisSpesifikasi" class="text-xs font-black text-indigo-600 uppercase tracking-widest hover:underline">+ Tambah Baris</button>
+                        </div>
+
+                        <div class="space-y-4">
+                            @foreach($spesifikasi as $index => $spec)
+                            <div class="flex gap-4 items-start">
+                                <div class="w-1/3">
+                                    <input type="text" wire:model="spesifikasi.{{ $index }}.judul" placeholder="Label (ex: RAM)" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-xs font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500/20">
+                                </div>
+                                <div class="flex-1">
+                                    <input type="text" wire:model="spesifikasi.{{ $index }}.nilai" placeholder="Nilai (ex: 16GB DDR5)" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-xs font-medium text-slate-600 focus:ring-2 focus:ring-indigo-500/20">
+                                </div>
+                                <button type="button" wire:click="hapusBarisSpesifikasi({{ $index }})" class="p-3 text-slate-400 hover:text-rose-500 transition-colors">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Manajemen Varian (Enterprise Feature) -->
+                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-6">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+                            <h3 class="text-lg font-black text-slate-900 uppercase tracking-widest">Varian Produk</h3>
+                            <button type="button" wire:click="tambahBarisVarian" class="text-xs font-black text-emerald-600 uppercase tracking-widest hover:underline">+ Tambah Varian</button>
+                        </div>
+
+                        @if(count($varian) > 0)
+                        <div class="space-y-4">
+                            @foreach($varian as $index => $var)
+                            <div class="p-6 bg-slate-50/50 rounded-3xl border border-slate-100 flex flex-wrap gap-4 items-end relative group hover:bg-white hover:shadow-md transition-all">
+                                <button type="button" wire:click="hapusBarisVarian({{ $index }})" class="absolute top-4 right-4 text-slate-300 hover:text-rose-500 transition-colors">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                                
+                                <div class="flex-1 min-w-[200px]">
+                                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Nama Varian</label>
+                                    <input type="text" wire:model="varian.{{ $index }}.nama" placeholder="Warna / Ukuran" class="w-full bg-white border-none rounded-xl px-4 py-2 text-sm font-bold shadow-sm focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div class="w-32">
+                                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Stok Varian</label>
+                                    <input type="number" wire:model="varian.{{ $index }}.stok" class="w-full bg-white border-none rounded-xl px-4 py-2 text-sm font-bold shadow-sm focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div class="w-40">
+                                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Harga Tambahan (+)</label>
+                                    <input type="number" wire:model="varian.{{ $index }}.harga_tambahan" class="w-full bg-white border-none rounded-xl px-4 py-2 text-sm font-bold text-emerald-600 shadow-sm focus:ring-2 focus:ring-emerald-500">
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        @else
+                        <div class="text-center py-8 text-slate-400">
+                            <p class="text-xs font-bold">Produk ini tidak memiliki varian (Single Unit).</p>
+                        </div>
+                        @endif
                     </div>
                 </div>
 
                 <!-- Kolom Kanan: Finansial & Stok -->
                 <div class="space-y-8">
+                    <!-- Kartu Valuasi -->
+                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-8">
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Harga Jual Publik</label>
+                            <div class="relative">
+                                <span class="absolute left-6 top-1/2 -translate-y-1/2 font-black text-slate-300">Rp</span>
+                                <input wire:model="harga_jual" type="number" class="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-lg font-black text-emerald-600 focus:ring-4 focus:ring-indigo-500/10">
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Harga Modal (HPP)</label>
+                            <div class="relative">
+                                <span class="absolute left-6 top-1/2 -translate-y-1/2 font-black text-slate-300">Rp</span>
+                                <input wire:model="harga_modal" type="number" class="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-lg font-black text-rose-600 focus:ring-4 focus:ring-indigo-500/10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Harga Grosir (B2B Feature) -->
+                    <div class="bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50 space-y-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Grosir (B2B)</label>
+                            <button type="button" wire:click="tambahBarisGrosir" class="w-6 h-6 rounded bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-indigo-500 hover:text-white transition-colors">
+                                <i class="fa-solid fa-plus text-[10px]"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            @foreach($harga_grosir as $index => $grosir)
+                            <div class="flex gap-2">
+                                <input type="number" wire:model="harga_grosir.{{ $index }}.min_qty" placeholder="Min Qty" class="w-20 bg-slate-50 border-none rounded-xl px-3 py-2 text-xs font-bold text-center">
+                                <input type="number" wire:model="harga_grosir.{{ $index }}.harga" placeholder="Harga Satuan" class="flex-1 bg-slate-50 border-none rounded-xl px-3 py-2 text-xs font-bold text-indigo-600">
+                                <button type="button" wire:click="hapusBarisGrosir({{ $index }})" class="p-2 text-rose-400 hover:text-rose-600">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+                            @endforeach
+                            @if(empty($harga_grosir))
+                                <p class="text-[10px] text-slate-400 italic text-center py-2">Belum ada harga grosir diatur.</p>
+                            @endif
+                        </div>
+                    </div>
+
                     <!-- Kartu Stok & Status -->
                     <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-8">
                         <div class="space-y-4 text-center">
@@ -193,24 +302,6 @@
                                 <option value="arsip">📁 ARSIP INTERNAL</option>
                                 <option value="habis">🔴 STOK HABIS</option>
                             </select>
-                        </div>
-                    </div>
-
-                    <!-- Kartu Valuasi -->
-                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-8">
-                        <div class="space-y-4">
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Harga Jual Publik</label>
-                            <div class="relative">
-                                <span class="absolute left-6 top-1/2 -translate-y-1/2 font-black text-slate-300">Rp</span>
-                                <input wire:model="harga_jual" type="number" class="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-lg font-black text-emerald-600 focus:ring-4 focus:ring-indigo-500/10">
-                            </div>
-                        </div>
-                        <div class="space-y-4">
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Harga Modal (HPP)</label>
-                            <div class="relative">
-                                <span class="absolute left-6 top-1/2 -translate-y-1/2 font-black text-slate-300">Rp</span>
-                                <input wire:model="harga_modal" type="number" class="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-lg font-black text-rose-600 focus:ring-4 focus:ring-indigo-500/10">
-                            </div>
                         </div>
                     </div>
 

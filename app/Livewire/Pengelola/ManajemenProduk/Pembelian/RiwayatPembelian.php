@@ -31,7 +31,7 @@ class RiwayatPembelian extends Component
     {
         $riwayat = PembelianStok::with('pemasok')
             ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
-            ->latest()
+            ->latest('dibuat_pada')
             ->paginate(10);
 
         return view('livewire.pengelola.manajemen-produk.pembelian.riwayat-pembelian', [

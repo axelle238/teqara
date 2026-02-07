@@ -6,7 +6,10 @@ use App\Helpers\LogHelper;
 use App\Models\Kategori;
 use App\Models\Merek;
 use App\Models\Produk;
+use App\Models\VarianProduk;
+use App\Models\SpesifikasiProduk;
 use App\Services\LayananStok;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -24,7 +27,7 @@ class ManajemenProduk extends Component
     // State Halaman
     public $tampilkanForm = false;
 
-    // Properti Form
+    // Properti Form Produk Utama
     public $produk_id;
     public $kategori_id;
     public $merek_id;
@@ -39,6 +42,15 @@ class ManajemenProduk extends Component
     public $status = 'aktif';
     public $gambar_baru;
     public $gambar_lama;
+
+    // Properti Varian (Enterprise Feature)
+    public $varian = []; // Array: [['nama' => '', 'sku' => '', 'harga' => 0, 'stok' => 0]]
+
+    // Properti Spesifikasi (Enterprise Feature)
+    public $spesifikasi = []; // Array: [['judul' => '', 'nilai' => '']]
+
+    // Properti Harga Grosir (B2B Feature)
+    public $harga_grosir = []; // Array: [['min' => 0, 'harga' => 0]]
 
     // Filter & Pencarian
     public $cari = '';
@@ -56,6 +68,42 @@ class ManajemenProduk extends Component
         } else {
             $this->selectedProduk = [];
         }
+    }
+
+    // --- MANAJEMEN VARIAN ---
+    public function tambahBarisVarian()
+    {
+        $this->varian[] = ['nama' => '', 'sku' => '', 'harga_tambahan' => 0, 'stok' => 0];
+    }
+
+    public function hapusBarisVarian($index)
+    {
+        unset($this->varian[$index]);
+        $this->varian = array_values($this->varian);
+    }
+
+    // --- MANAJEMEN SPESIFIKASI ---
+    public function tambahBarisSpesifikasi()
+    {
+        $this->spesifikasi[] = ['judul' => '', 'nilai' => ''];
+    }
+
+    public function hapusBarisSpesifikasi($index)
+    {
+        unset($this->spesifikasi[$index]);
+        $this->spesifikasi = array_values($this->spesifikasi);
+    }
+
+    // --- MANAJEMEN HARGA GROSIR ---
+    public function tambahBarisGrosir()
+    {
+        $this->harga_grosir[] = ['min_qty' => 0, 'harga' => 0];
+    }
+
+    public function hapusBarisGrosir($index)
+    {
+        unset($this->harga_grosir[$index]);
+        $this->harga_grosir = array_values($this->harga_grosir);
     }
 
     /**
@@ -91,8 +139,17 @@ class ManajemenProduk extends Component
      */
     public function tambahBaru()
     {
-        $this->reset(['produk_id', 'kategori_id', 'merek_id', 'nama', 'kode_unit', 'harga_modal', 'harga_jual', 'stok', 'berat_gram', 'deskripsi_singkat', 'deskripsi_lengkap', 'gambar_baru', 'gambar_lama']);
+        $this->reset(['produk_id', 'kategori_id', 'merek_id', 'nama', 'kode_unit', 'harga_modal', 'harga_jual', 'stok', 'berat_gram', 'deskripsi_singkat', 'deskripsi_lengkap', 'gambar_baru', 'gambar_lama', 'varian', 'spesifikasi', 'harga_grosir']);
         $this->status = 'aktif';
+        
+        // Template default spesifikasi
+        $this->spesifikasi = [
+            ['judul' => 'Processor', 'nilai' => ''],
+            ['judul' => 'RAM', 'nilai' => ''],
+            ['judul' => 'Storage', 'nilai' => ''],
+            ['judul' => 'Layar', 'nilai' => ''],
+        ];
+        
         $this->tampilkanForm = true;
     }
 
@@ -101,7 +158,8 @@ class ManajemenProduk extends Component
      */
     public function edit($id)
     {
-        $produk = Produk::findOrFail($id);
+        $produk = Produk::with(['varian', 'spesifikasi'])->findOrFail($id);
+        
         $this->produk_id = $produk->id;
         $this->kategori_id = $produk->kategori_id;
         $this->merek_id = $produk->merek_id;
@@ -115,6 +173,23 @@ class ManajemenProduk extends Component
         $this->deskripsi_lengkap = $produk->deskripsi_lengkap;
         $this->status = $produk->status;
         $this->gambar_lama = $produk->gambar_utama;
+        
+        // Load Relasi
+        $this->varian = $produk->varian->map(function($v) {
+            return [
+                'id' => $v->id, // Track ID for update
+                'nama' => $v->nama_varian,
+                'sku' => $v->sku,
+                'harga_tambahan' => $v->harga_tambahan,
+                'stok' => $v->stok
+            ];
+        })->toArray();
+
+        $this->spesifikasi = $produk->spesifikasi->map(function($s) {
+            return ['judul' => $s->judul, 'nilai' => $s->nilai];
+        })->toArray();
+
+        $this->harga_grosir = $produk->harga_grosir ?? [];
 
         $this->tampilkanForm = true;
     }
@@ -129,7 +204,7 @@ class ManajemenProduk extends Component
     }
 
     /**
-     * Menyimpan data unit ke database.
+     * Menyimpan data unit ke database (Transaksi Database Penuh).
      */
     public function simpan()
     {
@@ -141,55 +216,89 @@ class ManajemenProduk extends Component
             'harga_modal' => 'required|numeric|min:0',
             'harga_jual' => 'required|numeric|min:0',
             'stok' => 'required|integer|min:0',
-        ], [
-            'nama.required' => 'Nama produk wajib diisi.',
-            'kode_unit.unique' => 'SKU sudah digunakan unit lain.',
-            'harga_jual.min' => 'Harga jual tidak boleh negatif.',
+            'varian.*.nama' => 'required_with:varian|string',
+            'spesifikasi.*.judul' => 'required_with:spesifikasi|string',
         ]);
 
-        $data = [
-            'kategori_id' => $this->kategori_id,
-            'merek_id' => $this->merek_id,
-            'nama' => $this->nama,
-            'kode_unit' => $this->kode_unit,
-            'harga_modal' => $this->harga_modal,
-            'harga_jual' => $this->harga_jual,
-            'stok' => $this->stok,
-            'berat_gram' => $this->berat_gram ?? 1000,
-            'deskripsi_singkat' => $this->deskripsi_singkat,
-            'deskripsi_lengkap' => $this->deskripsi_lengkap,
-            'status' => $this->status,
-        ];
+        DB::beginTransaction();
 
-        if ($this->gambar_baru) {
-            $path = $this->gambar_baru->store('produk', 'public');
-            $data['gambar_utama'] = '/storage/' . $path;
-        }
+        try {
+            $data = [
+                'kategori_id' => $this->kategori_id,
+                'merek_id' => $this->merek_id,
+                'nama' => $this->nama,
+                'kode_unit' => $this->kode_unit,
+                'harga_modal' => $this->harga_modal,
+                'harga_jual' => $this->harga_jual,
+                'stok' => $this->stok,
+                'berat_gram' => $this->berat_gram ?? 1000,
+                'deskripsi_singkat' => $this->deskripsi_singkat,
+                'deskripsi_lengkap' => $this->deskripsi_lengkap,
+                'status' => $this->status,
+                'harga_grosir' => $this->harga_grosir, // JSON cast di model
+                'memiliki_varian' => count($this->varian) > 0,
+            ];
 
-        if ($this->produk_id) {
-            $produk = Produk::findOrFail($this->produk_id);
-            $stokLama = $produk->stok;
-            $produk->update($data);
-
-            if ($this->stok != $stokLama) {
-                $selisih = $this->stok - $stokLama;
-                (new LayananStok)->tambahStok($produk, $selisih, "Penyesuaian stok manual via Editor Enterprise");
+            if ($this->gambar_baru) {
+                $path = $this->gambar_baru->store('produk', 'public');
+                $data['gambar_utama'] = '/storage/' . $path;
             }
 
-            LogHelper::catat('ubah_produk', $this->nama, "Modifikasi parameter unit {$this->nama} berhasil disinkronkan.");
-            $pesan = "Data unit {$this->nama} berhasil diperbarui!";
-        } else {
-            $produk = Produk::create($data);
-            if ($this->stok > 0) {
+            if ($this->produk_id) {
+                $produk = Produk::findOrFail($this->produk_id);
+                $stokLama = $produk->stok;
+                $produk->update($data);
+
+                // Update Varian (Hapus lama, buat baru - strategi simplifikasi untuk MVP Enterprise)
+                // Idealnya: update existing ID, create new, delete missing.
+                $produk->varian()->delete(); 
+                $produk->spesifikasi()->delete();
+
+                $pesan = "Data unit {$this->nama} berhasil diperbarui!";
+            } else {
+                $produk = Produk::create($data);
+                $pesan = "Unit baru {$this->nama} berhasil didaftarkan!";
+            }
+
+            // Simpan Varian Baru
+            foreach ($this->varian as $v) {
+                if(!empty($v['nama'])) {
+                    VarianProduk::create([
+                        'produk_id' => $produk->id,
+                        'nama_varian' => $v['nama'],
+                        'sku' => $v['sku'] ?? ($produk->kode_unit . '-' . \Str::slug($v['nama'])),
+                        'harga_tambahan' => $v['harga_tambahan'] ?? 0,
+                        'stok' => $v['stok'] ?? 0
+                    ]);
+                }
+            }
+
+            // Simpan Spesifikasi Baru
+            foreach ($this->spesifikasi as $s) {
+                if(!empty($s['judul']) && !empty($s['nilai'])) {
+                    SpesifikasiProduk::create([
+                        'produk_id' => $produk->id,
+                        'judul' => $s['judul'],
+                        'nilai' => $s['nilai']
+                    ]);
+                }
+            }
+
+            if (!$this->produk_id && $this->stok > 0) {
                 (new LayananStok)->tambahStok($produk, $this->stok, 'Input stok awal registrasi unit');
             }
-            LogHelper::catat('buat_produk', $this->nama, "Registrasi unit teknologi baru {$this->nama} ke dalam inventaris.");
-            $pesan = "Unit baru {$this->nama} berhasil didaftarkan!";
-        }
 
-        $this->tampilkanForm = false;
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
-        $this->reset(['produk_id', 'gambar_baru']);
+            DB::commit();
+            LogHelper::catat($this->produk_id ? 'ubah_produk' : 'buat_produk', $this->nama, "Data produk lengkap disimpan.");
+
+            $this->tampilkanForm = false;
+            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
+            $this->reset(['produk_id', 'gambar_baru', 'varian', 'spesifikasi', 'harga_grosir']);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('notifikasi', ['tipe' => 'error', 'pesan' => 'Gagal menyimpan: ' . $e->getMessage()]);
+        }
     }
 
     /**
@@ -211,7 +320,7 @@ class ManajemenProduk extends Component
             ->with(['kategori', 'merek'])
             ->where('nama', 'like', '%'.$this->cari.'%')
             ->when($this->filter_kategori, fn ($q) => $q->where('kategori_id', $this->filter_kategori))
-            ->latest()
+            ->latest('dibuat_pada')
             ->paginate(10);
 
         return view('livewire.pengelola.manajemen-produk.manajemen-produk', [

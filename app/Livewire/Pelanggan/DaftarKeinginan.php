@@ -7,19 +7,30 @@ use Livewire\Component;
 
 class DaftarKeinginan extends Component
 {
-    public function hapus($produkId)
+    public function getWishlistProperty()
     {
-        auth()->user()->wishlist()->detach($produkId);
-        $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Produk dihapus dari keinginan.']);
+        if (!auth()->check()) {
+            return collect();
+        }
+        return auth()->user()->wishlist()->with(['kategori'])->get();
     }
 
-    #[Title('Daftar Keinginan Saya - Teqara')]
+    public function hapus($id)
+    {
+        auth()->user()->wishlist()->detach($id);
+        $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Produk dihapus dari wishlist.']);
+    }
+
+    public function tambahKeKeranjang($produkId)
+    {
+        $this->dispatch('tambah-keranjang', produkId: $produkId, jumlah: 1);
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Produk ditambahkan ke keranjang.']);
+    }
+
+    #[Title('Wishlist & Favorit - Teqara Hub')]
     public function render()
     {
-        $wishlist = auth()->user()->wishlist()->with(['kategori', 'gambar'])->get();
-
-        return view('livewire.pelanggan.daftar-keinginan', [
-            'wishlist' => $wishlist,
-        ])->layout('components.layouts.app');
+        return view('livewire.pelanggan.daftar-keinginan')
+            ->layout('components.layouts.app');
     }
 }

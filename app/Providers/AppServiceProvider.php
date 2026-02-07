@@ -19,18 +19,38 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        \Illuminate\Support\Facades\Cache::extend('basis_data', function ($app, $config) {
+            $connection = $app['db']->connection($config['connection'] ?? null);
+            $table = $config['table'];
+            $prefix = $app['config']['cache.prefix'];
+
+            return \Illuminate\Support\Facades\Cache::repository(
+                new \App\Extensions\PengelolaCacheBasisData($connection, $table, $prefix)
+            );
+        });
+
+        \Illuminate\Support\Facades\Session::extend('basis_data', function ($app) {
+            $table = $app['config']['session.table'];
+            $minutes = $app['config']['session.lifetime'];
+            $connection = $app['db']->connection($app['config']['session.connection']);
+
+            return new \App\Extensions\PengelolaSesiBasisData($connection, $table, $minutes, $app);
+        });
+
         \App\Models\Produk::observe(\App\Observers\ProdukObserver::class);
         \App\Models\Pesanan::observe(\App\Observers\PesananObserver::class);
         \App\Models\Pengguna::observe(\App\Observers\PenggunaObserver::class);
 
-        // Share pengaturan_sistem Global ke Semua View
-        try {
-            if (\Illuminate\Support\Facades\Schema::hasTable('pengaturan_sistem')) {
-                $pengaturan_sistem = \Illuminate\Support\Facades\DB::table('pengaturan_sistem')->pluck('nilai', 'kunci');
-                \Illuminate\Support\Facades\View::share('pengaturan_sistemToko', $pengaturan_sistem);
-            }
-        } catch (\Exception $e) {
-            // Abaikan jika tabel belum ada (saat migrasi awal)
-        }
+        // Global Settings Composer (Real-time & Cached)
+        \Illuminate\Support\Facades\View::composer('*', function ($view) {
+            $settings = \Illuminate\Support\Facades\Cache::remember('global_settings', 60, function () {
+                try {
+                    return \App\Models\PengaturanSistem::pluck('nilai', 'kunci');
+                } catch (\Exception $e) {
+                    return collect([]);
+                }
+            });
+            $view->with('globalSettings', $settings);
+        });
     }
 }

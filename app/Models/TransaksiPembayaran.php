@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class TransaksiPembayaran extends Model
 {
+    const CREATED_AT = 'dibuat_pada';
+    const UPDATED_AT = 'diperbarui_pada';
+
     protected $table = 'transaksi_pembayaran';
 
     protected $guarded = ['id'];
 
     protected $casts = [
-        'muatan_gerbang' => 'array',
+        'payload_gateway' => 'array',
         'waktu_bayar' => 'datetime',
     ];
 

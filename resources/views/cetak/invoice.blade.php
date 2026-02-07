@@ -37,7 +37,7 @@
                 <div class="title">INVOICE</div>
                 <div class="info">
                     Nomor: #{{ $pesanan->nomor_faktur }}<br>
-                    Tanggal: {{ $pesanan->created_at->format('d M Y') }}<br>
+                    Tanggal: {{ $pesanan->dibuat_pada->format('d M Y') }}<br>
                     Status: <span class="status {{ $pesanan->status_pembayaran == 'lunas' ? 'lunas' : 'belum' }}">{{ $pesanan->status_pembayaran }}</span>
                 </div>
             </div>

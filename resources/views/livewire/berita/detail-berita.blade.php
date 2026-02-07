@@ -14,7 +14,7 @@
                         {{ $berita->kategori }}
                     </span>
                     <span class="text-white/60 text-xs font-bold uppercase tracking-widest">
-                        {{ $berita->created_at->translatedFormat('d F Y') }}
+                        {{ $berita->dibuat_pada->translatedFormat('d F Y') }}
                     </span>
                 </div>
                 
@@ -85,11 +85,15 @@
                         @foreach($terkait as $t)
                         <a href="{{ route('berita.detail', $t->slug) }}" class="group flex gap-4 items-start">
                             <div class="w-20 h-20 rounded-2xl bg-slate-50 overflow-hidden shrink-0">
-                                <img src="{{ $t->gambar_sampul }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                @if($t->thumbnail)
+                                <img src="{{ asset('storage/'.$t->thumbnail) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                @else
+                                <div class="w-full h-full bg-slate-200 flex items-center justify-center text-2xl">📰</div>
+                                @endif
                             </div>
                             <div>
                                 <h4 class="font-bold text-slate-900 text-sm leading-tight group-hover:text-indigo-600 transition-colors line-clamp-2 mb-2">{{ $t->judul }}</h4>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ $t->created_at->translatedFormat('d M Y') }}</span>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ $t->dibuat_pada->translatedFormat('d M Y') }}</span>
                             </div>
                         </a>
                         @endforeach

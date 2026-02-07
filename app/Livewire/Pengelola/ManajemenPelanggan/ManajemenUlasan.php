@@ -34,7 +34,7 @@ class ManajemenUlasan extends Component
     #[Title('Ulasan & Feedback - Admin Teqara')]
     public function render()
     {
-        $ulasan = Ulasan::with(['pengguna', 'produk'])->latest()->paginate(10);
+        $ulasan = Ulasan::with(['pengguna', 'produk'])->latest('dibuat_pada')->paginate(10);
 
         return view('livewire.pengelola.manajemen-pelanggan.manajemen-ulasan', [
             'ulasan' => $ulasan,

@@ -26,4 +26,9 @@ class Berita extends Model
     {
         return $this->belongsTo(Pengguna::class, 'penulis_id');
     }
+
+    public function getGambarSampulAttribute()
+    {
+        return $this->thumbnail ? asset('storage/' . $this->thumbnail) : 'https://placehold.co/1200x600/1e293b/ffffff?text=Teqara+News';
+    }
 }

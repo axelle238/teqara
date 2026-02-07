@@ -6,6 +6,7 @@ use App\Models\Kategori;
 use App\Models\Merek;
 use App\Models\Produk;
 use Illuminate\Database\Eloquent\Builder;
+use App\Models\KontenHalaman;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -58,12 +59,25 @@ class Katalog extends Component
         $this->resetPage();
     }
 
+    public function getBannerTokoProperty()
+    {
+        return KontenHalaman::where('bagian', 'promo_banner')
+            ->where('aktif', true)
+            ->orderBy('urutan')
+            ->get();
+    }
+
     public function render()
     {
-        $query = Produk::query()->with(['kategori', 'merek', 'gambar']);
+        $query = Produk::query()
+            ->with(['kategori', 'merek', 'gambar'])
+            ->where('status', 'aktif');
 
         if ($this->cari) {
-            $query->where('nama', 'like', '%'.$this->cari.'%');
+            $query->where(function($q) {
+                $q->where('nama', 'like', '%'.$this->cari.'%')
+                  ->orWhere('kode_unit', 'like', '%'.$this->cari.'%');
+            });
         }
 
         if (! empty($this->filterKategori)) {

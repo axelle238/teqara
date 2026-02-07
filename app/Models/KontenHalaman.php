@@ -22,5 +22,7 @@ class KontenHalaman extends Model
 
     protected $casts = [
         'aktif' => 'boolean',
+        'dibuat_pada' => 'datetime',
+        'diperbarui_pada' => 'datetime',
     ];
 }

@@ -29,7 +29,7 @@ class FormProduk extends Component
 
     // Properti Inti
     public $nama, $slug, $kode_unit, $kategori_id, $merek_id;
-    public $harga_modal = 0, $harga_jual = 0, $stok = 0;
+    public $harga_modal = 0, $harga_jual = 0, $stok = 0, $berat_gram = 0;
     public $deskripsi_singkat, $deskripsi_lengkap;
     public $status = 'aktif', $memiliki_varian = false;
     public $tipe_produk = 'fisik'; // fisik, digital, bundle

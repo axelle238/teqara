@@ -2,112 +2,49 @@
 
 namespace App\Livewire\Pengelola\LayananPelanggan;
 
-use App\Helpers\LogHelper;
 use App\Models\TiketBantuan;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-/**
- * Class ManajemenTiket
- * Tujuan: Manajemen tiket bantuan dan keluhan pelanggan.
- * Arsitektur: 100% Full Page SPA (Tanpa Slide Over/Modal).
- */
 class ManajemenTiket extends Component
 {
     use WithPagination;
 
-    // State Halaman
-    public $tampilkanDetail = false;
-
-    // Filter
     public $filterStatus = '';
+    public $filterPrioritas = '';
+    public $cari = '';
 
-    // Properti Model
-    public $tiketTerpilih;
-    public $pesanBaru;
-
-    /**
-     * Buka detail tiket dalam tampilan halaman penuh.
-     */
-    public function bukaTiket($id)
+    public function updated($property)
     {
-        $this->tiketTerpilih = TiketBantuan::with('pengguna')->findOrFail($id);
-        $this->tampilkanDetail = true;
-    }
-
-    /**
-     * Kembali ke daftar tiket utama.
-     */
-    public function kembali()
-    {
-        $this->tampilkanDetail = false;
-        $this->reset(['tiketTerpilih', 'pesanBaru']);
-    }
-
-    /**
-     * Mengirim balasan administratif ke tiket pelanggan.
-     */
-    public function kirimBalasan()
-    {
-        $this->validate([
-            'pesanBaru' => 'required|min:2'
-        ], [
-            'pesanBaru.required' => 'Pesan balasan tidak boleh kosong.',
-            'pesanBaru.min' => 'Pesan terlalu singkat.',
-        ]);
-
-        $riwayat = $this->tiketTerpilih->riwayat_pesan ?? [];
-        $riwayat[] = [
-            'pengirim' => 'admin',
-            'nama' => auth()->user()->nama,
-            'pesan' => $this->pesanBaru,
-            'waktu' => now()->format('Y-m-d H:i:s'),
-        ];
-
-        $this->tiketTerpilih->update([
-            'riwayat_pesan' => $riwayat,
-            'status' => 'diproses',
-        ]);
-
-        $this->pesanBaru = '';
-        $this->tiketTerpilih->refresh();
-
-        LogHelper::catat('balas_tiket', "Tiket #{$this->tiketTerpilih->id}", 'Admin memberikan respon solusi pada tiket bantuan.');
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Balasan terkirim secara real-time.']);
-    }
-
-    /**
-     * Mengubah status resolusi tiket.
-     */
-    public function ubahStatus($status)
-    {
-        if ($this->tiketTerpilih) {
-            $this->tiketTerpilih->update(['status' => $status]);
-            $this->tiketTerpilih->refresh();
-            
-            $pesan = 'Status tiket diubah menjadi '.strtoupper($status);
-            LogHelper::catat('status_tiket', "Tiket #{$this->tiketTerpilih->id}", $pesan);
-            $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => $pesan]);
+        if ($property !== 'page') {
+            $this->resetPage();
         }
     }
 
-    #[Title('Pusat Bantuan Enterprise - Teqara')]
+    #[Title('Helpdesk & Support - Teqara Admin')]
     public function render()
     {
-        $query = TiketBantuan::with('pengguna')->latest();
+        $tiket = TiketBantuan::with(['pengguna'])
+            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterPrioritas, fn($q) => $q->where('prioritas', $this->filterPrioritas))
+            ->when($this->cari, function($q) {
+                $q->where('subjek', 'like', '%'.$this->cari.'%')
+                  ->orWhere('id', 'like', '%'.$this->cari.'%')
+                  ->orWhereHas('pengguna', fn($u) => $u->where('nama', 'like', '%'.$this->cari.'%'));
+            })
+            ->latest('diperbarui_pada') // Menggunakan kolom timestamp kustom
+            ->paginate(10);
 
-        if ($this->filterStatus) {
-            $query->where('status', $this->filterStatus);
-        }
+        $stats = [
+            'total' => TiketBantuan::count(),
+            'terbuka' => TiketBantuan::where('status', 'terbuka')->count(),
+            'tinggi' => TiketBantuan::where('prioritas', 'tinggi')->where('status', '!=', 'selesai')->count(),
+        ];
 
         return view('livewire.pengelola.layanan-pelanggan.manajemen-tiket', [
-            'daftarTiket' => $query->paginate(10),
-            'statistik' => [
-                'terbuka' => TiketBantuan::where('status', 'terbuka')->count(),
-                'diproses' => TiketBantuan::where('status', 'diproses')->count(),
-                'selesai' => TiketBantuan::where('status', 'selesai')->count(),
-            ],
-        ])->layout('components.layouts.admin');
+            'tiket' => $tiket,
+            'stats' => $stats
+        ])->layout('components.layouts.admin', ['header' => 'Pusat Bantuan (Helpdesk)']);
     }
 }

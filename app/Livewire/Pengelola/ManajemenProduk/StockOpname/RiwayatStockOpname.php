@@ -40,7 +40,7 @@ class RiwayatStockOpname extends Component
     {
         $riwayat = StockOpname::with('petugas')
             ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
-            ->latest()
+            ->latest('dibuat_pada')
             ->paginate(10);
 
         return view('livewire.pengelola.manajemen-produk.stock-opname.riwayat-stock-opname', [

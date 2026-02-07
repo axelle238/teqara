@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ulasan extends Model
 {
+    const CREATED_AT = 'dibuat_pada';
+    const UPDATED_AT = 'diperbarui_pada';
+
     protected $table = 'ulasan';
 
     protected $guarded = ['id'];

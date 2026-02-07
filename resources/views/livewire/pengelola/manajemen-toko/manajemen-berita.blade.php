@@ -1,160 +1,171 @@
-<div class="animate-in fade-in duration-500">
+<div class="space-y-8 animate-in fade-in zoom-in duration-500 pb-20">
     
-    @if(!$tampilkanForm)
-        <!-- TAMPILAN 1: DAFTAR ARTIKEL (FULL PAGE LIST) -->
+    <!-- Header Area -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight uppercase">Ruang <span class="text-rose-600">Redaksi</span></h1>
+            <p class="text-slate-500 font-medium">Publikasikan berita terbaru dan artikel edukasi untuk pelanggan.</p>
+        </div>
+        
+        @if(!$tampilkanEditor)
+        <button wire:click="tambahBaru" class="flex items-center gap-2 px-6 py-3 bg-rose-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-rose-700 transition-all shadow-lg shadow-rose-500/20 active:scale-95">
+            <i class="fa-solid fa-pen-nib"></i> Tulis Artikel
+        </button>
+        @endif
+    </div>
+
+    @if(!$tampilkanEditor)
+        <!-- LIST VIEW -->
         <div class="space-y-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50">
-                <div class="space-y-1">
-                    <h1 class="text-3xl font-black text-slate-900 tracking-tight uppercase">Pusat Informasi & Berita</h1>
-                    <p class="text-slate-500 font-medium text-sm uppercase tracking-widest">Edukasi & Update Teknologi untuk Pelanggan Teqara.</p>
+            <!-- Filter -->
+            <div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center justify-between">
+                <div class="relative w-full md:w-96">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari Judul Artikel..." class="w-full pl-11 pr-4 py-3 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-rose-500 transition-all">
                 </div>
-                <button wire:click="tambahBaru" class="flex items-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl text-sm font-black shadow-xl shadow-indigo-600/20 transition-all active:scale-95">
-                    <i class="fa-solid fa-file-signature text-lg"></i> TULIS ARTIKEL BARU
-                </button>
             </div>
 
-            <!-- Filter & Search -->
-            <div class="bg-white p-4 rounded-[30px] border border-indigo-50 flex items-center px-6 gap-4">
-                <i class="fa-solid fa-magnifying-glass text-slate-300"></i>
-                <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari judul artikel..." class="flex-1 bg-transparent border-none text-sm font-bold text-slate-700 focus:ring-0 placeholder:text-slate-300">
-            </div>
-
-            <!-- Grid Berita -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                @forelse($daftar_berita as $item)
-                <div class="group bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden hover:shadow-2xl hover:border-indigo-200 transition-all duration-500 flex flex-col md:flex-row">
-                    <div class="md:w-48 h-48 md:h-auto bg-slate-100 shrink-0 overflow-hidden">
-                        <img src="{{ $item->gambar_unggulan ?? 'https://via.placeholder.com/400x400?text=News+Thumb' }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    </div>
-                    <div class="p-8 flex flex-1 flex-col justify-between space-y-4">
-                        <div class="space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest {{ $item->status === 'publikasi' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100' }}">
-                                    {{ $item->status }}
-                                </span>
-                                <span class="text-[9px] font-bold text-slate-400 uppercase">{{ $item->created_at->translatedFormat('d M Y') }}</span>
-                            </div>
-                            <h3 class="font-black text-lg text-slate-800 leading-tight line-clamp-2 group-hover:text-indigo-600 transition-colors">{{ $item->judul }}</h3>
-                            <p class="text-slate-500 text-xs font-medium leading-relaxed line-clamp-2">{{ $item->ringkasan }}</p>
+            <!-- Grid Artikel -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                @forelse($berita as $b)
+                <div class="group bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-rose-100 transition-all duration-300 overflow-hidden flex flex-col h-full">
+                    <!-- Image -->
+                    <div class="relative h-48 bg-slate-100 overflow-hidden">
+                        <img src="{{ $b->gambar_sampul }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute top-4 left-4">
+                            <span class="px-3 py-1 bg-white/90 backdrop-blur-md rounded-lg text-[10px] font-black uppercase tracking-widest text-slate-800 shadow-sm">
+                                {{ $b->kategori }}
+                            </span>
                         </div>
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm {{ $b->status == 'publikasi' ? 'bg-emerald-500 text-white' : 'bg-slate-800 text-white' }}">
+                                {{ $b->status }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h3 class="font-black text-lg text-slate-900 leading-tight mb-2 group-hover:text-rose-600 transition-colors line-clamp-2">
+                            {{ $b->judul }}
+                        </h3>
+                        <p class="text-xs text-slate-500 font-medium mb-4">
+                            Dibuat: {{ $b->dibuat_pada->format('d M Y') }}
+                        </p>
                         
-                        <div class="flex items-center justify-between pt-4 border-t border-slate-50">
-                            <div class="flex gap-2">
-                                <button wire:click="edit({{ $item->id }})" class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white flex items-center justify-center transition-all shadow-sm">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button wire:click="hapus({{ $item->id }})" wire:confirm="Hapus artikel ini?" class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white flex items-center justify-center transition-all shadow-sm">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </div>
-                            <div class="flex items-center gap-2 text-slate-400">
-                                <i class="fa-solid fa-user-pen text-[10px]"></i>
-                                <span class="text-[10px] font-bold uppercase tracking-widest">{{ $item->penulis->nama ?? 'Admin' }}</span>
-                            </div>
+                        <div class="mt-auto flex gap-2 pt-4 border-t border-slate-50">
+                            <button wire:click="edit({{ $b->id }})" class="flex-1 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 hover:text-indigo-600 transition-all">
+                                Edit
+                            </button>
+                            <button wire:click="hapus({{ $b->id }})" wire:confirm="Hapus artikel ini?" class="w-10 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-rose-600 hover:border-rose-200 transition-all">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
                 @empty
-                <div class="col-span-full py-20 text-center bg-white rounded-[50px] border border-dashed border-slate-200">
-                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="fa-solid fa-newspaper text-3xl text-slate-300"></i>
+                <div class="col-span-full py-20 text-center">
+                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl text-slate-300">
+                        <i class="fa-regular fa-newspaper"></i>
                     </div>
-                    <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Arsip Berita Kosong</h3>
-                    <p class="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Segera tulis artikel teknologi pertama Anda untuk mengedukasi pelanggan.</p>
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">Belum Ada Artikel</h3>
+                    <p class="text-slate-400 text-sm font-medium mt-2">Mulai menulis untuk meningkatkan engagement pelanggan.</p>
                 </div>
                 @endforelse
             </div>
 
-            <div class="pt-6">
-                {{ $daftar_berita->links() }}
+            <div class="mt-8">
+                {{ $berita->links() }}
             </div>
         </div>
     @else
-        <!-- TAMPILAN 2: EDITOR ARTIKEL (FULL PAGE FORM) -->
-        <div class="space-y-8 animate-in slide-in-from-right-8 duration-500">
+        <!-- EDITOR VIEW -->
+        <div class="animate-in slide-in-from-right-8 duration-500">
             <!-- Header Editor -->
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-8 rounded-[40px] shadow-sm border border-indigo-50 mb-8 sticky top-24 z-30">
                 <div class="flex items-center gap-6">
                     <button wire:click="batal" class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center transition-all shadow-sm">
                         <i class="fa-solid fa-arrow-left text-xl"></i>
                     </button>
                     <div class="space-y-1">
-                        <h1 class="text-3xl font-black text-slate-900 tracking-tight uppercase">{{ $berita_id ? 'Sunting Artikel' : 'Tulis Artikel Baru' }}</h1>
-                        <p class="text-slate-500 font-medium uppercase tracking-widest text-[10px]">Editor Konten Teqara v16.0</p>
+                        <h1 class="text-3xl font-black text-slate-900 tracking-tight uppercase">{{ $beritaId ? 'Sunting Artikel' : 'Tulis Artikel Baru' }}</h1>
+                        <p class="text-slate-500 font-medium uppercase tracking-widest text-[10px]">Editor Konten Enterprise</p>
                     </div>
                 </div>
                 <div class="flex gap-4">
                     <button wire:click="batal" class="px-8 py-4 bg-slate-50 text-slate-500 rounded-3xl text-sm font-black hover:bg-slate-100 transition-all">BATAL</button>
-                    <button wire:click="simpan" class="px-10 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl text-sm font-black shadow-xl shadow-indigo-600/20 transition-all active:scale-95">PUBLIKASIKAN SEKARANG</button>
+                    <button wire:click="simpan" class="px-10 py-4 bg-rose-600 hover:bg-rose-700 text-white rounded-3xl text-sm font-black shadow-xl shadow-rose-600/20 transition-all active:scale-95 flex items-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> PUBLIKASI
+                    </button>
                 </div>
             </div>
 
-            <!-- Editor Content -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Kolom Kiri: Konten -->
+                <!-- Main Editor -->
                 <div class="lg:col-span-2 space-y-8">
-                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-8">
+                    <div class="bg-white p-10 rounded-[40px] border border-slate-200 shadow-sm space-y-6">
                         <div class="space-y-2">
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Judul Artikel (H1)</label>
-                            <input wire:model="judul" type="text" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-5 text-xl font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300" placeholder="Masukkan judul artikel yang SEO friendly...">
-                            @error('judul') <span class="text-[10px] font-black text-rose-500 uppercase tracking-widest block mt-2">{{ $message }}</span> @enderror
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Judul Artikel</label>
+                            <input wire:model.live="judul" type="text" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl text-xl font-bold text-slate-900 placeholder-slate-300 focus:ring-4 focus:ring-rose-500/10 transition-all" placeholder="Ketik judul yang menarik...">
+                            @error('judul') <span class="text-rose-500 text-xs font-bold px-1">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="space-y-2">
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Ringkasan Eksekutif (Snippet)</label>
-                            <textarea wire:model="ringkasan" rows="3" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-bold text-slate-600 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300" placeholder="Berikan gambaran singkat mengenai isi berita ini..."></textarea>
-                            @error('ringkasan') <span class="text-[10px] font-black text-rose-500 uppercase tracking-widest block mt-2">{{ $message }}</span> @enderror
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Slug (URL)</label>
+                            <input wire:model="slug" type="text" class="w-full px-6 py-3 bg-slate-50 border-none rounded-2xl text-sm font-mono text-slate-500 focus:ring-2 focus:ring-rose-500/10 transition-all">
                         </div>
 
                         <div class="space-y-2">
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Isi Konten Lengkap</label>
-                            <div class="space-y-4">
-                                <textarea wire:model="konten" rows="15" class="w-full bg-slate-50 border-none rounded-3xl px-6 py-6 text-sm font-medium text-slate-700 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300 leading-relaxed" placeholder="Tuliskan seluruh narasi artikel di sini..."></textarea>
-                                @error('konten') <span class="text-[10px] font-black text-rose-500 uppercase tracking-widest block mt-2">{{ $message }}</span> @enderror
-                            </div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Konten Utama</label>
+                            <textarea wire:model="konten" rows="20" class="w-full px-6 py-6 bg-slate-50 border-none rounded-[30px] text-base font-medium text-slate-700 placeholder-slate-300 focus:ring-4 focus:ring-rose-500/10 leading-relaxed resize-none transition-all" placeholder="Mulai menulis cerita Anda di sini... (HTML Supported)"></textarea>
+                            @error('konten') <span class="text-rose-500 text-xs font-bold px-1">{{ $message }}</span> @enderror
                         </div>
                     </div>
                 </div>
 
-                <!-- Kolom Kanan: Pengaturan & Media -->
+                <!-- Sidebar Settings -->
                 <div class="space-y-8">
-                    <!-- Status & Meta -->
-                    <div class="bg-white p-10 rounded-[50px] shadow-sm border border-indigo-50 space-y-8">
-                        <div class="space-y-4">
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Status Publikasi</label>
-                            <select wire:model="status" class="w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-sm font-black text-slate-800 focus:ring-4 focus:ring-indigo-500/10">
-                                <option value="draft">📁 DRAFT INTERNAL</option>
-                                <option value="publikasi">🌍 PUBLIKASIKAN KE TOKO</option>
-                                <option value="arsip">📦 ARSIP ARTIKEL</option>
+                    <div class="bg-white p-8 rounded-[40px] border border-slate-200 shadow-sm space-y-6">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Gambar Sampul</label>
+                            <div class="relative aspect-video bg-slate-50 rounded-3xl border-2 border-dashed border-slate-200 overflow-hidden group hover:border-rose-300 transition-all cursor-pointer">
+                                @if($gambar_sampul)
+                                    <img src="{{ $gambar_sampul->temporaryUrl() }}" class="w-full h-full object-cover">
+                                @elseif($gambar_lama)
+                                    <img src="{{ $gambar_lama }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-300">
+                                        <i class="fa-solid fa-image text-3xl mb-2"></i>
+                                        <span class="text-[10px] font-bold uppercase tracking-widest">Upload Foto</span>
+                                    </div>
+                                @endif
+                                <input type="file" wire:model="gambar_sampul" class="absolute inset-0 opacity-0 cursor-pointer">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Kategori</label>
+                            <select wire:model="kategori" class="w-full px-6 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-rose-500 cursor-pointer">
+                                <option value="berita">Berita Umum</option>
+                                <option value="promo">Promo & Diskon</option>
+                                <option value="tips">Tips & Trik</option>
+                                <option value="event">Event Komunitas</option>
                             </select>
                         </div>
 
-                        <div class="space-y-4 pt-8 border-t border-slate-50">
-                            <label class="block text-xs font-black text-slate-400 uppercase tracking-[0.3em]">Gambar Unggulan</label>
-                            <div class="relative aspect-square bg-slate-50 rounded-3xl border-4 border-dashed border-slate-100 flex items-center justify-center overflow-hidden group hover:border-indigo-200 transition-all">
-                                @if($gambar_baru)
-                                    <img src="{{ $gambar_baru->temporaryUrl() }}" class="w-full h-full object-cover">
-                                @elseif($gambar_lama)
-                                    <img src="{{ asset($gambar_lama) }}" class="w-full h-full object-cover">
-                                @else
-                                    <div class="text-center space-y-3">
-                                        <i class="fa-solid fa-images text-4xl text-slate-200 group-hover:text-indigo-400 transition-colors"></i>
-                                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Unggah Thumbnail</p>
-                                    </div>
-                                @endif
-                                <input type="file" wire:model="gambar_baru" class="absolute inset-0 opacity-0 cursor-pointer">
-                            </div>
-                            <p class="text-[10px] font-bold text-slate-400 leading-relaxed italic text-center">*Rasio 1:1 atau 4:3 sangat disarankan untuk tampilan grid.</p>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Status Publikasi</label>
+                            <select wire:model="status" class="w-full px-6 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-rose-500 cursor-pointer">
+                                <option value="draft">Draft (Disimpan)</option>
+                                <option value="publikasi">Publikasi (Tayang)</option>
+                                <option value="arsip">Arsip (Sembunyikan)</option>
+                            </select>
                         </div>
-                    </div>
 
-                    <!-- Tips SEO -->
-                    <div class="bg-emerald-500 p-10 rounded-[50px] text-white shadow-2xl shadow-emerald-500/30 space-y-4 relative overflow-hidden group">
-                        <i class="fa-solid fa-bolt text-4xl opacity-20 absolute -right-4 -top-4 group-hover:scale-150 transition-transform duration-1000"></i>
-                        <h4 class="text-lg font-black uppercase tracking-tight">Tips SEO Teqara</h4>
-                        <p class="text-xs font-bold text-emerald-50 leading-relaxed opacity-90">
-                            "Gunakan kata kunci teknologi populer di judul dan 50 kata pertama isi konten untuk meningkatkan peringkat pencarian di Google."
-                        </p>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Tags (Pemisah Koma)</label>
+                            <input wire:model="tags" type="text" placeholder="teknologi, gadget, terbaru" class="w-full px-6 py-3 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-rose-500">
+                        </div>
                     </div>
                 </div>
             </div>

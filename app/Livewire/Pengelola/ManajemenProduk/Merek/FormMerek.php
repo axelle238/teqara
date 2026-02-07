@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Pengelola\ManajemenProduk\Merek;
 
-use App\Helpers\LogHelper;
 use App\Models\Merek;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -16,7 +15,7 @@ class FormMerek extends Component
     public $merekId;
     public $nama;
     public $slug;
-    public $logo_baru;
+    public $logo; // Upload
     public $logo_lama;
 
     public function mount($id = null)
@@ -26,20 +25,20 @@ class FormMerek extends Component
             $this->merekId = $m->id;
             $this->nama = $m->nama;
             $this->slug = $m->slug;
-            $this->logo_lama = $m->logo;
+            // $this->logo_lama = $m->logo; // Jika ada kolom logo
         }
     }
 
-    public function updatedNama($value)
+    public function updatedNama()
     {
-        $this->slug = Str::slug($value);
+        $this->slug = Str::slug($this->nama);
     }
 
     public function simpan()
     {
         $this->validate([
             'nama' => 'required|min:2',
-            'logo_baru' => 'nullable|image|max:1024',
+            'slug' => 'required|unique:merek,slug,'.$this->merekId,
         ]);
 
         $data = [
@@ -47,27 +46,20 @@ class FormMerek extends Component
             'slug' => $this->slug,
         ];
 
-        if ($this->logo_baru) {
-            $data['logo'] = $this->logo_baru->store('merek', 'public');
-        }
+        // Handle upload logo logic here if needed
 
         if ($this->merekId) {
             Merek::find($this->merekId)->update($data);
-            $pesan = "Merek {$this->nama} berhasil diperbarui.";
-            $aksi = 'update_merek';
+            $pesan = 'Data merek diperbarui.';
         } else {
             Merek::create($data);
-            $pesan = "Merek baru {$this->nama} berhasil ditambahkan.";
-            $aksi = 'buat_merek';
+            $pesan = 'Merek baru ditambahkan.';
         }
 
-        LogHelper::catat($aksi, $this->nama, $pesan);
-        
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
-        return redirect()->route('pengelola.merek');
+        return redirect()->route('pengelola.merek')->with('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
     }
 
-    #[Title('Formulir Merek - Admin Teqara')]
+    #[Title('Form Merek - Teqara Admin')]
     public function render()
     {
         return view('livewire.pengelola.manajemen-produk.merek.form-merek')

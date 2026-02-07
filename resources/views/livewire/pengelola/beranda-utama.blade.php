@@ -1,328 +1,187 @@
-<div class="space-y-8 animate-in fade-in zoom-in duration-500 pb-10">
+<div class="space-y-8 pb-20 animate-in fade-in zoom-in duration-500">
     
-    <!-- Bagian 1: Header Dashboard & Aksi Cepat -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 bg-gradient-to-r from-slate-900 to-slate-800 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl border border-slate-700">
-            <div class="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
-            
-            <div class="relative z-10 flex flex-col h-full justify-between">
-                <div>
-                    <h1 class="text-4xl md:text-5xl font-black tracking-tighter mb-4">Pusat Komando <span class="text-cyan-400">TEQARA</span></h1>
-                    <p class="text-slate-400 text-lg font-medium max-w-xl leading-relaxed">
-                        Pantau seluruh ekosistem bisnis Anda dalam satu layar. Status sistem: <span class="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border border-emerald-500/30 animate-pulse">Optimal</span>
-                    </p>
-                </div>
-                
-                <div class="mt-10 flex flex-wrap gap-4">
-                    <a href="{{ route('pengelola.produk.tambah') }}" wire:navigate class="flex items-center gap-3 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl text-sm font-black transition-all shadow-lg shadow-indigo-500/30 group">
-                        <i class="fa-solid fa-plus group-hover:rotate-90 transition-transform"></i> UNIT BARU
-                    </a>
-                    <a href="{{ route('pengelola.pesanan.daftar') }}" wire:navigate class="flex items-center gap-3 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-2xl text-sm font-black transition-all border border-slate-600">
-                        <i class="fa-solid fa-list-check"></i> PROSES PESANAN
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-[2.5rem] p-10 border border-slate-200 shadow-sm flex flex-col justify-between relative overflow-hidden group">
-            <div class="absolute right-0 top-0 w-40 h-40 bg-indigo-50 rounded-bl-[100px] -mr-6 -mt-6 transition-transform group-hover:scale-110"></div>
-            
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-8">
-                    <span class="px-4 py-1.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-widest border border-slate-200">
-                        Waktu Lokal
-                    </span>
-                    <i class="fa-solid fa-clock text-slate-300 text-2xl"></i>
-                </div>
-                <div class="space-y-2">
-                    <p class="text-6xl font-black text-slate-800 tracking-tighter" id="jam-realtime">{{ now()->format('H:i') }}</p>
-                    <p class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">{{ now()->translatedFormat('l, d F Y') }}</p>
-                </div>
-            </div>
-
-            <div class="mt-8 pt-8 border-t border-slate-100 relative z-10 flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-500">
-                    <i class="fa-solid fa-shield-virus text-xl"></i>
+    <!-- Hero Welcome -->
+    <div class="relative bg-gradient-to-r from-slate-900 to-indigo-900 rounded-[2.5rem] p-10 overflow-hidden shadow-2xl shadow-indigo-900/20 text-white">
+        <!-- Decor -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"></div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="flex items-center gap-6">
+                <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-4xl shadow-inner">
+                    👋
                 </div>
                 <div>
-                    <p class="text-xs font-black text-slate-800 uppercase tracking-widest">{{ $keamanan['log_aktivitas_hari_ini'] }} LOG HARI INI</p>
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">KEAMANAN: TERJAMIN</p>
+                    <p class="text-indigo-300 font-black text-xs uppercase tracking-[0.2em] mb-1">Selamat Datang Kembali</p>
+                    <h1 class="text-4xl font-black tracking-tight">{{ auth()->user()->nama }}</h1>
+                    <p class="text-slate-400 text-sm mt-2 font-medium">Berikut adalah ringkasan kinerja bisnis Anda hari ini.</p>
                 </div>
+            </div>
+            <div class="flex gap-3">
+                <a href="{{ route('pengelola.laporan.pusat') }}" wire:navigate class="px-6 py-3 bg-white text-indigo-900 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-50 transition-all shadow-lg">
+                    Lihat Laporan Lengkap
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Bagian 2: Metrik Utama (4 Pilar Utama) -->
+    <!-- Quick Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Omzet -->
-        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-amber-50 rounded-full opacity-50 group-hover:scale-125 transition-transform"></div>
-            <div class="relative z-10">
-                <div class="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-600 mb-6 shadow-sm">
-                    <i class="fa-solid fa-sack-dollar text-2xl"></i>
+        
+        <!-- Revenue -->
+        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:border-emerald-100 transition-all duration-300 group">
+            <div class="flex justify-between items-start mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 text-2xl group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-coins"></i>
                 </div>
-                <p class="text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-2">Omzet Lunas</p>
-                <h3 class="text-2xl font-black text-slate-900 tracking-tighter">Rp {{ number_format($keuangan['omzet_hari_ini'], 0, ',', '.') }}</h3>
-                <div class="mt-4 flex items-center gap-2 text-[10px] font-black text-amber-600 bg-amber-50 w-fit px-3 py-1 rounded-full border border-amber-100">
-                    PENDING: {{ $keuangan['pembayaran_pending'] }}
-                </div>
+                <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest">+12%</span>
             </div>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Pendapatan Bulan Ini</p>
+            <h3 class="text-3xl font-black text-slate-900 tracking-tighter">Rp {{ number_format($this->stats['pendapatan_bulan_ini']/1000000, 1, ',', '.') }}Jt</h3>
         </div>
 
-        <!-- Inventaris -->
-        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-50 rounded-full opacity-50 group-hover:scale-125 transition-transform"></div>
-            <div class="relative z-10">
-                <div class="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600 mb-6 shadow-sm">
-                    <i class="fa-solid fa-boxes-stacked text-2xl"></i>
+        <!-- Orders -->
+        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all duration-300 group">
+            <div class="flex justify-between items-start mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 text-2xl group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-cart-shopping"></i>
                 </div>
-                <p class="text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-2">Total Unit</p>
-                <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ number_format($produk['total_unit']) }} <span class="text-xs text-slate-400">SKU</span></h3>
-                <div class="mt-4 flex items-center gap-2 text-[10px] font-black {{ $produk['stok_kritis'] > 0 ? 'text-rose-600 bg-rose-50 border-rose-100' : 'text-emerald-600 bg-emerald-50 border-emerald-100' }} w-fit px-3 py-1 rounded-full border">
-                    STOK KRITIS: {{ $produk['stok_kritis'] }}
-                </div>
+                @if($this->stats['pesanan_baru'] > 0)
+                    <span class="px-3 py-1 bg-rose-50 text-rose-600 rounded-lg text-[10px] font-black uppercase tracking-widest animate-pulse">Action Needed</span>
+                @endif
             </div>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Pesanan Baru</p>
+            <h3 class="text-3xl font-black text-slate-900 tracking-tighter">{{ $this->stats['pesanan_baru'] }} Order</h3>
         </div>
 
-        <!-- Pesanan -->
-        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50 rounded-full opacity-50 group-hover:scale-125 transition-transform"></div>
-            <div class="relative z-10">
-                <div class="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600 mb-6 shadow-sm">
-                    <i class="fa-solid fa-cart-shopping text-2xl"></i>
+        <!-- Products -->
+        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:border-cyan-100 transition-all duration-300 group">
+            <div class="flex justify-between items-start mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-cyan-50 flex items-center justify-center text-cyan-600 text-2xl group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-box-open"></i>
                 </div>
-                <p class="text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-2">Faktur Baru</p>
-                <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ $pesanan['masuk_hari_ini'] }} <span class="text-xs text-slate-400">INV</span></h3>
-                <div class="mt-4 flex items-center gap-2 text-[10px] font-black text-blue-600 bg-blue-50 w-fit px-3 py-1 rounded-full border border-blue-100 uppercase">
-                    Antrean: {{ $pesanan['perlu_proses'] }}
-                </div>
+                <span class="px-3 py-1 bg-cyan-50 text-cyan-600 rounded-lg text-[10px] font-black uppercase tracking-widest">Aktif</span>
             </div>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total SKU Produk</p>
+            <h3 class="text-3xl font-black text-slate-900 tracking-tighter">{{ $this->stats['produk_aktif'] }} Unit</h3>
         </div>
 
-        <!-- CRM -->
-        <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative">
-            <div class="absolute -right-4 -top-4 w-24 h-24 bg-purple-50 rounded-full opacity-50 group-hover:scale-125 transition-transform"></div>
-            <div class="relative z-10">
-                <div class="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600 mb-6 shadow-sm">
-                    <i class="fa-solid fa-users text-2xl"></i>
+        <!-- Customers -->
+        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:border-purple-100 transition-all duration-300 group">
+            <div class="flex justify-between items-start mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-600 text-2xl group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-users"></i>
                 </div>
-                <p class="text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-2">Basis Pelanggan</p>
-                <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ number_format($pelanggan['total_member']) }} <span class="text-xs text-slate-400">JIWA</span></h3>
-                <div class="mt-4 flex items-center gap-2 text-[10px] font-black text-purple-600 bg-purple-50 w-fit px-3 py-1 rounded-full border border-purple-100">
-                    BARU: +{{ $pelanggan['member_baru_bulan_ini'] }}
-                </div>
+                <span class="px-3 py-1 bg-purple-50 text-purple-600 rounded-lg text-[10px] font-black uppercase tracking-widest">New</span>
             </div>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Pelanggan Baru</p>
+            <h3 class="text-3xl font-black text-slate-900 tracking-tighter">+{{ $this->stats['pelanggan_baru'] }}</h3>
         </div>
     </div>
 
-    <!-- Bagian 3: Visualisasi & Status Operasional (Hulu ke Hilir) -->
+    <!-- Main Content Split -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Grafik Penjualan -->
-        <div class="lg:col-span-2 bg-white rounded-[2.5rem] p-10 border border-slate-200 shadow-sm">
-            <div class="flex items-center justify-between mb-10">
+        
+        <!-- Live Transaction Feed -->
+        <div class="lg:col-span-2 bg-white rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/50 p-8 flex flex-col">
+            <div class="flex items-center justify-between mb-8">
                 <div>
-                    <h3 class="text-xl font-black text-slate-800 tracking-tight uppercase">Analitik Tren Penjualan</h3>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Akumulasi pendapatan 7 hari terakhir</p>
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">Transaksi Terkini</h3>
+                    <p class="text-xs text-slate-500 font-medium">Real-time data masuk.</p>
                 </div>
-                <div class="bg-indigo-50 px-4 py-2 rounded-2xl text-indigo-600 text-[10px] font-black uppercase tracking-widest border border-indigo-100">Real-time</div>
-            </div>
-            
-            <div id="grafikPendapatan" class="w-full h-80"></div>
-        </div>
-
-        <!-- Radar Operasional -->
-        <div class="bg-white rounded-[2.5rem] p-10 border border-slate-200 shadow-sm flex flex-col">
-            <h3 class="text-xl font-black text-slate-800 tracking-tight uppercase mb-8 border-b border-slate-50 pb-4">Radar Operasional</h3>
-            
-            <div class="space-y-8 flex-1">
-                <!-- Logistik -->
-                <div class="flex items-center gap-5 group cursor-pointer">
-                    <div class="w-14 h-14 rounded-[1.25rem] bg-orange-100 text-orange-600 flex items-center justify-center transition-all group-hover:bg-orange-600 group-hover:text-white shadow-sm">
-                        <i class="fa-solid fa-truck-fast text-xl"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-black text-slate-700 uppercase tracking-tight">Logistik</span>
-                            <span class="text-[10px] font-black text-orange-600 bg-orange-50 px-2 py-0.5 rounded">{{ $logistik['dalam_pengiriman'] }} AKTIF</span>
-                        </div>
-                        <div class="w-full bg-slate-100 rounded-full h-2">
-                            <div class="bg-orange-500 h-2 rounded-full transition-all duration-1000" style="width: {{ min(($logistik['dalam_pengiriman'] * 10), 100) }}%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CS / Layanan -->
-                <div class="flex items-center gap-5 group cursor-pointer">
-                    <div class="w-14 h-14 rounded-[1.25rem] bg-pink-100 text-pink-600 flex items-center justify-center transition-all group-hover:bg-pink-600 group-hover:text-white shadow-sm">
-                        <i class="fa-solid fa-headset text-xl"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-black text-slate-700 uppercase tracking-tight">Layanan</span>
-                            <span class="text-[10px] font-black text-pink-600 bg-pink-50 px-2 py-0.5 rounded">{{ $layanan['tiket_terbuka'] }} TIKET</span>
-                        </div>
-                        <div class="w-full bg-slate-100 rounded-full h-2">
-                            <div class="bg-pink-500 h-2 rounded-full transition-all duration-1000" style="width: {{ min(($layanan['tiket_terbuka'] * 20), 100) }}%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Vendor -->
-                <div class="flex items-center gap-5 group cursor-pointer">
-                    <div class="w-14 h-14 rounded-[1.25rem] bg-cyan-100 text-cyan-600 flex items-center justify-center transition-all group-hover:bg-cyan-600 group-hover:text-white shadow-sm">
-                        <i class="fa-solid fa-handshake-angle text-xl"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-black text-slate-700 uppercase tracking-tight">Mitra/Vendor</span>
-                            <span class="text-[10px] font-black text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded">{{ $vendor['mitra_aktif'] }} AKTIF</span>
-                        </div>
-                        <div class="w-full bg-slate-100 rounded-full h-2">
-                            <div class="bg-cyan-500 h-2 rounded-full transition-all duration-1000" style="width: 100%"></div>
-                        </div>
-                    </div>
-                </div>
+                <a href="{{ route('pengelola.pesanan.daftar') }}" class="px-5 py-2 bg-slate-50 text-slate-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 transition-colors">
+                    Lihat Semua
+                </a>
             </div>
 
-            <a href="{{ route('pengelola.laporan.pusat') }}" wire:navigate class="mt-10 w-full py-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-600 font-black text-xs text-center hover:bg-indigo-600 hover:text-white hover:border-indigo-600 transition-all uppercase tracking-widest shadow-sm">
-                ANALISIS MENYELURUH
-            </a>
+            <div class="flex-1 space-y-4">
+                @forelse($this->pesananTerbaru as $p)
+                <div class="group flex items-center gap-4 p-4 rounded-[2rem] hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all cursor-default">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-black text-sm shadow-sm group-hover:scale-110 transition-transform">
+                        {{ substr($p->pengguna->nama, 0, 1) }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="text-sm font-bold text-slate-900 truncate">{{ $p->pengguna->nama }}</h4>
+                            <span class="px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[9px] font-black uppercase tracking-widest">#{{ $p->nomor_faktur }}</span>
+                        </div>
+                        <p class="text-xs text-slate-400">{{ $p->dibuat_pada->diffForHumans() }}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-black text-slate-900">Rp {{ number_format($p->total_harga, 0, ',', '.') }}</p>
+                        <span class="text-[9px] font-bold uppercase tracking-widest {{ $p->status_pesanan == 'selesai' ? 'text-emerald-500' : ($p->status_pesanan == 'dibatalkan' ? 'text-rose-500' : 'text-amber-500') }}">
+                            {{ $p->status_pesanan }}
+                        </span>
+                    </div>
+                </div>
+                @empty
+                <div class="flex flex-col items-center justify-center py-12 text-slate-400">
+                    <i class="fa-solid fa-clipboard-list text-4xl mb-4 opacity-30"></i>
+                    <p class="text-xs font-bold uppercase tracking-widest">Belum ada data transaksi.</p>
+                </div>
+                @endforelse
+            </div>
         </div>
+
+        <!-- Quick Action Center -->
+        <div class="bg-slate-900 rounded-[3rem] p-8 text-white relative overflow-hidden flex flex-col shadow-2xl shadow-indigo-900/30">
+            <!-- Background -->
+            <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-soft-light"></div>
+            <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-indigo-500 rounded-full blur-[80px] opacity-50"></div>
+
+            <div class="relative z-10 mb-8">
+                <h3 class="text-xl font-black uppercase tracking-tight mb-2">Aksi Cepat</h3>
+                <p class="text-slate-400 text-xs font-medium">Jalan pintas operasional harian.</p>
+            </div>
+
+            <div class="relative z-10 grid gap-4">
+                <a href="{{ route('pengelola.produk.tambah') }}" class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all group backdrop-blur-sm">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-plus text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm">Tambah Produk</h4>
+                        <p class="text-[10px] text-slate-400">Update katalog inventaris</p>
+                    </div>
+                </a>
+
+                <a href="{{ route('pengelola.produk.stok') }}" class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all group backdrop-blur-sm">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-boxes-stacked text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm">Update Stok</h4>
+                        <p class="text-[10px] text-slate-400">Mutasi barang masuk/keluar</p>
+                    </div>
+                </a>
+
+                <a href="{{ route('pengelola.toko.berita') }}" class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all group backdrop-blur-sm">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-rose-500 to-orange-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-pen-nib text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm">Tulis Berita</h4>
+                        <p class="text-[10px] text-slate-400">Publikasi konten baru</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="mt-auto pt-8 relative z-10">
+                <div class="p-4 rounded-2xl bg-indigo-600/50 border border-indigo-500/30 backdrop-blur-md">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i class="fa-solid fa-server text-indigo-300"></i>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-indigo-200">Status Server</span>
+                    </div>
+                    <div class="w-full bg-slate-900/50 rounded-full h-1.5 mb-2 overflow-hidden">
+                        <div class="bg-emerald-400 h-full rounded-full animate-pulse" style="width: 98%"></div>
+                    </div>
+                    <div class="flex justify-between text-[9px] font-bold text-indigo-300">
+                        <span>Uptime: 99.9%</span>
+                        <span>Load: Low</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-
-    <!-- Bagian 4: Jejak Audit Sistem (Integrasi Log) -->
-    <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-10 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center bg-slate-50/30 gap-6">
-            <div class="flex items-center gap-5">
-                <div class="w-16 h-16 rounded-[1.5rem] bg-indigo-600 text-white flex items-center justify-center shadow-2xl shadow-indigo-500/40">
-                    <i class="fa-solid fa-fingerprint text-2xl"></i>
-                </div>
-                <div>
-                    <h3 class="text-xl font-black text-slate-800 tracking-tight uppercase">Jejak Audit Enterprise</h3>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Log aktivitas terbaru dari seluruh pilar manajemen</p>
-                </div>
-            </div>
-            <a href="{{ route('pengelola.pengaturan.log') }}" wire:navigate class="px-8 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm uppercase tracking-widest">
-                LIHAT SEMUA AKTIVITAS
-            </a>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead>
-                    <tr class="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">
-                        <th class="px-10 py-6">Waktu & Otoritas</th>
-                        <th class="px-10 py-6">Jenis Aksi</th>
-                        <th class="px-10 py-6">Pesan Naratif</th>
-                        <th class="px-10 py-6 text-right">Target</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @foreach($aktivitas as $log)
-                    <tr class="group hover:bg-slate-50 transition-colors">
-                        <td class="px-10 py-6 whitespace-nowrap">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xs font-black text-indigo-600 border border-slate-200">
-                                    {{ substr($log->pengguna->nama ?? 'S', 0, 1) }}
-                                </div>
-                                <div>
-                                    <div class="text-xs font-black text-slate-800 uppercase tracking-tight">{{ $log->pengguna->nama ?? 'Sistem Otomatis' }}</div>
-                                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">{{ $log->waktu->translatedFormat('d M Y - H:i') }} WIB</div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-10 py-6">
-                            <span class="inline-flex items-center px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest {{ in_array($log->aksi, ['hapus', 'akses_ilegal']) ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-indigo-50 text-indigo-600 border border-indigo-100' }}">
-                                {{ $log->aksi }}
-                            </span>
-                        </td>
-                        <td class="px-10 py-6">
-                            <p class="text-sm text-slate-600 font-medium leading-relaxed max-w-md">{{ $log->pesan_naratif }}</p>
-                        </td>
-                        <td class="px-10 py-6 text-right">
-                            <span class="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">{{ $log->target }}</span>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- Script Chart & Real-time Jam -->
-    <script>
-        function updateJam() {
-            const sekarang = new Date();
-            const jam = String(sekarang.getHours()).padStart(2, '0');
-            const menit = String(sekarang.getMinutes()).padStart(2, '0');
-            const el = document.getElementById('jam-realtime');
-            if (el) el.textContent = `${jam}:${menit}`;
-        }
-        setInterval(updateJam, 1000);
-
-        document.addEventListener('livewire:navigated', () => {
-            renderUIGrafik();
-        });
-
-        renderUIGrafik();
-
-        function renderUIGrafik() {
-            const dataGrafik = @json($grafik['data']);
-            const labelGrafik = @json($grafik['label']);
-            
-            const opsi = {
-                series: [{
-                    name: 'Omzet Terverifikasi',
-                    data: dataGrafik
-                }],
-                chart: {
-                    type: 'area',
-                    height: 320,
-                    fontFamily: 'Plus Jakarta Sans, sans-serif',
-                    toolbar: { show: false },
-                    zoom: { enabled: false },
-                    animations: { enabled: true, easing: 'easeinout', speed: 800 }
-                },
-                colors: ['#4f46e5'],
-                dataLabels: { enabled: false },
-                stroke: { curve: 'smooth', width: 4 },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shadeIntensity: 1,
-                        opacityFrom: 0.45,
-                        opacityTo: 0.05,
-                        stops: [0, 90, 100]
-                    }
-                },
-                xaxis: {
-                    categories: labelGrafik,
-                    axisBorder: { show: false },
-                    axisTicks: { show: false },
-                    labels: { style: { colors: '#94a3b8', fontSize: '11px', fontWeight: 700 } }
-                },
-                yaxis: {
-                    labels: {
-                        style: { colors: '#94a3b8', fontSize: '11px', fontWeight: 700 },
-                        formatter: (val) => { return 'Rp ' + (val / 1000).toFixed(0) + 'k' }
-                    }
-                },
-                grid: {
-                    borderColor: '#f1f5f9',
-                    strokeDashArray: 6,
-                    yaxis: { lines: { show: true } }
-                },
-                tooltip: {
-                    theme: 'dark',
-                    y: { formatter: (val) => "Rp " + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") }
-                }
-            };
-
-            const container = document.querySelector("#grafikPendapatan");
-            if(container) {
-                container.innerHTML = '';
-                const chart = new ApexCharts(container, opsi);
-                chart.render();
-            }
-        }
-    </script>
 </div>
