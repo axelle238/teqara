@@ -1,106 +1,186 @@
 <div class="animate-in fade-in zoom-in duration-500 pb-20 space-y-8">
     
-    <!-- Filter Periode -->
-    <div class="flex justify-between items-center bg-white p-4 rounded-[30px] border border-slate-100 shadow-sm">
-        <div class="flex items-center gap-4 px-4">
-            <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
-                <i class="fa-solid fa-chart-line text-lg"></i>
-            </div>
-            <div>
-                <h2 class="text-sm font-black text-slate-900 uppercase tracking-widest">Periode Laporan</h2>
-                <p class="text-xs text-slate-500 font-medium">Data diupdate secara real-time.</p>
-            </div>
-        </div>
-        
-        <div class="flex bg-slate-100 p-1 rounded-2xl">
-            @foreach(['hari_ini' => 'Hari Ini', 'minggu_ini' => 'Minggu Ini', 'bulan_ini' => 'Bulan Ini', 'tahun_ini' => 'Tahun Ini'] as $key => $label)
-            <button wire:click="$set('periode', '{{ $key }}')" 
-                    class="px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all {{ $periode === $key ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">
+    <!-- Header & Tabs -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white p-2 rounded-[30px] border border-slate-100 shadow-sm sticky top-20 z-30">
+        <div class="flex p-1 bg-slate-100 rounded-3xl w-full md:w-auto overflow-x-auto">
+            @foreach(['ringkasan' => 'Ringkasan Bisnis', 'inventaris' => 'Kesehatan Stok', 'audit' => 'Jejak Audit'] as $key => $label)
+            <button wire:click="gantiTab('{{ $key }}')" 
+                    class="px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap {{ $tabAktif === $key ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-500 hover:text-slate-700' }}">
                 {{ $label }}
             </button>
             @endforeach
         </div>
+
+        @if($tabAktif === 'ringkasan')
+        <div class="flex bg-slate-100 p-1 rounded-2xl overflow-x-auto w-full md:w-auto">
+            @foreach(['hari_ini' => 'Hari', 'minggu_ini' => 'Minggu', 'bulan_ini' => 'Bulan', 'tahun_ini' => 'Tahun'] as $key => $label)
+            <button wire:click="$set('periode', '{{ $key }}')" 
+                    class="px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all {{ $periode === $key ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700' }}">
+                {{ $label }}
+            </button>
+            @endforeach
+        </div>
+        @endif
     </div>
 
-    <!-- Main Charts -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
-        <!-- Revenue Chart -->
-        <div class="bg-white rounded-[40px] p-8 border border-slate-100 shadow-lg shadow-indigo-500/5 relative overflow-hidden">
-            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Tren Pendapatan</h3>
-            <div id="chart-revenue" class="w-full h-80"></div>
-        </div>
-
-        <!-- Orders Chart -->
-        <div class="bg-white rounded-[40px] p-8 border border-slate-100 shadow-lg shadow-indigo-500/5 relative overflow-hidden">
-            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Volume Transaksi</h3>
-            <div id="chart-orders" class="w-full h-80"></div>
-        </div>
-
-    </div>
-
-    <!-- Top Products & Categories -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        <!-- Top Products List -->
-        <div class="lg:col-span-2 bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm">
-            <div class="flex justify-between items-center mb-8">
-                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">Produk Terlaris</h3>
-                <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest">Top 5</span>
+    <!-- TAB: RINGKASAN -->
+    @if($tabAktif === 'ringkasan')
+    <div class="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+        <!-- Main Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-[40px] p-8 border border-slate-100 shadow-lg shadow-indigo-500/5 relative overflow-hidden">
+                <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Tren Pendapatan</h3>
+                <div id="chart-revenue" class="w-full h-80"></div>
             </div>
-            
-            <div class="space-y-6">
-                @foreach($topProduk as $idx => $prod)
-                <div class="flex items-center gap-6 group">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center font-black text-lg text-slate-300 border border-slate-100">
-                        {{ $idx + 1 }}
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-slate-900 truncate">{{ $prod->nama }}</h4>
-                        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
-                            <div class="bg-indigo-600 h-full rounded-full" style="width: {{ rand(40, 100) }}%"></div>
+            <div class="bg-white rounded-[40px] p-8 border border-slate-100 shadow-lg shadow-indigo-500/5 relative overflow-hidden">
+                <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Volume Transaksi</h3>
+                <div id="chart-orders" class="w-full h-80"></div>
+            </div>
+        </div>
+
+        <!-- Top Products & Categories -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm">
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">Produk Terlaris</h3>
+                    <span class="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest">Top 5</span>
+                </div>
+                <div class="space-y-6">
+                    @foreach($topProduk as $idx => $prod)
+                    <div class="flex items-center gap-6 group">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center font-black text-lg text-slate-300 border border-slate-100">
+                            {{ $idx + 1 }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-slate-900 truncate">{{ $prod->nama }}</h4>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
+                                <div class="bg-indigo-600 h-full rounded-full" style="width: {{ rand(40, 100) }}%"></div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-lg font-black text-slate-900">{{ number_format($prod->total_terjual) }} Unit</p>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rp {{ number_format($prod->total_revenue/1000000, 1) }}Jt</p>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <p class="text-lg font-black text-slate-900">{{ number_format($prod->total_terjual) }} Unit</p>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rp {{ number_format($prod->total_revenue/1000000, 1) }}Jt</p>
-                    </div>
+                    @endforeach
                 </div>
-                @endforeach
+            </div>
+
+            <div class="bg-indigo-900 rounded-[40px] p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-900/30">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                <h3 class="text-xs font-black text-indigo-200 uppercase tracking-widest mb-8">Dominasi Kategori</h3>
+                <div class="space-y-6 relative z-10">
+                    @foreach($topKategori as $kat)
+                    <div>
+                        <div class="flex justify-between text-xs font-bold mb-2">
+                            <span>{{ $kat->nama }}</span>
+                            <span class="text-indigo-300">{{ $kat->frekuensi }} Transaksi</span>
+                        </div>
+                        <div class="w-full bg-white/10 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-cyan-400 to-indigo-400 h-full rounded-full shadow-[0_0_10px_rgba(34,211,238,0.5)]" style="width: {{ rand(20, 90) }}%"></div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
         </div>
-
-        <!-- Categories Pie -->
-        <div class="bg-indigo-900 rounded-[40px] p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-900/30">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-            
-            <h3 class="text-xs font-black text-indigo-200 uppercase tracking-widest mb-8">Dominasi Kategori</h3>
-            
-            <div class="space-y-6 relative z-10">
-                @foreach($topKategori as $kat)
-                <div>
-                    <div class="flex justify-between text-xs font-bold mb-2">
-                        <span>{{ $kat->nama }}</span>
-                        <span class="text-indigo-300">{{ $kat->frekuensi }} Transaksi</span>
-                    </div>
-                    <div class="w-full bg-white/10 rounded-full h-2">
-                        <div class="bg-gradient-to-r from-cyan-400 to-indigo-400 h-full rounded-full shadow-[0_0_10px_rgba(34,211,238,0.5)]" style="width: {{ rand(20, 90) }}%"></div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-
-            <div class="mt-8 pt-8 border-t border-white/10 text-center">
-                <p class="text-[10px] text-indigo-300 font-medium">Data dianalisis dari perilaku pembelian pelanggan.</p>
-            </div>
-        </div>
-
     </div>
+    @endif
 
-    <!-- Script Chart -->
+    <!-- TAB: INVENTARIS -->
+    @if($tabAktif === 'inventaris')
+    <div class="space-y-8 animate-in slide-in-from-right-8 duration-500">
+        <div class="bg-white rounded-[40px] p-10 border border-slate-100 shadow-sm">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+                <div>
+                    <h3 class="text-2xl font-black text-slate-900 uppercase tracking-tight">Analisis Stok Mati</h3>
+                    <p class="text-slate-500 font-medium mt-1">Produk dengan stok tersedia namun <span class="text-rose-500 font-bold">0 penjualan</span> dalam 30 hari terakhir.</p>
+                </div>
+                <div class="px-4 py-2 bg-rose-50 text-rose-600 rounded-xl text-xs font-black uppercase tracking-widest">
+                    {{ count($stokMati) }} Produk Teridentifikasi
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            <th class="py-4 pl-4">Produk</th>
+                            <th class="py-4">Kategori</th>
+                            <th class="py-4 text-right">Sisa Stok</th>
+                            <th class="py-4 text-right pr-4">Nilai Aset Tertahan</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        @forelse($stokMati as $item)
+                        <tr class="group hover:bg-slate-50 transition-colors">
+                            <td class="py-4 pl-4 font-bold text-slate-700">{{ $item->nama }}</td>
+                            <td class="py-4 text-slate-500">{{ $item->kategori->nama }}</td>
+                            <td class="py-4 text-right font-mono font-bold text-indigo-600">{{ $item->stok }}</td>
+                            <td class="py-4 pr-4 text-right font-mono text-slate-900">Rp {{ number_format($item->stok * $item->harga_modal, 0, ',', '.') }}</td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="py-20 text-center text-slate-400 font-medium">
+                                <i class="fa-solid fa-check-circle text-4xl mb-4 text-emerald-300"></i><br>
+                                Tidak ada stok mati terdeteksi. Perputaran inventaris sehat!
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- TAB: AUDIT LOG -->
+    @if($tabAktif === 'audit')
+    <div class="space-y-8 animate-in slide-in-from-right-8 duration-500">
+        <div class="bg-white rounded-[40px] p-8 border border-slate-100 shadow-sm">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+                <h3 class="text-2xl font-black text-slate-900 uppercase tracking-tight">Jejak Audit Sistem</h3>
+                <div class="relative w-full md:w-96">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input wire:model.live.debounce.300ms="auditSearch" type="text" placeholder="Cari aktivitas, user, atau IP..." class="w-full pl-10 pr-4 py-3 bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-indigo-500">
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                @foreach($this->auditLogs as $log)
+                <div class="flex items-start gap-4 p-4 rounded-2xl border border-slate-100 hover:border-indigo-100 hover:bg-slate-50 transition-all group">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0 text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-fingerprint"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="font-bold text-slate-900 text-sm">
+                                <span class="text-indigo-600">{{ $log->pengguna->nama ?? 'Sistem' }}</span> 
+                                <span class="font-medium text-slate-500 mx-1">melakukan</span> 
+                                {{ ucwords(str_replace('_', ' ', $log->aksi)) }}
+                            </h4>
+                            <span class="text-[10px] font-bold text-slate-400 bg-white px-2 py-1 rounded-md border border-slate-100">{{ $log->waktu->format('d M Y H:i:s') }}</span>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed">{{ $log->pesan_naratif }}</p>
+                        <p class="text-[10px] font-mono text-slate-400 mt-2">Target: {{ $log->target }}</p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            <div class="mt-8">
+                {{ $this->auditLogs->links() }}
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Script Chart (Hanya Load di Tab Ringkasan) -->
     <script>
         document.addEventListener('livewire:initialized', () => {
             const renderCharts = () => {
+                if(!document.querySelector("#chart-revenue")) return;
+
                 // Revenue Chart
                 new ApexCharts(document.querySelector("#chart-revenue"), {
                     series: [{ name: 'Pendapatan', data: @json($chartPendapatan['data']) }],
@@ -130,9 +210,7 @@
 
             renderCharts();
             
-            // Re-render on update
             Livewire.on('chart-updated', () => {
-                // Idealnya update data series saja, tapi re-render full oke untuk MVP
                 setTimeout(renderCharts, 500); 
             });
         });

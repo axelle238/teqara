@@ -16,13 +16,22 @@ use Illuminate\Support\Facades\DB;
  */
 class BerandaLaporan extends Component
 {
-    public $periode = 'bulan_ini'; // hari_ini, minggu_ini, bulan_ini, tahun_ini
+    use \Livewire\WithPagination;
 
-    // Data Grafik
+    public $periode = 'bulan_ini'; // hari_ini, minggu_ini, bulan_ini, tahun_ini
+    public $tabAktif = 'ringkasan'; // ringkasan, inventaris, audit
+
+    // Data Grafik & Ringkasan
     public $chartPendapatan = [];
     public $chartPesanan = [];
     public $topProduk = [];
     public $topKategori = [];
+
+    // Data Inventaris
+    public $stokMati = [];
+
+    // Filter Audit
+    public $auditSearch = '';
 
     public function mount()
     {
@@ -32,6 +41,15 @@ class BerandaLaporan extends Component
     public function updatedPeriode()
     {
         $this->generateLaporan();
+        $this->dispatch('chart-updated'); 
+    }
+
+    public function gantiTab($tab)
+    {
+        $this->tabAktif = $tab;
+        if($tab === 'ringkasan') {
+            $this->dispatch('chart-updated');
+        }
     }
 
     private function getRange()
@@ -48,6 +66,8 @@ class BerandaLaporan extends Component
     {
         [$start, $end] = $this->getRange();
 
+        // --- TAB RINGKASAN ---
+        
         // 1. Grafik Pendapatan & Pesanan Harian
         $dataHarian = Pesanan::select(
                 DB::raw('DATE(dibuat_pada) as tanggal'), 
@@ -93,6 +113,33 @@ class BerandaLaporan extends Component
             ->orderByDesc('frekuensi')
             ->limit(5)
             ->get();
+
+        // --- TAB INVENTARIS (STOK MATI) ---
+        // Produk yang tidak terjual dalam 30 hari terakhir tapi stok masih ada
+        $produkTerjualIds = DB::table('detail_pesanan')
+            ->join('pesanan', 'detail_pesanan.pesanan_id', '=', 'pesanan.id')
+            ->where('pesanan.dibuat_pada', '>=', now()->subDays(30))
+            ->pluck('produk_id')
+            ->unique();
+
+        $this->stokMati = Produk::whereNotIn('id', $produkTerjualIds)
+            ->where('stok', '>', 0)
+            ->with(['kategori'])
+            ->orderByDesc('stok')
+            ->limit(10)
+            ->get();
+    }
+
+    public function getAuditLogsProperty()
+    {
+        return \App\Models\LogAktivitas::with('pengguna')
+            ->when($this->auditSearch, function($q) {
+                $q->where('pesan_naratif', 'like', '%'.$this->auditSearch.'%')
+                  ->orWhere('aksi', 'like', '%'.$this->auditSearch.'%')
+                  ->orWhereHas('pengguna', fn($u) => $u->where('nama', 'like', '%'.$this->auditSearch.'%'));
+            })
+            ->latest('waktu')
+            ->paginate(10);
     }
 
     #[Title('Analitik Bisnis - Teqara Admin')]
