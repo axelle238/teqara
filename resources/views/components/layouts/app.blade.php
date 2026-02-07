@@ -191,7 +191,7 @@
                                     <a href="{{ route('pesanan.riwayat') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 hover:text-indigo-600 transition-colors text-xs font-bold uppercase tracking-wide group">
                                         <i class="fa-solid fa-box-open w-5 text-center group-hover:scale-110 transition-transform"></i> Pesanan
                                     </a>
-                                    <a href="{{ route('customer.profile') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 hover:text-indigo-600 transition-colors text-xs font-bold uppercase tracking-wide group">
+                                    <a href="{{ route('pelanggan.profil') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 hover:text-indigo-600 transition-colors text-xs font-bold uppercase tracking-wide group">
                                         <i class="fa-solid fa-user-gear w-5 text-center group-hover:scale-110 transition-transform"></i> Akun
                                     </a>
                                     <div class="h-px bg-slate-100 my-1"></div>

@@ -20,7 +20,7 @@
             </div>
             <div class="flex gap-4">
                 <a href="{{ route('katalog') }}" class="px-6 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all shadow-sm">Katalog Toko</a>
-                <a href="{{ route('customer.profile') }}" class="px-6 py-3 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-lg shadow-slate-900/20">Edit Profil</a>
+                <a href="{{ route('pelanggan.profil') }}" class="px-6 py-3 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-lg shadow-slate-900/20">Edit Profil</a>
             </div>
         </div>
 
@@ -92,16 +92,16 @@
                             $modules = [
                                 ['icon' => '📦', 'label' => 'Riwayat Belanja', 'route' => 'pesanan.riwayat', 'color' => 'bg-blue-50'],
                                 ['icon' => '📝', 'label' => 'Daftar Belanja', 'route' => 'customer.wishlist.index', 'color' => 'bg-indigo-50'],
-                                ['icon' => '🎁', 'label' => 'Tukar Poin', 'route' => 'customer.rewards', 'color' => 'bg-amber-50'],
-                                ['icon' => '💳', 'label' => 'Dompet Digital', 'route' => 'customer.wallet', 'color' => 'bg-emerald-50'],
-                                ['icon' => '🎫', 'label' => 'Voucher Saya', 'route' => 'customer.vouchers', 'color' => 'bg-purple-50'],
-                                ['icon' => '📊', 'label' => 'Laporan Belanja', 'route' => 'customer.reports', 'color' => 'bg-cyan-50'],
-                                ['icon' => '🏢', 'label' => 'Profil Bisnis', 'route' => 'customer.business-profile', 'color' => 'bg-slate-50'],
-                                ['icon' => '🤝', 'label' => 'Referral', 'route' => 'customer.referral', 'color' => 'bg-orange-50'],
-                                ['icon' => '📍', 'label' => 'Buku Alamat', 'route' => 'customer.address', 'color' => 'bg-rose-50'],
-                                ['icon' => '🔐', 'label' => 'Keamanan', 'route' => 'customer.security', 'color' => 'bg-slate-50'],
-                                ['icon' => '💾', 'label' => 'Unduhan', 'route' => 'customer.downloads', 'color' => 'bg-indigo-50'],
-                                ['icon' => '🔔', 'label' => 'Notifikasi', 'route' => 'customer.notifications', 'color' => 'bg-yellow-50'],
+                                ['icon' => '🎁', 'label' => 'Tukar Poin', 'route' => 'pelanggan.tukar-poin', 'color' => 'bg-amber-50'],
+                                ['icon' => '💳', 'label' => 'Dompet Digital', 'route' => 'pelanggan.dompet', 'color' => 'bg-emerald-50'],
+                                ['icon' => '🎫', 'label' => 'Voucher Saya', 'route' => 'pelanggan.voucher', 'color' => 'bg-purple-50'],
+                                ['icon' => '📊', 'label' => 'Laporan Belanja', 'route' => 'pelanggan.laporan', 'color' => 'bg-cyan-50'],
+                                ['icon' => '🏢', 'label' => 'Profil Bisnis', 'route' => 'pelanggan.profil-bisnis', 'color' => 'bg-slate-50'],
+                                ['icon' => '🤝', 'label' => 'Referral', 'route' => 'pelanggan.referral', 'color' => 'bg-orange-50'],
+                                ['icon' => '📍', 'label' => 'Buku Alamat', 'route' => 'pelanggan.alamat', 'color' => 'bg-rose-50'],
+                                ['icon' => '🔐', 'label' => 'Keamanan', 'route' => 'pelanggan.keamanan', 'color' => 'bg-slate-50'],
+                                ['icon' => '💾', 'label' => 'Unduhan', 'route' => 'pelanggan.unduhan', 'color' => 'bg-indigo-50'],
+                                ['icon' => '🔔', 'label' => 'Notifikasi', 'route' => 'pelanggan.notifikasi', 'color' => 'bg-yellow-50'],
                             ];
                         @endphp
                         @foreach($modules as $mod)
@@ -121,7 +121,7 @@
                     <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
                     <h3 class="text-xl font-black uppercase tracking-tight mb-4 leading-none">AKSES <br><span class="text-indigo-200">PRIORITAS</span></h3>
                     <p class="text-indigo-100 text-xs font-medium mb-8 leading-relaxed">Gunakan poin Anda untuk menukar voucher diskon hingga 50% khusus bulan ini.</p>
-                    <a href="{{ route('customer.rewards') }}" class="inline-block px-6 py-3 bg-white text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-all shadow-lg">Tukar Poin Sekarang</a>
+                    <a href="{{ route('pelanggan.tukar-poin') }}" class="inline-block px-6 py-3 bg-white text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-all shadow-lg">Tukar Poin Sekarang</a>
                 </div>
 
                 <!-- Support Ticket Summary -->
@@ -132,7 +132,7 @@
                             <span class="text-xs font-bold text-slate-600">Pusat Bantuan</span>
                             <span class="text-indigo-600 group-hover:translate-x-1 transition-transform">→</span>
                         </a>
-                        <a href="{{ route('customer.return') }}" class="flex items-center justify-between p-4 bg-rose-50 hover:bg-rose-100 rounded-2xl transition-colors group">
+                        <a href="{{ route('pelanggan.retur') }}" class="flex items-center justify-between p-4 bg-rose-50 hover:bg-rose-100 rounded-2xl transition-colors group">
                             <span class="text-xs font-bold text-rose-600">Ajukan Retur</span>
                             <span class="text-rose-600 group-hover:translate-x-1 transition-transform">→</span>
                         </a>
@@ -143,7 +143,7 @@
                 <div class="bg-white rounded-[3rem] p-10 border border-white shadow-xl shadow-slate-200/50">
                     <h3 class="text-sm font-black text-slate-900 uppercase tracking-widest mb-4">Jejak Aktivitas</h3>
                     <p class="text-xs text-slate-500 mb-6">Pastikan akses otoritas Anda selalu dalam kendali penuh.</p>
-                    <a href="{{ route('customer.security.log') }}" class="text-xs font-black text-indigo-600 hover:text-indigo-800 uppercase tracking-widest">Lihat Log Login →</a>
+                    <a href="{{ route('pelanggan.keamanan.log') }}" class="text-xs font-black text-indigo-600 hover:text-indigo-800 uppercase tracking-widest">Lihat Log Login →</a>
                 </div>
             </div>
         </div>

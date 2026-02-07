@@ -15,7 +15,7 @@
             </div>
             
             <div class="flex gap-4">
-                <a href="{{ route('customer.rewards') }}" class="px-8 py-3 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-amber-500 hover:shadow-lg hover:shadow-amber-500/30 transition-all">
+                <a href="{{ route('pelanggan.tukar-poin') }}" class="px-8 py-3 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-amber-500 hover:shadow-lg hover:shadow-amber-500/30 transition-all">
                     Tukar Poin
                 </a>
             </div>

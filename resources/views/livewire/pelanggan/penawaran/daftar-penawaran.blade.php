@@ -6,7 +6,7 @@
                 <h1 class="text-3xl font-black text-slate-900 tracking-tight uppercase">Permintaan <span class="text-indigo-600">Penawaran</span></h1>
                 <p class="text-slate-500 font-bold text-xs uppercase tracking-widest mt-2">Negosiasi Harga & Pengadaan B2B</p>
             </div>
-            <a href="{{ route('customer.rfq.create') }}" class="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-500/30 group">
+            <a href="{{ route('pelanggan.penawaran.buat') }}" class="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-500/30 group">
                 <svg class="w-4 h-4 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                 Buat RFQ Baru
             </a>
@@ -57,7 +57,7 @@
                                 </span>
                             </td>
                             <td class="px-8 py-6 text-right">
-                                <a href="{{ route('customer.rfq.detail', $rfq->id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:border-indigo-200 hover:text-indigo-600 hover:bg-indigo-50 transition-all shadow-sm">
+                                <a href="{{ route('pelanggan.penawaran.detail', $rfq->id) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:border-indigo-200 hover:text-indigo-600 hover:bg-indigo-50 transition-all shadow-sm">
                                     Detail
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                 </a>
@@ -76,7 +76,7 @@
             <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-6 text-4xl shadow-inner">💼</div>
             <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-2">Belum Ada RFQ</h3>
             <p class="text-slate-400 text-sm font-medium max-w-sm text-center mb-8">Butuh harga khusus untuk proyek atau pembelian massal? Ajukan penawaran sekarang.</p>
-            <a href="{{ route('customer.rfq.create') }}" class="px-8 py-4 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-500/20 active:scale-95">
+            <a href="{{ route('pelanggan.penawaran.buat') }}" class="px-8 py-4 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-500/20 active:scale-95">
                 Mulai Pengajuan
             </a>
         </div>

@@ -28,16 +28,16 @@ Route::get('/keluar', function () {
     auth()->logout(); session()->invalidate(); session()->regenerateToken(); return redirect('/');
 })->name('logout');
 
-// --- RUTE PELANGGAN (Authenticated) ---
+// --- RUTE PELANGGAN (Otentikasi) ---
 Route::middleware(['auth'])->group(function () {
-    // Dashboard & Profil
-    Route::get('/dashboard', \App\Livewire\Pelanggan\Beranda::class)->name('customer.dashboard');
-    Route::get('/panel-kontrol', function() { return redirect()->route('customer.dashboard'); })->name('dashboard');
-    Route::get('/profil', \App\Livewire\Pelanggan\Profil::class)->name('customer.profile');
-    Route::get('/profil-bisnis', \App\Livewire\Pelanggan\ProfilBisnis::class)->name('customer.business-profile');
-    Route::get('/alamat', \App\Livewire\Pelanggan\BukuAlamat::class)->name('customer.address');
-    Route::get('/keamanan', \App\Livewire\Pelanggan\PengaturanKeamanan::class)->name('customer.security');
-    Route::get('/riwayat-login', \App\Livewire\Pelanggan\RiwayatLogin::class)->name('customer.security.log');
+    // Dasbor & Profil
+    Route::get('/dasbor', \App\Livewire\Pelanggan\Beranda::class)->name('pelanggan.dasbor');
+    Route::get('/panel-kontrol', function() { return redirect()->route('pelanggan.dasbor'); })->name('dasbor');
+    Route::get('/profil', \App\Livewire\Pelanggan\Profil::class)->name('pelanggan.profil');
+    Route::get('/profil-bisnis', \App\Livewire\Pelanggan\ProfilBisnis::class)->name('pelanggan.profil-bisnis');
+    Route::get('/alamat', \App\Livewire\Pelanggan\BukuAlamat::class)->name('pelanggan.alamat');
+    Route::get('/keamanan', \App\Livewire\Pelanggan\PengaturanKeamanan::class)->name('pelanggan.keamanan');
+    Route::get('/riwayat-login', \App\Livewire\Pelanggan\RiwayatLogin::class)->name('pelanggan.keamanan.log');
     
     // Transaksi & Belanja
     Route::get('/keranjang', \App\Livewire\KeranjangBelanja::class)->name('keranjang');
@@ -48,38 +48,38 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pesanan/faktur/{invoice}', \App\Http\Controllers\CetakFakturController::class)->name('pesanan.faktur');
     Route::get('/pesanan/{id}/batal', \App\Livewire\Pelanggan\BatalkanPesanan::class)->name('pesanan.batal');
     Route::get('/ulasan/{pesananId}/{produkId}', \App\Livewire\Pelanggan\BeriUlasan::class)->name('ulasan.buat');
-    Route::get('/ulasan-saya', \App\Livewire\Pelanggan\UlasanSaya::class)->name('customer.reviews');
-    Route::get('/beli-lagi', \App\Livewire\Pelanggan\BeliLagi::class)->name('customer.buy-again');
-    Route::get('/wishlist', \App\Livewire\Pelanggan\DaftarKeinginan::class)->name('wishlist');
-    Route::get('/wishlist/{id}', \App\Livewire\Pelanggan\DaftarBelanja\DetailDaftar::class)->name('customer.wishlist.detail'); 
-    Route::get('/daftar-belanja', \App\Livewire\Pelanggan\DaftarBelanja\SemuaDaftar::class)->name('customer.wishlist.index'); 
+    Route::get('/ulasan-saya', \App\Livewire\Pelanggan\UlasanSaya::class)->name('pelanggan.ulasan');
+    Route::get('/beli-lagi', \App\Livewire\Pelanggan\BeliLagi::class)->name('pelanggan.beli-lagi');
+    Route::get('/wishlist', \App\Livewire\Pelanggan\DaftarKeinginan::class)->name('daftar-keinginan');
+    Route::get('/wishlist/{id}', \App\Livewire\Pelanggan\DaftarBelanja\DetailDaftar::class)->name('pelanggan.daftar-belanja.detail'); 
+    Route::get('/daftar-belanja', \App\Livewire\Pelanggan\DaftarBelanja\SemuaDaftar::class)->name('pelanggan.daftar-belanja.indeks'); 
     Route::get('/bandingkan', \App\Livewire\Produk\Bandingkan::class)->name('bandingkan');
 
     // Fitur Enterprise B2B
-    Route::get('/penawaran', \App\Livewire\Pelanggan\Penawaran\DaftarPenawaran::class)->name('customer.rfq.index');
-    Route::get('/penawaran/baru', \App\Livewire\Pelanggan\Penawaran\BuatPenawaran::class)->name('customer.rfq.create');
-    Route::get('/penawaran/{id}', \App\Livewire\Pelanggan\Penawaran\DetailPenawaran::class)->name('customer.rfq.detail');
-    Route::get('/langganan', \App\Livewire\Pelanggan\Langganan\DaftarLangganan::class)->name('customer.subscription.index');
-    Route::get('/langganan/{id}', \App\Livewire\Pelanggan\Langganan\DetailLangganan::class)->name('customer.subscription.detail');
-    Route::get('/tim', \App\Livewire\Pelanggan\ManajemenTim::class)->name('customer.team');
-    Route::get('/api-access', \App\Livewire\Pelanggan\AksesApi::class)->name('customer.api');
+    Route::get('/penawaran', \App\Livewire\Pelanggan\Penawaran\DaftarPenawaran::class)->name('pelanggan.penawaran.indeks');
+    Route::get('/penawaran/baru', \App\Livewire\Pelanggan\Penawaran\BuatPenawaran::class)->name('pelanggan.penawaran.buat');
+    Route::get('/penawaran/{id}', \App\Livewire\Pelanggan\Penawaran\DetailPenawaran::class)->name('pelanggan.penawaran.detail');
+    Route::get('/langganan', \App\Livewire\Pelanggan\Langganan\DaftarLangganan::class)->name('pelanggan.langganan.indeks');
+    Route::get('/langganan/{id}', \App\Livewire\Pelanggan\Langganan\DetailLangganan::class)->name('pelanggan.langganan.detail');
+    Route::get('/tim', \App\Livewire\Pelanggan\ManajemenTim::class)->name('pelanggan.tim');
+    Route::get('/api-access', \App\Livewire\Pelanggan\AksesApi::class)->name('pelanggan.api');
 
-    // Loyalitas & Wallet
-    Route::get('/poin', \App\Livewire\Pelanggan\JejakPoin::class)->name('customer.points');
-    Route::get('/checkin', \App\Livewire\Pelanggan\Poin\AbsensiHarian::class)->name('customer.checkin');
-    Route::get('/tukar-poin', \App\Livewire\Pelanggan\Poin\TukarPoin::class)->name('customer.rewards');
-    Route::get('/dompet', \App\Livewire\Pelanggan\DompetDigital::class)->name('customer.wallet');
-    Route::get('/voucher', \App\Livewire\Pelanggan\VoucherSaya::class)->name('customer.vouchers');
-    Route::get('/keanggotaan', \App\Livewire\Pelanggan\Keanggotaan::class)->name('customer.membership');
-    Route::get('/referral', \App\Livewire\Pelanggan\Referral::class)->name('customer.referral');
+    // Loyalitas & Dompet
+    Route::get('/poin', \App\Livewire\Pelanggan\JejakPoin::class)->name('pelanggan.poin');
+    Route::get('/checkin', \App\Livewire\Pelanggan\Poin\AbsensiHarian::class)->name('pelanggan.absen');
+    Route::get('/tukar-poin', \App\Livewire\Pelanggan\Poin\TukarPoin::class)->name('pelanggan.tukar-poin');
+    Route::get('/dompet', \App\Livewire\Pelanggan\DompetDigital::class)->name('pelanggan.dompet');
+    Route::get('/voucher', \App\Livewire\Pelanggan\VoucherSaya::class)->name('pelanggan.voucher');
+    Route::get('/keanggotaan', \App\Livewire\Pelanggan\Keanggotaan::class)->name('pelanggan.keanggotaan');
+    Route::get('/referral', \App\Livewire\Pelanggan\Referral::class)->name('pelanggan.referral');
 
     // Layanan & Lainnya
-    Route::get('/notifikasi', \App\Livewire\Pelanggan\Notifikasi::class)->name('customer.notifications');
+    Route::get('/notifikasi', \App\Livewire\Pelanggan\Notifikasi::class)->name('pelanggan.notifikasi');
     Route::get('/tiket/{id}', \App\Livewire\LayananPelanggan\DetailTiket::class)->name('tiket.detail');
-    Route::get('/ajukan-retur', \App\Livewire\Pelanggan\AjukanRetur::class)->name('customer.return');
-    Route::get('/laporan-belanja', \App\Livewire\Pelanggan\LaporanBelanja::class)->name('customer.reports');
-    Route::get('/unduhan', \App\Livewire\Pelanggan\PusatUnduhan::class)->name('customer.downloads');
-    Route::get('/privasi', \App\Livewire\Pelanggan\PusatPrivasi::class)->name('customer.privacy');
+    Route::get('/ajukan-retur', \App\Livewire\Pelanggan\AjukanRetur::class)->name('pelanggan.retur');
+    Route::get('/laporan-belanja', \App\Livewire\Pelanggan\LaporanBelanja::class)->name('pelanggan.laporan');
+    Route::get('/unduhan', \App\Livewire\Pelanggan\PusatUnduhan::class)->name('pelanggan.unduhan');
+    Route::get('/privasi', \App\Livewire\Pelanggan\PusatPrivasi::class)->name('pelanggan.privasi');
 });
 
     // --- RUTE ADMIN / PENGELOLA (Enterprise) ---
@@ -198,7 +198,7 @@ Route::middleware(['auth'])->prefix('pengelola')->group(function () {
     // 12. Pengaturan Keamanan Terpusat (Cyber Security SOC)
     Route::prefix('keamanan')->group(function () {
         Route::get('/beranda', \App\Livewire\Pengelola\PengaturanKeamanan\BerandaKeamanan::class)->name('pengelola.keamanan.beranda');
-        Route::get('/soc', \App\Livewire\Pengelola\ManajemenKeamanan\DasborKeamanan::class)->name('pengelola.keamanan.dashboard');
+        Route::get('/soc', \App\Livewire\Pengelola\ManajemenKeamanan\DasborKeamanan::class)->name('pengelola.keamanan.dasbor');
         Route::get('/firewall', \App\Livewire\Pengelola\ManajemenKeamanan\AturanFirewallLivewire::class)->name('pengelola.keamanan.firewall');
         Route::get('/scanner', \App\Livewire\Pengelola\ManajemenKeamanan\PemindaiSistem::class)->name('pengelola.keamanan.pemindai');
         Route::get('/siem', \App\Livewire\Pengelola\ManajemenKeamanan\AnalisisLogSiem::class)->name('pengelola.keamanan.siem');

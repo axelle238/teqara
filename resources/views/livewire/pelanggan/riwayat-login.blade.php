@@ -75,7 +75,7 @@
             <div>
                 <h4 class="font-bold text-rose-800 text-sm mb-1">Aktivitas Mencurigakan?</h4>
                 <p class="text-xs text-rose-600 leading-relaxed mb-4">Jika Anda melihat login dari lokasi atau perangkat yang tidak dikenal, segera ubah kata sandi Anda.</p>
-                <a href="{{ route('customer.security') }}" class="text-xs font-black text-rose-700 underline hover:text-rose-900">Ubah Kata Sandi Sekarang</a>
+                <a href="{{ route('pelanggan.keamanan') }}" class="text-xs font-black text-rose-700 underline hover:text-rose-900">Ubah Kata Sandi Sekarang</a>
             </div>
         </div>
 

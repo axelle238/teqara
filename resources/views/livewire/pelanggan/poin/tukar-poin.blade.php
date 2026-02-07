@@ -18,8 +18,8 @@
                     {{ number_format($this->poinSaya) }}
                 </div>
                 <div class="flex justify-center gap-4 mt-8">
-                    <a href="{{ route('customer.points') }}" class="px-6 py-2 bg-white/10 rounded-xl text-xs font-bold hover:bg-white/20 transition-colors backdrop-blur-md">Riwayat Poin</a>
-                    <a href="{{ route('customer.checkin') }}" class="px-6 py-2 bg-amber-500 text-slate-900 rounded-xl text-xs font-black hover:bg-amber-400 transition-colors shadow-lg shadow-amber-500/30">Cari Poin +</a>
+                    <a href="{{ route('pelanggan.poin') }}" class="px-6 py-2 bg-white/10 rounded-xl text-xs font-bold hover:bg-white/20 transition-colors backdrop-blur-md">Riwayat Poin</a>
+                    <a href="{{ route('pelanggan.absen') }}" class="px-6 py-2 bg-amber-500 text-slate-900 rounded-xl text-xs font-black hover:bg-amber-400 transition-colors shadow-lg shadow-amber-500/30">Cari Poin +</a>
                 </div>
             </div>
         </div>

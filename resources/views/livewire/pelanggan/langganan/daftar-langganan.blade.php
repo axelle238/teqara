@@ -41,7 +41,7 @@
                 </div>
 
                 <!-- Actions -->
-                <a href="{{ route('customer.subscription.detail', $sub->id) }}" class="block w-full py-4 bg-slate-900 text-white text-center rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all shadow-xl shadow-slate-900/20 active:scale-95">
+                <a href="{{ route('pelanggan.langganan.detail', $sub->id) }}" class="block w-full py-4 bg-slate-900 text-white text-center rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all shadow-xl shadow-slate-900/20 active:scale-95">
                     Kelola Paket
                 </a>
             </div>

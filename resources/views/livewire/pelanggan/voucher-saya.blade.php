@@ -84,7 +84,7 @@
                 <a href="{{ route('katalog') }}" class="px-8 py-3 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-lg hover:shadow-indigo-500/30">
                     Mulai Belanja
                 </a>
-                <a href="{{ route('customer.rewards') }}" class="px-8 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 transition-all">
+                <a href="{{ route('pelanggan.tukar-poin') }}" class="px-8 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200 transition-all">
                     Tukar Poin
                 </a>
             </div>

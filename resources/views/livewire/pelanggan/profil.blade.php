@@ -90,12 +90,12 @@
                             <h4 class="font-black text-slate-900 uppercase tracking-tight">Buku Alamat</h4>
                             <p class="text-xs text-slate-500 mt-1">Kelola lokasi pengiriman</p>
                         </button>
-                        <a href="{{ route('customer.points') }}" class="p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg transition-all group">
+                        <a href="{{ route('pelanggan.poin') }}" class="p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg transition-all group">
                             <div class="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">💎</div>
                             <h4 class="font-black text-slate-900 uppercase tracking-tight">Riwayat Poin</h4>
                             <p class="text-xs text-slate-500 mt-1">Jejak perolehan & penukaran</p>
                         </a>
-                        <a href="{{ route('customer.security') }}" class="p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg transition-all group">
+                        <a href="{{ route('pelanggan.keamanan') }}" class="p-6 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg transition-all group">
                             <div class="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">🛡️</div>
                             <h4 class="font-black text-slate-900 uppercase tracking-tight">Keamanan</h4>
                             <p class="text-xs text-slate-500 mt-1">Ubah sandi & proteksi akun</p>
