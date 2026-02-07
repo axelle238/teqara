@@ -322,6 +322,15 @@
                  <a href="{{ route('pengelola.keamanan.pemindai') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.pemindai') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
                     <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.pemindai') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> Audit & Scan
                 </a>
+                <a href="{{ route('pengelola.keamanan.ancaman') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.ancaman') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.ancaman') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> Intelijen Ancaman
+                </a>
+                <a href="{{ route('pengelola.keamanan.integritas') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.integritas') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.integritas') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> Integritas File
+                </a>
+                <a href="{{ route('pengelola.keamanan.honeypot') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.honeypot') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.honeypot') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> Jebakan Honeypot
+                </a>
             </div>
         </div>
 

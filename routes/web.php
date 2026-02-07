@@ -51,8 +51,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ulasan-saya', \App\Livewire\Pelanggan\UlasanSaya::class)->name('customer.reviews');
     Route::get('/beli-lagi', \App\Livewire\Pelanggan\BeliLagi::class)->name('customer.buy-again');
     Route::get('/wishlist', \App\Livewire\Pelanggan\DaftarKeinginan::class)->name('wishlist');
-    Route::get('/wishlist/{id}', \App\Livewire\Pelanggan\DaftarBelanja\DetailDaftar::class)->name('customer.wishlist.detail'); // Reuse wishlist concept as DaftarBelanja detail or create specific
-    Route::get('/daftar-belanja', \App\Livewire\Pelanggan\DaftarBelanja\SemuaDaftar::class)->name('customer.wishlist.index'); // Mapping to Daftar Belanja
+    Route::get('/wishlist/{id}', \App\Livewire\Pelanggan\DaftarBelanja\DetailDaftar::class)->name('customer.wishlist.detail'); 
+    Route::get('/daftar-belanja', \App\Livewire\Pelanggan\DaftarBelanja\SemuaDaftar::class)->name('customer.wishlist.index'); 
     Route::get('/bandingkan', \App\Livewire\Produk\Bandingkan::class)->name('bandingkan');
 
     // Fitur Enterprise B2B
@@ -180,6 +180,11 @@ Route::middleware(['auth'])->prefix('pengelola')->group(function () {
         Route::get('/sesi', \App\Livewire\Pengelola\ManajemenKeamanan\MonitorSesi::class)->name('pengelola.keamanan.sesi');
         Route::get('/backup', \App\Livewire\Pengelola\ManajemenKeamanan\CadanganData::class)->name('pengelola.keamanan.backup');
         Route::get('/scanner', \App\Livewire\Pengelola\ManajemenKeamanan\PemindaiSistem::class)->name('pengelola.keamanan.pemindai');
+        
+        // NEW FEATURES
+        Route::get('/ancaman', \App\Livewire\Pengelola\ManajemenKeamanan\IntelAncaman::class)->name('pengelola.keamanan.ancaman');
+        Route::get('/integritas', \App\Livewire\Pengelola\ManajemenKeamanan\IntegritasFile::class)->name('pengelola.keamanan.integritas');
+        Route::get('/honeypot', \App\Livewire\Pengelola\ManajemenKeamanan\HoneypotLog::class)->name('pengelola.keamanan.honeypot');
     });
 
     // PUSAT KONTROL SISTEM
