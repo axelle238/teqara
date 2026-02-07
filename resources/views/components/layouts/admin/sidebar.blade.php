@@ -331,6 +331,15 @@
                 <a href="{{ route('pengelola.keamanan.honeypot') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.honeypot') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
                     <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.honeypot') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> Jebakan Honeypot
                 </a>
+                <a href="{{ route('pengelola.keamanan.dlp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.dlp') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.dlp') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> DLP (Kebocoran Data)
+                </a>
+                <a href="{{ route('pengelola.keamanan.siem') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.siem') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.siem') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> SIEM Log Analisis
+                </a>
+                <a href="{{ route('pengelola.keamanan.zerotrust') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.zerotrust') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.zerotrust') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> Zero Trust Access
+                </a>
             </div>
         </div>
 

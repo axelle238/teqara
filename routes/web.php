@@ -185,6 +185,9 @@ Route::middleware(['auth'])->prefix('pengelola')->group(function () {
         Route::get('/ancaman', \App\Livewire\Pengelola\ManajemenKeamanan\IntelAncaman::class)->name('pengelola.keamanan.ancaman');
         Route::get('/integritas', \App\Livewire\Pengelola\ManajemenKeamanan\IntegritasFile::class)->name('pengelola.keamanan.integritas');
         Route::get('/honeypot', \App\Livewire\Pengelola\ManajemenKeamanan\HoneypotLog::class)->name('pengelola.keamanan.honeypot');
+        Route::get('/dlp', \App\Livewire\Pengelola\ManajemenKeamanan\PencegahanKebocoran::class)->name('pengelola.keamanan.dlp');
+        Route::get('/siem', \App\Livewire\Pengelola\ManajemenKeamanan\AnalisisLogSiem::class)->name('pengelola.keamanan.siem');
+        Route::get('/zerotrust', \App\Livewire\Pengelola\ManajemenKeamanan\ZeroTrustAkses::class)->name('pengelola.keamanan.zerotrust');
     });
 
     // PUSAT KONTROL SISTEM
