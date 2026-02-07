@@ -68,7 +68,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/poin', \App\Livewire\Pelanggan\JejakPoin::class)->name('pelanggan.poin');
     Route::get('/checkin', \App\Livewire\Pelanggan\Poin\AbsensiHarian::class)->name('pelanggan.absen');
     Route::get('/tukar-poin', \App\Livewire\Pelanggan\Poin\TukarPoin::class)->name('pelanggan.tukar-poin');
-    Route::get('/dompet', \App\Livewire\Pelanggan\DompetDigital::class)->name('pelanggan.dompet');
     Route::get('/voucher', \App\Livewire\Pelanggan\VoucherSaya::class)->name('pelanggan.voucher');
     Route::get('/keanggotaan', \App\Livewire\Pelanggan\Keanggotaan::class)->name('pelanggan.keanggotaan');
     Route::get('/referral', \App\Livewire\Pelanggan\Referral::class)->name('pelanggan.referral');
