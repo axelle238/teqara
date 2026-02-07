@@ -17,43 +17,47 @@ class DokumentasiSistemGenerate extends Command
 
     public function handle()
     {
-        $this->info('Sedang mengumpulkan metadata sistem...');
+        $this->info('Sedang menghasilkan dokumentasi sistem Teqara...');
 
         $dokumentasi = [
-            'nama_sistem' => 'TEQARA Business Enterprise Store',
-            'versi' => '16.0 (Enterprise)',
-            'terakhir_diupdate' => now()->toIso8601String(),
-            'status_server' => 'Online',
+            'identitas' => [
+                'nama' => 'TEQARA Enterprise Commerce',
+                'versi' => '16.0.0-Paripurna',
+                'bahasa' => '100% Bahasa Indonesia',
+                'waktu_generate' => now()->translatedFormat('l, d F Y H:i:s'),
+            ],
             
-            'modul_aktif' => [
-                'Manajemen Produk' => 'Hulu ke Hilir (ERP Standard)',
-                'Manajemen Pesanan' => 'POS & Online Transaction',
-                'Transaksi Keuangan' => 'Automated Ledger & Payout',
-                'Keamanan Siber' => 'SOC Dashboard & WAF',
-                'SDM & HRD' => 'Employee Lifecycle & Payroll',
-                'Logistik' => 'RajaOngkir & Courier Sync',
-                'Layanan Bantuan' => 'Customer Support Ticketing',
-                'API & Integrasi' => 'Internal & External Gateway',
+            'statistik_sistem' => [
+                'total_modul' => 15,
+                'total_endpoint' => count(\Illuminate\Support\Facades\Route::getRoutes()),
+                'total_tabel_db' => count($this->getDatabaseSummary()),
+                'total_produk_aktif' => \App\Models\Produk::where('status', 'aktif')->count(),
             ],
 
-            'struktur_basis_data' => $this->getDatabaseSummary(),
-            
-            'fitur_unggulan' => [
-                'SPA Navigation' => 'Real-time update tanpa refresh halaman.',
-                'Enterprise Dashboard' => 'Visualisasi data mendalam untuk eksekutif.',
-                'Zero Trust Security' => 'Implementasi keamanan berlapis pada setiap endpoint.',
-                'Automated SEO' => 'Slug dan metadata otomatis Bahasa Indonesia.',
-            ]
+            'arsitektur' => [
+                'backend' => 'Laravel 12 (Modern)',
+                'frontend' => 'Livewire 4 + Alpine.js',
+                'interaksi' => 'One Page Application (SPA)',
+                'modal_policy' => 'Dilarang (100% Inline/Section)',
+            ],
+
+            'daftar_tabel' => $this->getDatabaseSummary(),
         ];
 
-        $path = storage_path('dokumentasi');
-        if (!File::exists($path)) {
-            File::makeDirectory($path, 0755, true);
+        $jalur = storage_path('dokumentasi');
+        if (!File::exists($jalur)) {
+            File::makeDirectory($jalur, 0755, true);
         }
 
-        File::put($path . '/dokumentasi_sistem.json', json_encode($dokumentasi, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        File::put($jalur . '/dokumentasi_sistem.json', json_encode($dokumentasi, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
-        $this->info('Dokumentasi sistem berhasil dihasilkan di: ' . $path . '/dokumentasi_sistem.json');
+        $this->info('Dokumentasi berhasil diperbarui!');
+        $this->table(['Kategori', 'Jumlah'], [
+            ['Modul Aktif', $dokumentasi['statistik_sistem']['total_modul']],
+            ['Endpoint Terdaftar', $dokumentasi['statistik_sistem']['total_endpoint']],
+            ['Tabel Database', $dokumentasi['statistik_sistem']['total_tabel_db']],
+        ]);
+        $this->info('Lokasi: storage/dokumentasi/dokumentasi_sistem.json');
     }
 
     private function getDatabaseSummary()
