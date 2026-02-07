@@ -39,7 +39,7 @@
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">{{ $daftar->items_count }} Item Tersimpan</p>
 
                 <div class="flex flex-col gap-2">
-                    <a href="{{ route('customer.wishlist.detail', $daftar->id) }}" class="w-full py-3 bg-white border-2 border-slate-100 text-slate-600 text-center rounded-xl text-xs font-black uppercase tracking-widest hover:border-indigo-600 hover:text-indigo-600 transition-all">
+                    <a href="{{ route('pelanggan.daftar-belanja.detail', $daftar->id) }}" class="w-full py-3 bg-white border-2 border-slate-100 text-slate-600 text-center rounded-xl text-xs font-black uppercase tracking-widest hover:border-indigo-600 hover:text-indigo-600 transition-all">
                         Lihat Detail
                     </a>
                 </div>

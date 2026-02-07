@@ -55,7 +55,7 @@
         @if($this->proyekSaya->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($this->proyekSaya as $p)
-            <a href="{{ route('customer.project.detail', $p->id) }}" class="group bg-white rounded-[2.5rem] p-8 border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
+            <a href="{{ route('pelanggan.proyek.detail', $p->id) }}" class="group bg-white rounded-[2.5rem] p-8 border border-slate-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                 <!-- Status Badge -->
                 <div class="absolute top-6 right-6">
                     <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest {{ $p->status == 'selesai' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600' }}">

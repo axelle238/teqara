@@ -77,7 +77,7 @@ class BuatPenawaran extends Component
         }
 
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Permintaan penawaran berhasil dikirim.']);
-        return redirect()->route('customer.rfq.index');
+        return redirect()->route('pelanggan.penawaran.indeks');
     }
 
     #[Title('Buat RFQ Baru - Teqara Enterprise')]

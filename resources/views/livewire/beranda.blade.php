@@ -25,7 +25,7 @@
                 </div>
                 
                 <div class="flex gap-4">
-                    <a href="{{ route('customer.Dasbor') }}" class="px-8 py-4 bg-white text-indigo-600 rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
+                    <a href="{{ route('pelanggan.dasbor') }}" class="px-8 py-4 bg-white text-indigo-600 rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1">
                         Ke Dasbor Saya
                     </a>
                     <a href="{{ route('pesanan.riwayat') }}" class="px-8 py-4 bg-indigo-800/50 border border-indigo-400/30 text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo-800 transition-all backdrop-blur-sm">

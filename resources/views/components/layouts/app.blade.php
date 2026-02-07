@@ -185,7 +185,7 @@
                                     </div>
                                 </div>
                                 <div class="space-y-1">
-                                    <a href="{{ route('customer.Dasbor') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 hover:text-indigo-600 transition-colors text-xs font-bold uppercase tracking-wide group">
+                                    <a href="{{ route('pelanggan.dasbor') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 hover:text-indigo-600 transition-colors text-xs font-bold uppercase tracking-wide group">
                                         <i class="fa-solid fa-gauge-high w-5 text-center group-hover:scale-110 transition-transform"></i> Dasbor
                                     </a>
                                     <a href="{{ route('pesanan.riwayat') }}" wire:navigate class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 text-slate-600 hover:text-indigo-600 transition-colors text-xs font-bold uppercase tracking-wide group">
@@ -251,7 +251,7 @@
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
-                            <a href="{{ route('customer.Dasbor') }}" class="px-4 py-3 rounded-xl bg-indigo-600 text-white text-xs font-bold text-center uppercase tracking-wide">Dasbor</a>
+                            <a href="{{ route('pelanggan.dasbor') }}" class="px-4 py-3 rounded-xl bg-indigo-600 text-white text-xs font-bold text-center uppercase tracking-wide">Dasbor</a>
                             <a href="{{ route('logout') }}" class="px-4 py-3 rounded-xl bg-rose-50 text-rose-600 text-xs font-bold text-center uppercase tracking-wide">Keluar</a>
                         </div>
                     </div>
