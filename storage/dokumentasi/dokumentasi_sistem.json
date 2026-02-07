@@ -1,7 +1,7 @@
 {
     "nama_sistem": "TEQARA Business Enterprise Store",
     "versi": "12.0.0",
-    "tanggal_update": "2026-02-07 19:06:12",
+    "tanggal_update": "2026-02-07 19:17:21",
     "status_sistem": {
         "lingkungan": "local",
         "debug_mode": true,

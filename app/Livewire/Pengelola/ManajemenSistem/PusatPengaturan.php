@@ -2,108 +2,100 @@
 
 namespace App\Livewire\Pengelola\ManajemenSistem;
 
-use App\Helpers\LogHelper;
-use App\Models\PengaturanSistem;
+use App\Services\LayananPengaturan;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
+/**
+ * Komponen Pusat Pengaturan
+ * 
+ * Antarmuka terpadu untuk mengelola seluruh konfigurasi dinamis aplikasi.
+ * Mendukung perubahan logo, SEO, kontak, dan mode pemeliharaan secara real-time.
+ */
 class PusatPengaturan extends Component
 {
     use WithFileUploads;
 
-    public $activeTab = 'umum';
-    
-    // Umum
+    public $tabAktif = 'umum'; // umum, tampilan, kontak, seo
+
+    // Properti Konfigurasi
     public $nama_situs;
     public $deskripsi_situs;
+    public $logo_url;
+    public $favicon_url;
+    public $alamat_fisik;
     public $email_dukungan;
     public $telepon_dukungan;
-    public $alamat_fisik;
-    
-    // Sosial Media
     public $sosial_facebook;
     public $sosial_instagram;
     public $sosial_twitter;
-    
-    // Bisnis
-    public $pajak_persen;
-    public $mata_uang = 'IDR';
-
-    // SEO
     public $seo_keywords;
     public $seo_description;
     
-    // Logo (Simulated for now, would need storage link)
+    // Uploads
     public $logo_baru;
+    public $favicon_baru;
 
-    public function mount()
+    public function mount(LayananPengaturan $layanan)
     {
-        // Load existing settings from database or fallback to config
-        $settings = PengaturanSistem::pluck('nilai', 'kunci');
-
-        $this->nama_situs = $settings['nama_situs'] ?? config('app.name', 'Teqara Enterprise');
-        $this->deskripsi_situs = $settings['deskripsi_situs'] ?? 'Platform e-commerce B2B/B2C terdepan.';
-        $this->email_dukungan = $settings['email_dukungan'] ?? 'support@teqara.com';
-        $this->telepon_dukungan = $settings['telepon_dukungan'] ?? '+62 812 3456 7890';
-        $this->alamat_fisik = $settings['alamat_fisik'] ?? 'Jakarta, Indonesia';
+        $data = $layanan->ambilSemua();
         
-        $this->sosial_facebook = $settings['sosial_facebook'] ?? '#';
-        $this->sosial_instagram = $settings['sosial_instagram'] ?? '#';
-        $this->sosial_twitter = $settings['sosial_twitter'] ?? '#';
-
-        $this->pajak_persen = $settings['pajak_persen'] ?? 11;
-        $this->mata_uang = $settings['mata_uang'] ?? 'IDR';
-
-        $this->seo_keywords = $settings['seo_keywords'] ?? 'ecommerce, teqara, belanja online';
-        $this->seo_description = $settings['seo_description'] ?? $this->deskripsi_situs;
+        $this->nama_situs = $data['nama_situs'] ?? 'Teqara';
+        $this->deskripsi_situs = $data['deskripsi_situs'] ?? '';
+        $this->logo_url = $data['logo_url'] ?? '';
+        $this->favicon_url = $data['favicon_url'] ?? '';
+        $this->alamat_fisik = $data['alamat_fisik'] ?? '';
+        $this->email_dukungan = $data['email_dukungan'] ?? '';
+        $this->telepon_dukungan = $data['telepon_dukungan'] ?? '';
+        $this->sosial_facebook = $data['sosial_facebook'] ?? '';
+        $this->sosial_instagram = $data['sosial_instagram'] ?? '';
+        $this->sosial_twitter = $data['sosial_twitter'] ?? '';
+        $this->seo_keywords = $data['seo_keywords'] ?? '';
+        $this->seo_description = $data['seo_description'] ?? '';
     }
 
-    public function setTab($tab)
+    public function gantiTab($tab)
     {
-        $this->activeTab = $tab;
+        $this->tabAktif = $tab;
     }
 
-    public function simpan()
+    public function simpan(LayananPengaturan $layanan)
     {
-        $this->validate([
-            'nama_situs' => 'required|string|max:255',
-            'email_dukungan' => 'required|email',
-            'pajak_persen' => 'required|numeric|min:0|max:100',
-        ]);
-
-        // Save to database
-        $settings = [
+        $dataSimpan = [
             'nama_situs' => $this->nama_situs,
             'deskripsi_situs' => $this->deskripsi_situs,
+            'alamat_fisik' => $this->alamat_fisik,
             'email_dukungan' => $this->email_dukungan,
             'telepon_dukungan' => $this->telepon_dukungan,
-            'alamat_fisik' => $this->alamat_fisik,
             'sosial_facebook' => $this->sosial_facebook,
             'sosial_instagram' => $this->sosial_instagram,
             'sosial_twitter' => $this->sosial_twitter,
-            'pajak_persen' => $this->pajak_persen,
-            'mata_uang' => $this->mata_uang,
             'seo_keywords' => $this->seo_keywords,
             'seo_description' => $this->seo_description,
         ];
 
-        foreach ($settings as $key => $value) {
-            PengaturanSistem::updateOrCreate(
-                ['kunci' => $key],
-                ['nilai' => $value, 'tipe' => is_numeric($value) ? 'number' : 'text']
-            );
+        // Handle File Uploads
+        if ($this->logo_baru) {
+            $url = $layanan->uploadGambar($this->logo_baru, 'logo_url');
+            if ($url) $this->logo_url = $url;
         }
-        
-        LogHelper::catat('update_konfigurasi', 'Global', "Pengaturan sistem diperbarui oleh " . auth()->user()->nama);
-        
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Konfigurasi sistem berhasil disimpan ke database.']);
+
+        if ($this->favicon_baru) {
+            $url = $layanan->uploadGambar($this->favicon_baru, 'favicon_url');
+            if ($url) $this->favicon_url = $url;
+        }
+
+        $layanan->simpanBanyak($dataSimpan);
+
+        $this->reset(['logo_baru', 'favicon_baru']);
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Konfigurasi sistem berhasil diperbarui.']);
     }
 
-    #[Title('Pusat Kontrol Sistem - Teqara Admin')]
+    #[Title('Konfigurasi Global - Teqara Enterprise')]
     public function render()
     {
         return view('livewire.pengelola.manajemen-sistem.pusat-pengaturan')
-            ->layout('components.layouts.admin', ['header' => 'System Control Center']);
+            ->layout('components.layouts.admin', ['header' => 'Pusat Pengaturan']);
     }
 }

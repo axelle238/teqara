@@ -42,16 +42,17 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Pengguna::observe(\App\Observers\PenggunaObserver::class);
         \App\Models\PengaturanSistem::observe(\App\Observers\PengaturanSistemObserver::class);
 
-        // Global Settings Composer (Real-time & Cached)
+        // Integrasi Layanan Pengaturan Terpusat
+        // Menggunakan View Composer agar variabel $globalSettings tersedia di SELURUH view
         \Illuminate\Support\Facades\View::composer('*', function ($view) {
-            $settings = \Illuminate\Support\Facades\Cache::remember('global_settings', 60, function () {
-                try {
-                    return \App\Models\PengaturanSistem::pluck('nilai', 'kunci');
-                } catch (\Exception $e) {
-                    return collect([]);
-                }
-            });
-            $view->with('globalSettings', $settings);
+            try {
+                // Menggunakan Service untuk konsistensi caching
+                $layanan = app(\App\Services\LayananPengaturan::class);
+                $view->with('globalSettings', $layanan->ambilSemua());
+            } catch (\Exception $e) {
+                // Fallback aman saat migrasi/awal setup
+                $view->with('globalSettings', []);
+            }
         });
     }
 }
