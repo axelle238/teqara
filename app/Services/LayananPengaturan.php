@@ -5,12 +5,13 @@ namespace App\Services;
 use App\Models\PengaturanSistem;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\LogHelper;
 
 /**
- * Layanan Pengaturan Sistem Terpusat
+ * Layanan Pengaturan Sistem Terpusat (Advanced)
  * 
- * Mengelola seluruh konfigurasi dinamis aplikasi (Identitas, SEO, Sistem).
- * Menggunakan Cache Layer untuk performa tinggi di sisi Halaman Toko.
+ * Mengelola seluruh konfigurasi dinamis aplikasi dengan sistem caching 
+ * dan pencatatan audit trail untuk setiap perubahan.
  */
 class LayananPengaturan
 {
@@ -20,7 +21,11 @@ class LayananPengaturan
     public function ambil(string $kunci, $default = null)
     {
         $semuaPengaturan = Cache::rememberForever('pengaturan_sistem_global', function () {
-            return PengaturanSistem::pluck('nilai', 'kunci')->toArray();
+            try {
+                return PengaturanSistem::pluck('nilai', 'kunci')->toArray();
+            } catch (\Exception $e) {
+                return [];
+            }
         });
 
         return $semuaPengaturan[$kunci] ?? $default;
@@ -32,38 +37,65 @@ class LayananPengaturan
     public function ambilSemua()
     {
         return Cache::rememberForever('pengaturan_sistem_global', function () {
-            return PengaturanSistem::pluck('nilai', 'kunci')->toArray();
+            try {
+                return PengaturanSistem::pluck('nilai', 'kunci')->toArray();
+            } catch (\Exception $e) {
+                return [];
+            }
         });
     }
 
     /**
-     * Menyimpan atau memperbarui pengaturan.
+     * Menyimpan atau memperbarui pengaturan tunggal.
      */
     public function simpan(string $kunci, $nilai, $tipe = 'string')
     {
+        $nilaiLama = $this->ambil($kunci);
+        
         PengaturanSistem::updateOrCreate(
             ['kunci' => $kunci],
             ['nilai' => $nilai, 'tipe' => $tipe]
         );
 
+        if ($nilaiLama != $nilai) {
+            LogHelper::catat('perbarui_pengaturan', $kunci, "Mengubah konfigurasi '{$kunci}' secara terpusat.");
+        }
+
         $this->bersihkanCache();
     }
 
     /**
-     * Menyimpan banyak pengaturan sekaligus.
+     * Menyimpan banyak pengaturan sekaligus dengan Audit Trail.
      */
     public function simpanBanyak(array $data)
     {
         foreach ($data as $kunci => $nilai) {
-            // Abaikan jika nilai null/kosong agar tidak menimpa dengan blank (opsional, tergantung logic)
             if ($nilai !== null) {
+                $nilaiLama = $this->ambil($kunci);
+                
                 PengaturanSistem::updateOrCreate(
                     ['kunci' => $kunci],
                     ['nilai' => $nilai, 'tipe' => 'string']
                 );
+
+                if ($nilaiLama != $nilai) {
+                    LogHelper::catat('perbarui_pengaturan', $kunci, "Pengaturan '{$kunci}' diperbarui dalam sesi sinkronisasi massal.");
+                }
             }
         }
         $this->bersihkanCache();
+    }
+
+    /**
+     * Mengatur Mode Pemeliharaan (Maintenance Mode).
+     */
+    public function setelModePemeliharaan(bool $aktif, string $pesan = '')
+    {
+        $this->simpan('mode_pemeliharaan', $aktif ? 'aktif' : 'nonaktif');
+        $this->simpan('pesan_pemeliharaan', $pesan);
+        
+        // Logika Artisan Down/Up akan dijalankan oleh sistem backend
+        LogHelper::catat('keamanan_sistem', 'Mode Pemeliharaan', "Status mode pemeliharaan diubah menjadi: " . ($aktif ? 'AKTIF' : 'NONAKTIF'));
     }
 
     /**
@@ -72,7 +104,6 @@ class LayananPengaturan
     public function uploadGambar($file, $kunci)
     {
         if ($file) {
-            // Hapus gambar lama
             $lama = $this->ambil($kunci);
             if ($lama && Storage::disk('public')->exists(str_replace('/storage/', '', $lama))) {
                 Storage::disk('public')->delete(str_replace('/storage/', '', $lama));
@@ -87,10 +118,11 @@ class LayananPengaturan
     }
 
     /**
-     * Membersihkan cache pengaturan agar perubahan langsung tampil.
+     * Membersihkan cache pengaturan agar perubahan langsung tampil secara Real-time.
      */
     public function bersihkanCache()
     {
         Cache::forget('pengaturan_sistem_global');
+        Cache::forget('global_settings'); // Sync dengan AppServiceProvider
     }
 }

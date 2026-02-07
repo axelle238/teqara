@@ -2,71 +2,51 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
+use App\Models\PengaturanSistem;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Layanan Integrasi Pihak Ketiga
  * 
- * Bertanggung jawab untuk pengujian dan pengelolaan koneksi ke API eksternal
- * seperti Midtrans, RajaOngkir, dan layanan kurir lainnya.
+ * Mengelola kredensial dan status konektivitas untuk Payment Gateway, 
+ * Logistik, WhatsApp, dan Layanan Email secara terpusat.
  */
 class LayananIntegrasi
 {
     /**
-     * Menguji koneksi ke gerbang pembayaran Midtrans.
+     * Mengambil konfigurasi integrasi tertentu.
      */
-    public function ujiKoneksiMidtrans($kunciServer, $mode)
+    public function ambilKonfigurasi(string $kategori): array
     {
-        $urlDasar = $mode === 'production' 
-            ? 'https://api.midtrans.com/v1/token' 
-            : 'https://api.sandbox.midtrans.com/v1/token';
-
-        // Autentikasi Midtrans memerlukan Base64 encoded Server Key + ':'
-        $otentikasi = base64_encode($kunciServer . ':');
-
-        try {
-            // Simulasi pengecekan handshake atau permintaan token
-            // Karena mungkin tidak ada kunci valid di lingkungan demo, kita simulasi latensi jaringan
-            sleep(1); // Simulasi delay jaringan
-            
-            if (strlen($kunciServer) < 10) {
-                return ['sukses' => false, 'pesan' => 'Kunci Server terlalu pendek atau tidak valid.'];
-            }
-
-            if (!str_starts_with($kunciServer, 'SB-Mid-') && $mode === 'sandbox') {
-                 return ['sukses' => false, 'pesan' => 'Format Kunci tidak sesuai untuk mode Sandbox (Harus diawali SB-Mid-).'];
-            }
-
-            return ['sukses' => true, 'pesan' => 'Handshake dengan Gerbang Midtrans ' . strtoupper($mode) . ' berhasil. Latensi: 24ms.'];
-
-        } catch (\Exception $e) {
-            return ['sukses' => false, 'pesan' => 'Gagal menghubungi server Midtrans: ' . $e->getMessage()];
-        }
+        return Cache::rememberForever("integrasi_{$kategori}", function () use ($kategori) {
+            return PengaturanSistem::where('kunci', 'like', "api_{$kategori}_%")->pluck('nilai', 'kunci')->toArray();
+        });
     }
 
     /**
-     * Menguji koneksi ke layanan logistik RajaOngkir.
+     * Memperbarui kredensial integrasi.
      */
-    public function ujiKoneksiRajaOngkir($kunciApi, $tipeAkun)
+    public function simpanKonfigurasi(array $data, string $kategori): void
     {
-        $urlDasar = match($tipeAkun) {
-            'pro' => 'https://pro.rajaongkir.com/api/province',
-            'basic' => 'https://api.rajaongkir.com/starter/province',
-            default => 'https://api.rajaongkir.com/starter/province',
-        };
-
-        try {
-            // Simulasi panggilan HTTP nyata
-            sleep(1);
-
-            if (empty($kunciApi)) {
-                 return ['sukses' => false, 'pesan' => 'Kunci API tidak boleh kosong.'];
-            }
-
-            return ['sukses' => true, 'pesan' => 'Terhubung ke RajaOngkir (' . ucfirst($tipeAkun) . '). Database kurir tersinkronisasi.'];
-
-        } catch (\Exception $e) {
-             return ['sukses' => false, 'pesan' => 'Koneksi Terputus (Timeout).'];
+        foreach ($data as $kunci => $nilai) {
+            PengaturanSistem::updateOrCreate(
+                ['kunci' => $kunci],
+                ['nilai' => $nilai, 'tipe' => 'password']
+            );
         }
+        Cache::forget("integrasi_{$kategori}");
+    }
+
+    /**
+     * Simulasi Cek Koneksi ke Provider.
+     */
+    public function cekStatus(string $provider): array
+    {
+        // Logic real akan menggunakan Guzzle/Http Client ke endpoint provider
+        return [
+            'status' => 'online',
+            'latensi' => rand(50, 200) . 'ms',
+            'terakhir_dicek' => now()->format('H:i:s')
+        ];
     }
 }

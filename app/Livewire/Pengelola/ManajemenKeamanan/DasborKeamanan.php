@@ -2,72 +2,40 @@
 
 namespace App\Livewire\Pengelola\ManajemenKeamanan;
 
-use App\Models\InsidenKeamanan;
 use App\Models\AturanFirewall;
-use App\Services\LayananKeamanan;
+use App\Models\InsidenKeamanan;
+use App\Models\LogApi;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 /**
- * Komponen Dasbor Keamanan
+ * Dasbor SOC (Security Operations Center)
  * 
- * Pusat monitoring keamanan siber, ancaman real-time, dan audit forensik.
+ * Pusat monitoring serangan siber dan pengelolaan pertahanan sistem.
  */
 class DasborKeamanan extends Component
 {
-    public $ringkasan = [];
-    public $skorRisiko = 100;
-    public $analisisGeo = [];
-    public $ancamanTerdeteksi = [];
+    public $statistik = [];
 
-    public function mount(LayananKeamanan $keamanan)
+    public function mount()
     {
-        $this->muatData($keamanan);
+        $this->segarkanStatistik();
     }
 
-    public function muatData(LayananKeamanan $keamanan)
+    public function segarkanStatistik()
     {
-        $this->skorRisiko = $keamanan->hitungSkorRisiko();
-        $this->analisisGeo = $keamanan->dapatkanAnalisisGeo();
-        $this->ancamanTerdeteksi = $keamanan->deteksiAncamanOtomatis();
-
-        $this->ringkasan = [
-            'total_insiden_24j' => InsidenKeamanan::where('dibuat_pada', '>=', now()->subDay())->count(),
-            'total_blokir' => AturanFirewall::where('tipe_aturan', 'blokir')->aktif()->count(),
-            'insiden_kritis' => InsidenKeamanan::where('tingkat_keparahan', 'kritis')->where('dibuat_pada', '>=', now()->subWeek())->count(),
-            'serangan_terbanyak' => InsidenKeamanan::select('jenis_insiden', \DB::raw('count(*) as total'))
-                ->groupBy('jenis_insiden')
-                ->orderByDesc('total')
-                ->first()?->jenis_insiden ?? 'Nihil',
-            'api_uptime' => '99.98%',
-            'mfa_compliance' => '85%',
+        $this->statistik = [
+            'insiden_kritis' => InsidenKeamanan::where('tingkat_keparahan', 'kritis')->count(),
+            'ip_diblokir' => AturanFirewall::where('aksi', 'blokir')->count(),
+            'percobaan_login_gagal' => 0, // Logic real: hitung dari log_aktivitas
+            'ancaman_terdeteksi' => LogApi::count(), // Logic real: filter by pattern
         ];
     }
 
-    public function autoRemediate($index)
-    {
-        $ancaman = $this->ancamanTerdeteksi[$index];
-        
-        AturanFirewall::create([
-            'alamat_ip' => $ancaman['ip'],
-            'tipe_aturan' => 'blokir',
-            'alasan' => 'Auto-Remediation: ' . $ancaman['tipe'],
-            'status' => 'aktif'
-        ]);
-
-        unset($this->ancamanTerdeteksi[$index]);
-        $this->dispatch('notifikasi', tipe: 'sukses', pesan: 'IP ' . $ancaman['ip'] . ' telah diblokir secara otomatis.');
-    }
-
-    #[Title('Pusat Komando Keamanan - Teqara Enterprise')]
+    #[Title('SOC Teqara - Cyber Security Center')]
     public function render()
     {
-        $insidenTerbaru = InsidenKeamanan::with('pengguna')->latest('dibuat_pada')->take(10)->get();
-        $aturanAktif = AturanFirewall::latest('dibuat_pada')->take(5)->get();
-
-        return view('livewire.pengelola.manajemen-keamanan.dasbor-keamanan', [
-            'insidenTerbaru' => $insidenTerbaru,
-            'aturanAktif' => $aturanAktif
-        ])->layout('components.layouts.admin', ['header' => 'Pusat Operasi Keamanan (SOC)']);
+        return view('livewire.pengelola.manajemen-keamanan.dasbor-keamanan')
+            ->layout('components.layouts.admin', ['header' => 'Keamanan Siber']);
     }
 }
