@@ -40,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Produk::observe(\App\Observers\ProdukObserver::class);
         \App\Models\Pesanan::observe(\App\Observers\PesananObserver::class);
         \App\Models\Pengguna::observe(\App\Observers\PenggunaObserver::class);
+        \App\Models\PengaturanSistem::observe(\App\Observers\PengaturanSistemObserver::class);
 
         // Global Settings Composer (Real-time & Cached)
         \Illuminate\Support\Facades\View::composer('*', function ($view) {
