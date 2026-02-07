@@ -36,6 +36,6 @@ class SinkronisasiHakAkses extends Command
             ['Fitur Baru Ditemukan', $hasil['baru']],
         ]);
 
-        $this->success('Sinkronisasi hak akses selesai.');
+        $this->info('Sinkronisasi hak akses selesai.');
     }
 }

@@ -18,7 +18,7 @@
                 </div>
 
                 <div class="space-y-2">
-                    @foreach($daftarPeran as $p)
+                    @foreach($this->daftarPeran as $p)
                         <button wire:click="pilihPeran({{ $p->id }})" 
                                 class="w-full flex items-center justify-between p-4 rounded-2xl transition-all {{ $peranTerpilihId == $p->id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'bg-slate-50 text-slate-600 hover:bg-slate-100' }}">
                             <div class="flex items-center gap-3">
@@ -45,18 +45,18 @@
 
         <!-- Matriks Hak Akses -->
         <div class="lg:col-span-8">
-            @if($peranTerpilih)
+            @if($this->peranTerpilih)
             <div class="bg-white rounded-[2.5rem] p-8 md:p-10 shadow-sm border border-slate-100 relative overflow-hidden">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 pb-6 border-b border-slate-50">
                     <div>
                         <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-[9px] font-black uppercase tracking-widest">Konfigurasi Akses</span>
-                        <h2 class="text-2xl font-black text-slate-900 mt-2">{{ $peranTerpilih->nama }}</h2>
+                        <h2 class="text-2xl font-black text-slate-900 mt-2">{{ $this->peranTerpilih->nama }}</h2>
                     </div>
                     <div class="flex gap-3">
                         <button wire:click="sinkronkanFitur" class="px-6 py-3 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-100 transition-all flex items-center gap-2">
                             <i class="fa-solid fa-sync"></i> Sinkron Fitur Baru
                         </button>
-                        @if($peranTerpilih->slug !== 'admin')
+                        @if($this->peranTerpilih->slug !== 'admin')
                         <button wire:click="simpanAkses" class="px-8 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all">
                             Simpan Perubahan
                         </button>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
 
-                @if($peranTerpilih->slug === 'admin')
+                @if($this->peranTerpilih->slug === 'admin')
                     <div class="py-20 text-center space-y-4">
                         <div class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto text-3xl">🛡️</div>
                         <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">Administrator Utama</h3>
@@ -72,7 +72,7 @@
                     </div>
                 @else
                     <div class="space-y-10">
-                        @foreach($daftarHakAkses->groupBy('grup_modul') as $modul => $fitur)
+                        @foreach($this->daftarHakAkses->groupBy('grup_modul') as $modul => $fitur)
                         <div class="space-y-4">
                             <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-3">
                                 <span>{{ $modul }}</span>
