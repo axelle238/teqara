@@ -212,10 +212,18 @@
                 <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
             </button>
             <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.sistem.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.sistem.beranda') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Dasbor Sistem</a>
-                <a href="{{ route('pengelola.sistem.pusat') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.sistem.pusat') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Konfigurasi Global</a>
-                <a href="{{ route('pengelola.voucher') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.voucher') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Kelola Voucher</a>
-                <a href="{{ route('pengelola.sistem.kesehatan') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.sistem.kesehatan') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Kesehatan Server</a>
+                <a href="{{ route('pengelola.sistem.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.sistem.beranda') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">
+                    <i class="fa-solid fa-gauge-high text-[10px]"></i> Dasbor Sistem
+                </a>
+                <a href="{{ route('pengelola.sistem.pusat') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.sistem.pusat') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">
+                    <i class="fa-solid fa-sliders text-[10px]"></i> Konfigurasi Global
+                </a>
+                <a href="{{ route('pengelola.voucher') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.voucher') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">
+                    <i class="fa-solid fa-ticket text-[10px]"></i> Kelola Voucher
+                </a>
+                <a href="{{ route('pengelola.sistem.kesehatan') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.sistem.kesehatan') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">
+                    <i class="fa-solid fa-heart-pulse text-[10px]"></i> Kesehatan Server
+                </a>
             </div>
         </div>
 
@@ -229,14 +237,30 @@
                 <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
             </button>
             <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.api.pusat') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.pusat') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Dasbor API</a>
-                <a href="{{ route('pengelola.api.pembayaran') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.pembayaran') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Payment Gateway</a>
-                <a href="{{ route('pengelola.api.logistik') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.logistik') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Integrasi Kurir</a>
-                <a href="{{ route('pengelola.api.whatsapp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.whatsapp') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">WhatsApp API</a>
-                <a href="{{ route('pengelola.api.email') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.email') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">SMTP Email</a>
-                <a href="{{ route('pengelola.api.kunci') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.kunci') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Kunci Akses API</a>
-                <a href="{{ route('pengelola.api.log') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.log') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Log Akses API</a>
-                <a href="{{ route('pengelola.api.dokumentasi') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.dokumentasi') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Dokumentasi API</a>
+                <a href="{{ route('pengelola.api.pusat') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.pusat') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
+                    <i class="fa-solid fa-server text-[10px]"></i> Dasbor API
+                </a>
+                <a href="{{ route('pengelola.api.pembayaran') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.pembayaran') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
+                    <i class="fa-regular fa-credit-card text-[10px]"></i> Payment Gateway
+                </a>
+                <a href="{{ route('pengelola.api.logistik') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.logistik') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
+                    <i class="fa-solid fa-truck-fast text-[10px]"></i> Integrasi Kurir
+                </a>
+                <a href="{{ route('pengelola.api.whatsapp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.whatsapp') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
+                    <i class="fa-brands fa-whatsapp text-[10px]"></i> WhatsApp API
+                </a>
+                <a href="{{ route('pengelola.api.email') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.email') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
+                    <i class="fa-solid fa-envelope text-[10px]"></i> SMTP Email
+                </a>
+                <a href="{{ route('pengelola.api.kunci') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.kunci') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
+                    <i class="fa-solid fa-key text-[10px]"></i> Kunci Akses API
+                </a>
+                <a href="{{ route('pengelola.api.log') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.log') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
+                    <i class="fa-solid fa-clock-rotate-left text-[10px]"></i> Log Akses API
+                </a>
+                <a href="{{ route('pengelola.api.dokumentasi') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.dokumentasi') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
+                    <i class="fa-solid fa-book text-[10px]"></i> Dokumentasi API
+                </a>
             </div>
         </div>
 
@@ -244,29 +268,66 @@
         <div x-data="{ open: {{ request()->routeIs('pengelola.keamanan*') ? 'true' : 'false' }} }">
             <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-red-500/10 text-red-400': open}">
                 <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-shield-halved w-6 text-center text-lg" :class="open ? 'text-red-500' : 'text-red-400 group-hover:text-red-300'"></i>
+                    <div class="relative">
+                        <i class="fa-solid fa-shield-halved w-6 text-center text-lg" :class="open ? 'text-red-500' : 'text-red-400 group-hover:text-red-300'"></i>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full animate-pulse border border-slate-900"></span>
+                    </div>
                     <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Keamanan Siber</span>
                 </div>
                 <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
             </button>
             <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.keamanan.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.beranda') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Dasbor Keamanan</a>
-                <a href="{{ route('pengelola.keamanan.dasbor') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.dasbor') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Monitor Ancaman</a>
-                <a href="{{ route('pengelola.keamanan.firewall') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.firewall') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Firewall WAF</a>
-                <a href="{{ route('pengelola.keamanan.pemindai') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.pemindai') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Pemindai Sistem</a>
-                <a href="{{ route('pengelola.keamanan.siem') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.siem') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Analisis Log SIEM</a>
-                <a href="{{ route('pengelola.keamanan.integritas') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.integritas') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Integritas File</a>
-                <a href="{{ route('pengelola.keamanan.ueba') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.ueba') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Analisis UEBA</a>
-                <a href="{{ route('pengelola.keamanan.forensik') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.forensik') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Forensik Digital</a>
-                <a href="{{ route('pengelola.keamanan.honeypot') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.honeypot') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Jebakan Honeypot</a>
-                <a href="{{ route('pengelola.keamanan.ancaman') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.ancaman') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Intel Ancaman</a>
-                <a href="{{ route('pengelola.keamanan.pam') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.pam') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Manajemen PAM</a>
-                <a href="{{ route('pengelola.keamanan.sesi') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.sesi') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Monitor Sesi</a>
-                <a href="{{ route('pengelola.keamanan.dlp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.dlp') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Proteksi DLP</a>
-                <a href="{{ route('pengelola.keamanan.irp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.irp') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Respon IRP</a>
-                <a href="{{ route('pengelola.keamanan.zerotrust') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.zerotrust') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Zero Trust Akses</a>
-                <a href="{{ route('pengelola.keamanan.edr') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.edr') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Deteksi EDR</a>
-                <a href="{{ route('pengelola.keamanan.cadangan') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.cadangan') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">Cadangan Data</a>
+                <a href="{{ route('pengelola.keamanan.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.beranda') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-lock text-[10px]"></i> Dasbor Keamanan
+                </a>
+                <a href="{{ route('pengelola.keamanan.dasbor') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.dasbor') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-radar text-[10px]"></i> Monitor Ancaman
+                </a>
+                <a href="{{ route('pengelola.keamanan.firewall') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.firewall') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-fire text-[10px]"></i> Firewall WAF
+                </a>
+                <a href="{{ route('pengelola.keamanan.pemindai') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.pemindai') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-magnifying-glass text-[10px]"></i> Pemindai Sistem
+                </a>
+                <a href="{{ route('pengelola.keamanan.siem') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.siem') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-file-shield text-[10px]"></i> Analisis Log SIEM
+                </a>
+                <a href="{{ route('pengelola.keamanan.integritas') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.integritas') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-file-code text-[10px]"></i> Integritas File
+                </a>
+                <a href="{{ route('pengelola.keamanan.ueba') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.ueba') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-user-secret text-[10px]"></i> Analisis UEBA
+                </a>
+                <a href="{{ route('pengelola.keamanan.forensik') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.forensik') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-microscope text-[10px]"></i> Forensik Digital
+                </a>
+                <a href="{{ route('pengelola.keamanan.honeypot') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.honeypot') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-link-slash text-[10px]"></i> Jebakan Honeypot
+                </a>
+                <a href="{{ route('pengelola.keamanan.ancaman') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.ancaman') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-skull text-[10px]"></i> Intel Ancaman
+                </a>
+                <a href="{{ route('pengelola.keamanan.pam') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.pam') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-key text-[10px]"></i> Manajemen PAM
+                </a>
+                <a href="{{ route('pengelola.keamanan.sesi') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.sesi') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-clock text-[10px]"></i> Monitor Sesi
+                </a>
+                <a href="{{ route('pengelola.keamanan.dlp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.dlp') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-database text-[10px]"></i> Proteksi DLP
+                </a>
+                <a href="{{ route('pengelola.keamanan.irp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.irp') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-triangle-exclamation text-[10px]"></i> Respon IRP
+                </a>
+                <a href="{{ route('pengelola.keamanan.zerotrust') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.zerotrust') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-hand-hand text-[10px]"></i> Zero Trust Akses
+                </a>
+                <a href="{{ route('pengelola.keamanan.edr') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.edr') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-laptop-medical text-[10px]"></i> Deteksi EDR
+                </a>
+                <a href="{{ route('pengelola.keamanan.cadangan') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.cadangan') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
+                    <i class="fa-solid fa-hard-drive text-[10px]"></i> Cadangan Data
+                </a>
             </div>
         </div>
 
