@@ -1,4 +1,4 @@
-<div class="bg-slate-50 min-h-screen pb-20 pt-10 font-sans">
+<div class="bg-slate-50 min-h-screen pb-20 pt-10 font-sans" wire:poll.15s>
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col lg:flex-row gap-10 items-start">
             
@@ -6,28 +6,103 @@
             <x-layouts.pelanggan.sidebar />
 
             <!-- Konten Utama -->
-            <div class="flex-1 w-full space-y-8 animate-fade-in-up">
+            <div class="flex-1 w-full space-y-10 animate-fade-in-up">
                 
-                <!-- Welcome Banner -->
-                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-[2.5rem] p-8 md:p-10 text-white relative overflow-hidden shadow-2xl shadow-indigo-500/30">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                    <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
-                        <div>
-                            <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-2">Pusat Kendali Member</p>
-                            <h1 class="text-3xl font-black tracking-tight leading-none mb-2">Halo, {{ explode(' ', $this->stats['nama'])[0] }}! 👋</h1>
-                            <p class="text-sm font-medium text-indigo-100 max-w-md">Selamat datang kembali di Teqara. Pantau pesanan dan poin Anda di sini.</p>
-                        </div>
-                        <div class="flex items-center gap-4 bg-white/10 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10">
-                            <div class="text-right">
-                                <p class="text-[9px] font-black uppercase tracking-widest opacity-70">Saldo Digital</p>
-                                <p class="text-xl font-black">Rp {{ number_format($this->stats['saldo'], 0, ',', '.') }}</p>
+                <!-- Dashboard Welcome & Loyalty Hub -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-gradient-to-r from-[#0f172a] to-[#1e293b] rounded-[3rem] p-10 text-white relative overflow-hidden shadow-2xl shadow-indigo-500/20">
+                        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+                        <div class="relative z-10 flex flex-col justify-between h-full">
+                            <div>
+                                <p class="text-indigo-400 text-[10px] font-black uppercase tracking-[0.3em] mb-4">Command Center Pelanggan</p>
+                                <h1 class="text-4xl font-black tracking-tight leading-none">Selamat Datang,<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">{{ explode(' ', $this->stats['nama'])[0] }}</span></h1>
                             </div>
-                            <div class="w-10 h-10 bg-white text-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                                <i class="fa-solid fa-wallet text-lg"></i>
+                            
+                            <div class="mt-12 bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10">
+                                <div class="flex justify-between items-end mb-4">
+                                    <div>
+                                        <p class="text-[9px] font-black uppercase tracking-widest text-indigo-300">Level Keanggotaan</p>
+                                        <h4 class="text-xl font-black uppercase">{{ $this->stats['level'] }}</h4>
+                                    </div>
+                                    <p class="text-xs font-bold text-white/50">{{ number_format($this->stats['poin']) }} / 10.000 XP</p>
+                                </div>
+                                <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                                    <div class="bg-gradient-to-r from-indigo-500 to-cyan-400 h-full transition-all duration-1000 shadow-[0_0_10px_rgba(99,102,241,0.5)]" style="width: {{ $this->stats['progres_level'] }}%"></div>
+                                </div>
+                                <p class="text-[9px] font-bold text-white/40 mt-3 uppercase tracking-widest text-center">Tingkatkan belanja Anda untuk meraih keunggulan Member Gold</p>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Digital Wallet Card -->
+                    <div class="bg-indigo-600 rounded-[3rem] p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-500/30 group">
+                        <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+                        <div class="relative z-10 flex flex-col justify-between h-full">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-indigo-200">Saldo Digital</span>
+                                    <i class="fa-solid fa-bolt-lightning text-yellow-400 animate-pulse"></i>
+                                </div>
+                                <h3 class="text-3xl font-black tracking-tight">Rp{{ number_format($this->stats['saldo'], 0, ',', '.') }}</h3>
+                            </div>
+
+                            <div class="mt-8 space-y-4">
+                                <p class="text-[9px] font-black uppercase tracking-widest text-indigo-200 border-b border-indigo-500/50 pb-2">Mutasi Terakhir</p>
+                                @forelse($this->transaksiDompet as $trx)
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] font-bold text-indigo-100">Top Up Digital</span>
+                                    <span class="text-[10px] font-black text-emerald-400">+{{ number_format($trx->jumlah_bayar, 0, ',', '.') }}</span>
+                                </div>
+                                @empty
+                                <p class="text-[10px] italic text-indigo-300">Belum ada riwayat saldo</p>
+                                @endforelse
+                            </div>
+
+                            <a href="{{ route('pelanggan.dompet') }}" wire:navigate class="mt-8 w-full py-4 bg-white text-indigo-600 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center shadow-lg group-hover:scale-105 transition-transform">Kelola Saldo</a>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Live Order Timeline (Advanced Status) -->
+                @if($this->pesananBerjalan)
+                <div class="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-indigo-600"></div>
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                        <div>
+                            <div class="flex items-center gap-3 mb-1">
+                                <span class="w-2 h-2 rounded-full bg-indigo-600 animate-ping"></span>
+                                <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">Pelacakan Pesanan <span class="text-indigo-600">Aktif</span></h3>
+                            </div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nomor Faktur: #{{ $this->pesananBerjalan->nomor_faktur }}</p>
+                        </div>
+                        <a href="{{ route('pesanan.lacak', $this->pesananBerjalan->nomor_faktur) }}" wire:navigate class="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-lg shadow-slate-900/20">Lacak Kurir</a>
+                    </div>
+
+                    <div class="relative px-4">
+                        <div class="absolute top-6 left-0 w-full h-1 bg-slate-100 rounded-full"></div>
+                        <div class="absolute top-6 left-0 h-1 bg-indigo-600 rounded-full transition-all duration-1000" style="width: {{ 
+                            match($this->pesananBerjalan->status_pesanan) {
+                                'menunggu' => '12.5%',
+                                'dibayar' => '37.5%',
+                                'diproses' => '62.5%',
+                                'dikirim' => '87.5%',
+                                default => '0%'
+                            }
+                        }}%"></div>
+                        
+                        <div class="relative z-10 flex justify-between">
+                            @foreach([['key' => 'menunggu', 'icon' => 'fa-wallet', 'label' => 'Menunggu'], ['key' => 'dibayar', 'icon' => 'fa-shield-check', 'label' => 'Diverifikasi'], ['key' => 'diproses', 'icon' => 'fa-box-open', 'label' => 'Dipacking'], ['key' => 'dikirim', 'icon' => 'fa-truck-fast', 'label' => 'Dalam Jalan']] as $step)
+                            <div class="flex flex-col items-center">
+                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg shadow-lg border-4 border-white transition-all duration-500 {{ $this->pesananBerjalan->status_pesanan == $step['key'] ? 'bg-indigo-600 text-white scale-125' : 'bg-slate-100 text-slate-400' }}">
+                                    <i class="fa-solid {{ $step['icon'] }}"></i>
+                                </div>
+                                <span class="text-[9px] font-black uppercase tracking-widest mt-6 {{ $this->pesananBerjalan->status_pesanan == $step['key'] ? 'text-indigo-600' : 'text-slate-400' }}">{{ $step['label'] }}</span>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endif
 
                 <!-- Statistik Grid -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">

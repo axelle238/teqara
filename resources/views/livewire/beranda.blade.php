@@ -199,127 +199,117 @@
         </div>
     </section>
 
-    <!-- Flash Sale (Jika Ada) -->
+    <!-- Flash Sale (Enterprise Real-time) -->
     @if($penjualanKilat)
-    <section class="py-12 bg-slate-900 relative overflow-hidden my-12">
-        <!-- Background Pattern -->
-        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#4f46e5 1px, transparent 1px); background-size: 32px 32px;"></div>
-        
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12" x-data="{ 
+        timeLeft: '',
+        targetDate: new Date('{{ $penjualanKilat->waktu_selesai }}').getTime(),
+        init() {
+            setInterval(() => {
+                const now = new Date().getTime();
+                const distance = this.targetDate - now;
+                if (distance < 0) { this.timeLeft = 'BERAKHIR'; return; }
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                this.timeLeft = hours + 'j ' + minutes + 'm ' + seconds + 's';
+            }, 1000);
+        }
+    }">
+        <div class="bg-slate-900 rounded-[3rem] p-10 relative overflow-hidden shadow-2xl border border-white/5">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px]"></div>
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 mb-12">
                 <div class="flex items-center gap-6">
-                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center text-4xl shadow-lg shadow-orange-500/30 animate-bounce">⚡</div>
+                    <div class="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl flex items-center justify-center text-4xl shadow-lg animate-pulse">⚡</div>
                     <div>
-                        <h2 class="text-3xl font-black text-white tracking-tight uppercase italic">Flash Sale</h2>
-                        <p class="text-yellow-400 font-bold tracking-widest uppercase text-sm mt-1">Berakhir dalam: <span x-data="{ timer: '00:00:00' }" x-init="setInterval(() => { /* logic countdown */ }, 1000)">23:59:59</span></p>
+                        <h2 class="text-3xl font-black text-white tracking-tighter uppercase italic">Flash Sale <span class="text-yellow-400">Kilat</span></h2>
+                        <div class="flex items-center gap-3 mt-2">
+                            <span class="px-3 py-1 bg-white/10 rounded-lg text-[10px] font-black text-white uppercase tracking-widest">Berakhir Dalam:</span>
+                            <span class="text-xl font-mono font-black text-yellow-400 tracking-tighter" x-text="timeLeft">00:00:00</span>
+                        </div>
                     </div>
                 </div>
-                <a href="/flash-sale" class="px-8 py-3 bg-white/10 hover:bg-white text-white hover:text-slate-900 border border-white/20 rounded-2xl font-bold transition-all backdrop-blur-sm">
-                    Lihat Semua Deal
-                </a>
+                <a href="/katalog" class="px-8 py-4 bg-white text-slate-900 rounded-2xl font-black uppercase tracking-widest hover:scale-105 transition-transform">Lihat Semua Promo</a>
             </div>
 
-            <!-- List Produk Flash Sale (Horizontal Scroll) -->
-            <div class="flex overflow-x-auto pb-8 gap-6 snap-x hide-scrollbar">
-                {{-- Di sini loop produk flash sale --}}
-                <div class="w-72 flex-shrink-0 snap-start bg-slate-800 rounded-3xl p-4 border border-white/5 hover:border-yellow-500/50 transition-colors group">
-                    <div class="relative aspect-square bg-slate-700 rounded-2xl overflow-hidden mb-4">
-                        <span class="absolute top-3 left-3 px-3 py-1 bg-red-500 text-white text-xs font-black rounded-lg uppercase tracking-wider">-50%</span>
-                        <div class="w-full h-full flex items-center justify-center text-4xl">📱</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10">
+                @foreach($penjualanKilat->produkPenjualanKilat as $item)
+                <div class="bg-white/5 backdrop-blur-md border border-white/10 rounded-[2.5rem] p-5 group hover:bg-white/10 transition-all cursor-pointer">
+                    <div class="relative aspect-square rounded-3xl bg-white overflow-hidden mb-4">
+                        <img src="{{ $item->produk->gambar_utama_url }}" class="w-full h-full object-contain p-6 group-hover:scale-110 transition-transform">
+                        <div class="absolute top-3 left-3 px-3 py-1 bg-rose-600 text-white text-[10px] font-black rounded-lg">HEMAT {{ round((($item->produk->harga_jual - $item->harga_diskon) / $item->produk->harga_jual) * 100) }}%</div>
                     </div>
-                    <h3 class="text-white font-bold truncate">iPhone 16 Pro Max</h3>
-                    <div class="mt-2 flex items-baseline gap-2">
-                        <span class="text-yellow-400 font-black text-lg">Rp 15.000.000</span>
-                        <span class="text-slate-500 text-xs line-through">Rp 30.000.000</span>
+                    <h3 class="text-white font-bold text-sm truncate">{{ $item->produk->nama }}</h3>
+                    <div class="mt-2 flex items-center gap-3">
+                        <span class="text-yellow-400 font-black text-lg">Rp{{ number_format($item->harga_diskon, 0, ',', '.') }}</span>
+                        <span class="text-white/30 text-xs line-through">Rp{{ number_format($item->produk->harga_jual, 0, ',', '.') }}</span>
                     </div>
-                    <div class="mt-4 w-full bg-slate-700 rounded-full h-2 overflow-hidden">
-                        <div class="bg-gradient-to-r from-yellow-400 to-orange-500 w-3/4 h-full"></div>
-                    </div>
-                    <div class="flex justify-between text-[10px] text-slate-400 mt-1 uppercase font-bold">
-                        <span>Terjual 75</span>
-                        <span>Sisa 25</span>
+                    <div class="mt-4 space-y-1.5">
+                        <div class="flex justify-between text-[9px] font-bold text-white/50 uppercase tracking-widest">
+                            <span>Terjual {{ $item->terjual }}</span>
+                            <span>Sisa {{ $item->kuota_stok - $item->terjual }}</span>
+                        </div>
+                        <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 h-full transition-all duration-1000" style="width: {{ ($item->terjual / $item->kuota_stok) * 100 }}%"></div>
+                        </div>
                     </div>
                 </div>
-                <!-- ... more cards ... -->
+                @endforeach
             </div>
         </div>
     </section>
     @endif
 
-    <!-- Produk Unggulan -->
+    <!-- Produk Unggulan (With Stock Pulse) -->
     <section id="unggulan" class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between mb-10">
+        <div class="flex items-end justify-between mb-12">
             <div>
-                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Pilihan Editor</h2>
-                <div class="h-1.5 w-24 bg-gradient-to-r from-fuchsia-600 to-purple-500 rounded-full mt-2"></div>
+                <h2 class="text-4xl font-black text-slate-900 tracking-tighter uppercase">Pilihan <span class="text-indigo-600">Teknisi</span></h2>
+                <p class="text-slate-500 font-medium mt-2 uppercase tracking-widest text-[10px]">Unit Terlaris & Paling Direkomendasikan</p>
             </div>
-            <!-- Filter Sederhana -->
-            <div class="hidden sm:flex gap-2">
-                <button class="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold">Terbaru</button>
-                <button class="px-4 py-2 rounded-xl bg-white text-slate-500 hover:bg-slate-50 border border-slate-100 text-xs font-bold transition">Terlaris</button>
-                <button class="px-4 py-2 rounded-xl bg-white text-slate-500 hover:bg-slate-50 border border-slate-100 text-xs font-bold transition">Diskon</button>
+            <div class="flex gap-2">
+                <button class="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 transition-all shadow-sm flex items-center justify-center"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="w-12 h-12 rounded-2xl bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 transition-all shadow-sm flex items-center justify-center"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             @foreach($produkUnggulan as $produk)
-                <div class="group relative bg-white rounded-3xl border border-slate-100 p-4 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 hover:-translate-y-2 flex flex-col h-full">
-                    <!-- Badge -->
-                    @if($produk->stok < 1)
-                        <div class="absolute top-4 left-4 z-20 px-3 py-1 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg">Habis</div>
-                    @elseif($produk->harga_jual < $produk->harga_modal) 
-                         <div class="absolute top-4 left-4 z-20 px-3 py-1 bg-rose-500 text-white text-[10px] font-black uppercase tracking-widest rounded-lg">Promo</div>
-                    @endif
+                <div class="bg-white rounded-[3rem] p-6 border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 transition-all group relative">
+                    <!-- Stock Pulse Indicator -->
+                    <div class="absolute top-8 right-8 z-20 flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-full border border-slate-100">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full {{ $produk->stok > 10 ? 'bg-emerald-400' : ($produk->stok > 0 ? 'bg-amber-400' : 'bg-rose-400') }} opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 {{ $produk->stok > 10 ? 'bg-emerald-500' : ($produk->stok > 0 ? 'bg-amber-500' : 'bg-rose-500') }}"></span>
+                        </span>
+                        <span class="text-[9px] font-black uppercase tracking-widest text-slate-500">{{ $produk->stok > 0 ? 'Ready Stock' : 'Habis' }}</span>
+                    </div>
 
-                    <!-- Wishlist Button -->
-                    <button class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur border border-slate-100 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    </button>
-
-                    <!-- Image Wrapper -->
-                    <a href="{{ route('produk.detail', $produk->slug) }}" wire:navigate class="block relative aspect-[4/3] rounded-2xl bg-slate-50 overflow-hidden mb-6">
-                        @if($produk->gambar_utama_url)
-                            <img src="{{ asset('storage/'.$produk->gambar_utama_url) }}" alt="{{ $produk->nama }}" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-6xl text-slate-300">🖼️</div>
-                        @endif
-                        
-                        <!-- Quick Action Overlay -->
-                        <div class="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                             <button wire:click="addToCart({{ $produk->id }})" class="w-full py-3 bg-slate-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-indigo-600 transition-colors shadow-lg">
-                                + Keranjang
-                            </button>
-                        </div>
+                    <a href="{{ route('produk.detail', $produk->slug) }}" wire:navigate class="block aspect-square rounded-[2rem] bg-slate-50 overflow-hidden mb-6 p-8 relative">
+                        <img src="{{ $produk->gambar_utama_url }}" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-indigo-600/0 group-hover:bg-indigo-600/5 transition-colors"></div>
                     </a>
 
-                    <!-- Content -->
-                    <div class="flex-1 flex flex-col">
-                        <div class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider mb-2">{{ $produk->kategori->nama ?? 'Umum' }}</div>
-                        <a href="{{ route('produk.detail', $produk->slug) }}" wire:navigate class="block">
-                            <h3 class="text-lg font-bold text-slate-900 mb-2 line-clamp-2 leading-tight group-hover:text-indigo-600 transition-colors">{{ $produk->nama }}</h3>
-                        </a>
-                        
-                        <!-- Rating -->
-                        <div class="flex items-center gap-1 mb-4">
-                            <div class="flex text-yellow-400 text-sm">
-                                @for($i=0; $i<5; $i++)
-                                    <span>{{ $i < round($produk->rating_rata_rata) ? '★' : '☆' }}</span>
-                                @endfor
-                            </div>
-                            <span class="text-xs text-slate-400 font-bold">({{ $produk->ulasan_count ?? 0 }})</span>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-[10px] font-black text-indigo-500 uppercase tracking-widest">{{ $produk->kategori->nama }}</p>
+                            <h3 class="font-black text-slate-900 text-lg leading-tight mt-1 line-clamp-2 group-hover:text-indigo-600 transition-colors">{{ $produk->nama }}</h3>
                         </div>
 
-                        <div class="mt-auto flex items-center justify-between">
-                            <div>
-                                <p class="text-xl font-black text-slate-900">Rp {{ number_format($produk->harga_jual, 0, ',', '.') }}</p>
-                                {{-- Jika ada diskon --}}
-                                {{-- <p class="text-xs text-slate-400 line-through">Rp 15.000.000</p> --}}
+                        <div class="flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Harga Enterprise</span>
+                                <span class="text-xl font-black text-slate-900 tracking-tight">Rp{{ number_format($produk->harga_jual, 0, ',', '.') }}</span>
                             </div>
+                            <button wire:click="addToCart({{ $produk->id }})" class="w-12 h-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center hover:bg-indigo-600 transition-all shadow-lg active:scale-90">
+                                <i class="fa-solid fa-cart-plus"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             @endforeach
         </div>
+    </section>
         
         <div class="mt-12 text-center">
             <a href="/katalog" wire:navigate class="inline-flex items-center gap-3 px-8 py-4 bg-white border border-slate-200 text-slate-900 rounded-2xl font-black hover:bg-slate-50 hover:border-indigo-200 hover:text-indigo-600 transition-all shadow-sm">

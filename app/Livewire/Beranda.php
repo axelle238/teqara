@@ -53,24 +53,30 @@ class Beranda extends Component
 
     public function render()
     {
-        // 1. Ambil Konten Hero dari DB (Pengaturan Sistem / Konten Halaman)
-        // Fallback data jika belum ada di database
+        // 1. Audit Trail: Catat Kunjungan Pelanggan secara Naratif
+        if (auth()->check()) {
+            \App\Helpers\LogHelper::catat(
+                'Kunjungan Beranda',
+                'Frontend',
+                "Pelanggan '" . auth()->user()->nama . "' sedang menjelajahi halaman beranda toko."
+            );
+        }
+
+        // 2. Ambil Konten Hero (Dinamis dari CMS)
         $hero = (object) [
             'judul_kecil' => 'Enterprise Ready',
             'judul_utama' => 'Solusi Teknologi Terdepan Untuk Bisnis Anda',
-            'deskripsi' => 'Dapatkan perangkat keras dan lunak kelas enterprise dengan harga kompetitif dan dukungan purna jual terpercaya.',
+            'deskripsi' => 'Dapatkan perangkat keras dan lunak kelas enterprise dengan harga kompetitif.',
             'url_cta' => '/katalog',
             'teks_cta' => 'MULAI BELANJA',
-            'gambar' => null // null means use placeholder
+            'gambar' => null
         ];
 
-        // Coba ambil real data jika ada module CMS
         try {
-            // Hero Section
             $heroDb = \App\Models\KontenHalaman::where('bagian', 'hero_section')->where('aktif', true)->orderBy('urutan')->first();
             if ($heroDb) {
                 $hero = (object) [
-                    'judul_kecil' => 'Featured Highlight',
+                    'judul_kecil' => 'Top Highlight',
                     'judul_utama' => $heroDb->judul,
                     'deskripsi' => $heroDb->deskripsi,
                     'url_cta' => $heroDb->tautan_tujuan ?? '/katalog',
@@ -78,61 +84,33 @@ class Beranda extends Component
                     'gambar' => $heroDb->gambar
                 ];
             }
-
-            // Promo Banners (Multiple)
-            $promoBanners = \App\Models\KontenHalaman::where('bagian', 'promo_banner')
-                ->where('aktif', true)
-                ->orderBy('urutan')
-                ->take(3)
-                ->get();
-
-            // Fitur Unggulan / USP
-            $fiturUnggulan = \App\Models\KontenHalaman::where('bagian', 'fitur_unggulan')
-                ->where('aktif', true)
-                ->orderBy('urutan')
-                ->take(3)
-                ->get();
-
+            $promoBanners = \App\Models\KontenHalaman::where('bagian', 'promo_banner')->where('aktif', true)->take(3)->get();
+            $fiturUnggulan = \App\Models\KontenHalaman::where('bagian', 'fitur_unggulan')->where('aktif', true)->take(3)->get();
         } catch (\Exception $e) {
-            // Fallback to default if table/model issue
-            $promoBanners = collect([]);
-            $fiturUnggulan = collect([]);
+            $promoBanners = collect([]); $fiturUnggulan = collect([]);
         }
 
-        // 2. Kategori dengan Ikon
-        $kategori = \Illuminate\Support\Facades\Cache::remember('beranda_kategori_v2', 60, function () {
-            return Kategori::withCount('produk')
-                ->orderBy('nama')
-                ->take(6)
-                ->get();
+        // 3. Produk & Kategori (Cached for Performance)
+        $kategori = \Illuminate\Support\Facades\Cache::remember('beranda_kategori_v4', 3600, function () {
+            return Kategori::withCount('produk')->orderByDesc('produk_count')->take(6)->get();
         });
 
-        // 3. Produk Unggulan (Pilihan Editor / Terbaru)
-        $produkUnggulan = Produk::with(['kategori', 'gambar'])
+        $produkUnggulan = Produk::with(['kategori', 'gambar', 'ulasan'])
+            ->withCount('ulasan')
             ->where('status', 'aktif')
             ->latest()
             ->take(8)
             ->get();
 
-        // 4. Flash Sale Aktif
-        $penjualanKilat = \Illuminate\Support\Facades\DB::table('penjualan_kilat')
+        // 4. Flash Sale (Real-time Enterprise)
+        $penjualanKilat = \App\Models\PenjualanKilat::with(['produkPenjualanKilat.produk'])
             ->where('aktif', true)
             ->where('waktu_mulai', '<=', now())
             ->where('waktu_selesai', '>=', now())
             ->first();
 
-        // 5. Berita Terbaru
-        $beritaTerbaru = \App\Models\Berita::where('status', 'publikasi')
-            ->latest('dibuat_pada')
-            ->take(3)
-            ->get();
-
-        // 6. Payment Methods Active (Real-time from Admin)
-        $paymentConfig = \App\Models\PengaturanSistem::whereIn('kunci', [
-            'payment_midtrans_mode', 
-            'payment_midtrans_id',
-            'payment_xendit_secret' // Check if Xendit is "active" by presence of key
-        ])->pluck('nilai', 'kunci');
+        // 5. Berita & Insights
+        $beritaTerbaru = \App\Models\Berita::where('status', 'publikasi')->latest('dibuat_pada')->take(3)->get();
 
         return view('livewire.beranda', [
             'hero' => $hero,
@@ -140,9 +118,8 @@ class Beranda extends Component
             'produkUnggulan' => $produkUnggulan,
             'penjualanKilat' => $penjualanKilat,
             'beritaTerbaru' => $beritaTerbaru,
-            'promoBanners' => $promoBanners ?? collect([]),
-            'fiturUnggulan' => $fiturUnggulan ?? collect([]),
-            'paymentConfig' => $paymentConfig,
+            'promoBanners' => $promoBanners,
+            'fiturUnggulan' => $fiturUnggulan,
         ])->layout('components.layouts.app');
     }
 }
