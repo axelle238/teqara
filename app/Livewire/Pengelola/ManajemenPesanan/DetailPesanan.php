@@ -54,7 +54,7 @@ class DetailPesanan extends Component
 
     public function batalkanPesanan()
     {
-        $this->pesanan->update(['status_pesanan' => 'dibatalkan']);
+        $this->pesanan->update(['status_pesanan' => 'batal']);
         (new \App\Services\LayananStok)->kembalikanStok($this->pesanan);
         
         LogHelper::catat('batal_pesanan', "Order #{$this->pesanan->nomor_faktur}", 'Admin membatalkan pesanan secara manual.');

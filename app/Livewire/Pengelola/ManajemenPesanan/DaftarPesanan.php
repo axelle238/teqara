@@ -65,7 +65,7 @@ class DaftarPesanan extends Component
     public function batalkanPesanan($id)
     {
         $pesanan = Pesanan::findOrFail($id);
-        $pesanan->update(['status_pesanan' => 'dibatalkan']);
+        $pesanan->update(['status_pesanan' => 'batal']);
         
         // Kembalikan stok
         (new \App\Services\LayananStok)->kembalikanStok($pesanan);

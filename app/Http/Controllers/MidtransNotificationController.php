@@ -58,13 +58,13 @@ class MidtransNotificationController extends Controller
         } else if ($transactionStatus == 'expire') {
             $status = 'kadaluarsa';
         } else if ($transactionStatus == 'cancel') {
-            $status = 'dibatalkan';
+            $status = 'batal';
         }
 
         // Process Status Change
         if ($status == 'sukses' && $transaksi->status != 'sukses') {
             $layanan->prosesNotifikasi($transaksi->id, 'sukses');
-        } elseif ($status == 'gagal' || $status == 'kadaluarsa' || $status == 'dibatalkan') {
+        } elseif ($status == 'gagal' || $status == 'kadaluarsa' || $status == 'batal') {
              if ($transaksi->status != $status) {
                 $transaksi->update(['status' => $status]);
                 // Update Order Status as well if needed

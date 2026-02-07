@@ -54,7 +54,7 @@ class BerandaPesanan extends Component
 
         // 3. Feed Pesanan Masuk Terbaru
         $feedTerbaru = Pesanan::with('pengguna')
-            ->where('status_pesanan', '!=', 'dibatalkan')
+            ->where('status_pesanan', '!=', 'batal')
             ->latest('dibuat_pada')
             ->take(5)
             ->get();

@@ -28,7 +28,7 @@ class BatalkanPesanan extends Component
         ]);
 
         $this->pesanan->update([
-            'status_pesanan' => 'dibatalkan',
+            'status_pesanan' => 'batal',
             'catatan' => $this->pesanan->catatan . "
 [DIBATALKAN USER]: " . $this->alasan . " - " . $this->keterangan
         ]);

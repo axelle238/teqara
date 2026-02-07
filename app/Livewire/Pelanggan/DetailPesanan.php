@@ -26,14 +26,14 @@ class DetailPesanan extends Component
             'diproses' => 2,
             'dikirim' => 3,
             'selesai' => 4,
-            'dibatalkan' => 99 // Special case
+            'batal' => 99 // Special case
         ];
 
         $statusSaatIni = $urutan[$this->pesanan->status_pesanan] ?? 0;
         $target = $urutan[$tahap] ?? 99;
         
         // Handle cancelled order visual logic specifically if needed
-        if ($this->pesanan->status_pesanan == 'dibatalkan') return 'dibatalkan';
+        if ($this->pesanan->status_pesanan == 'batal') return 'batal';
 
         if ($statusSaatIni >= $target) {
             return 'aktif';
