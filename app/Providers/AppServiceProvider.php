@@ -49,9 +49,16 @@ class AppServiceProvider extends ServiceProvider
                 // Menggunakan Service untuk konsistensi caching
                 $layanan = app(\App\Services\LayananPengaturan::class);
                 $view->with('globalSettings', $layanan->ambilSemua());
+
+                // Kategori Global untuk Menu Navigasi
+                $view->with('globalCategories', \App\Models\Kategori::withCount('produk')
+                    ->orderBy('produk_count', 'desc')
+                    ->take(8)
+                    ->get());
             } catch (\Exception $e) {
                 // Fallback aman saat migrasi/awal setup
                 $view->with('globalSettings', []);
+                $view->with('globalCategories', collect([]));
             }
         });
     }

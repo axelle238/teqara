@@ -101,22 +101,20 @@
                             <!-- Categories Column -->
                             <div>
                                 <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Kategori Utama</h4>
-                                <div class="grid gap-2">
-                                    <a href="/katalog?kategori=laptop" class="flex items-center gap-3 p-2 rounded-xl hover:bg-indigo-50 transition-colors group">
-                                        <div class="w-8 h-8 rounded-lg bg-indigo-100/50 text-indigo-600 flex items-center justify-center text-sm group-hover:bg-indigo-600 group-hover:text-white transition-colors"><i class="fa-solid fa-laptop"></i></div>
+                                <div class="grid gap-2 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">
+                                    @foreach($globalCategories as $kat)
+                                    <a href="/katalog?kategori={{ $kat->slug }}" class="flex items-center gap-3 p-2 rounded-xl hover:bg-indigo-50 transition-colors group">
+                                        <div class="w-8 h-8 rounded-lg bg-indigo-100/50 text-indigo-600 flex items-center justify-center text-sm group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                            <i class="{{ $kat->ikon ?? 'fa-solid fa-layer-group' }}"></i>
+                                        </div>
                                         <div>
-                                            <span class="block text-xs font-bold text-slate-700 group-hover:text-indigo-700">Laptop & PC</span>
-                                            <span class="block text-[9px] text-slate-400">Workstation & Gaming</span>
+                                            <span class="block text-xs font-bold text-slate-700 group-hover:text-indigo-700">{{ $kat->nama }}</span>
+                                            <span class="block text-[9px] text-slate-400">{{ $kat->produk_count }} Produk</span>
                                         </div>
                                     </a>
-                                    <a href="/katalog?kategori=smartphone" class="flex items-center gap-3 p-2 rounded-xl hover:bg-indigo-50 transition-colors group">
-                                        <div class="w-8 h-8 rounded-lg bg-purple-100/50 text-purple-600 flex items-center justify-center text-sm group-hover:bg-purple-600 group-hover:text-white transition-colors"><i class="fa-solid fa-mobile-screen"></i></div>
-                                        <div>
-                                            <span class="block text-xs font-bold text-slate-700 group-hover:text-purple-700">Smartphone</span>
-                                            <span class="block text-[9px] text-slate-400">Flagship & Mid-range</span>
-                                        </div>
-                                    </a>
-                                    <a href="/katalog" class="flex items-center gap-2 p-2 mt-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:gap-3 transition-all">
+                                    @endforeach
+                                    
+                                    <a href="/katalog" class="flex items-center gap-2 p-2 mt-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:gap-3 transition-all sticky bottom-0 bg-white">
                                         Lihat Semua Kategori <i class="fa-solid fa-arrow-right"></i>
                                     </a>
                                 </div>
