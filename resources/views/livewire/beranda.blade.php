@@ -1,4 +1,4 @@
-<div class="space-y-16 pb-16">
+<div class="space-y-16 pb-16" wire:poll.20s>
 
     <!-- Personalized Welcome (Logged In Only) -->
     @auth

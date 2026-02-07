@@ -1,4 +1,4 @@
-<div class="space-y-8 animate-fade-in pb-20">
+<div class="space-y-8 animate-fade-in pb-20" wire:poll.15s>
     <!-- Header Dasbor -->
     <div class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-sm border border-slate-100 relative overflow-hidden">
         <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>

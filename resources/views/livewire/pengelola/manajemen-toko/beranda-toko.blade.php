@@ -1,4 +1,4 @@
-<div class="space-y-10 animate-in fade-in zoom-in duration-500 pb-20">
+<div class="space-y-10 animate-in fade-in zoom-in duration-500 pb-20" wire:poll.30s>
     
     <!-- Header Section: High-Tech Visual Control -->
     <div class="relative bg-white rounded-[3rem] p-10 overflow-hidden shadow-sm border border-slate-100">

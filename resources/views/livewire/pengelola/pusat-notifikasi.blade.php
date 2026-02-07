@@ -1,4 +1,4 @@
-<div class="space-y-12 pb-32">
+<div class="space-y-12 pb-32" wire:poll.10s>
     <!-- Header Inbox -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 bg-white p-10 rounded-[40px] shadow-sm border border-indigo-50">
         <div class="space-y-2">
