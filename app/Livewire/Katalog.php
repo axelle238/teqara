@@ -27,6 +27,15 @@ class Katalog extends Component
     #[Url(as: 'urutkan')]
     public $urutkan = 'terbaru';
 
+    #[Url(as: 'stok')]
+    public $filterStok = false;
+
+    #[Url(as: 'min')]
+    public $hargaMin = null;
+
+    #[Url(as: 'max')]
+    public $hargaMax = null;
+
     #[Url(as: 'spek')]
     public $filterSpesifikasi = []; // Format: ['RAM' => ['8GB', '16GB'], 'Warna' => ['Hitam']]
 
