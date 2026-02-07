@@ -27,14 +27,8 @@ class Katalog extends Component
     #[Url(as: 'urutkan')]
     public $urutkan = 'terbaru';
 
-    #[Url(as: 'stok')]
-    public $filterStok = false;
-
-    #[Url(as: 'min')]
-    public $hargaMin = null;
-
-    #[Url(as: 'max')]
-    public $hargaMax = null;
+    #[Url(as: 'spek')]
+    public $filterSpesifikasi = []; // Format: ['RAM' => ['8GB', '16GB'], 'Warna' => ['Hitam']]
 
     public function updated($property)
     {
@@ -45,7 +39,7 @@ class Katalog extends Component
 
     public function resetFilter()
     {
-        $this->reset(['cari', 'filterKategori', 'filterMerek', 'urutkan', 'filterStok', 'hargaMin', 'hargaMax']);
+        $this->reset(['cari', 'filterKategori', 'filterMerek', 'urutkan', 'filterStok', 'hargaMin', 'hargaMax', 'filterSpesifikasi']);
         $this->resetPage();
     }
 
@@ -57,6 +51,27 @@ class Katalog extends Component
             $this->filterMerek[] = $slug;
         }
         $this->resetPage();
+    }
+
+    /**
+     * Mengambil daftar spesifikasi unik yang tersedia untuk filter.
+     * Mengelompokkan berdasarkan Judul (Key) dan nilai uniknya.
+     */
+    public function getOpsiSpesifikasiProperty()
+    {
+        // Hanya ambil spesifikasi yang relevan dan umum dijadikan filter
+        // Batasi untuk performa
+        return \App\Models\SpesifikasiProduk::select('judul', 'nilai')
+            ->distinct()
+            ->get()
+            ->groupBy('judul')
+            ->map(function ($items) {
+                return $items->pluck('nilai')->unique()->values()->all();
+            })
+            // Filter hanya judul spesifikasi yang umum (bisa disesuaikan)
+            ->filter(function($values, $key) {
+                return in_array(strtolower($key), ['ram', 'processor', 'penyimpanan', 'warna', 'ukuran', 'os', 'layar']);
+            });
     }
 
     public function getBannerTokoProperty()
@@ -92,6 +107,18 @@ class Katalog extends Component
                 $filters = is_array($this->filterMerek) ? $this->filterMerek : [$this->filterMerek];
                 $q->whereIn('slug', $filters);
             });
+        }
+
+        // Filter Spesifikasi Dinamis (Advanced)
+        if (! empty($this->filterSpesifikasi)) {
+            foreach ($this->filterSpesifikasi as $judul => $nilai) {
+                if (!empty($nilai)) {
+                    $query->whereHas('spesifikasi', function (Builder $q) use ($judul, $nilai) {
+                        $q->where('judul', $judul)
+                          ->whereIn('nilai', is_array($nilai) ? $nilai : [$nilai]);
+                    });
+                }
+            }
         }
 
         if ($this->filterStok) {

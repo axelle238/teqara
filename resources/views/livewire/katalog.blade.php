@@ -118,6 +118,27 @@
                     </div>
                 </div>
 
+                <!-- Dynamic Specs Filter -->
+                @foreach($this->opsiSpesifikasi as $judul => $nilaiOpsi)
+                <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm" x-data="{ expanded: false }">
+                    <button @click="expanded = !expanded" class="flex items-center justify-between w-full mb-2">
+                        <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs">{{ $judul }}</h3>
+                        <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform" :class="expanded ? 'rotate-180' : ''"></i>
+                    </button>
+                    <div x-show="expanded" x-collapse class="space-y-3 pt-2 max-h-40 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-200">
+                        @foreach($nilaiOpsi as $nilai)
+                        <label class="flex items-center gap-3 cursor-pointer group select-none">
+                            <div class="relative flex items-center">
+                                <input type="checkbox" wire:model.live="filterSpesifikasi.{{ $judul }}" value="{{ $nilai }}" class="peer appearance-none w-5 h-5 border-2 border-slate-200 rounded-lg checked:bg-indigo-600 checked:border-indigo-600 transition-all">
+                                <svg class="w-3 h-3 text-white absolute top-1 left-1 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="text-sm font-bold text-slate-600 group-hover:text-indigo-600 transition-colors">{{ $nilai }}</span>
+                        </label>
+                        @endforeach
+                    </div>
+                </div>
+                @endforeach
+
                 <!-- Price Range -->
                 <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
                     <h3 class="font-black text-slate-900 uppercase tracking-widest text-xs mb-4">Rentang Harga</h3>
