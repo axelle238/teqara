@@ -1,7 +1,7 @@
 {
     "nama_sistem": "TEQARA Business Enterprise Store",
     "versi": "12.0.0",
-    "tanggal_update": "2026-02-07 18:52:25",
+    "tanggal_update": "2026-02-07 18:56:44",
     "status_sistem": {
         "lingkungan": "local",
         "debug_mode": true,
@@ -2489,6 +2489,12 @@
                     "kunci": ""
                 },
                 {
+                    "nama": "saldo_digital",
+                    "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
                     "nama": "level_member",
                     "tipe": "varchar(255)",
                     "null": "NO",
@@ -3634,6 +3640,12 @@
                 {
                     "nama": "kuota",
                     "tipe": "int(11)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "aktif",
+                    "tipe": "tinyint(1)",
                     "null": "NO",
                     "kunci": ""
                 },
