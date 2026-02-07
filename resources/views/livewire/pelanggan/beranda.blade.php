@@ -47,14 +47,14 @@
                             </div>
 
                             <div class="mt-8 space-y-4">
-                                <p class="text-[9px] font-black uppercase tracking-widest text-indigo-200 border-b border-indigo-500/50 pb-2">Mutasi Terakhir</p>
+                                <p class="text-[9px] font-black uppercase tracking-widest text-indigo-200 border-b border-indigo-500/50 pb-2">Transaksi Terakhir</p>
                                 @forelse($this->transaksiDompet as $trx)
                                 <div class="flex justify-between items-center">
-                                    <span class="text-[10px] font-bold text-indigo-100">Top Up Digital</span>
-                                    <span class="text-[10px] font-black text-emerald-400">+{{ number_format($trx->jumlah_bayar, 0, ',', '.') }}</span>
+                                    <span class="text-[10px] font-bold text-indigo-100">Bayar #{{ $trx->pesanan->nomor_faktur }}</span>
+                                    <span class="text-[10px] font-black text-rose-300">-{{ number_format($trx->jumlah_bayar, 0, ',', '.') }}</span>
                                 </div>
                                 @empty
-                                <p class="text-[10px] italic text-indigo-300">Belum ada riwayat saldo</p>
+                                <p class="text-[10px] italic text-indigo-300">Belum ada riwayat transaksi</p>
                                 @endforelse
                             </div>
 

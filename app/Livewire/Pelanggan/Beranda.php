@@ -49,12 +49,13 @@ class Beranda extends Component
     }
 
     /**
-     * Mengambil riwayat transaksi dompet digital terbaru.
+     * Mengambil riwayat transaksi pembayaran terbaru milik pengguna.
      */
     public function getTransaksiDompetProperty()
     {
-        return \App\Models\TransaksiPembayaran::where('pengguna_id', auth()->id())
-            ->where('tipe_transaksi', 'isi_saldo')
+        return \App\Models\TransaksiPembayaran::whereHas('pesanan', function($q) {
+                $q->where('pengguna_id', auth()->id());
+            })
             ->latest('waktu_bayar')
             ->take(3)
             ->get();
