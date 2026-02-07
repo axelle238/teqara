@@ -1,7 +1,7 @@
 {
     "nama_sistem": "TEQARA Business Enterprise Store",
     "versi": "12.0.0",
-    "tanggal_update": "2026-02-07 18:36:40",
+    "tanggal_update": "2026-02-07 18:43:02",
     "status_sistem": {
         "lingkungan": "local",
         "debug_mode": true,
@@ -42,7 +42,7 @@
         {
             "nama": "Manajemen Pegawai",
             "kode": "ManajemenPegawai",
-            "jumlah_komponen": 3
+            "jumlah_komponen": 4
         },
         {
             "nama": "Manajemen Pelanggan",
@@ -287,6 +287,11 @@
             "metode": "GET"
         },
         {
+            "nama": "pengelola.hrd.akses",
+            "uri": "pengelola/hrd/akses",
+            "metode": "GET"
+        },
+        {
             "nama": "pengelola.laporan.beranda",
             "uri": "pengelola/laporan/beranda",
             "metode": "GET"
@@ -323,42 +328,42 @@
         },
         {
             "nama": "pengelola.api.pusat",
-            "uri": "pengelola/sistem/api-hub",
+            "uri": "pengelola/api/beranda",
             "metode": "GET"
         },
         {
             "nama": "pengelola.api.pembayaran",
-            "uri": "pengelola/sistem/pembayaran",
+            "uri": "pengelola/api/pembayaran",
             "metode": "GET"
         },
         {
             "nama": "pengelola.api.logistik",
-            "uri": "pengelola/sistem/logistik",
+            "uri": "pengelola/api/logistik",
             "metode": "GET"
         },
         {
             "nama": "pengelola.api.whatsapp",
-            "uri": "pengelola/sistem/whatsapp",
+            "uri": "pengelola/api/whatsapp",
             "metode": "GET"
         },
         {
             "nama": "pengelola.api.email",
-            "uri": "pengelola/sistem/email",
+            "uri": "pengelola/api/email",
             "metode": "GET"
         },
         {
             "nama": "pengelola.api.kunci",
-            "uri": "pengelola/sistem/kunci-api",
+            "uri": "pengelola/api/kunci-api",
             "metode": "GET"
         },
         {
             "nama": "pengelola.api.log",
-            "uri": "pengelola/sistem/log-api",
+            "uri": "pengelola/api/log-api",
             "metode": "GET"
         },
         {
             "nama": "pengelola.api.dokumentasi",
-            "uri": "pengelola/sistem/dokumentasi-api",
+            "uri": "pengelola/api/dokumentasi-api",
             "metode": "GET"
         },
         {
