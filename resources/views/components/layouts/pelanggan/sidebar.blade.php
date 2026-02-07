@@ -30,9 +30,9 @@
             <span class="text-xs font-bold uppercase tracking-wide">Pesanan Saya</span>
         </a>
 
-        <a href="{{ route('pelanggan.dompet') }}" wire:navigate class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('pelanggan.dompet') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600' }}">
-            <i class="fa-solid fa-wallet w-5 text-center"></i>
-            <span class="text-xs font-bold uppercase tracking-wide">Dompet & Poin</span>
+        <a href="{{ route('pelanggan.poin') }}" wire:navigate class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('pelanggan.poin') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600' }}">
+            <i class="fa-solid fa-star w-5 text-center"></i>
+            <span class="text-xs font-bold uppercase tracking-wide">Loyalitas & Poin</span>
         </a>
 
         <a href="{{ route('pelanggan.voucher') }}" wire:navigate class="flex items-center gap-4 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('pelanggan.voucher') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600' }}">

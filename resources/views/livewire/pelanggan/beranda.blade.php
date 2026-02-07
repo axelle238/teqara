@@ -9,56 +9,41 @@
             <div class="flex-1 w-full space-y-10 animate-fade-in-up">
                 
                 <!-- Dashboard Welcome & Loyalty Hub -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 bg-gradient-to-r from-[#0f172a] to-[#1e293b] rounded-[3rem] p-10 text-white relative overflow-hidden shadow-2xl shadow-indigo-500/20">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-r from-[#0f172a] to-[#1e293b] rounded-[3rem] p-10 text-white relative overflow-hidden shadow-2xl shadow-indigo-500/20">
                         <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
                         <div class="relative z-10 flex flex-col justify-between h-full">
                             <div>
                                 <p class="text-indigo-400 text-[10px] font-black uppercase tracking-[0.3em] mb-4">Command Center Pelanggan</p>
                                 <h1 class="text-4xl font-black tracking-tight leading-none">Selamat Datang,<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">{{ explode(' ', $this->stats['nama'])[0] }}</span></h1>
-                            </div>
-                            
-                            <div class="mt-12 bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10">
-                                <div class="flex justify-between items-end mb-4">
-                                    <div>
-                                        <p class="text-[9px] font-black uppercase tracking-widest text-indigo-300">Level Keanggotaan</p>
-                                        <h4 class="text-xl font-black uppercase">{{ $this->stats['level'] }}</h4>
-                                    </div>
-                                    <p class="text-xs font-bold text-white/50">{{ number_format($this->stats['poin']) }} / 10.000 XP</p>
-                                </div>
-                                <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-gradient-to-r from-indigo-500 to-cyan-400 h-full transition-all duration-1000 shadow-[0_0_10px_rgba(99,102,241,0.5)]" style="width: {{ $this->stats['progres_level'] }}%"></div>
-                                </div>
-                                <p class="text-[9px] font-bold text-white/40 mt-3 uppercase tracking-widest text-center">Tingkatkan belanja Anda untuk meraih keunggulan Member Gold</p>
+                                <p class="text-sm font-medium text-slate-400 max-w-md mt-4">Pantau status pesanan dan kumpulkan poin loyalitas Anda untuk mendapatkan penawaran eksklusif.</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Digital Wallet Card -->
-                    <div class="bg-indigo-600 rounded-[3rem] p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-500/30 group">
-                        <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+                    <!-- Loyalty Card -->
+                    <div class="bg-white rounded-[3rem] p-8 border border-slate-100 shadow-sm relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
                         <div class="relative z-10 flex flex-col justify-between h-full">
                             <div>
-                                <div class="flex justify-between items-start mb-2">
-                                    <span class="text-[10px] font-black uppercase tracking-widest text-indigo-200">Saldo Digital</span>
-                                    <i class="fa-solid fa-bolt-lightning text-yellow-400 animate-pulse"></i>
+                                <div class="flex justify-between items-start mb-4">
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Status Keanggotaan</span>
+                                    <i class="fa-solid fa-crown text-amber-400 text-xl animate-pulse"></i>
                                 </div>
-                                <h3 class="text-3xl font-black tracking-tight">Rp{{ number_format($this->stats['saldo'], 0, ',', '.') }}</h3>
+                                <h3 class="text-3xl font-black tracking-tight text-slate-900 uppercase">{{ $this->stats['level'] }}</h3>
+                                <p class="text-xs font-bold text-indigo-600 mt-1">{{ number_format($this->stats['poin']) }} Poin XP</p>
                             </div>
 
-                            <div class="mt-8 space-y-4">
-                                <p class="text-[9px] font-black uppercase tracking-widest text-indigo-200 border-b border-indigo-500/50 pb-2">Transaksi Terakhir</p>
-                                @forelse($this->transaksiDompet as $trx)
-                                <div class="flex justify-between items-center">
-                                    <span class="text-[10px] font-bold text-indigo-100">Bayar #{{ $trx->pesanan->nomor_faktur }}</span>
-                                    <span class="text-[10px] font-black text-rose-300">-{{ number_format($trx->jumlah_bayar, 0, ',', '.') }}</span>
+                            <div class="mt-8">
+                                <div class="flex justify-between text-[9px] font-black uppercase tracking-widest mb-2 text-slate-400">
+                                    <span>Progres Level</span>
+                                    <span>{{ number_format($this->stats['progres_level'], 0) }}%</span>
                                 </div>
-                                @empty
-                                <p class="text-[10px] italic text-indigo-300">Belum ada riwayat transaksi</p>
-                                @endforelse
+                                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                                    <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-full transition-all duration-1000" style="width: {{ $this->stats['progres_level'] }}%"></div>
+                                </div>
+                                <p class="text-[9px] font-bold text-slate-400 mt-3 text-center">Tingkatkan transaksi untuk level Gold</p>
                             </div>
-
-                            <a href="{{ route('pelanggan.dompet') }}" wire:navigate class="mt-8 w-full py-4 bg-white text-indigo-600 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center shadow-lg group-hover:scale-105 transition-transform">Kelola Saldo</a>
                         </div>
                     </div>
                 </div>

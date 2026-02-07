@@ -33,7 +33,6 @@ class Beranda extends Component
             'nama' => $pengguna->nama,
             'email' => $pengguna->email,
             'poin' => $pengguna->poin_loyalitas ?? 0,
-            'saldo' => $pengguna->saldo_digital ?? 0,
             'level' => $pengguna->level_member ?? 'Klasik',
             'progres_level' => $progresLevel,
             'pesanan_aktif' => Pesanan::where('pengguna_id', $pengguna->id)
@@ -46,19 +45,6 @@ class Beranda extends Component
                 ->where('berlaku_sampai', '>', now())
                 ->count(),
         ];
-    }
-
-    /**
-     * Mengambil riwayat transaksi pembayaran terbaru milik pengguna.
-     */
-    public function getTransaksiDompetProperty()
-    {
-        return \App\Models\TransaksiPembayaran::whereHas('pesanan', function($q) {
-                $q->where('pengguna_id', auth()->id());
-            })
-            ->latest('waktu_bayar')
-            ->take(3)
-            ->get();
     }
 
     /**
