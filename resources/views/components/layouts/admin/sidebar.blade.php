@@ -181,6 +181,7 @@
                 <a href="{{ route('pengelola.hrd.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.hrd.beranda') ? 'text-white bg-lime-600 shadow-md' : 'text-slate-500 hover:text-lime-400' }}">Dasbor SDM</a>
                 <a href="{{ route('pengelola.pengguna.hrd') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.pengguna.hrd') ? 'text-white bg-lime-600 shadow-md' : 'text-slate-500 hover:text-lime-400' }}">Data Karyawan</a>
                 <a href="{{ route('pengelola.hrd.struktur') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.hrd.struktur') ? 'text-white bg-lime-600 shadow-md' : 'text-slate-500 hover:text-lime-400' }}">Struktur Organisasi</a>
+                <a href="{{ route('pengelola.hrd.akses') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.hrd.akses') ? 'text-white bg-lime-600 shadow-md' : 'text-slate-500 hover:text-lime-400' }}">Manajemen Hak Akses</a>
             </div>
         </div>
 
@@ -202,7 +203,7 @@
 
         <!-- 11. PENGATURAN SISTEM TERPUSAT -->
         <div class="mt-6 mb-2 px-3" x-show="sidebarOpen"><span class="text-[9px] font-black text-slate-600 uppercase tracking-widest block">Konfigurasi Global</span></div>
-        <div x-data="{ open: {{ (request()->routeIs('pengelola.sistem*') || request()->routeIs('pengelola.api*') || request()->routeIs('pengelola.voucher')) ? 'true' : 'false' }} }">
+        <div x-data="{ open: {{ (request()->routeIs('pengelola.sistem*') || request()->routeIs('pengelola.voucher')) ? 'true' : 'false' }} }">
             <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-slate-700/50 text-slate-200': open}">
                 <div class="flex items-center gap-3">
                     <i class="fa-solid fa-gears w-6 text-center text-lg" :class="open ? 'text-slate-200' : 'text-slate-500 group-hover:text-slate-300'"></i>
@@ -215,19 +216,31 @@
                 <a href="{{ route('pengelola.sistem.pusat') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.sistem.pusat') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Konfigurasi Global</a>
                 <a href="{{ route('pengelola.voucher') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.voucher') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Kelola Voucher</a>
                 <a href="{{ route('pengelola.sistem.kesehatan') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.sistem.kesehatan') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Kesehatan Server</a>
-                <div class="h-px bg-slate-800 my-1"></div>
-                <a href="{{ route('pengelola.api.pusat') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.pusat') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Pusat API Hub</a>
-                <a href="{{ route('pengelola.api.pembayaran') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.pembayaran') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Payment Gateway</a>
-                <a href="{{ route('pengelola.api.logistik') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.logistik') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Integrasi Kurir</a>
-                <a href="{{ route('pengelola.api.whatsapp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.whatsapp') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">WhatsApp API</a>
-                <a href="{{ route('pengelola.api.email') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.email') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">SMTP Email</a>
-                <a href="{{ route('pengelola.api.kunci') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.kunci') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Kunci Akses API</a>
-                <a href="{{ route('pengelola.api.log') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.log') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Log Akses API</a>
-                <a href="{{ route('pengelola.api.dokumentasi') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.dokumentasi') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">Dokumentasi API</a>
             </div>
         </div>
 
-        <!-- 12. PENGATURAN KEAMANAN TERPUSAT -->
+        <!-- 12. PENGATURAN API TERPUSAT -->
+        <div x-data="{ open: {{ (request()->routeIs('pengelola.api*')) ? 'true' : 'false' }} }">
+            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-cyan-700/50 text-cyan-200': open}">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-network-wired w-6 text-center text-lg" :class="open ? 'text-cyan-200' : 'text-cyan-500 group-hover:text-cyan-300'"></i>
+                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Pengaturan API</span>
+                </div>
+                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
+            </button>
+            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
+                <a href="{{ route('pengelola.api.pusat') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.pusat') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Dasbor API</a>
+                <a href="{{ route('pengelola.api.pembayaran') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.pembayaran') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Payment Gateway</a>
+                <a href="{{ route('pengelola.api.logistik') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.logistik') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Integrasi Kurir</a>
+                <a href="{{ route('pengelola.api.whatsapp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.whatsapp') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">WhatsApp API</a>
+                <a href="{{ route('pengelola.api.email') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.email') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">SMTP Email</a>
+                <a href="{{ route('pengelola.api.kunci') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.kunci') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Kunci Akses API</a>
+                <a href="{{ route('pengelola.api.log') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.log') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Log Akses API</a>
+                <a href="{{ route('pengelola.api.dokumentasi') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.dokumentasi') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">Dokumentasi API</a>
+            </div>
+        </div>
+
+        <!-- 13. PENGATURAN KEAMANAN TERPUSAT -->
         <div x-data="{ open: {{ request()->routeIs('pengelola.keamanan*') ? 'true' : 'false' }} }">
             <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-red-500/10 text-red-400': open}">
                 <div class="flex items-center gap-3">

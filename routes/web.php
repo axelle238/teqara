@@ -168,6 +168,7 @@ Route::middleware(['auth'])->prefix('pengelola')->group(function () {
         Route::get('/beranda', \App\Livewire\Pengelola\ManajemenPegawai\BerandaPegawai::class)->name('pengelola.hrd.beranda');
         Route::get('/karyawan', \App\Livewire\Pengelola\ManajemenPegawai\ManajemenKaryawan::class)->name('pengelola.pengguna.hrd');
         Route::get('/struktur', \App\Livewire\Pengelola\ManajemenPegawai\ManajemenStruktur::class)->name('pengelola.hrd.struktur');
+        Route::get('/akses', \App\Livewire\Pengelola\ManajemenPegawai\ManajemenAkses::class)->name('pengelola.hrd.akses');
     });
 
     // 10. Manajemen Laporan & Analitik
@@ -183,9 +184,11 @@ Route::middleware(['auth'])->prefix('pengelola')->group(function () {
         Route::get('/pusat', \App\Livewire\Pengelola\ManajemenSistem\PusatPengaturan::class)->name('pengelola.sistem.pusat');
         Route::get('/kesehatan', \App\Livewire\Pengelola\ManajemenSistem\StatusKesehatan::class)->name('pengelola.sistem.kesehatan');
         Route::get('/voucher', \App\Livewire\Pengelola\PengaturanSistem\ManajemenVoucher::class)->name('pengelola.voucher');
-        
-        // Integrasi API (Bagian dari Sistem Terpusat)
-        Route::get('/api-hub', \App\Livewire\Pengelola\ManajemenApi\PusatIntegrasi::class)->name('pengelola.api.pusat');
+    });
+
+    // 12. Pengaturan API Terpusat
+    Route::prefix('api')->group(function () {
+        Route::get('/beranda', \App\Livewire\Pengelola\ManajemenApi\PusatIntegrasi::class)->name('pengelola.api.pusat'); // Bertindak sebagai Dashboard API
         Route::get('/pembayaran', \App\Livewire\Pengelola\ManajemenApi\KonfigurasiPembayaran::class)->name('pengelola.api.pembayaran');
         Route::get('/logistik', \App\Livewire\Pengelola\ManajemenApi\KonfigurasiLogistik::class)->name('pengelola.api.logistik');
         Route::get('/whatsapp', \App\Livewire\Pengelola\ManajemenApi\KonfigurasiWhatsapp::class)->name('pengelola.api.whatsapp');
@@ -195,7 +198,7 @@ Route::middleware(['auth'])->prefix('pengelola')->group(function () {
         Route::get('/dokumentasi-api', \App\Livewire\Pengelola\ManajemenApi\DokumentasiApi::class)->name('pengelola.api.dokumentasi');
     });
     
-    // 12. Pengaturan Keamanan Terpusat (Cyber Security SOC)
+    // 13. Pengaturan Keamanan Terpusat (Cyber Security SOC)
     Route::prefix('keamanan')->group(function () {
         Route::get('/beranda', \App\Livewire\Pengelola\PengaturanKeamanan\BerandaKeamanan::class)->name('pengelola.keamanan.beranda');
         Route::get('/soc', \App\Livewire\Pengelola\ManajemenKeamanan\DasborKeamanan::class)->name('pengelola.keamanan.dasbor');
