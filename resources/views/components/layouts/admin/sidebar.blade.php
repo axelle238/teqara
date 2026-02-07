@@ -340,6 +340,15 @@
                 <a href="{{ route('pengelola.keamanan.zerotrust') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.zerotrust') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
                     <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.zerotrust') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> Zero Trust Access
                 </a>
+                <a href="{{ route('pengelola.keamanan.pam') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.pam') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.pam') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> PAM (Akses Privilege)
+                </a>
+                <a href="{{ route('pengelola.keamanan.irp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.irp') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.irp') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> Respon Insiden (IRP)
+                </a>
+                <a href="{{ route('pengelola.keamanan.edr') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase tracking-wide transition-colors {{ request()->routeIs('pengelola.keamanan.edr') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400 hover:bg-red-500/10' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ request()->routeIs('pengelola.keamanan.edr') ? 'bg-white' : 'bg-slate-600 group-hover:bg-red-400' }}"></span> Deteksi Endpoint (EDR)
+                </a>
             </div>
         </div>
 

@@ -188,6 +188,9 @@ Route::middleware(['auth'])->prefix('pengelola')->group(function () {
         Route::get('/dlp', \App\Livewire\Pengelola\ManajemenKeamanan\PencegahanKebocoran::class)->name('pengelola.keamanan.dlp');
         Route::get('/siem', \App\Livewire\Pengelola\ManajemenKeamanan\AnalisisLogSiem::class)->name('pengelola.keamanan.siem');
         Route::get('/zerotrust', \App\Livewire\Pengelola\ManajemenKeamanan\ZeroTrustAkses::class)->name('pengelola.keamanan.zerotrust');
+        Route::get('/pam', \App\Livewire\Pengelola\ManajemenKeamanan\ManajemenAksesPrivilege::class)->name('pengelola.keamanan.pam');
+        Route::get('/irp', \App\Livewire\Pengelola\ManajemenKeamanan\ResponInsiden::class)->name('pengelola.keamanan.irp');
+        Route::get('/edr', \App\Livewire\Pengelola\ManajemenKeamanan\DeteksiEndpoint::class)->name('pengelola.keamanan.edr');
     });
 
     // PUSAT KONTROL SISTEM
