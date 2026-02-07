@@ -13,40 +13,47 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 /**
- * Class ManajemenStok
- * Tujuan: Pusat kendali inventaris Enterprise dengan audit trail mendalam dan forecasting.
- * Arsitektur: 100% Full Page SPA (Tanpa Slide Over/Modal).
+ * Komponen Manajemen Stok
+ * 
+ * Pusat kendali inventaris sistem yang mencatat mutasi, transfer gudang,
+ * dan audit fisik stok tanpa penggunaan modal.
  */
 class ManajemenStok extends Component
 {
     use WithPagination;
 
-    // State Halaman
+    // Keadaan Tampilan
     public $tampilkanForm = false;
 
-    // State Filter
+    // Pencarian dan Filter
     public $cari = '';
-    public $filterKesehatan = ''; // kritis, habis, aman, overstock
+    public $filterKesehatan = ''; // kritis, habis, aman, berlebih
     public $tabAktif = 'posisi'; // posisi, mutasi
 
-    // State Mutasi
+    // Keadaan Mutasi
     public $produkTerpilihId;
     public $jenisAksi = 'penyesuaian'; // penyesuaian, penerimaan, transfer
     public $jumlahMutasi;
     public $keteranganMutasi = '';
     
-    // State Transfer Gudang
+    // Keadaan Transfer Antar Gudang
     public $dariGudangId;
     public $keGudangId;
 
-    public function updated($property)
+    /**
+     * Reset halaman saat filter berubah.
+     */
+    public function updated($properti)
     {
-        if (in_array($property, ['cari', 'filterKesehatan', 'tabAktif'])) {
+        if (in_array($properti, ['cari', 'filterKesehatan', 'tabAktif'])) {
             $this->resetPage('produk-page');
             $this->resetPage('mutasi-page');
         }
     }
 
+    /**
+     * Data analitik ringkas untuk header.
+     */
     public function getAnalitikProperty()
     {
         return [
@@ -55,12 +62,12 @@ class ManajemenStok extends Component
             'kritis' => Produk::where('stok', '>', 0)->where('stok', '<=', 5)->count(),
             'habis' => Produk::where('stok', '<=', 0)->count(),
             'aman' => Produk::where('stok', '>', 5)->where('stok', '<=', 50)->count(),
-            'overstock' => Produk::where('stok', '>', 50)->count(),
+            'berlebih' => Produk::where('stok', '>', 50)->count(),
         ];
     }
 
     /**
-     * Buka form mutasi (Halaman Penuh).
+     * Menampilkan panel formulir mutasi.
      */
     public function bukaMutasi($id, $aksi = 'penyesuaian')
     {
@@ -70,7 +77,7 @@ class ManajemenStok extends Component
     }
 
     /**
-     * Kembali ke dashboard stok.
+     * Membatalkan operasi dan reset formulir.
      */
     public function batal()
     {
@@ -78,6 +85,9 @@ class ManajemenStok extends Component
         $this->reset(['produkTerpilihId', 'jumlahMutasi', 'keteranganMutasi', 'dariGudangId', 'keGudangId']);
     }
 
+    /**
+     * Menjalankan mutasi stok dengan audit trail naratif.
+     */
     public function eksekusiMutasi()
     {
         $this->validate([
@@ -89,11 +99,12 @@ class ManajemenStok extends Component
         ]);
 
         $produk = Produk::find($this->produkTerpilihId);
+        $dataLama = ['stok' => $produk->stok];
 
-        DB::transaction(function () use ($produk) {
+        DB::transaction(function () use ($produk, $dataLama) {
             
             if ($this->jenisAksi === 'transfer') {
-                // Logic Transfer Antar Gudang
+                // Proses Transfer Antar Gudang
                 $stokAsal = StokGudang::firstOrCreate(
                     ['produk_id' => $produk->id, 'gudang_id' => $this->dariGudangId],
                     ['jumlah' => 0]
@@ -113,37 +124,30 @@ class ManajemenStok extends Component
                 
                 MutasiStok::create([
                     'produk_id' => $produk->id,
-                    'jumlah' => 0, // Net zero global change
+                    'jumlah' => 0, 
                     'jenis_mutasi' => 'transfer_gudang',
                     'keterangan' => "Transfer: " . Gudang::find($this->dariGudangId)->nama . " -> " . Gudang::find($this->keGudangId)->nama . ". " . $this->keteranganMutasi,
                     'pengguna_id' => auth()->id(),
                     'waktu' => now(),
                 ]);
 
-                LogHelper::catat('transfer_stok', $produk->nama, "Admin memindahkan {$this->jumlahMutasi} unit antar gudang.");
+                LogHelper::catat(
+                    'Transfer Stok', 
+                    $produk->nama, 
+                    "Pengelola memindahkan {$this->jumlahMutasi} unit {$produk->nama} dari " . Gudang::find($this->dariGudangId)->nama . " ke " . Gudang::find($this->keGudangId)->nama . "."
+                );
 
             } else {
-                // Logic Penyesuaian / Penerimaan Global
-                // Jika Penyesuaian (Pengurangan), cek stok dulu
-                if ($this->jenisAksi === 'penyesuaian' && $produk->stok < $this->jumlahMutasi) {
-                    // Cek apakah ini stok opname (bisa negatif? biasanya tidak, stok fisik harusnya ada)
-                    // Asumsi sistem blokir negatif.
-                    // throw new \Exception('Stok fisik global tidak mencukupi untuk pengurangan ini.'); 
-                    // Revisi: Penyesuaian stok opname bisa set stok ke nilai absolut, tapi di sini kita pakai increment/decrement.
-                    // Jika pengurangan > stok, set stok jadi 0? Atau throw error?
-                    // Safe approach: throw error.
-                }
-
+                // Proses Penyesuaian atau Penerimaan Global
                 $jumlahFinal = $this->jenisAksi === 'penerimaan' ? $this->jumlahMutasi : -$this->jumlahMutasi;
                 
-                // Cegah stok negatif
                 if ($produk->stok + $jumlahFinal < 0) {
-                     throw new \Exception('Operasi dibatalkan: Stok akan menjadi negatif.');
+                     throw new \Exception('Operasi dibatalkan: Stok global tidak boleh menjadi negatif.');
                 }
 
                 $produk->increment('stok', $jumlahFinal);
 
-                // Update gudang utama (Default ID 1) agar sinkron
+                // Sinkronisasi ke gudang utama (ID 1)
                 StokGudang::updateOrCreate(
                     ['produk_id' => $produk->id, 'gudang_id' => 1], 
                     ['jumlah' => DB::raw("GREATEST(0, jumlah + $jumlahFinal)")]
@@ -158,23 +162,31 @@ class ManajemenStok extends Component
                     'waktu' => now(),
                 ]);
 
+                $narasi = $this->jenisAksi === 'penerimaan' 
+                    ? "Penerimaan stok baru sebanyak {$this->jumlahMutasi} unit untuk {$produk->nama}."
+                    : "Penyesuaian stok manual (pengurangan) sebanyak {$this->jumlahMutasi} unit untuk {$produk->nama}.";
+
                 LogHelper::catat(
-                    'mutasi_stok',
+                    'Mutasi Stok',
                     $produk->nama,
-                    "Admin eksekusi " . strtoupper($this->jenisAksi) . ": " . ($jumlahFinal > 0 ? '+' : '') . "{$jumlahFinal} unit. Memo: {$this->keteranganMutasi}"
+                    $narasi . " Memo: {$this->keteranganMutasi}",
+                    $dataLama,
+                    ['stok' => $produk->fresh()->stok]
                 );
             }
         });
 
         $this->tampilkanForm = false;
         $this->reset(['produkTerpilihId', 'jumlahMutasi', 'keteranganMutasi', 'dariGudangId', 'keGudangId']);
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Operasi logistik berhasil dijalankan.']);
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Operasi stok berhasil dicatat ke dalam sistem.']);
     }
 
-    #[Title('Audit Inventaris Hub - Teqara Admin')]
+    /**
+     * Render tampilan dasbor manajemen stok.
+     */
+    #[Title('Manajemen Stok Enterprise - Teqara')]
     public function render()
     {
-        // 1. Query Posisi Stok
         $queryProduk = Produk::query()
             ->with(['kategori', 'merek'])
             ->where('nama', 'like', '%'.$this->cari.'%');
@@ -184,17 +196,16 @@ class ManajemenStok extends Component
                 case 'kritis': $queryProduk->where('stok', '>', 0)->where('stok', '<=', 5); break;
                 case 'habis': $queryProduk->where('stok', '<=', 0); break;
                 case 'aman': $queryProduk->where('stok', '>', 5)->where('stok', '<=', 50); break;
-                case 'overstock': $queryProduk->where('stok', '>', 50); break;
+                case 'berlebih': $queryProduk->where('stok', '>', 50); break;
             }
         }
 
-        // 2. Query Jurnal Mutasi
         $queryMutasi = MutasiStok::with(['produk', 'pengguna'])->latest('dibuat_pada');
 
         return view('livewire.pengelola.manajemen-produk.manajemen-stok', [
             'stokGlobal' => $queryProduk->paginate(10, pageName: 'produk-page'),
             'jurnalMutasi' => $queryMutasi->paginate(15, pageName: 'mutasi-page'),
             'daftarGudang' => Gudang::all(),
-        ])->layout('components.layouts.admin');
+        ])->layout('components.layouts.admin', ['header' => 'Manajemen Stok']);
     }
 }

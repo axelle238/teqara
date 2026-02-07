@@ -11,15 +11,15 @@ use Livewire\WithPagination;
 use Illuminate\Support\Str;
 
 /**
- * Class ManajemenBerita
- * Tujuan: CMS (Content Management System) untuk publikasi artikel dan berita promo.
- * Arsitektur: Full Page Editor.
+ * Komponen Manajemen Berita (CMS)
+ * 
+ * Mengelola publikasi artikel, berita promo, dan tips teknologi untuk halaman depan.
  */
 class ManajemenBerita extends Component
 {
     use WithPagination, WithFileUploads;
 
-    // State Halaman
+    // Keadaan Tampilan
     public $tampilkanEditor = false;
 
     // Properti Model
@@ -27,47 +27,62 @@ class ManajemenBerita extends Component
     public $judul;
     public $slug;
     public $kategori = 'berita'; // berita, promo, tips, event
-    public $konten; // Rich Text (HTML)
+    public $konten;
     public $status = 'draft'; // draft, publikasi, arsip
     public $gambar_sampul;
     public $gambar_lama;
-    public $tags; // Comma separated
+    public $tags;
 
-    // Filter
+    // Filter Pencarian
     public $cari = '';
 
+    /**
+     * Mempersiapkan editor untuk artikel baru.
+     */
     public function tambahBaru()
     {
         $this->reset(['beritaId', 'judul', 'slug', 'kategori', 'konten', 'status', 'gambar_sampul', 'gambar_lama', 'tags']);
         $this->tampilkanEditor = true;
     }
 
+    /**
+     * Memuat data artikel ke dalam editor.
+     */
     public function edit($id)
     {
-        $b = Berita::findOrFail($id);
-        $this->beritaId = $b->id;
-        $this->judul = $b->judul;
-        $this->slug = $b->slug;
-        $this->kategori = $b->kategori;
-        $this->konten = $b->konten;
-        $this->status = $b->status;
-        $this->gambar_lama = $b->gambar_sampul;
-        $this->tags = $b->tags;
+        $artikel = Berita::findOrFail($id);
+        $this->beritaId = $artikel->id;
+        $this->judul = $artikel->judul;
+        $this->slug = $artikel->slug;
+        $this->kategori = $artikel->kategori;
+        $this->konten = $artikel->konten;
+        $this->status = $artikel->status;
+        $this->gambar_lama = $artikel->gambar_sampul;
+        $this->tags = $artikel->tags;
         
         $this->tampilkanEditor = true;
     }
 
+    /**
+     * Menutup editor tanpa menyimpan.
+     */
     public function batal()
     {
         $this->tampilkanEditor = false;
         $this->reset(['beritaId', 'gambar_sampul']);
     }
 
+    /**
+     * Sinkronisasi slug otomatis saat judul diubah.
+     */
     public function updatedJudul()
     {
         $this->slug = Str::slug($this->judul);
     }
 
+    /**
+     * Menyimpan data artikel (Baru atau Pembaruan) dengan Log Naratif.
+     */
     public function simpan()
     {
         $this->validate([
@@ -78,7 +93,7 @@ class ManajemenBerita extends Component
             'status' => 'required',
         ]);
 
-        $data = [
+        $dataBaru = [
             'judul' => $this->judul,
             'slug' => $this->slug,
             'kategori' => $this->kategori,
@@ -90,36 +105,59 @@ class ManajemenBerita extends Component
 
         if ($this->gambar_sampul) {
             $path = $this->gambar_sampul->store('berita', 'public');
-            $data['gambar_sampul'] = '/storage/' . $path;
+            $dataBaru['gambar_sampul'] = '/storage/' . $path;
         }
 
         if ($this->beritaId) {
-            Berita::find($this->beritaId)->update($data);
-            $aksi = 'update_berita';
-            $pesan = "Artikel berhasil diperbarui.";
+            $artikel = Berita::find($this->beritaId);
+            $dataLama = $artikel->toArray();
+            $artikel->update($dataBaru);
+            
+            LogHelper::catat(
+                'Pembaruan Artikel',
+                $this->judul,
+                "Pengelola memperbarui artikel '{$this->judul}' pada kategori {$this->kategori}.",
+                $dataLama,
+                $artikel->fresh()->toArray()
+            );
+            $pesanToast = "Artikel berhasil diperbarui.";
         } else {
-            Berita::create($data);
-            $aksi = 'buat_berita';
-            $pesan = "Artikel baru berhasil diterbitkan.";
+            $artikelBaru = Berita::create($dataBaru);
+            LogHelper::catat(
+                'Publikasi Artikel',
+                $this->judul,
+                "Pengelola menerbitkan artikel baru berjudul '{$this->judul}' dengan status {$this->status}.",
+                null,
+                $artikelBaru->toArray()
+            );
+            $pesanToast = "Artikel baru berhasil diterbitkan.";
         }
 
-        LogHelper::catat($aksi, $this->judul, "Admin mengelola konten artikel: {$this->judul}");
-        
         $this->tampilkanEditor = false;
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesan]);
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => $pesanToast]);
     }
 
+    /**
+     * Menghapus artikel secara permanen.
+     */
     public function hapus($id)
     {
-        $b = Berita::findOrFail($id);
-        $judul = $b->judul;
-        $b->delete();
+        $artikel = Berita::findOrFail($id);
+        $judul = $artikel->judul;
+        $dataLama = $artikel->toArray();
+        $artikel->delete();
         
-        LogHelper::catat('hapus_berita', $judul, "Artikel dihapus dari CMS.");
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Artikel dihapus.']);
+        LogHelper::catat(
+            'Penghapusan Artikel',
+            $judul,
+            "Pengelola menghapus artikel '{$judul}' secara permanen dari sistem CMS.",
+            $dataLama
+        );
+
+        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Artikel telah dihapus dari database.']);
     }
 
-    #[Title('Manajemen Konten (CMS) - Teqara Admin')]
+    #[Title('Manajemen Berita & Artikel - Teqara CMS')]
     public function render()
     {
         $query = Berita::latest('dibuat_pada');
@@ -130,6 +168,6 @@ class ManajemenBerita extends Component
 
         return view('livewire.pengelola.manajemen-toko.manajemen-berita', [
             'berita' => $query->paginate(10)
-        ])->layout('components.layouts.admin', ['header' => 'Content Management System']);
+        ])->layout('components.layouts.admin', ['header' => 'Manajemen Berita']);
     }
 }

@@ -19,6 +19,9 @@ class LayananDokumentasi
      */
     public function hasilkanDokumentasi(): array
     {
+        // Jalankan sinkronisasi hak akses secara otomatis
+        (new LayananHakAkses)->sinkronkan();
+
         $data = [
             'nama_sistem' => 'TEQARA Business Enterprise Store',
             'versi' => '12.0.0',

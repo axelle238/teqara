@@ -83,8 +83,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
     // --- RUTE ADMIN / PENGELOLA (Enterprise) ---
-// Middleware: auth + cek role admin/staf
-Route::middleware(['auth'])->prefix('pengelola')->group(function () {
+// Middleware: auth + otorisasi dinamis
+Route::middleware(['auth', 'otorisasi'])->prefix('pengelola')->group(function () {
     
     // Dashboard Utama (Ringkasan Seluruh Sistem)
     Route::get('/beranda', \App\Livewire\Pengelola\BerandaUtama::class)->name('pengelola.beranda');
@@ -176,6 +176,7 @@ Route::middleware(['auth'])->prefix('pengelola')->group(function () {
         Route::get('/beranda', \App\Livewire\Pengelola\ManajemenLaporan\BerandaLaporan::class)->name('pengelola.laporan.beranda');
         Route::get('/', \App\Livewire\Pengelola\ManajemenLaporan\BerandaLaporan::class)->name('pengelola.laporan.pusat');
         Route::get('/log', \App\Livewire\Pengelola\Log\DaftarLog::class)->name('pengelola.pengaturan.log');
+        Route::get('/log/{id}', \App\Livewire\Pengelola\Log\DetailLog::class)->name('pengelola.log.detail');
     });
 
     // 11. Pengaturan Sistem Terpusat

@@ -1,7 +1,7 @@
 {
     "nama_sistem": "TEQARA Business Enterprise Store",
     "versi": "12.0.0",
-    "tanggal_update": "2026-02-07 18:43:02",
+    "tanggal_update": "2026-02-07 18:50:45",
     "status_sistem": {
         "lingkungan": "local",
         "debug_mode": true,
@@ -17,7 +17,7 @@
         {
             "nama": "Log",
             "kode": "Log",
-            "jumlah_komponen": 1
+            "jumlah_komponen": 2
         },
         {
             "nama": "Manajemen Api",
@@ -304,6 +304,11 @@
         {
             "nama": "pengelola.pengaturan.log",
             "uri": "pengelola/laporan/log",
+            "metode": "GET"
+        },
+        {
+            "nama": "pengelola.log.detail",
+            "uri": "pengelola/laporan/log/{id}",
             "metode": "GET"
         },
         {
@@ -1162,6 +1167,47 @@
                     "nama": "diperbarui_pada",
                     "tipe": "timestamp",
                     "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "hak_akses",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nama_fitur",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "kode_rute",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "grup_modul",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "NO",
                     "kunci": ""
                 }
             ]
@@ -2461,6 +2507,12 @@
                     "kunci": ""
                 },
                 {
+                    "nama": "peran_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "YES",
+                    "kunci": "MUL"
+                },
+                {
                     "nama": "nomor_telepon",
                     "tipe": "varchar(255)",
                     "null": "YES",
@@ -2571,6 +2623,70 @@
                     "tipe": "int(11)",
                     "null": "NO",
                     "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "peran",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "nama",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "slug",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": "UNI"
+                },
+                {
+                    "nama": "deskripsi",
+                    "tipe": "text",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "dibuat_pada",
+                    "tipe": "timestamp",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "diperbarui_pada",
+                    "tipe": "timestamp",
+                    "null": "NO",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
+            "tabel": "peran_hak_akses",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "peran_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
+                },
+                {
+                    "nama": "hak_akses_id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "MUL"
                 }
             ]
         },

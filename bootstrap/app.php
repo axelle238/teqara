@@ -12,10 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(\App\Http\Middleware\FirewallKeamanan::class);
+        
         $middleware->validateCsrfTokens(except: [
             '/payment/midtrans/notification',
         ]);
+
         $middleware->alias([
+            'otorisasi' => \App\Http\Middleware\OtorisasiDinamis::class,
             'dept' => \App\Http\Middleware\CekDepartemen::class,
         ]);
     })
