@@ -53,7 +53,7 @@ Sistem akan menggunakan tabel-tabel berikut dengan penamaan kolom 100% Bahasa In
 
 **Tabel: `pesanan`**
 - `id`
-- `nomor_invoice` (String, Unique, cth: TRX-2026-0001)
+- `nomor_faktur` (String, Unique, cth: TRX-2026-0001)
 - `pengguna_id` (FK)
 - `total_harga`
 - `status_pembayaran`

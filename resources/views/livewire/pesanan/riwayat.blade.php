@@ -32,8 +32,8 @@
                 <div class="px-8 py-6 bg-slate-50/50 border-b border-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div class="flex flex-wrap items-center gap-x-8 gap-y-2">
                         <div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Nomor Invoice</p>
-                            <p class="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">#{{ $p->nomor_invoice ?? $p->nomor_faktur }}</p>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Nomor Faktur</p>
+                            <p class="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">#{{ $p->nomor_faktur }}</p>
                         </div>
                         <div>
                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Tanggal</p>
@@ -79,10 +79,10 @@
 
                 <!-- Actions -->
                 <div class="px-8 py-4 bg-slate-50 border-t border-slate-100 flex flex-wrap justify-end gap-3">
-                    <a href="{{ route('pesanan.lacak', $p->nomor_invoice ?? $p->nomor_faktur) }}" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:border-indigo-600 hover:text-indigo-600 transition-all">
+                    <a href="{{ route('pesanan.lacak', $p->nomor_faktur) }}" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:border-indigo-600 hover:text-indigo-600 transition-all">
                         Lacak
                     </a>
-                    <a href="{{ route('pesanan.faktur', $p->nomor_invoice ?? $p->nomor_faktur) }}" target="_blank" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:border-indigo-600 hover:text-indigo-600 transition-all">
+                    <a href="{{ route('pesanan.faktur', $p->nomor_faktur) }}" target="_blank" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:border-indigo-600 hover:text-indigo-600 transition-all">
                         Faktur
                     </a>
                     @if(in_array($p->status_pesanan, ['menunggu', 'diproses']))
@@ -91,7 +91,7 @@
                         </a>
                     @endif
                     @if($p->status_pembayaran === 'belum_dibayar')
-                        <a href="{{ route('pesanan.bayar', $p->nomor_invoice ?? $p->nomor_faktur) }}" class="px-6 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all">
+                        <a href="{{ route('pesanan.bayar', $p->nomor_faktur) }}" class="px-6 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all">
                             Bayar Sekarang
                         </a>
                     @endif

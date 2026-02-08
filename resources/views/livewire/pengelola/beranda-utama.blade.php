@@ -150,7 +150,7 @@
                     @foreach($this->pesananTerbaru as $order)
                     <tr class="group hover:bg-slate-50 transition-colors">
                         <td class="py-6 px-4">
-                            <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-widest group-hover:bg-indigo-600 group-hover:text-white transition-colors italic">#{{ $order->nomor_invoice ?? $order->nomor_faktur }}</span>
+                            <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-widest group-hover:bg-indigo-600 group-hover:text-white transition-colors italic">#{{ $order->nomor_faktur }}</span>
                         </td>
                         <td class="py-6 px-4">
                             <p class="text-sm font-black text-slate-800">{{ $order->pengguna->nama }}</p>

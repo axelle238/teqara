@@ -45,7 +45,7 @@
                     <h3 class="text-2xl font-black text-slate-900 uppercase tracking-tighter italic">Alur Pesanan <span class="text-emerald-500">Terkini</span></h3>
                 </div>
                 @if($this->pesananBerjalan)
-                    <span class="px-4 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-black tracking-widest italic">#{{ $this->pesananBerjalan->nomor_invoice }}</span>
+                    <span class="px-4 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-black tracking-widest italic">#{{ $this->pesananBerjalan->nomor_faktur }}</span>
                 @endif
             </div>
 
@@ -76,7 +76,7 @@
             </div>
             <div class="bg-indigo-50/50 rounded-3xl p-6 border border-indigo-100 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <p class="text-sm font-bold text-indigo-900 leading-relaxed italic text-center sm:text-left">"Pesanan Anda saat ini sedang dalam tahap <span class="text-indigo-600 uppercase">{{ $this->pesananBerjalan->status_pesanan }}</span>. Tim kami sedang mengoptimalkan pengiriman aset Anda."</p>
-                <a href="{{ route('pesanan.lacak', $this->pesananBerjalan->nomor_invoice) }}" class="px-8 py-4 bg-white text-indigo-600 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:shadow-xl transition-all whitespace-nowrap">Lacak Unit Sekarang</a>
+                <a href="{{ route('pesanan.lacak', $this->pesananBerjalan->nomor_faktur) }}" class="px-8 py-4 bg-white text-indigo-600 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:shadow-xl transition-all whitespace-nowrap">Lacak Unit Sekarang</a>
             </div>
             @else
             <div class="py-20 text-center bg-slate-50 rounded-[40px] border-2 border-dashed border-slate-200">
@@ -105,7 +105,7 @@
                     <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden shadow-inner p-0.5">
                         <div class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 rounded-full transition-all duration-1000 shadow-lg" style="width: {{ $this->stats['progres_level'] }}%"></div>
                     </div>
-                    <p class="text-[10px] text-slate-400 font-medium leading-relaxed italic">Kumpulkan <span class="text-indigo-600 font-black">2.450 poin</span> lagi untuk membuka benefit eksklusif Gold Member.</p>
+                    <p class="text-[10px] text-slate-400 font-medium leading-relaxed italic">Kumpulkan <span class="text-indigo-600 font-black">2.450 poin</span> lagi untuk membuka benefit exclusive Gold Member.</p>
                 </div>
             </div>
 
@@ -142,8 +142,6 @@
                     <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
                         <th class="py-6 px-4">Invoice</th>
                         <th class="py-6 px-4">Data Aset</th>
-                        <th class="py-6 px-4">Nilai Investasi</th>
-                        <th class="py-6 px-4 text-center">Status</th>
                         <th class="py-6 px-4 text-right">Detail</th>
                     </tr>
                 </thead>
@@ -151,30 +149,14 @@
                     @foreach($this->pesananTerakhir as $pesanan)
                     <tr class="group hover:bg-slate-50 transition-colors">
                         <td class="py-6 px-4">
-                            <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-widest group-hover:bg-indigo-600 group-hover:text-white transition-colors italic">#{{ $pesanan->nomor_invoice }}</span>
+                            <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-widest group-hover:bg-indigo-600 group-hover:text-white transition-colors italic">#{{ $pesanan->nomor_faktur }}</span>
                         </td>
                         <td class="py-6 px-4">
                             <p class="text-sm font-bold text-slate-800 italic">{{ $pesanan->items_count ?? $pesanan->detail->count() }} Unit Perangkat</p>
                             <p class="text-[10px] font-medium text-slate-400 uppercase tracking-widest">{{ $pesanan->dibuat_pada->translatedFormat('d M Y, H:i') }} WIB</p>
                         </td>
-                        <td class="py-6 px-4">
-                            <p class="text-lg font-black text-slate-900 italic">Rp {{ number_format($pesanan->total_belanja, 0, ',', '.') }}</p>
-                        </td>
-                        <td class="py-6 px-4 text-center">
-                            @php
-                                $warnaStatus = match($pesanan->status_pesanan) {
-                                    'menunggu' => 'bg-amber-100 text-amber-600',
-                                    'diproses' => 'bg-blue-100 text-blue-600',
-                                    'dikirim' => 'bg-purple-100 text-purple-600',
-                                    'selesai' => 'bg-emerald-100 text-emerald-600',
-                                    'batal' => 'bg-rose-100 text-rose-600',
-                                    default => 'bg-slate-100 text-slate-600'
-                                };
-                            @endphp
-                            <span class="px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest {{ $warnaStatus }}">{{ $pesanan->status_pesanan }}</span>
-                        </td>
                         <td class="py-6 px-4 text-right">
-                            <a href="{{ route('pesanan.lacak', $pesanan->nomor_invoice) }}" class="inline-flex items-center justify-center w-10 h-10 bg-white border border-slate-200 text-slate-400 rounded-xl hover:text-indigo-600 hover:border-indigo-200 hover:shadow-lg transition-all"><i class="fa-solid fa-arrow-right-long"></i></a>
+                            <a href="{{ route('pesanan.lacak', $pesanan->nomor_faktur) }}" class="inline-flex items-center justify-center w-10 h-10 bg-white border border-slate-200 text-slate-400 rounded-xl hover:text-indigo-600 hover:border-indigo-200 hover:shadow-lg transition-all"><i class="fa-solid fa-arrow-right-long"></i></a>
                         </td>
                     </tr>
                     @endforeach
