@@ -46,7 +46,7 @@
                 
                 <!-- Status Banner -->
                 <div class="relative overflow-hidden rounded-[2.5rem] p-10 shadow-2xl 
-                    {{ $pesanan->status_pesanan == 'dibatalkan' ? 'bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/30' : 
+                    {{ $pesanan->status_pesanan == 'batal' ? 'bg-gradient-to-br from-rose-500 to-red-600 shadow-rose-500/30' : 
                        ($pesanan->status_pesanan == 'selesai' ? 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/30' : 
                        'bg-gradient-to-br from-indigo-600 to-purple-700 shadow-indigo-500/30') }}">
                     
@@ -181,7 +181,7 @@
                             @endphp
                             <div class="relative {{ $isActive ? '' : 'opacity-40 grayscale' }}">
                                 <span class="absolute -left-[21px] top-1 w-4 h-4 rounded-full border-2 {{ $isActive ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-slate-300' }}"></span>
-                                <h4 class="text-sm font-black {{ $isActive ? 'text-indigo-900' : 'text-slate-500' }} uppercase tracking-wide">{{ $step['label'] }}</h4>
+                                <h4 class="text-sm font-black {{ $isActive ? 'text-indigo-900' : 'text-slate-50' }} uppercase tracking-wide">{{ $step['label'] }}</h4>
                                 <p class="text-xs text-slate-500 font-medium mt-1 leading-relaxed">{{ $step['desc'] }}</p>
                                 @if($isCurrent)
                                     <span class="inline-block mt-2 px-2 py-0.5 bg-indigo-100 text-indigo-700 text-[9px] font-black uppercase tracking-widest rounded">Posisi Saat Ini</span>
@@ -189,7 +189,7 @@
                             </div>
                         @endforeach
                         
-                        @if($pesanan->status_pesanan == 'dibatalkan')
+                        @if($pesanan->status_pesanan == 'batal')
                              <div class="relative">
                                 <span class="absolute -left-[21px] top-1 w-4 h-4 rounded-full bg-rose-500 border-2 border-rose-500"></span>
                                 <h4 class="text-sm font-black text-rose-600 uppercase tracking-wide">Dibatalkan</h4>

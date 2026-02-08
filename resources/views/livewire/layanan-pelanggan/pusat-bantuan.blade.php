@@ -33,7 +33,7 @@
                 <div class="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-3xl mb-6 group-hover:scale-110 group-hover:bg-emerald-600 transition-all">🎫</div>
                 <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-2">Tiket Support</h3>
                 <p class="text-slate-500 text-sm font-medium leading-relaxed mb-8">Ajukan pertanyaan teknis atau komplain melalui sistem tiket terpadu.</p>
-                <a href="{{ route('pelanggan.dasbor') }}" class="text-xs font-black text-indigo-600 uppercase tracking-widest hover:underline">Buka Tiket →</a>
+                <button @click="document.getElementById('buat-tiket').scrollIntoView({behavior: 'smooth'})" class="text-xs font-black text-indigo-600 uppercase tracking-widest hover:underline">Buka Tiket →</button>
             </div>
 
             <div class="bg-white rounded-[2.5rem] p-10 border border-white shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:-translate-y-2 transition-all group">
@@ -52,15 +52,6 @@
             </h2>
 
             <div class="space-y-6" x-data="{ active: null }">
-                @php
-                    $faqs = [
-                        ['q' => 'Bagaimana cara melacak pesanan saya?', 'a' => 'Anda dapat melacak pesanan melalui menu "Pesanan Saya" di Dasbor Pelanggan. Nomor resi akan diperbarui secara real-time setelah barang dikirim.'],
-                        ['q' => 'Apakah produk Teqara bergaransi?', 'a' => 'Ya, semua unit komputer dan gadget yang kami jual memiliki garansi resmi distributor minimal 12 bulan.'],
-                        ['q' => 'Bagaimana kebijakan pengembalian barang?', 'a' => 'Pengembalian dapat dilakukan maksimal 7 hari setelah barang diterima jika terdapat cacat pabrik atau ketidaksesuaian spesifikasi.'],
-                        ['q' => 'Apakah bisa melakukan pembayaran via cicilan?', 'a' => 'Kami mendukung cicilan 0% hingga 12 bulan menggunakan kartu kredit atau penyedia kredit digital yang terintegrasi di sistem kami.'],
-                    ];
-                @endphp
-
                 @foreach($faqs as $index => $faq)
                 <div class="border border-slate-50 rounded-[2rem] overflow-hidden bg-slate-50/30 transition-all duration-300" :class="{ 'bg-indigo-50/50 border-indigo-100': active === {{ $index }} }">
                     <button @click="active = (active === {{ $index }} ? null : {{ $index }})" class="w-full px-8 py-6 text-left flex items-center justify-between group">
@@ -72,6 +63,64 @@
                     </div>
                 </div>
                 @endforeach
+            </div>
+        </div>
+
+        <!-- Form Buat Tiket -->
+        <div id="buat-tiket" class="mt-20 bg-white rounded-[3rem] p-10 md:p-16 border border-white shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-full blur-3xl -mr-20 -mt-20 opacity-50"></div>
+            
+            <div class="relative z-10">
+                <h2 class="text-3xl font-black text-slate-900 uppercase tracking-tight mb-4">Buat Tiket Baru</h2>
+                <p class="text-slate-500 font-medium mb-10 max-w-xl">Ceritakan kendala Anda secara detail agar tim kami dapat memberikan solusi terbaik secepatnya.</p>
+
+                <form wire:submit.prevent="kirimTiket" class="space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest">Judul Kendala</label>
+                            <input type="text" wire:model="subjek" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300" placeholder="Cth: Pesanan belum sampai">
+                            @error('subjek') <span class="text-rose-500 text-xs font-bold">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="space-y-3">
+                            <label class="text-xs font-black text-slate-400 uppercase tracking-widest">Kategori</label>
+                            <select wire:model="kategori" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-indigo-500/10 cursor-pointer">
+                                <option value="umum">Pertanyaan Umum</option>
+                                <option value="pesanan">Masalah Pesanan</option>
+                                <option value="teknis">Kendala Teknis</option>
+                                <option value="penagihan">Pembayaran & Tagihan</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-widest">Detail Pesan</label>
+                        <textarea wire:model="pesan" rows="5" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-medium text-slate-900 focus:ring-4 focus:ring-indigo-500/10 placeholder:text-slate-300" placeholder="Jelaskan kronologi masalah..."></textarea>
+                        @error('pesan') <span class="text-rose-500 text-xs font-bold">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="text-xs font-black text-slate-400 uppercase tracking-widest">Lampiran (Opsional)</label>
+                        <div class="flex items-center gap-4">
+                            <label class="cursor-pointer inline-flex items-center gap-2 px-6 py-3 bg-slate-100 text-slate-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-slate-200 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path></svg>
+                                Pilih File
+                                <input type="file" wire:model="lampiran" class="hidden">
+                            </label>
+                            @if($lampiran)
+                                <span class="text-xs font-bold text-emerald-600">File terpilih: {{ $lampiran->getClientOriginalName() }}</span>
+                            @endif
+                        </div>
+                        @error('lampiran') <span class="text-rose-500 text-xs font-bold">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="pt-4 flex justify-end">
+                        <button type="submit" class="px-10 py-5 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-600/30 flex items-center gap-3">
+                            <span wire:loading.remove wire:target="kirimTiket">Kirim Tiket</span>
+                            <span wire:loading wire:target="kirimTiket">Mengirim...</span>
+                            <svg wire:loading.remove wire:target="kirimTiket" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 

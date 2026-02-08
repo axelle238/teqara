@@ -1,12 +1,34 @@
 {
-    "nama_sistem": "TEQARA Business Enterprise Store",
-    "versi": "12.0.0",
-    "tanggal_update": "2026-02-08 04:10:36",
+    "identitas_sistem": {
+        "nama": "TEQARA Business Enterprise Store",
+        "versi": "16.0.0-Paripurna",
+        "bahasa": "100% Bahasa Indonesia",
+        "waktu_update": "Sunday, 08 February 2026 04:41:48"
+    },
+    "arsitektur": {
+        "backend": "Laravel 12 (Modern)",
+        "frontend": "Livewire 4 + Alpine.js",
+        "interaksi": "One Page Application (SPA)",
+        "modal_policy": "Dilarang (100% Inline/Section)"
+    },
     "status_sistem": {
         "lingkungan": "local",
         "debug_mode": true,
         "php_version": "8.2.12",
         "laravel_version": "12.50.0"
+    },
+    "pilar_manajemen": {
+        "Manajemen Halaman Toko": "CMS dinamis untuk konten visual dan berita.",
+        "Manajemen Produk & Gadget": "Kendali unit, kategori, merek, dan seri.",
+        "Manajemen Pesanan": "Pemenuhan transaksi hulu ke hilir.",
+        "Manajemen Transaksi": "Otoritas bayar, voucher, dan promo.",
+        "Manajemen Customer Service": "Resolusi tiket dan ulasan pelanggan.",
+        "Manajemen Logistik": "Rantai pasok dan data vendor.",
+        "Manajemen Pelanggan": "CRM dan direktori member.",
+        "Manajemen Pegawai": "Administrasi SDM dan struktur organisasi.",
+        "Manajemen Laporan": "Analitik bisnis real-time.",
+        "Pengaturan Sistem": "Konfigurasi identitas global.",
+        "Pengaturan Keamanan": "Audit log dan enkripsi data."
     },
     "modul_aktif": [
         {

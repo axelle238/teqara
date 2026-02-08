@@ -23,14 +23,36 @@ class LayananDokumentasi
         (new LayananHakAkses)->sinkronkan();
 
         $data = [
-            'nama_sistem' => 'TEQARA Business Enterprise Store',
-            'versi' => '12.0.0',
-            'tanggal_update' => now()->format('Y-m-d H:i:s'),
+            'identitas_sistem' => [
+                'nama' => 'TEQARA Business Enterprise Store',
+                'versi' => '16.0.0-Paripurna',
+                'bahasa' => '100% Bahasa Indonesia',
+                'waktu_update' => now()->translatedFormat('l, d F Y H:i:s'),
+            ],
+            'arsitektur' => [
+                'backend' => 'Laravel 12 (Modern)',
+                'frontend' => 'Livewire 4 + Alpine.js',
+                'interaksi' => 'One Page Application (SPA)',
+                'modal_policy' => 'Dilarang (100% Inline/Section)',
+            ],
             'status_sistem' => [
                 'lingkungan' => config('app.env'),
                 'debug_mode' => config('app.debug'),
                 'php_version' => PHP_VERSION,
                 'laravel_version' => app()->version(),
+            ],
+            'pilar_manajemen' => [
+                'Manajemen Halaman Toko' => 'CMS dinamis untuk konten visual dan berita.',
+                'Manajemen Produk & Gadget' => 'Kendali unit, kategori, merek, dan seri.',
+                'Manajemen Pesanan' => 'Pemenuhan transaksi hulu ke hilir.',
+                'Manajemen Transaksi' => 'Otoritas bayar, voucher, dan promo.',
+                'Manajemen Customer Service' => 'Resolusi tiket dan ulasan pelanggan.',
+                'Manajemen Logistik' => 'Rantai pasok dan data vendor.',
+                'Manajemen Pelanggan' => 'CRM dan direktori member.',
+                'Manajemen Pegawai' => 'Administrasi SDM dan struktur organisasi.',
+                'Manajemen Laporan' => 'Analitik bisnis real-time.',
+                'Pengaturan Sistem' => 'Konfigurasi identitas global.',
+                'Pengaturan Keamanan' => 'Audit log dan enkripsi data.',
             ],
             'modul_aktif' => $this->ambilModulAktif(),
             'daftar_endpoint' => $this->ambilDaftarEndpoint(),
@@ -47,6 +69,14 @@ class LayananDokumentasi
         File::put($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
         return $data;
+    }
+
+    /**
+     * Alias untuk hasilkanDokumentasi() guna mendukung pembaharuan otomatis via Observer.
+     */
+    public function perbaruiDokumentasi(): void
+    {
+        $this->hasilkanDokumentasi();
     }
 
     /**

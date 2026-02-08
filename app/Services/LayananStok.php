@@ -70,6 +70,35 @@ class LayananStok
     }
 
     /**
+     * Menyesuaikan stok produk ke jumlah spesifik (Absolute Adjustment).
+     */
+    public function sesuaikanStok(Produk $produk, $stokBaru, $keterangan = 'Penyesuaian stok manual', $gudangId = 1)
+    {
+        DB::transaction(function () use ($produk, $stokBaru, $keterangan, $gudangId) {
+            $stokLama = $produk->stok;
+            $selisih = $stokBaru - $stokLama;
+
+            $produk->update(['stok' => $stokBaru]);
+
+            DB::table('stok_gudang')->updateOrInsert(
+                ['produk_id' => $produk->id, 'gudang_id' => $gudangId],
+                ['jumlah' => $stokBaru, 'diperbarui_pada' => now()]
+            );
+
+            DB::table('mutasi_stok')->insert([
+                'produk_id' => $produk->id,
+                'jumlah' => $selisih,
+                'jenis_mutasi' => 'koreksi',
+                'referensi_id' => 'ADJ-' . time(),
+                'keterangan' => $keterangan,
+                'oleh_pengguna_id' => auth()->id(),
+                'dibuat_pada' => now(),
+                'diperbarui_pada' => now(),
+            ]);
+        });
+    }
+
+    /**
      * Menahan stok saat pesanan dibuat.
      */
     public function tahanStok(Pesanan $pesanan)
@@ -111,6 +140,32 @@ class LayananStok
                     'referensi_id' => $pesanan->nomor_faktur,
                     'keterangan' => 'Penjualan Faktur #'.$pesanan->nomor_faktur,
                     'oleh_pengguna_id' => $pesanan->pengguna_id,
+                    'dibuat_pada' => now(),
+                    'diperbarui_pada' => now(),
+                ]);
+            }
+        });
+    }
+
+    /**
+     * Mengembalikan stok saat pesanan dibatalkan.
+     */
+    public function kembalikanStok(Pesanan $pesanan)
+    {
+        DB::transaction(function () use ($pesanan) {
+            foreach ($pesanan->detailPesanan as $detail) {
+                $produk = $detail->produk;
+
+                $produk->increment('stok', $detail->jumlah);
+                $produk->decrement('stok_ditahan', $detail->jumlah);
+
+                DB::table('mutasi_stok')->insert([
+                    'produk_id' => $produk->id,
+                    'jumlah' => $detail->jumlah,
+                    'jenis_mutasi' => 'masuk',
+                    'referensi_id' => $pesanan->nomor_faktur,
+                    'keterangan' => 'Pembatalan Pesanan Faktur #'.$pesanan->nomor_faktur,
+                    'oleh_pengguna_id' => auth()->id(),
                     'dibuat_pada' => now(),
                     'diperbarui_pada' => now(),
                 ]);

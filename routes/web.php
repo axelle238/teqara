@@ -46,7 +46,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pesanan/lacak/{invoice}', \App\Livewire\Pelanggan\DetailPesanan::class)->name('pesanan.lacak');
     Route::get('/pesanan/bayar/{invoice}', \App\Livewire\Pelanggan\BayarPesanan::class)->name('pesanan.bayar');
     Route::get('/pesanan/faktur/{invoice}', \App\Http\Controllers\CetakFakturController::class)->name('pesanan.faktur');
-    Route::get('/pesanan/{id}/batal', \App\Livewire\Pelanggan\BatalkanPesanan::class)->name('pesanan.batal');
+    Route::get('/pesanan/{id}/batal', \App\Livewire\Pelanggan\BatalkanPesanan::class)->name('pesanan.batal')->where('id', '[0-9]+');
     Route::get('/ulasan/{pesananId}/{produkId}', \App\Livewire\Pelanggan\BeriUlasan::class)->name('ulasan.buat');
     Route::get('/ulasan-saya', \App\Livewire\Pelanggan\UlasanSaya::class)->name('pelanggan.ulasan');
     Route::get('/beli-lagi', \App\Livewire\Pelanggan\BeliLagi::class)->name('pelanggan.beli-lagi');

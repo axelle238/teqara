@@ -19,7 +19,7 @@
                     <option value="diproses">Diproses</option>
                     <option value="dikirim">Dikirim</option>
                     <option value="selesai">Selesai</option>
-                    <option value="dibatalkan">Dibatalkan</option>
+                    <option value="batal">Dibatalkan</option>
                 </select>
             </div>
         </div>
@@ -48,7 +48,7 @@
                         <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ring-1 ring-inset {{ $p->status_pembayaran === 'lunas' ? 'bg-emerald-50 text-emerald-600 ring-emerald-200' : 'bg-amber-50 text-amber-600 ring-amber-200' }}">
                             {{ str_replace('_', ' ', $p->status_pembayaran) }}
                         </span>
-                         <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ring-1 ring-inset {{ $p->status_pesanan === 'selesai' ? 'bg-indigo-50 text-indigo-600 ring-indigo-200' : ($p->status_pesanan === 'dibatalkan' ? 'bg-rose-50 text-rose-600 ring-rose-200' : 'bg-slate-50 text-slate-600 ring-slate-200') }}">
+                         <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ring-1 ring-inset {{ $p->status_pesanan === 'selesai' ? 'bg-indigo-50 text-indigo-600 ring-indigo-200' : ($p->status_pesanan === 'batal' ? 'bg-rose-50 text-rose-600 ring-rose-200' : 'bg-slate-50 text-slate-600 ring-slate-200') }}">
                             {{ $p->status_pesanan }}
                         </span>
                     </div>

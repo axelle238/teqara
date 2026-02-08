@@ -29,8 +29,8 @@ class BatalkanPesanan extends Component
 
         $this->pesanan->update([
             'status_pesanan' => 'batal',
-            'catatan' => $this->pesanan->catatan . "
-[DIBATALKAN USER]: " . $this->alasan . " - " . $this->keterangan
+            'alasan_pembatalan' => $this->alasan . " - " . $this->keterangan,
+            'waktu_pembatalan' => now(),
         ]);
 
         // Kembalikan stok
