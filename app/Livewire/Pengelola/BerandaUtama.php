@@ -21,11 +21,38 @@ use Illuminate\Support\Facades\DB;
 /**
  * Dasbor Utama Pengelola (Panel Eksekutif)
  * 
- * Pusat monitoring 13 pilar manajemen Business Enterprise TEQARA.
- * Menyajikan statistik real-time dan audit trail terbaru.
+ * Pusat monitoring 15 pilar manajemen Business Enterprise TEQARA.
+ * Menyajikan statistik real-time, grafik tren, dan audit trail terbaru.
  */
 class BerandaUtama extends Component
 {
+    /**
+     * Data untuk Grafik Performa (ApexCharts)
+     */
+    public function getDataGrafikProperty()
+    {
+        $hari = collect([]);
+        $omzet = collect([]);
+        $pesanan = collect([]);
+
+        for ($i = 6; $i >= 0; $i--) {
+            $tgl = now()->subDays($i);
+            $hari->push($tgl->translatedFormat('D'));
+            
+            $omzet->push(TransaksiPembayaran::whereDate('waktu_bayar', $tgl)
+                ->where('status', 'sukses')
+                ->sum('jumlah_bayar'));
+                
+            $pesanan->push(Pesanan::whereDate('dibuat_pada', $tgl)->count());
+        }
+
+        return [
+            'label' => $hari,
+            'omzet' => $omzet,
+            'pesanan' => $pesanan,
+        ];
+    }
+
     /**
      * Mengambil statistik terkonsolidasi dari seluruh modul.
      */
@@ -64,7 +91,7 @@ class BerandaUtama extends Component
             'total_staf' => Karyawan::count(),
             
             // 10. MANAJEMEN LAPORAN & ANALITIK
-            'laporan_tersedia' => 15, // Indikator modul laporan aktif
+            'laporan_tersedia' => 15, 
             
             // 11. PENGATURAN SISTEM TERPUSAT
             'voucher_aktif' => Voucher::where('berlaku_sampai', '>', now())->count(),
@@ -89,28 +116,22 @@ class BerandaUtama extends Component
     }
 
     /**
-     * Mengambil 8 pesanan terbaru.
+     * Mengambil pesanan terbaru dan audit log terbaru.
      */
     public function getPesananTerbaruProperty()
     {
-        return Pesanan::with('pengguna')->latest('dibuat_pada')->take(8)->get();
+        return Pesanan::with('pengguna')->latest('dibuat_pada')->take(6)->get();
     }
 
-    /**
-     * Mengambil 10 log aktivitas terbaru (Audit Trail).
-     */
     public function getLogAktivitasProperty()
     {
         return LogAktivitas::with('pengguna')->latest('waktu')->take(10)->get();
     }
 
-    /**
-     * Render tampilan dasbor.
-     */
     #[Title('Dasbor Eksekutif TEQARA - Enterprise System')]
     public function render()
     {
         return view('livewire.pengelola.beranda-utama')
-            ->layout('components.layouts.admin', ['header' => 'Dasbor Eksekutif']);
+            ->layout('components.layouts.admin', ['header' => 'Panel Eksekutif']);
     }
 }

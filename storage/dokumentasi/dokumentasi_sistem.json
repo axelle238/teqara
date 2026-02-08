@@ -1,7 +1,7 @@
 {
     "nama_sistem": "TEQARA Business Enterprise Store",
     "versi": "12.0.0",
-    "tanggal_update": "2026-02-07 20:30:35",
+    "tanggal_update": "2026-02-08 03:56:34",
     "status_sistem": {
         "lingkungan": "local",
         "debug_mode": true,
@@ -854,6 +854,12 @@
                     "kunci": ""
                 },
                 {
+                    "nama": "warna_identitas",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
                     "nama": "dibuat_pada",
                     "tipe": "timestamp",
                     "null": "YES",
@@ -1233,6 +1239,59 @@
             ]
         },
         {
+            "tabel": "hak_akses_role",
+            "kolom": [
+                {
+                    "nama": "id",
+                    "tipe": "bigint(20) unsigned",
+                    "null": "NO",
+                    "kunci": "PRI"
+                },
+                {
+                    "nama": "peran",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "modul",
+                    "tipe": "varchar(255)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "baca",
+                    "tipe": "tinyint(1)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "tulis",
+                    "tipe": "tinyint(1)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "hapus",
+                    "tipe": "tinyint(1)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "created_at",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "updated_at",
+                    "tipe": "timestamp",
+                    "null": "YES",
+                    "kunci": ""
+                }
+            ]
+        },
+        {
             "tabel": "insiden_keamanan",
             "kolom": [
                 {
@@ -1367,6 +1426,12 @@
                 {
                     "nama": "gaji_pokok",
                     "tipe": "decimal(15,2)",
+                    "null": "NO",
+                    "kunci": ""
+                },
+                {
+                    "nama": "level_otoritas",
+                    "tipe": "int(11)",
                     "null": "NO",
                     "kunci": ""
                 },
@@ -1739,6 +1804,12 @@
                 {
                     "nama": "teks_tombol",
                     "tipe": "varchar(255)",
+                    "null": "YES",
+                    "kunci": ""
+                },
+                {
+                    "nama": "metadata",
+                    "tipe": "longtext",
                     "null": "YES",
                     "kunci": ""
                 },
