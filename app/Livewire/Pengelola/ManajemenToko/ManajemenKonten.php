@@ -33,6 +33,13 @@ class ManajemenKonten extends Component
     public $urutan = 0;
     public $aktif = 1;
     
+    // Konfigurasi Metadata (JSON)
+    public $konfigurasi = [
+        'warna_aksen' => '#4f46e5',
+        'ikon' => 'fa-solid fa-star',
+        'posisi_teks' => 'kiri', // kiri, kanan, tengah
+    ];
+
     // Upload Gambar
     public $gambar;       // File upload temporary
     public $gambar_lama;  // Path string dari DB
@@ -52,7 +59,7 @@ class ManajemenKonten extends Component
     public function tambahBaru()
     {
         $this->resetForm();
-        $this->bagian = $this->filterBagian; // Auto-set bagian sesuai tab aktif
+        $this->bagian = $this->filterBagian; 
         $this->urutan = KontenHalaman::where('bagian', $this->filterBagian)->max('urutan') + 1;
         $this->tampilkanForm = true;
     }
@@ -74,6 +81,11 @@ class ManajemenKonten extends Component
         $this->aktif = $konten->aktif;
         $this->gambar_lama = $konten->gambar;
         
+        // Load Metadata
+        if ($konten->metadata) {
+            $this->konfigurasi = array_merge($this->konfigurasi, $konten->metadata);
+        }
+        
         $this->tampilkanForm = true;
     }
 
@@ -93,32 +105,24 @@ class ManajemenKonten extends Component
     {
         $this->validate([
             'judul' => 'required|min:3|max:255',
-            'bagian' => 'required|in:hero_section,promo_banner,fitur_unggulan',
-            'gambar' => 'nullable', // Bisa image file atau string icon class jika fitur_unggulan
+            'bagian' => 'required|in:hero_section,promo_banner,fitur_unggulan,faq_section,cta_footer',
+            'gambar' => 'nullable', 
             'urutan' => 'integer|min:0',
-            'tautan_tujuan' => 'nullable|url',
+            'tautan_tujuan' => 'nullable',
         ], [
             'judul.required' => 'Judul konten wajib diisi.',
             'bagian.required' => 'Lokasi penempatan wajib dipilih.',
-            'tautan_tujuan.url' => 'Format tautan tidak valid (harus https://...).'
         ]);
 
         // Handle Upload Gambar
         $pathGambar = $this->gambar_lama;
         
-        // Khusus Fitur Unggulan, jika input gambar bukan file tapi string (icon), simpan langsung
-        if ($this->bagian == 'fitur_unggulan' && is_string($this->gambar) && !empty($this->gambar)) {
-             // Logic khusus jika ingin support input text icon, tapi sementara kita fokus file upload standar
-        }
-
         if ($this->gambar instanceof \Illuminate\Http\UploadedFile) {
-            // Hapus gambar lama jika ada dan bukan dummy
-            if ($this->gambar_lama && Storage::disk('public')->exists(str_replace('/storage/', '', $this->gambar_lama))) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $this->gambar_lama));
+            if ($this->gambar_lama && Storage::disk('public')->exists(str_replace('storage/', '', $this->gambar_lama))) {
+                Storage::disk('public')->delete(str_replace('storage/', '', $this->gambar_lama));
             }
-            // Simpan gambar baru
             $path = $this->gambar->store('konten-toko', 'public');
-            $pathGambar = 'storage/' . $path; // Simpan path relatif untuk kemudahan akses
+            $pathGambar = 'storage/' . $path;
         }
 
         $data = [
@@ -130,6 +134,7 @@ class ManajemenKonten extends Component
             'urutan' => $this->urutan,
             'aktif' => $this->aktif,
             'gambar' => $pathGambar,
+            'metadata' => $this->konfigurasi,
         ];
 
         if ($this->kontenId) {

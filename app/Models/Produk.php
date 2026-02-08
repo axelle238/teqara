@@ -90,16 +90,21 @@ class Produk extends Model
         return $this->hasMany(ProdukBundling::class, 'parent_produk_id');
     }
 
+    /**
+     * Menghitung stok virtual untuk produk tipe 'bundle'.
+     * Stok bundle = Minimum dari (Stok Komponen / Jumlah yang dibutuhkan).
+     */
     public function getStokVirtualAttribute()
     {
         if ($this->tipe_produk === 'bundle') {
+            $items = $this->bundlingItems()->with('child')->get();
+            if ($items->isEmpty()) return 0;
+
             $minStok = 999999;
-            foreach ($this->bundlingItems as $item) {
+            foreach ($items as $item) {
                 if ($item->child) {
-                    $stokComponent = floor($item->child->stok / $item->jumlah);
-                    if ($stokComponent < $minStok) {
-                        $minStok = $stokComponent;
-                    }
+                    $stokKomponen = floor($item->child->stok / $item->jumlah);
+                    if ($stokKomponen < $minStok) $minStok = $stokKomponen;
                 }
             }
             return $minStok === 999999 ? 0 : $minStok;

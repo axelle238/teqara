@@ -84,10 +84,15 @@ class Beranda extends Component
                     'gambar' => $heroDb->gambar
                 ];
             }
-            $promoBanners = \App\Models\KontenHalaman::where('bagian', 'promo_banner')->where('aktif', true)->take(3)->get();
-            $fiturUnggulan = \App\Models\KontenHalaman::where('bagian', 'fitur_unggulan')->where('aktif', true)->take(3)->get();
+            $promoBanners = \App\Models\KontenHalaman::where('bagian', 'promo_banner')->where('aktif', true)->orderBy('urutan')->get();
+            $fiturUnggulan = \App\Models\KontenHalaman::where('bagian', 'fitur_unggulan')->where('aktif', true)->orderBy('urutan')->get();
+            $faqData = \App\Models\KontenHalaman::where('bagian', 'faq_section')->where('aktif', true)->orderBy('urutan')->get();
+            $ctaFooter = \App\Models\KontenHalaman::where('bagian', 'cta_footer')->where('aktif', true)->orderBy('urutan')->first();
         } catch (\Exception $e) {
-            $promoBanners = collect([]); $fiturUnggulan = collect([]);
+            $promoBanners = collect([]); 
+            $fiturUnggulan = collect([]);
+            $faqData = collect([]);
+            $ctaFooter = null;
         }
 
         // 3. Produk & Kategori (Cached for Performance)
@@ -120,6 +125,8 @@ class Beranda extends Component
             'beritaTerbaru' => $beritaTerbaru,
             'promoBanners' => $promoBanners,
             'fiturUnggulan' => $fiturUnggulan,
+            'faqData' => $faqData,
+            'ctaFooter' => $ctaFooter,
         ])->layout('components.layouts.app');
     }
 }

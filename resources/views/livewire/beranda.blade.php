@@ -230,4 +230,60 @@
         </div>
     </div>
 
+    <!-- FAQ SECTION: DINAMIS DARI CMS -->
+    @if($faqData->count() > 0)
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-16 space-y-4">
+            <h2 class="text-4xl font-black text-slate-900 uppercase tracking-tighter italic">Pertanyaan <span class="text-indigo-600">Populer</span></h2>
+            <p class="text-slate-500 font-medium tracking-wide italic">Informasi teknis dan layanan bantuan cepat untuk Anda.</p>
+        </div>
+        
+        <div class="space-y-6" x-data="{ aktif: null }">
+            @foreach($faqData as $idx => $faq)
+            <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-indigo-100">
+                <button @click="aktif = (aktif === {{ $idx }} ? null : {{ $idx }})" class="w-full px-10 py-8 flex items-center justify-between text-left group">
+                    <div class="flex items-center gap-6">
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-inner transition-colors" 
+                             :class="aktif === {{ $idx }} ? 'bg-indigo-600 text-white shadow-indigo-200' : 'bg-slate-50 text-slate-400'"
+                             style="color: {{ aktif === {{ $idx }} ? '#ffffff' : ($faq->metadata['warna_aksen'] ?? '') }}">
+                            <i class="{{ $faq->metadata['ikon'] ?? 'fa-solid fa-circle-question' }}"></i>
+                        </div>
+                        <span class="text-lg font-black text-slate-800 italic group-hover:text-indigo-600 transition-colors">{{ $faq->judul }}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-slate-300 transition-transform duration-500" :class="aktif === {{ $idx }} ? 'rotate-180 text-indigo-600' : ''"></i>
+                </button>
+                <div x-show="aktif === {{ $idx }}" x-collapse>
+                    <div class="px-10 pb-10 ml-16">
+                        <div class="h-px bg-slate-50 w-full mb-6"></div>
+                        <p class="text-slate-500 font-medium leading-relaxed italic opacity-90">{{ $faq->deskripsi }}</p>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
+    <!-- CTA FOOTER: CONVERSION CENTER -->
+    @if($ctaFooter)
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative rounded-[5rem] overflow-hidden p-16 md:p-24 shadow-2xl group" style="background-color: {{ $ctaFooter->metadata['warna_aksen'] ?? '#4f46e5' }}">
+            <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-white opacity-10 rounded-full blur-[100px] group-hover:scale-150 transition-transform duration-1000"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-16">
+                <div class="space-y-6 text-center md:text-left">
+                    <h2 class="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none">{{ $ctaFooter->judul }}</h2>
+                    <p class="text-lg text-white/80 font-medium max-w-xl italic">"{{ $ctaFooter->deskripsi }}"</p>
+                </div>
+                <div class="shrink-0">
+                    <a href="{{ $ctaFooter->tautan_tujuan ?? '/katalog' }}" class="px-12 py-6 bg-white text-slate-900 rounded-3xl text-xs font-black uppercase tracking-[0.3em] shadow-2xl hover:scale-110 active:scale-95 transition-all">
+                        {{ $ctaFooter->teks_tombol ?? 'MULAI SEKARANG' }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
 </div>
