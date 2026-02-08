@@ -42,7 +42,7 @@
             icon="fa-solid fa-bell" 
             label="Pusat Notifikasi" 
             :active="request()->routeIs('pengelola.notifikasi.*')"
-            badge="{{ \App\Models\Notifikasi::where('dibaca', false)->count() > 0 ? \App\Models\Notifikasi::where('dibaca', false)->count() : '' }}"
+            badge="{{ \App\Models\Notifikasi::whereNull('dibaca_pada')->count() > 0 ? \App\Models\Notifikasi::whereNull('dibaca_pada')->count() : '' }}"
         />
 
         <div class="my-4 border-t border-white/5 mx-2" :class="!sidebarOpen && 'hidden'"></div>
