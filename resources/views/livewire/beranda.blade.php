@@ -245,7 +245,7 @@
                     <div class="flex items-center gap-6">
                         <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-inner transition-colors" 
                              :class="aktif === {{ $idx }} ? 'bg-indigo-600 text-white shadow-indigo-200' : 'bg-slate-50 text-slate-400'"
-                             style="color: {{ aktif === {{ $idx }} ? '#ffffff' : ($faq->metadata['warna_aksen'] ?? '') }}">
+                             :style="aktif === {{ $idx }} ? 'color: #ffffff' : 'color: {{ $faq->metadata['warna_aksen'] ?? '#94a3b8' }}'">
                             <i class="{{ $faq->metadata['ikon'] ?? 'fa-solid fa-circle-question' }}"></i>
                         </div>
                         <span class="text-lg font-black text-slate-800 italic group-hover:text-indigo-600 transition-colors">{{ $faq->judul }}</span>
