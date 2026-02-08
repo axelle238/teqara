@@ -2,112 +2,57 @@
 
 namespace App\Livewire\Pengelola\ManajemenPegawai;
 
-use App\Models\HakAkses;
-use App\Models\Peran;
-use App\Services\LayananHakAkses;
-use Illuminate\Support\Str;
+use App\Helpers\LogHelper;
+use App\Models\HakAksesRole;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 /**
- * Komponen Manajemen Hak Akses
- * 
- * Mengelola matriks hak akses antar peran dan fitur sistem secara dinamis.
+ * Class ManajemenAkses
+ * Tujuan: Mengelola matriks hak akses Role-Based Access Control (RBAC).
  */
 class ManajemenAkses extends Component
 {
-    // Properti Dasar
-    public $peranTerpilihId;
-    public $modeTambahPeran = false;
-    public $namaPeran;
-    public $aksesTerpilih = [];
+    public $peranList = ['Admin', 'Editor', 'CS', 'Gudang'];
+    public $modulList = ['Produk', 'Pesanan', 'Laporan', 'HRD', 'Keamanan'];
 
-    /**
-     * Mengambil daftar peran yang tersedia.
-     */
-    public function getDaftarPeranProperty()
+    public function mount()
     {
-        return Peran::orderBy('nama')->get();
-    }
-
-    /**
-     * Mengambil daftar seluruh hak akses (fitur sistem).
-     */
-    public function getDaftarHakAksesProperty()
-    {
-        return HakAkses::orderBy('grup_modul')->orderBy('nama_fitur')->get();
-    }
-
-    /**
-     * Mengambil instance peran yang sedang terpilih.
-     */
-    public function getPeranTerpilihProperty()
-    {
-        return $this->peranTerpilihId ? Peran::find($this->peranTerpilihId) : null;
-    }
-
-    /**
-     * Memilih peran untuk dikonfigurasi hak aksesnya.
-     */
-    public function pilihPeran($id)
-    {
-        $this->peranTerpilihId = $id;
-        $this->aksesTerpilih = $this->peranTerpilih->hakAkses->pluck('id')->toArray();
-        $this->modeTambahPeran = false;
-    }
-
-    /**
-     * Menampilkan form tambah peran baru.
-     */
-    public function tambahPeran()
-    {
-        $this->modeTambahPeran = true;
-        $this->peranTerpilihId = null;
-        $this->namaPeran = '';
-    }
-
-    /**
-     * Menyimpan peran baru ke database.
-     */
-    public function simpanPeran()
-    {
-        $this->validate(['namaPeran' => 'required|unique:peran,nama|min:3']);
-
-        $peran = Peran::create([
-            'nama' => $this->namaPeran,
-            'slug' => Str::slug($this->namaPeran),
-        ]);
-
-        $this->pilihPeran($peran->id);
-        $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "Peran '{$peran->nama}' berhasil dibuat."]);
-    }
-
-    /**
-     * Sinkronisasi rute sistem ke tabel hak akses secara manual.
-     */
-    public function sinkronkanFitur(LayananHakAkses $layanan)
-    {
-        $hasil = $layanan->sinkronkan();
-        $pesan = "Sinkronisasi selesai. {$hasil['baru']} fitur baru ditambahkan.";
-        
-        $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => $pesan]);
-    }
-
-    /**
-     * Menyimpan perubahan matriks hak akses untuk peran terpilih.
-     */
-    public function simpanAkses()
-    {
-        if ($this->peranTerpilih && $this->peranTerpilih->slug !== 'admin') {
-            $this->peranTerpilih->hakAkses()->sync($this->aksesTerpilih);
-            $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => "Hak akses untuk '{$this->peranTerpilih->nama}' diperbarui."]);
+        // Inisialisasi Matriks jika kosong
+        foreach ($this->peranList as $peran) {
+            foreach ($this->modulList as $modul) {
+                HakAksesRole::firstOrCreate(
+                    ['peran' => $peran, 'modul' => $modul],
+                    ['baca' => false, 'tulis' => false, 'hapus' => false]
+                );
+            }
         }
     }
 
-    #[Title('Manajemen Hak Akses - Teqara Enterprise')]
+    public function toggleAkses($id, $tipe)
+    {
+        $akses = HakAksesRole::find($id);
+        
+        // Admin selalu punya akses penuh (proteksi)
+        if ($akses->peran === 'Admin') {
+            $this->dispatch('notifikasi', ['tipe' => 'info', 'pesan' => 'Hak akses Administrator tidak dapat diubah.']);
+            return;
+        }
+
+        $akses->$tipe = !$akses->$tipe;
+        $akses->save();
+
+        LogHelper::catat('ubah_akses', "{$akses->peran}-{$akses->modul}", "Mengubah izin {$tipe} menjadi " . ($akses->$tipe ? 'Aktif' : 'Nonaktif'));
+    }
+
+    #[Title('Matriks Akses Keamanan - Admin Teqara')]
     public function render()
     {
-        return view('components.pengelola.manajemen-pegawai.⚡manajemen-akses')
-            ->layout('components.layouts.admin', ['header' => 'Keamanan SDM']);
+        // Mengelompokkan data berdasarkan Peran untuk ditampilkan per kolom/grup
+        $matriks = HakAksesRole::all()->groupBy('peran');
+
+        return view('livewire.pengelola.manajemen-pegawai.manajemen-akses', [
+            'matriks' => $matriks
+        ])->layout('components.layouts.admin', ['header' => 'Keamanan & Akses']);
     }
 }
