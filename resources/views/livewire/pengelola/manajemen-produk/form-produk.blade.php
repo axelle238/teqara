@@ -34,6 +34,9 @@
             <button wire:click="$set('activeTab', 'logistik')" class="w-full text-left px-5 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all {{ $activeTab === 'logistik' ? 'bg-slate-900 text-white shadow-lg' : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-100' }}">
                 <i class="fa-solid fa-truck-fast mr-3"></i> Logistik
             </button>
+            <button wire:click="$set('activeTab', 'seo')" class="w-full text-left px-5 py-4 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all {{ $activeTab === 'seo' ? 'bg-slate-900 text-white shadow-lg' : 'bg-white text-slate-500 hover:bg-slate-50 border border-slate-100' }}">
+                <i class="fa-solid fa-magnifying-glass mr-3"></i> SEO & Metadata
+            </button>
         </div>
 
         <!-- Form Content -->
@@ -277,6 +280,35 @@
                         <div class="relative">
                             <input type="number" wire:model="berat_gram" class="w-full px-5 py-4 bg-slate-50 border-none rounded-xl font-bold text-slate-800">
                             <span class="absolute right-5 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400">GR</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. SEO & Metadata -->
+            <div class="{{ $activeTab === 'seo' ? 'block' : 'hidden' }}">
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
+                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-6 border-b border-slate-100 pb-4">Optimasi Mesin Pencari</h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Meta Judul (Title Tag)</label>
+                            <input type="text" wire:model="meta_judul" class="w-full px-5 py-4 bg-slate-50 border-none rounded-xl font-bold text-slate-800 focus:ring-2 focus:ring-emerald-500" placeholder="Judul yang tampil di Google">
+                            <p class="text-[10px] text-slate-400 mt-2">Biarkan kosong untuk menggunakan nama produk secara otomatis.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Meta Deskripsi</label>
+                            <textarea wire:model="meta_deskripsi" rows="4" class="w-full px-5 py-4 bg-slate-50 border-none rounded-xl font-medium text-slate-600 focus:ring-2 focus:ring-emerald-500 resize-none" placeholder="Ringkasan menarik untuk hasil pencarian..."></textarea>
+                        </div>
+
+                        <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Pratinjau Hasil Pencarian</p>
+                            <div class="font-sans">
+                                <p class="text-sm text-blue-800 hover:underline cursor-pointer truncate font-medium">{{ $meta_judul ?: ($nama ?: 'Judul Produk') }} - Teqara Enterprise</p>
+                                <p class="text-xs text-emerald-700 truncate">https://teqara.com/produk/{{ $slug ?: 'slug-produk' }}</p>
+                                <p class="text-xs text-slate-600 line-clamp-2 mt-1">{{ $meta_deskripsi ?: ($deskripsi_singkat ?: 'Deskripsi produk akan muncul di sini...') }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -66,6 +66,8 @@ class FormProduk extends Component
             $this->tipe_produk = $produk->tipe_produk;
             $this->daftarGrosir = $produk->harga_grosir ?? [];
             $this->dimensi = $produk->dimensi_kemasan ?? ['p' => 0, 'l' => 0, 't' => 0];
+            $this->meta_judul = $produk->meta_judul;
+            $this->meta_deskripsi = $produk->meta_deskripsi;
 
             foreach ($produk->varian as $var) {
                 $this->daftarVarian[] = [
@@ -193,6 +195,11 @@ class FormProduk extends Component
         try {
             DB::beginTransaction();
 
+            // Hitung Stok Total jika Varian Aktif
+            if ($this->memiliki_varian && $this->tipe_produk !== 'bundle') {
+                $this->stok = array_sum(array_column($this->daftarVarian, 'stok'));
+            }
+
             $data = [
                 'nama' => $this->nama,
                 'slug' => $this->slug,
@@ -201,7 +208,7 @@ class FormProduk extends Component
                 'merek_id' => $this->merek_id,
                 'harga_modal' => $this->harga_modal,
                 'harga_jual' => $this->harga_jual,
-                'stok' => $this->tipe_produk === 'bundle' ? 0 : $this->stok, // Stok bundle dihitung dinamis
+                'stok' => $this->tipe_produk === 'bundle' ? 0 : $this->stok,
                 'deskripsi_singkat' => $this->deskripsi_singkat,
                 'deskripsi_lengkap' => $this->deskripsi_lengkap,
                 'status' => $this->status,
@@ -209,6 +216,8 @@ class FormProduk extends Component
                 'memiliki_varian' => $this->memiliki_varian,
                 'harga_grosir' => $this->daftarGrosir,
                 'dimensi_kemasan' => $this->dimensi,
+                'meta_judul' => $this->meta_judul,
+                'meta_deskripsi' => $this->meta_deskripsi,
             ];
 
             if ($this->produkId) {
@@ -222,8 +231,8 @@ class FormProduk extends Component
                 $aksi = 'registrasi_unit';
                 $memo = "Pendaftaran unit teknologi baru {$this->nama} ke inventaris.";
                 
-                // Input Stok Awal (Hanya non-bundle)
-                if ($this->stok > 0 && $this->tipe_produk !== 'bundle') {
+                // Input Stok Awal (Hanya non-bundle & non-varian karena varian di-handle terpisah/agregat)
+                if ($this->stok > 0 && $this->tipe_produk !== 'bundle' && !$this->memiliki_varian) {
                     (new LayananStok)->tambahStok($produk, $this->stok, 'Registrasi awal unit');
                 }
             }
@@ -244,8 +253,13 @@ class FormProduk extends Component
 
             // Sync Varian
             if ($this->memiliki_varian && $this->tipe_produk !== 'bundle') {
+                // Kumpulkan ID varian yang ada di input untuk penghapusan varian lama yang tidak ada
+                $varianIds = array_filter(array_column($this->daftarVarian, 'id'));
+                VarianProduk::where('produk_id', $produk->id)->whereNotIn('id', $varianIds)->delete();
+
                 foreach ($this->daftarVarian as $var) {
                     if (! empty($var['nama_varian'])) {
+                        // Validasi unik kode varian bisa ditambahkan di sini atau via rules
                         VarianProduk::updateOrCreate(
                             ['id' => $var['id'] ?? null],
                             [
@@ -258,6 +272,10 @@ class FormProduk extends Component
                         );
                     }
                 }
+                
+                // Update stok master lagi setelah sinkron varian (untuk memastikan akurasi)
+                $totalStokVarian = VarianProduk::where('produk_id', $produk->id)->sum('stok');
+                $produk->update(['stok' => $totalStokVarian]);
             }
 
             // Sync Spesifikasi
