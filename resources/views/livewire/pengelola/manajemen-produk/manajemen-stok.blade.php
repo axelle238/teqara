@@ -35,9 +35,9 @@
                     <p class="text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-1">Stok Sehat</p>
                     <h3 class="text-3xl font-black text-emerald-700">{{ $this->analitik['aman'] }}</h3>
                 </button>
-                <button wire:click="$set('filterKesehatan', 'overstock')" class="p-6 rounded-[30px] border-2 transition-all text-left {{ $filterKesehatan === 'overstock' ? 'bg-amber-50 border-amber-500 shadow-lg' : 'bg-white border-slate-50 hover:border-amber-200' }}">
+                <button wire:click="$set('filterKesehatan', 'berlebih')" class="p-6 rounded-[30px] border-2 transition-all text-left {{ $filterKesehatan === 'berlebih' ? 'bg-amber-50 border-amber-500 shadow-lg' : 'bg-white border-slate-50 hover:border-amber-200' }}">
                     <p class="text-[10px] font-black uppercase tracking-widest text-amber-600 mb-1">Overstock (>50)</p>
-                    <h3 class="text-3xl font-black text-amber-700">{{ $this->analitik['overstock'] }}</h3>
+                    <h3 class="text-3xl font-black text-amber-700">{{ $this->analitik['berlebih'] }}</h3>
                 </button>
             </div>
 
