@@ -1,342 +1,165 @@
-<aside class="fixed inset-y-0 left-0 z-50 bg-[#0f172a] text-slate-300 sidebar-transition flex flex-col border-r border-slate-800 shadow-2xl font-sans select-none"
-       :class="sidebarOpen ? 'w-[280px] translate-x-0' : 'w-[80px] -translate-x-full lg:translate-x-0'">
-    
-    <!-- Area Logo Brand -->
-    <div class="h-20 flex items-center justify-center border-b border-slate-800 relative bg-[#0f172a] shrink-0">
-        <a href="{{ route('pengelola.beranda') }}" class="flex items-center gap-3 group" x-show="sidebarOpen" x-transition.opacity>
-            <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-indigo-500/20 text-white transform group-hover:scale-110 transition-transform duration-300">T</div>
-            <div class="flex flex-col">
-                <span class="text-xl font-black tracking-tight uppercase leading-none text-white">TEQARA<span class="text-indigo-400">.</span></span>
-                <span class="text-[9px] font-bold text-slate-500 tracking-[0.25em] uppercase mt-1 group-hover:text-indigo-400 transition-colors">Enterprise</span>
+<aside 
+    class="fixed inset-y-0 left-0 z-50 w-72 bg-[#0f172a] text-slate-300 transition-transform duration-300 ease-in-out border-r border-slate-800 shadow-2xl flex flex-col"
+    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0 lg:w-20'"
+>
+    <!-- 1. BRAND HEADER -->
+    <div class="h-20 flex items-center justify-center relative overflow-hidden border-b border-white/5 shrink-0">
+        <div class="absolute inset-0 bg-gradient-to-r from-indigo-900/20 to-purple-900/20"></div>
+        
+        <!-- Logo Expanded -->
+        <a href="{{ route('pengelola.beranda') }}" wire:navigate class="flex items-center gap-3 relative z-10 transition-opacity duration-300" :class="sidebarOpen ? 'opacity-100' : 'opacity-0 hidden'">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-500/30">
+                T
+            </div>
+            <div class="leading-none">
+                <span class="block text-xl font-black text-white tracking-tight uppercase">TEQARA</span>
+                <span class="block text-[9px] font-bold text-indigo-400 uppercase tracking-[0.3em]">Enterprise v16</span>
             </div>
         </a>
-        <a href="{{ route('pengelola.beranda') }}" class="w-10 h-10 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center font-black text-xl text-white shadow-lg" x-show="!sidebarOpen">T</a>
+
+        <!-- Logo Collapsed -->
+        <a href="{{ route('pengelola.beranda') }}" wire:navigate class="absolute inset-0 flex items-center justify-center transition-opacity duration-300" :class="sidebarOpen ? 'opacity-0 hidden' : 'opacity-100'">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-500/30">
+                T
+            </div>
+        </a>
     </div>
 
-    <!-- Menu Navigasi -->
-    <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1.5 dark-scroll text-sm">
+    <!-- 2. NAVIGATION MENU (SCROLLABLE) -->
+    <nav class="flex-1 overflow-y-auto overflow-x-hidden py-6 px-3 space-y-2 custom-scrollbar-dark" x-data="{ activeMenu: '{{ Request::segment(2) }}' }">
         
-        <!-- DASBOR UTAMA -->
-        <div class="mb-2 px-3" x-show="sidebarOpen"><span class="text-[9px] font-black text-slate-600 uppercase tracking-widest block">Menu Utama</span></div>
-        
-        <a href="{{ route('pengelola.beranda') }}" wire:navigate class="group flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all duration-300 {{ request()->routeIs('pengelola.beranda') ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg border border-indigo-500/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
-            <i class="fa-solid fa-chart-line w-6 text-center text-lg {{ request()->routeIs('pengelola.beranda') ? 'text-white' : 'text-indigo-400 group-hover:text-indigo-300' }}"></i>
-            <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Panel Eksekutif</span>
-        </a>
+        <!-- DASHBOARD EKSEKUTIF -->
+        <x-layouts.admin.menu-item 
+            route="pengelola.beranda" 
+            icon="fa-solid fa-chart-pie" 
+            label="Panel Eksekutif" 
+            :active="request()->routeIs('pengelola.beranda')" 
+        />
 
-        <a href="{{ route('pengelola.notifikasi.index') }}" wire:navigate class="group flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all duration-300 {{ request()->routeIs('pengelola.notifikasi.index') ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
-            <div class="relative">
-                <i class="fa-solid fa-bell w-6 text-center text-lg"></i>
-                <span class="absolute -top-1 -right-1 w-2 h-2 bg-rose-500 rounded-full animate-ping"></span>
-            </div>
-            <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Pusat Notifikasi</span>
-        </a>
+        <!-- PUSAT NOTIFIKASI -->
+        <x-layouts.admin.menu-item 
+            route="pengelola.notifikasi.index" 
+            icon="fa-solid fa-bell" 
+            label="Pusat Notifikasi" 
+            :active="request()->routeIs('pengelola.notifikasi.*')"
+            badge="{{ \App\Models\Notifikasi::where('dibaca', false)->count() > 0 ? \App\Models\Notifikasi::where('dibaca', false)->count() : '' }}"
+        />
 
-        <!-- 1. MANAJEMEN HALAMAN TOKO -->
-        <div class="mt-6 mb-2 px-3" x-show="sidebarOpen"><span class="text-[9px] font-black text-slate-600 uppercase tracking-widest block">Manajemen Konten</span></div>
-        <div x-data="{ open: {{ request()->routeIs('pengelola.toko*') ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-pink-500/10 text-pink-400': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-pager w-6 text-center text-lg" :class="open ? 'text-pink-500' : 'text-pink-400 group-hover:text-pink-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Halaman Toko</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.toko.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.toko.beranda') ? 'text-white bg-pink-600 shadow-md' : 'text-slate-500 hover:text-pink-400' }}">Dasbor Toko</a>
-                <a href="{{ route('pengelola.toko.konten') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.toko.konten') ? 'text-white bg-pink-600 shadow-md' : 'text-slate-500 hover:text-pink-400' }}">Banner & Halaman</a>
-                <a href="{{ route('pengelola.toko.berita') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.toko.berita') ? 'text-white bg-pink-600 shadow-md' : 'text-slate-500 hover:text-pink-400' }}">Berita & Blog</a>
-            </div>
-        </div>
+        <div class="my-4 border-t border-white/5 mx-2" :class="!sidebarOpen && 'hidden'"></div>
+        <p class="px-4 text-[9px] font-black text-slate-600 uppercase tracking-widest mb-2 transition-opacity" :class="!sidebarOpen && 'hidden'">Operasional Bisnis</p>
 
-        <!-- 2. MANAJEMEN PRODUK & GADGET -->
-        <div class="mt-6 mb-2 px-3" x-show="sidebarOpen"><span class="text-[9px] font-black text-slate-600 uppercase tracking-widest block">Manajemen Inventaris</span></div>
-        <div x-data="{ open: {{ (request()->routeIs('pengelola.produk*') || request()->routeIs('pengelola.kategori*') || request()->routeIs('pengelola.merek*')) ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-rose-500/10 text-rose-400': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-laptop-code w-6 text-center text-lg" :class="open ? 'text-rose-500' : 'text-rose-400 group-hover:text-rose-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Produk & Gadget</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.produk.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.beranda') ? 'text-white bg-rose-600 shadow-md' : 'text-slate-500 hover:text-rose-400' }}">Dasbor Produk</a>
-                <a href="{{ route('pengelola.produk.katalog') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.katalog') ? 'text-white bg-rose-600 shadow-md' : 'text-slate-500 hover:text-rose-400' }}">Katalog Produk</a>
-                <a href="{{ route('pengelola.kategori') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.kategori*') ? 'text-white bg-rose-600 shadow-md' : 'text-slate-500 hover:text-rose-400' }}">Kategori</a>
-                <a href="{{ route('pengelola.merek') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.merek*') ? 'text-white bg-rose-600 shadow-md' : 'text-slate-500 hover:text-rose-400' }}">Merek / Brand</a>
-                <a href="{{ route('pengelola.produk.stok') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.stok') ? 'text-white bg-rose-600 shadow-md' : 'text-slate-500 hover:text-rose-400' }}">Kelola Stok</a>
-                <a href="{{ route('pengelola.produk.gudang') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.gudang') ? 'text-white bg-rose-600 shadow-md' : 'text-slate-500 hover:text-rose-400' }}">Lokasi Gudang</a>
-                <a href="{{ route('pengelola.produk.seri') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.seri') ? 'text-white bg-rose-600 shadow-md' : 'text-slate-500 hover:text-rose-400' }}">Nomor Seri</a>
-                <a href="{{ route('pengelola.produk.spesifikasi') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.spesifikasi') ? 'text-white bg-rose-600 shadow-md' : 'text-slate-500 hover:text-rose-400' }}">Atribut Spesifikasi</a>
-                <a href="{{ route('pengelola.produk.label') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.label') ? 'text-white bg-rose-600 shadow-md' : 'text-slate-500 hover:text-rose-400' }}">Cetak Label</a>
-                <a href="{{ route('pengelola.produk.so.riwayat') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.so.riwayat') ? 'text-white bg-rose-600 shadow-md' : 'text-slate-500 hover:text-rose-400' }}">Stock Opname</a>
-                <a href="{{ route('pengelola.produk.promo.flash-sale') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.promo.flash-sale') ? 'text-white bg-rose-600 shadow-md' : 'text-slate-500 hover:text-rose-400' }}">Penjualan Kilat</a>
-            </div>
-        </div>
+        <!-- MANAJEMEN TOKO (CMS) -->
+        <x-layouts.admin.menu-group label="Halaman Toko" icon="fa-solid fa-store" id="cms" :active="request()->is('pengelola/cms*')">
+            <x-layouts.admin.sub-menu route="pengelola.toko.beranda" label="Ringkasan CMS" />
+            <x-layouts.admin.sub-menu route="pengelola.toko.berita" label="Berita & Artikel" />
+            <x-layouts.admin.sub-menu route="pengelola.toko.konten" label="Konten Halaman" />
+        </x-layouts.admin.menu-group>
 
-        <!-- 3. MANAJEMEN PESANAN -->
-        <div class="mt-6 mb-2 px-3" x-show="sidebarOpen"><span class="text-[9px] font-black text-slate-600 uppercase tracking-widest block">Manajemen Operasional</span></div>
-        <div x-data="{ open: {{ request()->routeIs('pengelola.pesanan*') ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-emerald-500/10 text-emerald-400': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-cart-shopping w-6 text-center text-lg" :class="open ? 'text-emerald-500' : 'text-emerald-400 group-hover:text-emerald-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Pesanan & POS</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.pesanan.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.pesanan.beranda') ? 'text-white bg-emerald-600 shadow-md' : 'text-slate-500 hover:text-emerald-400' }}">Dasbor Pesanan</a>
-                <a href="{{ route('pengelola.pesanan.daftar') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.pesanan.daftar') ? 'text-white bg-emerald-600 shadow-md' : 'text-slate-500 hover:text-emerald-400' }}">Daftar Transaksi</a>
-                <a href="{{ route('pengelola.pesanan.verifikasi') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.pesanan.verifikasi') ? 'text-white bg-emerald-600 shadow-md' : 'text-slate-500 hover:text-emerald-400' }}">Verifikasi Bayar</a>
-            </div>
-        </div>
+        <!-- MANAJEMEN PRODUK -->
+        <x-layouts.admin.menu-group label="Produk & Gadget" icon="fa-solid fa-laptop-code" id="produk" :active="request()->is('pengelola/produk*') || request()->routeIs('pengelola.kategori') || request()->routeIs('pengelola.merek')">
+            <x-layouts.admin.sub-menu route="pengelola.produk.beranda" label="Dasbor Inventaris" />
+            <x-layouts.admin.sub-menu route="pengelola.produk.katalog" label="Katalog Produk" />
+            <x-layouts.admin.sub-menu route="pengelola.produk.tambah" label="Registrasi Unit Baru" />
+            <x-layouts.admin.sub-menu route="pengelola.produk.stok" label="Kontrol Stok Fisik" />
+            <x-layouts.admin.sub-menu route="pengelola.produk.so.riwayat" label="Stock Opname" />
+            <x-layouts.admin.sub-menu route="pengelola.kategori" label="Kategori Produk" />
+            <x-layouts.admin.sub-menu route="pengelola.merek" label="Merek & Brand" />
+            <x-layouts.admin.sub-menu route="pengelola.produk.garansi" label="Klaim Garansi" />
+        </x-layouts.admin.menu-group>
 
-        <!-- 4. MANAJEMEN TRANSAKSI -->
-        <div x-data="{ open: {{ request()->routeIs('pengelola.transaksi*') ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-teal-500/10 text-teal-400': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-file-invoice-dollar w-6 text-center text-lg" :class="open ? 'text-teal-500' : 'text-teal-400 group-hover:text-teal-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Transaksi & Keuangan</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.transaksi.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.transaksi.beranda') ? 'text-white bg-teal-600 shadow-md' : 'text-slate-500 hover:text-teal-400' }}">Dasbor Transaksi</a>
-            </div>
-        </div>
+        <!-- MANAJEMEN PESANAN -->
+        <x-layouts.admin.menu-group label="Pesanan & POS" icon="fa-solid fa-cart-shopping" id="pesanan" :active="request()->is('pengelola/pesanan*')">
+            <x-layouts.admin.sub-menu route="pengelola.pesanan.beranda" label="Dasbor Pesanan" />
+            <x-layouts.admin.sub-menu route="pengelola.pesanan.daftar" label="Semua Pesanan" />
+            <x-layouts.admin.sub-menu route="pengelola.pesanan.verifikasi" label="Verifikasi Bayar" />
+        </x-layouts.admin.menu-group>
 
-        <!-- 5. MANAJEMEN CUSTOMER SERVICE -->
-        <div x-data="{ open: {{ (request()->routeIs('pengelola.cs*') || request()->routeIs('pengelola.produk.garansi')) ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-violet-500/10 text-violet-400': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-headset w-6 text-center text-lg" :class="open ? 'text-violet-500' : 'text-violet-400 group-hover:text-violet-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Layanan Bantuan</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.cs.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.cs.beranda') ? 'text-white bg-violet-600 shadow-md' : 'text-slate-500 hover:text-violet-400' }}">Dasbor Layanan</a>
-                <a href="{{ route('pengelola.cs.tiket') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.cs.tiket') ? 'text-white bg-violet-600 shadow-md' : 'text-slate-500 hover:text-violet-400' }}">Tiket Bantuan</a>
-                <a href="{{ route('pengelola.produk.garansi') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.garansi') ? 'text-white bg-violet-600 shadow-md' : 'text-slate-500 hover:text-violet-400' }}">Klaim Garansi</a>
-            </div>
-        </div>
+        <!-- MANAJEMEN KEUANGAN -->
+        <x-layouts.admin.menu-group label="Transaksi Keuangan" icon="fa-solid fa-wallet" id="transaksi" :active="request()->is('pengelola/transaksi*')">
+            <x-layouts.admin.sub-menu route="pengelola.transaksi.beranda" label="Arus Kas (Cashflow)" />
+        </x-layouts.admin.menu-group>
 
-        <!-- 6. MANAJEMEN LOGISTIK PENGIRIMAN -->
-        <div x-data="{ open: {{ request()->routeIs('pengelola.logistik*') ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-orange-500/10 text-orange-400': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-truck-ramp-box w-6 text-center text-lg" :class="open ? 'text-orange-500' : 'text-orange-400 group-hover:text-orange-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Logistik & Kurir</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.logistik.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.logistik.beranda') ? 'text-white bg-orange-600 shadow-md' : 'text-slate-500 hover:text-orange-400' }}">Dasbor Logistik</a>
-            </div>
-        </div>
+        <!-- MANAJEMEN LOGISTIK -->
+        <x-layouts.admin.menu-group label="Logistik & Kurir" icon="fa-solid fa-truck-fast" id="logistik" :active="request()->is('pengelola/logistik*')">
+            <x-layouts.admin.sub-menu route="pengelola.logistik.beranda" label="Pantau Pengiriman" />
+        </x-layouts.admin.menu-group>
 
-        <!-- 7. MANAJEMEN PELANGGAN -->
-        <div x-data="{ open: {{ request()->routeIs('pengelola.pelanggan*') ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-sky-500/10 text-sky-400': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-users-gear w-6 text-center text-lg" :class="open ? 'text-sky-500' : 'text-sky-400 group-hover:text-sky-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Member & Pelanggan</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.pelanggan.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.pelanggan.beranda') ? 'text-white bg-sky-600 shadow-md' : 'text-slate-500 hover:text-sky-400' }}">Dasbor CRM</a>
-                <a href="{{ route('pengelola.pelanggan.daftar') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.pelanggan.daftar') ? 'text-white bg-sky-600 shadow-md' : 'text-slate-500 hover:text-sky-400' }}">Database Member</a>
-                <a href="{{ route('pengelola.pelanggan.ulasan') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.pelanggan.ulasan') ? 'text-white bg-sky-600 shadow-md' : 'text-slate-500 hover:text-sky-400' }}">Ulasan Produk</a>
-            </div>
-        </div>
+        <div class="my-4 border-t border-white/5 mx-2" :class="!sidebarOpen && 'hidden'"></div>
+        <p class="px-4 text-[9px] font-black text-slate-600 uppercase tracking-widest mb-2 transition-opacity" :class="!sidebarOpen && 'hidden'">Relasi & Organisasi</p>
 
-        <!-- 8. MANAJEMEN VENDOR -->
-        <div x-data="{ open: {{ (request()->routeIs('pengelola.vendor*') || request()->routeIs('pengelola.produk.pembelian*')) ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-blue-500/10 text-blue-400': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-industry w-6 text-center text-lg" :class="open ? 'text-blue-500' : 'text-blue-400 group-hover:text-blue-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Vendor & PO</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.vendor.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.vendor.beranda') ? 'text-white bg-blue-600 shadow-md' : 'text-slate-500 hover:text-blue-400' }}">Dasbor Vendor</a>
-                <a href="{{ route('pengelola.vendor.daftar') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.vendor.daftar') ? 'text-white bg-blue-600 shadow-md' : 'text-slate-500 hover:text-blue-400' }}">Database Mitra</a>
-                <a href="{{ route('pengelola.vendor.penawaran') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.vendor.penawaran') ? 'text-white bg-blue-600 shadow-md' : 'text-slate-500 hover:text-blue-400' }}">Penawaran (RFQ)</a>
-                <a href="{{ route('pengelola.produk.pembelian.riwayat') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.pembelian.riwayat') ? 'text-white bg-blue-600 shadow-md' : 'text-slate-500 hover:text-blue-400' }}">Pesanan Beli (PO)</a>
-            </div>
-        </div>
+        <!-- MANAJEMEN PELANGGAN -->
+        <x-layouts.admin.menu-group label="Member & Pelanggan" icon="fa-solid fa-users" id="pelanggan" :active="request()->is('pengelola/pelanggan*')">
+            <x-layouts.admin.sub-menu route="pengelola.pelanggan.beranda" label="CRM Dashboard" />
+            <x-layouts.admin.sub-menu route="pengelola.pelanggan.daftar" label="Data Member" />
+            <x-layouts.admin.sub-menu route="pengelola.pelanggan.ulasan" label="Ulasan & Rating" />
+        </x-layouts.admin.menu-group>
 
-        <!-- 9. MANAJEMEN PEGAWAI & PERAN -->
-        <div x-data="{ open: {{ (request()->routeIs('pengelola.hrd*') || request()->routeIs('pengelola.pengguna.hrd')) ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-lime-500/10 text-lime-400': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-user-tie w-6 text-center text-lg" :class="open ? 'text-lime-500' : 'text-lime-400 group-hover:text-lime-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">SDM & HRD</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.hrd.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.hrd.beranda') ? 'text-white bg-lime-600 shadow-md' : 'text-slate-500 hover:text-lime-400' }}">Dasbor SDM</a>
-                <a href="{{ route('pengelola.pengguna.hrd') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.pengguna.hrd') ? 'text-white bg-lime-600 shadow-md' : 'text-slate-500 hover:text-lime-400' }}">Data Karyawan</a>
-                <a href="{{ route('pengelola.hrd.struktur') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.hrd.struktur') ? 'text-white bg-lime-600 shadow-md' : 'text-slate-500 hover:text-lime-400' }}">Struktur Organisasi</a>
-                <a href="{{ route('pengelola.hrd.akses') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.hrd.akses') ? 'text-white bg-lime-600 shadow-md' : 'text-slate-500 hover:text-lime-400' }}">Manajemen Hak Akses</a>
-            </div>
-        </div>
+        <!-- MANAJEMEN VENDOR -->
+        <x-layouts.admin.menu-group label="Vendor & PO" icon="fa-solid fa-building-shield" id="vendor" :active="request()->is('pengelola/vendor*')">
+            <x-layouts.admin.sub-menu route="pengelola.vendor.beranda" label="Dasbor Supplier" />
+            <x-layouts.admin.sub-menu route="pengelola.vendor.daftar" label="Daftar Mitra" />
+            <x-layouts.admin.sub-menu route="pengelola.produk.pembelian.riwayat" label="Purchase Order (PO)" />
+        </x-layouts.admin.menu-group>
 
-        <!-- 10. MANAJEMEN LAPORAN & ANALITIK -->
-        <div x-data="{ open: {{ (request()->routeIs('pengelola.laporan*') || request()->routeIs('pengelola.pengaturan.log') || request()->routeIs('pengelola.produk.analitik')) ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-amber-500/10 text-amber-400': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-magnifying-glass-chart w-6 text-center text-lg" :class="open ? 'text-amber-500' : 'text-amber-400 group-hover:text-amber-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Laporan & Audit</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.laporan.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.laporan.beranda') ? 'text-white bg-amber-600 shadow-md' : 'text-slate-500 hover:text-amber-400' }}">Dasbor Laporan</a>
-                <a href="{{ route('pengelola.produk.analitik') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.produk.analitik') ? 'text-white bg-amber-600 shadow-md' : 'text-slate-500 hover:text-amber-400' }}">Analitik Produk</a>
-                <a href="{{ route('pengelola.pengaturan.log') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.pengaturan.log') ? 'text-white bg-amber-600 shadow-md' : 'text-slate-500 hover:text-amber-400' }}">Log Aktivitas</a>
-            </div>
-        </div>
+        <!-- MANAJEMEN HRD -->
+        <x-layouts.admin.menu-group label="SDM & HRD" icon="fa-solid fa-id-card-clip" id="hrd" :active="request()->is('pengelola/hrd*')">
+            <x-layouts.admin.sub-menu route="pengelola.hrd.beranda" label="HR Dashboard" />
+            <x-layouts.admin.sub-menu route="pengelola.pengguna.hrd" label="Direktori Karyawan" />
+            <x-layouts.admin.sub-menu route="pengelola.hrd.akses" label="Hak Akses (RBAC)" />
+        </x-layouts.admin.menu-group>
 
-        <!-- 11. PENGATURAN SISTEM TERPUSAT -->
-        <div class="mt-6 mb-2 px-3" x-show="sidebarOpen"><span class="text-[9px] font-black text-slate-600 uppercase tracking-widest block">Konfigurasi Global</span></div>
-        <div x-data="{ open: {{ (request()->routeIs('pengelola.sistem*') || request()->routeIs('pengelola.voucher')) ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-slate-700/50 text-slate-200': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-gears w-6 text-center text-lg" :class="open ? 'text-slate-200' : 'text-slate-500 group-hover:text-slate-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Sistem Terpusat</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.sistem.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.sistem.beranda') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">
-                    <i class="fa-solid fa-gauge-high text-[10px]"></i> Dasbor Sistem
-                </a>
-                <a href="{{ route('pengelola.sistem.pusat') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.sistem.pusat') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">
-                    <i class="fa-solid fa-sliders text-[10px]"></i> Konfigurasi Global
-                </a>
-                <a href="{{ route('pengelola.voucher') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.voucher') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">
-                    <i class="fa-solid fa-ticket text-[10px]"></i> Kelola Voucher
-                </a>
-                <a href="{{ route('pengelola.sistem.kesehatan') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.sistem.kesehatan') ? 'text-white bg-slate-600' : 'text-slate-500 hover:text-slate-300' }}">
-                    <i class="fa-solid fa-heart-pulse text-[10px]"></i> Kesehatan Server
-                </a>
-            </div>
-        </div>
+        <!-- LAYANAN BANTUAN -->
+        <x-layouts.admin.menu-group label="Layanan Bantuan" icon="fa-solid fa-headset" id="layanan" :active="request()->is('pengelola/layanan*')">
+            <x-layouts.admin.sub-menu route="pengelola.cs.beranda" label="Helpdesk Center" />
+            <x-layouts.admin.sub-menu route="pengelola.cs.tiket" label="Tiket Komplain" />
+        </x-layouts.admin.menu-group>
 
-        <!-- 12. PENGATURAN API TERPUSAT -->
-        <div x-data="{ open: {{ (request()->routeIs('pengelola.api*')) ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-cyan-700/50 text-cyan-200': open}">
-                <div class="flex items-center gap-3">
-                    <i class="fa-solid fa-network-wired w-6 text-center text-lg" :class="open ? 'text-cyan-200' : 'text-cyan-500 group-hover:text-cyan-300'"></i>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Pengaturan API</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.api.pusat') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.pusat') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
-                    <i class="fa-solid fa-server text-[10px]"></i> Dasbor API
-                </a>
-                <a href="{{ route('pengelola.api.pembayaran') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.pembayaran') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
-                    <i class="fa-regular fa-credit-card text-[10px]"></i> Payment Gateway
-                </a>
-                <a href="{{ route('pengelola.api.logistik') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.logistik') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
-                    <i class="fa-solid fa-truck-fast text-[10px]"></i> Integrasi Kurir
-                </a>
-                <a href="{{ route('pengelola.api.whatsapp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.whatsapp') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
-                    <i class="fa-brands fa-whatsapp text-[10px]"></i> WhatsApp API
-                </a>
-                <a href="{{ route('pengelola.api.email') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.email') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
-                    <i class="fa-solid fa-envelope text-[10px]"></i> SMTP Email
-                </a>
-                <a href="{{ route('pengelola.api.kunci') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.kunci') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
-                    <i class="fa-solid fa-key text-[10px]"></i> Kunci Akses API
-                </a>
-                <a href="{{ route('pengelola.api.log') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.log') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
-                    <i class="fa-solid fa-clock-rotate-left text-[10px]"></i> Log Akses API
-                </a>
-                <a href="{{ route('pengelola.api.dokumentasi') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.api.dokumentasi') ? 'text-white bg-cyan-600' : 'text-slate-500 hover:text-cyan-300' }}">
-                    <i class="fa-solid fa-book text-[10px]"></i> Dokumentasi API
-                </a>
-            </div>
-        </div>
+        <div class="my-4 border-t border-white/5 mx-2" :class="!sidebarOpen && 'hidden'"></div>
+        <p class="px-4 text-[9px] font-black text-slate-600 uppercase tracking-widest mb-2 transition-opacity" :class="!sidebarOpen && 'hidden'">Infrastruktur Sistem</p>
 
-        <!-- 13. PENGATURAN KEAMANAN TERPUSAT -->
-        <div x-data="{ open: {{ request()->routeIs('pengelola.keamanan*') ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full group flex items-center justify-between px-3.5 py-3 rounded-xl transition-all duration-200 text-slate-400 hover:bg-slate-800 hover:text-white" :class="{'bg-red-500/10 text-red-400': open}">
-                <div class="flex items-center gap-3">
-                    <div class="relative">
-                        <i class="fa-solid fa-shield-halved w-6 text-center text-lg" :class="open ? 'text-red-500' : 'text-red-400 group-hover:text-red-300'"></i>
-                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full animate-pulse border border-slate-900"></span>
-                    </div>
-                    <span class="font-bold tracking-wide text-xs uppercase" x-show="sidebarOpen">Keamanan Siber</span>
-                </div>
-                <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-300" :class="{'rotate-90': open}" x-show="sidebarOpen"></i>
-            </button>
-            <div x-show="open && sidebarOpen" x-collapse class="pl-11 pr-1 space-y-1 mt-1">
-                <a href="{{ route('pengelola.keamanan.beranda') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.beranda') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-lock text-[10px]"></i> Dasbor Keamanan
-                </a>
-                <a href="{{ route('pengelola.keamanan.dasbor') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.dasbor') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-radar text-[10px]"></i> Monitor Ancaman
-                </a>
-                <a href="{{ route('pengelola.keamanan.firewall') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.firewall') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-fire text-[10px]"></i> Firewall WAF
-                </a>
-                <a href="{{ route('pengelola.keamanan.pemindai') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.pemindai') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-magnifying-glass text-[10px]"></i> Pemindai Sistem
-                </a>
-                <a href="{{ route('pengelola.keamanan.siem') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.siem') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-file-shield text-[10px]"></i> Analisis Log SIEM
-                </a>
-                <a href="{{ route('pengelola.keamanan.integritas') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.integritas') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-file-code text-[10px]"></i> Integritas File
-                </a>
-                <a href="{{ route('pengelola.keamanan.ueba') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.ueba') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-user-secret text-[10px]"></i> Analisis UEBA
-                </a>
-                <a href="{{ route('pengelola.keamanan.forensik') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.forensik') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-microscope text-[10px]"></i> Forensik Digital
-                </a>
-                <a href="{{ route('pengelola.keamanan.honeypot') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.honeypot') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-link-slash text-[10px]"></i> Jebakan Honeypot
-                </a>
-                <a href="{{ route('pengelola.keamanan.ancaman') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.ancaman') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-skull text-[10px]"></i> Intel Ancaman
-                </a>
-                <a href="{{ route('pengelola.keamanan.pam') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.pam') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-key text-[10px]"></i> Manajemen PAM
-                </a>
-                <a href="{{ route('pengelola.keamanan.sesi') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.sesi') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-clock text-[10px]"></i> Monitor Sesi
-                </a>
-                <a href="{{ route('pengelola.keamanan.dlp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.dlp') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-database text-[10px]"></i> Proteksi DLP
-                </a>
-                <a href="{{ route('pengelola.keamanan.irp') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.irp') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-triangle-exclamation text-[10px]"></i> Respon IRP
-                </a>
-                <a href="{{ route('pengelola.keamanan.zerotrust') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.zerotrust') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-hand-hand text-[10px]"></i> Zero Trust Akses
-                </a>
-                <a href="{{ route('pengelola.keamanan.edr') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.edr') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-laptop-medical text-[10px]"></i> Deteksi EDR
-                </a>
-                <a href="{{ route('pengelola.keamanan.cadangan') }}" wire:navigate class="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold uppercase transition-colors {{ request()->routeIs('pengelola.keamanan.cadangan') ? 'text-white bg-red-600 shadow-md' : 'text-slate-500 hover:text-red-400' }}">
-                    <i class="fa-solid fa-hard-drive text-[10px]"></i> Cadangan Data
-                </a>
-            </div>
-        </div>
+        <!-- MANAJEMEN LAPORAN -->
+        <x-layouts.admin.menu-group label="Laporan & Audit" icon="fa-solid fa-file-contract" id="laporan" :active="request()->is('pengelola/laporan*')">
+            <x-layouts.admin.sub-menu route="pengelola.laporan.beranda" label="Pusat Laporan" />
+            <x-layouts.admin.sub-menu route="pengelola.pengaturan.log" label="Log Audit Sistem" />
+        </x-layouts.admin.menu-group>
+
+        <!-- SISTEM TERPUSAT -->
+        <x-layouts.admin.menu-group label="Sistem Terpusat" icon="fa-solid fa-gears" id="sistem" :active="request()->is('pengelola/sistem*')">
+            <x-layouts.admin.sub-menu route="pengelola.sistem.beranda" label="Kontrol Utama" />
+            <x-layouts.admin.sub-menu route="pengelola.sistem.pusat" label="Konfigurasi Global" />
+            <x-layouts.admin.sub-menu route="pengelola.sistem.kesehatan" label="Kesehatan Server" />
+        </x-layouts.admin.menu-group>
+
+        <!-- PENGATURAN API -->
+        <x-layouts.admin.menu-group label="Pengaturan API" icon="fa-solid fa-code" id="api" :active="request()->is('pengelola/api*')">
+            <x-layouts.admin.sub-menu route="pengelola.api.pusat" label="Gateway Integrasi" />
+            <x-layouts.admin.sub-menu route="pengelola.api.pembayaran" label="Payment Gateway" />
+            <x-layouts.admin.sub-menu route="pengelola.api.logistik" label="Kurir Ekspedisi" />
+        </x-layouts.admin.menu-group>
+
+        <!-- KEAMANAN SIBER -->
+        <x-layouts.admin.menu-group label="Keamanan Siber" icon="fa-solid fa-shield-cat" id="keamanan" :active="request()->is('pengelola/keamanan*')">
+            <x-layouts.admin.sub-menu route="pengelola.keamanan.beranda" label="Security Center" />
+            <x-layouts.admin.sub-menu route="pengelola.keamanan.dasbor" label="SOC Dashboard" />
+            <x-layouts.admin.sub-menu route="pengelola.keamanan.firewall" label="Firewall Rules" />
+            <x-layouts.admin.sub-menu route="pengelola.keamanan.pemindai" label="Scanner Malware" />
+        </x-layouts.admin.menu-group>
 
     </nav>
 
-    <!-- Area Footer -->
-    <div class="p-4 bg-slate-900 border-t border-slate-800" x-show="sidebarOpen">
-        <div class="bg-gradient-to-r from-indigo-900/50 to-purple-900/50 rounded-xl p-3 border border-indigo-500/20 text-center">
-            <span class="text-[10px] font-black text-white uppercase tracking-widest italic tracking-[0.2em]">Teqara Enterprise V12.0</span>
+    <!-- 3. FOOTER USER -->
+    <div class="p-4 border-t border-white/5 bg-[#0b1120]">
+        <div class="flex items-center gap-3 transition-all" :class="!sidebarOpen && 'justify-center'">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md shrink-0">
+                {{ substr(auth()->user()->nama ?? 'A', 0, 1) }}
+            </div>
+            <div class="overflow-hidden" :class="!sidebarOpen && 'hidden'">
+                <p class="text-xs font-black text-white truncate w-32">{{ auth()->user()->nama ?? 'Administrator' }}</p>
+                <p class="text-[10px] font-medium text-slate-500 truncate">Super Admin</p>
+            </div>
+            <a href="{{ route('logout') }}" class="ml-auto w-8 h-8 rounded-lg bg-white/5 text-slate-400 hover:bg-rose-500 hover:text-white flex items-center justify-center transition-all" :class="!sidebarOpen && 'hidden'">
+                <i class="fa-solid fa-power-off text-xs"></i>
+            </a>
         </div>
     </div>
 </aside>
