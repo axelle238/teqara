@@ -64,6 +64,7 @@ class Beranda extends Component
     public function getPesananTerakhirProperty()
     {
         return Pesanan::where('pengguna_id', auth()->id())
+            ->with('detailPesanan')
             ->latest('dibuat_pada')
             ->take(5)
             ->get();

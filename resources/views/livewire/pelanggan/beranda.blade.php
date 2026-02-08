@@ -152,7 +152,7 @@
                             <span class="px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-black tracking-widest group-hover:bg-indigo-600 group-hover:text-white transition-colors italic">#{{ $pesanan->nomor_faktur }}</span>
                         </td>
                         <td class="py-6 px-4">
-                            <p class="text-sm font-bold text-slate-800 italic">{{ $pesanan->items_count ?? $pesanan->detail->count() }} Unit Perangkat</p>
+                            <p class="text-sm font-bold text-slate-800 italic">{{ $pesanan->items_count ?? ($pesanan->detailPesanan ? $pesanan->detailPesanan->count() : 0) }} Unit Perangkat</p>
                             <p class="text-[10px] font-medium text-slate-400 uppercase tracking-widest">{{ $pesanan->dibuat_pada->translatedFormat('d M Y, H:i') }} WIB</p>
                         </td>
                         <td class="py-6 px-4 text-right">
