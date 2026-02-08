@@ -12,11 +12,34 @@ class CetakLabel extends Component
     public $produk;
     public $jumlahCetak = 1;
     public $tipeLabel = 'barcode_1'; // barcode_1, qr_1, price_tag
+    public $cariProduk = '';
+    public $hasilPencarian = [];
 
-    public function mount($id)
+    public function mount($id = null)
+    {
+        if ($id) {
+            $this->pilihProduk($id);
+        }
+    }
+
+    public function updatedCariProduk($value)
+    {
+        if (strlen($value) > 2) {
+            $this->hasilPencarian = Produk::where('nama', 'like', '%' . $value . '%')
+                ->orWhere('kode_unit', 'like', '%' . $value . '%')
+                ->take(5)
+                ->get();
+        } else {
+            $this->hasilPencarian = [];
+        }
+    }
+
+    public function pilihProduk($id)
     {
         $this->produkId = $id;
         $this->produk = Produk::findOrFail($id);
+        $this->hasilPencarian = [];
+        $this->cariProduk = '';
     }
 
     public function cetak()
