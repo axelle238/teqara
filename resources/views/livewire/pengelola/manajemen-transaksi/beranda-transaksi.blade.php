@@ -1,121 +1,134 @@
-<div class="space-y-8 animate-in fade-in zoom-in duration-500 pb-20">
+<div class="space-y-10 animate-in fade-in duration-500 pb-32">
     
-    <!-- Financial Overview -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div class="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-[30px] p-8 text-white relative overflow-hidden shadow-xl shadow-emerald-600/30 md:col-span-2">
-            <div class="absolute -right-10 -bottom-10 opacity-20">
-                <i class="fa-solid fa-sack-dollar text-9xl"></i>
+    <!-- HEADER & SUMMARY CARDS -->
+    <div class="space-y-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-slate-900 text-white p-10 rounded-[40px] shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-violet-600/30 to-fuchsia-600/30 rounded-full blur-[80px] -mr-20 -mt-20"></div>
+            
+            <div class="relative z-10 space-y-2">
+                <h1 class="text-4xl font-black tracking-tight uppercase leading-none">Keuangan <span class="text-violet-400">Enterprise</span></h1>
+                <p class="text-slate-400 font-medium tracking-wide">Pusat monitoring arus kas dan verifikasi pembayaran.</p>
             </div>
-            <p class="text-xs font-black uppercase tracking-widest text-emerald-200 mb-2">Total Pemasukan (Net)</p>
-            <h3 class="text-5xl font-black tracking-tight mb-4">Rp {{ number_format($this->ringkasan['total_masuk'], 0, ',', '.') }}</h3>
-            <div class="flex items-center gap-2 text-emerald-100 text-xs font-bold">
-                <i class="fa-solid fa-arrow-trend-up"></i> Arus Kas Positif
+
+            <div class="relative z-10 flex gap-8 text-right">
+                <div>
+                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Pendapatan</p>
+                    <p class="text-3xl font-black text-emerald-400">Rp{{ number_format($this->ringkasan['total_masuk'], 0, ',', '.') }}</p>
+                </div>
+                <div class="hidden lg:block w-px bg-white/10"></div>
+                <div class="hidden lg:block">
+                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Rata-rata Basket Size</p>
+                    <p class="text-xl font-black text-white">Rp{{ number_format($this->ringkasan['rata_rata'], 0, ',', '.') }}</p>
+                </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-[30px] p-8 border border-slate-100 shadow-sm flex flex-col justify-center">
-            <p class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Volume Transaksi</p>
-            <h3 class="text-4xl font-black text-slate-900">{{ $this->ringkasan['transaksi_sukses'] }} <span class="text-sm text-slate-400 font-bold">Sukses</span></h3>
-            <p class="text-xs font-bold text-amber-500 mt-2">{{ $this->ringkasan['transaksi_pending'] }} Menunggu Verifikasi</p>
-        </div>
-
-        <div class="bg-white rounded-[30px] p-8 border border-slate-100 shadow-sm flex flex-col justify-center">
-            <p class="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Rata-rata Order</p>
-            <h3 class="text-2xl font-black text-indigo-600">Rp {{ number_format($this->ringkasan['rata_rata'], 0, ',', '.') }}</h3>
-            <p class="text-[10px] text-slate-400 mt-2">Per Transaksi</p>
+        <!-- Status Cards Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white p-6 rounded-[30px] border border-slate-100 shadow-sm flex items-center gap-4 group hover:border-violet-200 transition-colors">
+                <div class="w-12 h-12 bg-violet-50 text-violet-600 rounded-2xl flex items-center justify-center text-xl shadow-inner group-hover:bg-violet-600 group-hover:text-white transition-all">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
+                <div>
+                    <h4 class="text-2xl font-black text-slate-900">{{ $this->ringkasan['transaksi_sukses'] }}</h4>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Transaksi Sukses</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-[30px] border border-slate-100 shadow-sm flex items-center gap-4 group hover:border-amber-200 transition-colors">
+                <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-xl shadow-inner group-hover:bg-amber-600 group-hover:text-white transition-all">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+                <div>
+                    <h4 class="text-2xl font-black text-slate-900">{{ $this->ringkasan['transaksi_pending'] }}</h4>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Menunggu Bayar</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Transaction List -->
-    <div class="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden min-h-[500px]">
-        <div class="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
-            <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">Jurnal Transaksi Masuk</h3>
-            
-            <div class="flex gap-4">
-                <div class="relative w-64">
-                    <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari Kode Bayar..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-emerald-500">
-                    <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                </div>
-                <select wire:model.live="filterMetode" class="bg-slate-50 border-none rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 focus:ring-2 focus:ring-emerald-500 cursor-pointer">
-                    <option value="">Semua Metode</option>
-                    <option value="transfer_bank">Transfer Bank</option>
-                    <option value="midtrans">Midtrans (Otomatis)</option>
-                    <option value="cod">COD (Bayar Ditempat)</option>
-                </select>
-            </div>
+    <!-- TOOLBAR -->
+    <div class="bg-white p-6 rounded-[35px] border border-indigo-50 flex flex-col md:flex-row gap-6 justify-between items-center shadow-sm">
+        <div class="flex flex-wrap gap-4 w-full md:w-auto">
+            <select wire:model.live="filterMetode" class="bg-slate-50 border-none rounded-2xl px-6 py-4 text-xs font-black text-slate-600 uppercase tracking-widest cursor-pointer focus:ring-4 focus:ring-violet-500/10">
+                <option value="">Semua Kanal Bayar</option>
+                <option value="bank_transfer">Transfer Bank (VA)</option>
+                <option value="e_wallet">E-Wallet (QRIS)</option>
+                <option value="credit_card">Kartu Kredit</option>
+                <option value="manual">Transfer Manual</option>
+            </select>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead class="bg-slate-50/50">
-                    <tr>
-                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Waktu & Kode</th>
-                        <th class="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Pelanggan</th>
-                        <th class="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Metode</th>
-                        <th class="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Nominal</th>
-                        <th class="px-6 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
-                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @forelse($transaksi as $trx)
-                    <tr class="group hover:bg-slate-50 transition-all">
-                        <td class="px-8 py-5">
-                            <span class="block text-xs font-bold text-slate-500">{{ $trx->dibuat_pada->format('d M Y, H:i') }}</span>
-                            <span class="font-mono text-xs font-black text-slate-800">{{ $trx->kode_pembayaran }}</span>
-                        </td>
-                        <td class="px-6 py-5">
-                            <p class="text-sm font-bold text-slate-800">{{ $trx->pesanan->pengguna->nama ?? 'Guest' }}</p>
-                            <p class="text-[10px] text-slate-400">Order #{{ $trx->pesanan->nomor_faktur ?? '-' }}</p>
-                        </td>
-                        <td class="px-6 py-5">
-                            @if($trx->metode_pembayaran == 'midtrans')
-                                <span class="flex items-center gap-2 text-xs font-bold text-indigo-600"><i class="fa-solid fa-robot"></i> Gateway</span>
-                            @elseif($trx->metode_pembayaran == 'transfer_bank')
-                                <span class="flex items-center gap-2 text-xs font-bold text-slate-600"><i class="fa-solid fa-building-columns"></i> Manual</span>
-                            @else
-                                <span class="text-xs font-bold text-slate-600 uppercase">{{ $trx->metode_pembayaran }}</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-5 text-right">
-                            <span class="font-black text-slate-900 text-sm">Rp {{ number_format($trx->jumlah_bayar, 0, ',', '.') }}</span>
-                        </td>
-                        <td class="px-6 py-5 text-center">
-                            @php
-                                $statusClass = match($trx->status) {
-                                    'sukses' => 'bg-emerald-100 text-emerald-700',
-                                    'menunggu' => 'bg-amber-100 text-amber-700 animate-pulse',
-                                    'gagal' => 'bg-rose-100 text-rose-700',
-                                    default => 'bg-slate-100 text-slate-600'
-                                };
-                            @endphp
-                            <span class="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest {{ $statusClass }}">
-                                {{ $trx->status }}
+        <div class="relative w-full md:w-96">
+            <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-slate-300"></i>
+            <input wire:model.live.debounce.300ms="cari" type="text" placeholder="Cari Kode Bayar / Invoice..." class="w-full pl-12 pr-6 py-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700 focus:ring-4 focus:ring-violet-500/10 placeholder:text-slate-300">
+        </div>
+    </div>
+
+    <!-- TRANSACTION LIST -->
+    <div class="space-y-4">
+        @forelse($transaksi as $trx)
+        <div class="bg-white rounded-[35px] p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:border-violet-100 transition-all duration-300 group">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+                <!-- Info Utama -->
+                <div class="flex items-center gap-6 w-full lg:w-auto">
+                    <div class="w-16 h-16 rounded-[20px] bg-slate-50 flex flex-col items-center justify-center border border-slate-100 shrink-0">
+                        <span class="text-xs font-black text-slate-900">{{ $trx->dibuat_pada->format('d') }}</span>
+                        <span class="text-[9px] font-bold text-slate-400 uppercase">{{ $trx->dibuat_pada->format('M') }}</span>
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-black text-slate-900 tracking-tight">{{ $trx->kode_pembayaran }}</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-100 text-[8px] font-black text-slate-500 uppercase tracking-widest">
+                                {{ str_replace('_', ' ', $trx->metode_pembayaran) }}
                             </span>
-                        </td>
-                        <td class="px-8 py-5 text-right">
-                            @if($trx->status == 'menunggu' && $trx->metode_pembayaran == 'transfer_bank')
-                                <button wire:click="verifikasiManual({{ $trx->id }})" wire:confirm="Konfirmasi pembayaran ini valid?" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 shadow-lg shadow-emerald-500/20 transition-all">
-                                    <i class="fa-solid fa-check mr-1"></i> Terima
-                                </button>
-                            @else
-                                <span class="text-slate-300 text-lg"><i class="fa-solid fa-lock"></i></span>
-                            @endif
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="6" class="px-8 py-20 text-center text-slate-400 font-bold text-xs uppercase tracking-widest">
-                            Tidak ada data transaksi.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                        </div>
+                        <p class="text-xs font-medium text-slate-500">
+                            Inv: <span class="font-bold text-violet-600">#{{ $trx->pesanan->nomor_faktur ?? '-' }}</span> 
+                            • Pelanggan: {{ $trx->pesanan->pengguna->nama ?? 'Guest' }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Status & Nominal -->
+                <div class="flex items-center gap-8 w-full lg:w-auto justify-between lg:justify-end">
+                    <div class="text-right">
+                        <p class="text-lg font-black text-slate-900">Rp{{ number_format($trx->jumlah_bayar, 0, ',', '.') }}</p>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{{ $trx->dibuat_pada->format('H:i') }} WIB</p>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        @if($trx->status == 'sukses')
+                            <span class="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-emerald-100">
+                                <i class="fa-solid fa-circle-check"></i> Lunas
+                            </span>
+                        @elseif($trx->status == 'menunggu')
+                            <span class="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-amber-100 animate-pulse">
+                                <i class="fa-solid fa-clock"></i> Pending
+                            </span>
+                        @else
+                            <span class="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-rose-100">
+                                <i class="fa-solid fa-circle-xmark"></i> Gagal
+                            </span>
+                        @endif
+
+                        @if($trx->status == 'menunggu')
+                        <button wire:click="verifikasiManual({{ $trx->id }})" wire:confirm="Verifikasi pembayaran ini secara manual? Status akan berubah menjadi Lunas." class="w-10 h-10 rounded-xl bg-violet-600 text-white flex items-center justify-center hover:bg-violet-700 shadow-lg shadow-violet-500/30 transition-all active:scale-95" title="Verifikasi Manual">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
-        
-        <div class="p-8 border-t border-slate-50">
-            {{ $transaksi->links() }}
+        @empty
+        <div class="py-20 text-center bg-white rounded-[40px] border-2 border-dashed border-slate-100">
+            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl grayscale opacity-30">💸</div>
+            <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Tidak ada data transaksi.</p>
         </div>
+        @endforelse
+    </div>
+
+    <div class="pt-6">
+        {{ $transaksi->links() }}
     </div>
 </div>
