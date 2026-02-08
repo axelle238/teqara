@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Pengelola\ManajemenPegawai;
 
+use App\Helpers\LogHelper;
 use App\Models\Karyawan;
 use App\Models\Pengguna;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +26,9 @@ class ManajemenKaryawan extends Component
     // Form Input Data Pegawai
     public $nip;
     public $jabatan_id;
+    public $telepon;
     public $tanggal_bergabung;
+    public $status_karyawan = 'tetap';
 
     public function simpan()
     {
@@ -36,6 +39,7 @@ class ManajemenKaryawan extends Component
             'password' => 'required|min:8',
             'nip' => 'required|unique:karyawan,nip',
             'jabatan_id' => 'nullable|exists:jabatan,id',
+            'telepon' => 'nullable|numeric',
         ]);
 
         DB::transaction(function () {
@@ -45,6 +49,7 @@ class ManajemenKaryawan extends Component
                 'email' => $this->email,
                 'peran' => $this->peran,
                 'kata_sandi' => Hash::make($this->password),
+                'nomor_telepon' => $this->telepon,
                 'email_diverifikasi_pada' => now(),
             ]);
 
@@ -55,12 +60,14 @@ class ManajemenKaryawan extends Component
                 'nip' => $this->nip,
                 'jabatan_id' => $this->jabatan_id,
                 'tanggal_bergabung' => $this->tanggal_bergabung ?? now(),
-                'status_karyawan' => 'tetap',
+                'status_karyawan' => $this->status_karyawan,
             ]);
+
+            LogHelper::catat('rekrutmen_staf', $this->nama, "Mendaftarkan karyawan baru dengan peran {$this->peran}.");
         });
 
         $this->dispatch('notifikasi', ['tipe' => 'sukses', 'pesan' => 'Data personil berhasil diregistrasi (Akun + HRD).']);
-        $this->reset(['nama', 'email', 'peran', 'password', 'nip', 'jabatan_id', 'tambahMode']);
+        $this->reset(['nama', 'email', 'peran', 'password', 'nip', 'jabatan_id', 'telepon', 'status_karyawan', 'tambahMode']);
     }
 
     public function hapus($id)
