@@ -82,6 +82,14 @@ class Beranda extends Component
             ->get();
     }
 
+    public function logout()
+    {
+        auth()->logout();
+        session()->invalidate();
+        session()->regenerateToken();
+        return redirect('/');
+    }
+
     #[Title('Personal Command Center - TEQARA')]
     public function render()
     {

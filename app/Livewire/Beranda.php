@@ -53,7 +53,22 @@ class Beranda extends Component
 
     public function render()
     {
-        // 1. Audit Trail: Catat Kunjungan Pelanggan secara Naratif
+        // 1. Audit Trail: Catat Kunjungan Pelanggan
+        $this->catatKunjungan();
+
+        return view('livewire.beranda', [
+            'hero' => $this->getHeroData(),
+            'kategori' => $this->getKategoriData(),
+            'produkUnggulan' => $this->getProdukUnggulan(),
+            'penjualanKilat' => $this->getPenjualanKilat(),
+            'beritaTerbaru' => $this->getBeritaTerbaru(),
+            'fiturUnggulan' => $this->getFiturUnggulan(),
+            'ctaFooter' => $this->getCtaFooter(),
+        ])->layout('components.layouts.app');
+    }
+
+    private function catatKunjungan()
+    {
         if (auth()->check()) {
             \App\Helpers\LogHelper::catat(
                 'Kunjungan Beranda',
@@ -61,9 +76,27 @@ class Beranda extends Component
                 "Pelanggan '" . auth()->user()->nama . "' sedang menjelajahi halaman beranda toko."
             );
         }
+    }
 
-        // 2. Ambil Konten Hero (Dinamis dari CMS)
-        $hero = (object) [
+    private function getHeroData()
+    {
+        $heroDb = \App\Models\KontenHalaman::where('bagian', 'hero_section')
+            ->where('aktif', true)
+            ->orderBy('urutan')
+            ->first();
+
+        if ($heroDb) {
+            return (object) [
+                'judul_kecil' => 'Enterprise Ready',
+                'judul_utama' => $heroDb->judul,
+                'deskripsi' => $heroDb->deskripsi,
+                'url_cta' => $heroDb->tautan_tujuan ?? '/katalog',
+                'teks_cta' => $heroDb->teks_tombol ?? 'Lihat Detail',
+                'gambar' => $heroDb->gambar
+            ];
+        }
+
+        return (object) [
             'judul_kecil' => 'Enterprise Ready',
             'judul_utama' => 'Solusi Teknologi Terdepan Untuk Bisnis Anda',
             'deskripsi' => 'Dapatkan perangkat keras dan lunak kelas enterprise dengan harga kompetitif.',
@@ -71,62 +104,55 @@ class Beranda extends Component
             'teks_cta' => 'MULAI BELANJA',
             'gambar' => null
         ];
+    }
 
-        try {
-            $heroDb = \App\Models\KontenHalaman::where('bagian', 'hero_section')->where('aktif', true)->orderBy('urutan')->first();
-            if ($heroDb) {
-                $hero = (object) [
-                    'judul_kecil' => 'Top Highlight',
-                    'judul_utama' => $heroDb->judul,
-                    'deskripsi' => $heroDb->deskripsi,
-                    'url_cta' => $heroDb->tautan_tujuan ?? '/katalog',
-                    'teks_cta' => $heroDb->teks_tombol ?? 'Lihat Detail',
-                    'gambar' => $heroDb->gambar
-                ];
-            }
-            $promoBanners = \App\Models\KontenHalaman::where('bagian', 'promo_banner')->where('aktif', true)->orderBy('urutan')->get();
-            $fiturUnggulan = \App\Models\KontenHalaman::where('bagian', 'fitur_unggulan')->where('aktif', true)->orderBy('urutan')->get();
-            $faqData = \App\Models\KontenHalaman::where('bagian', 'faq_section')->where('aktif', true)->orderBy('urutan')->get();
-            $ctaFooter = \App\Models\KontenHalaman::where('bagian', 'cta_footer')->where('aktif', true)->orderBy('urutan')->first();
-        } catch (\Exception $e) {
-            $promoBanners = collect([]); 
-            $fiturUnggulan = collect([]);
-            $faqData = collect([]);
-            $ctaFooter = null;
-        }
+    private function getFiturUnggulan()
+    {
+        return \App\Models\KontenHalaman::where('bagian', 'fitur_unggulan')
+            ->where('aktif', true)
+            ->orderBy('urutan')
+            ->get();
+    }
 
-        // 3. Produk & Kategori (Cached for Performance)
-        $kategori = \Illuminate\Support\Facades\Cache::remember('beranda_kategori_v4', 3600, function () {
+    private function getCtaFooter()
+    {
+        return \App\Models\KontenHalaman::where('bagian', 'cta_footer')
+            ->where('aktif', true)
+            ->orderBy('urutan')
+            ->first();
+    }
+
+    private function getKategoriData()
+    {
+        return \Illuminate\Support\Facades\Cache::remember('beranda_kategori_v4', 3600, function () {
             return Kategori::withCount('produk')->orderByDesc('produk_count')->take(6)->get();
         });
+    }
 
-        $produkUnggulan = Produk::with(['kategori', 'gambar', 'ulasan'])
+    private function getProdukUnggulan()
+    {
+        return Produk::with(['kategori', 'gambar', 'ulasan'])
             ->withCount('ulasan')
             ->where('status', 'aktif')
             ->latest()
             ->take(8)
             ->get();
+    }
 
-        // 4. Flash Sale (Real-time Enterprise)
-        $penjualanKilat = \App\Models\PenjualanKilat::with(['produkPenjualanKilat.produk'])
+    private function getPenjualanKilat()
+    {
+        return \App\Models\PenjualanKilat::with(['produkPenjualanKilat.produk'])
             ->where('aktif', true)
             ->where('waktu_mulai', '<=', now())
             ->where('waktu_selesai', '>=', now())
             ->first();
+    }
 
-        // 5. Berita & Insights
-        $beritaTerbaru = \App\Models\Berita::where('status', 'publikasi')->latest('dibuat_pada')->take(3)->get();
-
-        return view('livewire.beranda', [
-            'hero' => $hero,
-            'kategori' => $kategori,
-            'produkUnggulan' => $produkUnggulan,
-            'penjualanKilat' => $penjualanKilat,
-            'beritaTerbaru' => $beritaTerbaru,
-            'promoBanners' => $promoBanners,
-            'fiturUnggulan' => $fiturUnggulan,
-            'faqData' => $faqData,
-            'ctaFooter' => $ctaFooter,
-        ])->layout('components.layouts.app');
+    private function getBeritaTerbaru()
+    {
+        return \App\Models\Berita::where('status', 'publikasi')
+            ->latest('dibuat_pada')
+            ->take(3)
+            ->get();
     }
 }

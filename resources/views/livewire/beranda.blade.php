@@ -264,33 +264,52 @@
     </section>
 
     <!-- 5. FEATURES BENTO (ENTERPRISE TRUST) -->
+    @if($fiturUnggulan->isNotEmpty())
     <section class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="p-10 bg-indigo-50 rounded-[3rem] space-y-6 group hover:bg-indigo-600 transition-all duration-500 border border-indigo-100">
-                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl text-indigo-600 shadow-xl group-hover:rotate-12 transition-transform">
-                        <i class="fa-solid fa-truck-ramp-box"></i>
+                @foreach($fiturUnggulan as $index => $fitur)
+                    @php
+                        // Mapping warna dinamis berdasarkan index untuk variasi
+                        $colors = ['indigo', 'emerald', 'amber', 'rose', 'cyan', 'violet'];
+                        $color = $colors[$index % count($colors)];
+                        
+                        // Kelas warna dinamis (karena Tailwind v4 butuh safelist atau dynamic style, kita pakai inline style untuk variasi warna kompleks atau class mapping manual)
+                        // Untuk amannya di Tailwind, kita mapping manual classnya:
+                        $bgClass = match($color) {
+                            'indigo' => 'bg-indigo-50 border-indigo-100 hover:bg-indigo-600',
+                            'emerald' => 'bg-emerald-50 border-emerald-100 hover:bg-emerald-600',
+                            'amber' => 'bg-amber-50 border-amber-100 hover:bg-amber-600',
+                            'rose' => 'bg-rose-50 border-rose-100 hover:bg-rose-600',
+                            'cyan' => 'bg-cyan-50 border-cyan-100 hover:bg-cyan-600',
+                            'violet' => 'bg-violet-50 border-violet-100 hover:bg-violet-600',
+                            default => 'bg-indigo-50 border-indigo-100 hover:bg-indigo-600'
+                        };
+                        
+                        $textClass = match($color) {
+                            'indigo' => 'text-indigo-600 group-hover:text-indigo-100',
+                            'emerald' => 'text-emerald-600 group-hover:text-emerald-100',
+                            'amber' => 'text-amber-600 group-hover:text-amber-100',
+                            'rose' => 'text-rose-600 group-hover:text-rose-100',
+                            'cyan' => 'text-cyan-600 group-hover:text-cyan-100',
+                            'violet' => 'text-violet-600 group-hover:text-violet-100',
+                            default => 'text-indigo-600 group-hover:text-indigo-100'
+                        };
+                        
+                        $iconClass = $fitur->gambar ?? 'fa-solid fa-check';
+                    @endphp
+                    <div class="p-10 rounded-[3rem] space-y-6 group transition-all duration-500 border {{ $bgClass }}">
+                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-xl group-hover:rotate-12 transition-transform {{ explode(' ', $textClass)[0] }}">
+                            <i class="{{ $iconClass }}"></i>
+                        </div>
+                        <h3 class="text-xl font-black text-slate-900 group-hover:text-white">{{ $fitur->judul }}</h3>
+                        <p class="text-sm text-slate-500 {{ explode(' ', $textClass)[1] }} leading-relaxed font-medium">{{ $fitur->deskripsi }}</p>
                     </div>
-                    <h3 class="text-xl font-black text-slate-900 group-hover:text-white">Logistik Terintegrasi</h3>
-                    <p class="text-sm text-slate-500 group-hover:text-indigo-100 leading-relaxed font-medium">Pengiriman aman dengan asuransi penuh ke seluruh pelosok nusantara tanpa khawatir.</p>
-                </div>
-                <div class="p-10 bg-emerald-50 rounded-[3rem] space-y-6 group hover:bg-emerald-600 transition-all duration-500 border border-emerald-100">
-                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl text-emerald-600 shadow-xl group-hover:rotate-12 transition-transform">
-                        <i class="fa-solid fa-hand-holding-dollar"></i>
-                    </div>
-                    <h3 class="text-xl font-black text-slate-900 group-hover:text-white">Harga Kompetitif</h3>
-                    <p class="text-sm text-slate-500 group-hover:text-emerald-100 leading-relaxed font-medium">Beli eceran dengan harga grosir untuk kebutuhan kantor maupun penggunaan pribadi.</p>
-                </div>
-                <div class="p-10 bg-amber-50 rounded-[3rem] space-y-6 group hover:bg-amber-600 transition-all duration-500 border border-amber-100">
-                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl text-amber-600 shadow-xl group-hover:rotate-12 transition-transform">
-                        <i class="fa-solid fa-headset"></i>
-                    </div>
-                    <h3 class="text-xl font-black text-slate-900 group-hover:text-white">Support 24/7</h3>
-                    <p class="text-sm text-slate-500 group-hover:text-amber-100 leading-relaxed font-medium">Tim teknis ahli siap membantu instalasi dan troubleshoot perangkat Anda kapan saja.</p>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
+    @endif
 
     <!-- 6. BERITA & INSIGHTS (COLORFUL CARDS) -->
     <section class="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

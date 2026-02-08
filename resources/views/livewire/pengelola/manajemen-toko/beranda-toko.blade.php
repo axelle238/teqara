@@ -1,178 +1,139 @@
-<div class="space-y-10 animate-in fade-in zoom-in duration-500 pb-20" wire:poll.30s>
+<div class="space-y-10 animate-in fade-in zoom-in duration-700 pb-20">
     
-    <!-- Header Section: High-Tech Visual Control -->
-    <div class="relative bg-white rounded-[3rem] p-10 overflow-hidden shadow-sm border border-slate-100">
-        <!-- Abstract Background -->
-        <div class="absolute top-0 right-0 w-96 h-96 bg-purple-50 rounded-full blur-3xl -mr-20 -mt-20 opacity-60 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-72 h-72 bg-indigo-50 rounded-full blur-3xl -ml-10 -mb-10 opacity-60 pointer-events-none"></div>
+    <!-- 1. HEADER & STATUS VISUAL -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 bg-white p-10 rounded-[40px] shadow-sm border border-indigo-50 relative overflow-hidden group">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-pink-500/5 rounded-full blur-3xl -mr-20 -mt-20 group-hover:bg-pink-500/10 transition-colors duration-1000"></div>
+        
+        <div class="relative z-10 space-y-2">
+            <h1 class="text-4xl font-black text-slate-900 tracking-tight uppercase leading-none">CMS <span class="text-pink-500">Center</span></h1>
+            <p class="text-slate-500 font-medium tracking-wide italic">Pusat kendali visual & konten digital Teqara.</p>
+        </div>
 
-        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-            <div class="space-y-3">
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-100">
-                    <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
-                    <span class="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Sistem Manajemen Konten (CMS)</span>
-                </div>
-                <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter uppercase">
-                    Pusat Kendali <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">Visual</span>
-                </h1>
-                <p class="text-slate-500 font-medium text-lg max-w-2xl leading-relaxed">
-                    Kelola etalase digital Anda secara real-time. Pastikan setiap piksel halaman depan merepresentasikan kualitas enterprise Teqara.
-                </p>
+        <div class="flex gap-4 relative z-10">
+            <a href="/" target="_blank" class="px-6 py-3 bg-white border border-slate-200 text-slate-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:border-pink-200 hover:text-pink-600 transition-all shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Lihat Toko
+            </a>
+            <a href="{{ route('pengelola.toko.konten') }}" wire:navigate class="px-8 py-3 bg-pink-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-pink-700 shadow-xl shadow-pink-600/30 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square"></i> Kelola Konten
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. STATISTIK KONTEN (COLORFUL GRID) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Hero Banner -->
+        <div class="p-8 rounded-[35px] bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-xl shadow-indigo-500/20 relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+            <div class="absolute right-4 top-4 text-white/20 text-6xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-panorama"></i></div>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-2">Spanduk Utama</p>
+            <h3 class="text-4xl font-black tracking-tight mb-1">{{ $konten['total_hero'] }}</h3>
+            <p class="text-xs font-medium opacity-90">{{ $konten['hero_aktif'] }} Tayang Aktif</p>
+        </div>
+
+        <!-- Promo -->
+        <div class="p-8 rounded-[35px] bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-xl shadow-pink-500/20 relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+            <div class="absolute right-4 top-4 text-white/20 text-6xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-bullhorn"></i></div>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-2">Kampanye Promo</p>
+            <h3 class="text-4xl font-black tracking-tight mb-1">{{ $konten['total_promo'] }}</h3>
+            <p class="text-xs font-medium opacity-90">Banner Penawaran</p>
+        </div>
+
+        <!-- Artikel -->
+        <div class="p-8 rounded-[35px] bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-xl shadow-emerald-500/20 relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+            <div class="absolute right-4 top-4 text-white/20 text-6xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-newspaper"></i></div>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-2">Artikel & Berita</p>
+            <h3 class="text-4xl font-black tracking-tight mb-1">{{ $berita['total'] }}</h3>
+            <p class="text-xs font-medium opacity-90">{{ $berita['total_baca'] }}x Dibaca</p>
+        </div>
+
+        <!-- Fitur -->
+        <div class="p-8 rounded-[35px] bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-xl shadow-amber-500/20 relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+            <div class="absolute right-4 top-4 text-white/20 text-6xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-star"></i></div>
+            <p class="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-2">Fitur Unggulan</p>
+            <h3 class="text-4xl font-black tracking-tight mb-1">{{ $konten['fitur_unggulan'] }}</h3>
+            <p class="text-xs font-medium opacity-90">Poin Key Selling</p>
+        </div>
+    </div>
+
+    <!-- 3. AKTIVITAS TERBARU & AKSES CEPAT -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Feed Aktivitas -->
+        <div class="lg:col-span-2 bg-white rounded-[40px] p-10 border border-slate-100 shadow-sm">
+            <div class="flex items-center justify-between mb-8">
+                <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">Jejak Perubahan</h3>
+                <span class="px-3 py-1 bg-slate-50 text-slate-500 text-[10px] font-black uppercase tracking-widest rounded-lg">Terakhir Diupdate</span>
             </div>
-            
-            <div class="flex items-center gap-4">
-                <a href="{{ route('beranda') }}" target="_blank" class="group flex items-center gap-3 px-8 py-4 bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-lg hover:border-purple-200 transition-all duration-300">
-                    <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-store"></i>
+
+            <div class="space-y-6">
+                @foreach($feed as $item)
+                <div class="flex gap-6 group">
+                    <div class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 overflow-hidden flex-shrink-0 relative">
+                        @if($item['gambar'])
+                            <img src="{{ asset($item['gambar']) }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-slate-300"><i class="fa-solid fa-image"></i></div>
+                        @endif
                     </div>
-                    <div class="text-left">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pratinjau</p>
-                        <p class="text-xs font-black text-purple-700 uppercase tracking-widest">Lihat Toko Live</p>
+                    <div class="flex-1 py-1">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-[9px] font-black text-pink-500 uppercase tracking-widest mb-1">{{ $item['bagian'] }}</p>
+                                <h4 class="text-sm font-black text-slate-900 group-hover:text-pink-600 transition-colors">{{ $item['judul'] }}</h4>
+                            </div>
+                            <span class="text-[9px] font-bold text-slate-400">{{ $item['waktu']->diffForHumans() }}</span>
+                        </div>
+                        <div class="mt-2 flex gap-2">
+                            <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest {{ $item['status'] == 'Aktif' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500' }}">
+                                {{ $item['status'] }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+
+        <!-- Navigasi Cepat (Quick Links) -->
+        <div class="bg-slate-900 rounded-[40px] p-10 text-white relative overflow-hidden flex flex-col justify-between">
+            <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-soft-light"></div>
+            
+            <div class="relative z-10 space-y-6">
+                <h3 class="text-xl font-black uppercase tracking-tight text-white border-b border-white/10 pb-4">Akses Cepat</h3>
+                
+                <a href="{{ route('pengelola.toko.konten') }}" wire:navigate class="flex items-center gap-4 group p-4 rounded-2xl hover:bg-white/5 transition-all border border-transparent hover:border-white/10">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold group-hover:text-indigo-300 transition-colors">Tata Letak Utama</p>
+                        <p class="text-[9px] text-slate-400">Atur Hero & Fitur</p>
+                    </div>
+                </a>
+
+                <a href="{{ route('pengelola.toko.berita') }}" wire:navigate class="flex items-center gap-4 group p-4 rounded-2xl hover:bg-white/5 transition-all border border-transparent hover:border-white/10">
+                    <div class="w-10 h-10 rounded-xl bg-pink-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-pen-nib"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold group-hover:text-pink-300 transition-colors">Blog & Artikel</p>
+                        <p class="text-[9px] text-slate-400">Tulis Berita Baru</p>
+                    </div>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 group p-4 rounded-2xl hover:bg-white/5 transition-all border border-transparent hover:border-white/10 opacity-50 cursor-not-allowed" title="Segera Hadir">
+                    <div class="w-10 h-10 rounded-xl bg-slate-700 flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold">Tema Warna</p>
+                        <p class="text-[9px] text-slate-400">Kustomisasi CSS</p>
                     </div>
                 </a>
             </div>
-        </div>
-    </div>
 
-    <!-- Quick Actions Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Card 1: Spanduk Utama -->
-        <div class="bg-gradient-to-br from-indigo-600 to-indigo-700 p-1 rounded-[2.5rem] shadow-xl shadow-indigo-500/20 group hover:-translate-y-1 transition-transform duration-300">
-            <div class="bg-white h-full rounded-[2.4rem] p-8 flex flex-col justify-between relative overflow-hidden">
-                <div class="absolute right-[-20px] top-[-20px] w-32 h-32 bg-indigo-50 rounded-full blur-2xl group-hover:bg-indigo-100 transition-colors"></div>
-                
-                <div class="relative z-10">
-                    <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                        <i class="fa-solid fa-panorama"></i>
-                    </div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-2">Spanduk Utama</h3>
-                    <p class="text-sm text-slate-500 font-medium leading-relaxed mb-6">Kelola gambar besar (Hero Section) yang muncul pertama kali saat pelanggan berkunjung.</p>
-                </div>
-
-                <div class="relative z-10 flex items-center justify-between mt-auto">
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Status Aset</p>
-                        <p class="text-2xl font-black text-indigo-600">{{ $konten['hero_aktif'] }} <span class="text-xs text-slate-400 font-bold">/ {{ $konten['total_hero'] }}</span></p>
-                    </div>
-                    <a href="{{ route('pengelola.toko.konten') }}" wire:navigate class="w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 2: Berita & Artikel -->
-        <div class="bg-gradient-to-br from-pink-500 to-rose-600 p-1 rounded-[2.5rem] shadow-xl shadow-rose-500/20 group hover:-translate-y-1 transition-transform duration-300">
-            <div class="bg-white h-full rounded-[2.4rem] p-8 flex flex-col justify-between relative overflow-hidden">
-                <div class="absolute right-[-20px] top-[-20px] w-32 h-32 bg-rose-50 rounded-full blur-2xl group-hover:bg-rose-100 transition-colors"></div>
-                
-                <div class="relative z-10">
-                    <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                        <i class="fa-solid fa-newspaper"></i>
-                    </div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-2">Kabar & Artikel</h3>
-                    <p class="text-sm text-slate-500 font-medium leading-relaxed mb-6">Publikasikan berita terbaru, tips teknologi, atau pengumuman penting untuk pelanggan.</p>
-                </div>
-
-                <div class="relative z-10 flex items-center justify-between mt-auto">
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Baca</p>
-                        <p class="text-2xl font-black text-rose-600">{{ number_format($berita['total_baca']) }} <span class="text-xs text-slate-400 font-bold">Kali</span></p>
-                    </div>
-                    <a href="{{ route('pengelola.toko.berita') }}" wire:navigate class="w-12 h-12 rounded-full bg-rose-600 text-white flex items-center justify-center hover:bg-rose-700 transition-colors shadow-lg shadow-rose-500/30">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card 3: Promo & Fitur -->
-        <div class="bg-gradient-to-br from-cyan-500 to-blue-600 p-1 rounded-[2.5rem] shadow-xl shadow-cyan-500/20 group hover:-translate-y-1 transition-transform duration-300">
-            <div class="bg-white h-full rounded-[2.4rem] p-8 flex flex-col justify-between relative overflow-hidden">
-                <div class="absolute right-[-20px] top-[-20px] w-32 h-32 bg-cyan-50 rounded-full blur-2xl group-hover:bg-cyan-100 transition-colors"></div>
-                
-                <div class="relative z-10">
-                    <div class="w-16 h-16 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center text-2xl mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                        <i class="fa-solid fa-bullhorn"></i>
-                    </div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight mb-2">Promo & Fitur</h3>
-                    <p class="text-sm text-slate-500 font-medium leading-relaxed mb-6">Atur banner promosi kecil dan sorotan fitur unggulan produk di halaman beranda.</p>
-                </div>
-
-                <div class="relative z-10 flex items-center justify-between mt-auto">
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Kampanye Aktif</p>
-                        <p class="text-2xl font-black text-cyan-600">{{ $konten['total_promo'] + $konten['fitur_unggulan'] }} <span class="text-xs text-slate-400 font-bold">Unit</span></p>
-                    </div>
-                    <a href="{{ route('pengelola.toko.konten') }}" wire:navigate class="w-12 h-12 rounded-full bg-cyan-600 text-white flex items-center justify-center hover:bg-cyan-700 transition-colors shadow-lg shadow-cyan-500/30">
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                </div>
+            <div class="relative z-10 pt-8 border-t border-white/10 text-center">
+                <p class="text-[9px] text-slate-500 font-mono">CMS Engine v2.0 Active</p>
             </div>
         </div>
     </div>
 
-    <!-- Feed Aktivitas Visual -->
-    <div class="bg-white rounded-[3rem] border border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-10 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
-            <div class="flex items-center gap-5">
-                <div class="w-14 h-14 rounded-2xl bg-slate-900 text-white flex items-center justify-center text-xl shadow-lg">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-                </div>
-                <div>
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">Linimasa Perubahan</h3>
-                    <p class="text-sm text-slate-500 font-medium">Jejak modifikasi terakhir pada elemen visual toko.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="divide-y divide-slate-100">
-            @forelse($feed as $item)
-            <div class="group p-8 flex items-center gap-6 hover:bg-slate-50 transition-colors cursor-default">
-                <!-- Thumbnail -->
-                <div class="w-24 h-16 rounded-xl bg-slate-100 overflow-hidden shrink-0 border border-slate-200 shadow-sm">
-                    @if($item['gambar'])
-                        <img src="{{ asset('storage/'.$item['gambar']) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center text-slate-300">
-                            <i class="fa-regular fa-image text-xl"></i>
-                        </div>
-                    @endif
-                </div>
-
-                <!-- Content -->
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-3 mb-1">
-                        <span class="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase tracking-widest border border-indigo-100">{{ $item['bagian'] }}</span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                            <i class="fa-regular fa-clock"></i> {{ $item['waktu'] ? $item['waktu']->diffForHumans() : 'Baru saja' }}
-                        </span>
-                    </div>
-                    <h4 class="text-base font-black text-slate-800 truncate">{{ $item['judul'] }}</h4>
-                </div>
-
-                <!-- Status -->
-                <div class="hidden md:block">
-                    @if($item['status'] == 'Aktif')
-                        <span class="flex items-center gap-2 text-emerald-600 font-black text-[10px] uppercase tracking-widest bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Tayang
-                        </span>
-                    @else
-                        <span class="flex items-center gap-2 text-slate-500 font-black text-[10px] uppercase tracking-widest bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
-                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Draft
-                        </span>
-                    @endif
-                </div>
-            </div>
-            @empty
-            <div class="p-20 text-center">
-                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300 text-3xl">
-                    <i class="fa-solid fa-wind"></i>
-                </div>
-                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tight">Belum Ada Aktivitas</h3>
-                <p class="text-slate-400 text-sm font-medium mt-2">Mulai kelola konten visual Anda sekarang.</p>
-            </div>
-            @endforelse
-        </div>
-    </div>
 </div>
